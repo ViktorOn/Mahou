@@ -469,7 +469,7 @@ namespace Mahou {
             CheckBool("Functions", "ScrollTip", "false");
             CheckBool("Functions", "ConvertSelectionLayoutSwitchingPlus", "false");
             CheckBool("Functions", "AddOneEnterToLastWord", "false");
-            CheckBool("Functions", "AddOneSpaceToLastWord", "false");
+            CheckBool("Functions", "AddOneSpaceToLastWord", "true");
             CheckBool("Functions", "RePress", "false");
             CheckBool("Functions", "ReSelect", "true");
             CheckBool("Functions", "ConvertSelectionLayoutSwitching", "false");
