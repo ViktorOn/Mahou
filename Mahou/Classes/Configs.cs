@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace Mahou {
 	/// <summary>Ini settings writer/reader in memory, not from disk.</summary>
@@ -171,6 +172,28 @@ namespace Mahou {
     		}
         	return false;
         }
+        public string GetRawWithoutGroup(string gr, string OutINI="") {
+        	var glr = "";
+        	var inini = _INI.Raw;
+        	if (!string.IsNullOrEmpty(OutINI)) {
+        		inini = OutINI;
+        	}
+        	var lines = inini.Split('\n');
+        	int g = 0;
+        	for (int i=0; i!= lines.Length; i++) {
+        		var l = lines[i];
+        		if (l.StartsWith("[")) {
+        			if (l.StartsWith(gr)) {
+        				g = 1;
+        			} else g = 0;
+        		}
+        		if (g == 0) {
+        			var nl = (i == lines.Length) ? "" : Environment.NewLine;
+        			glr += l.Replace("\r", "")+nl;
+        		}
+        	}
+        	return glr;
+        }
         /// <summary> Check if configs file readable. </summary>
         /// <returns>Read access.</returns>
 	        public static bool Readable() {
@@ -186,8 +209,8 @@ namespace Mahou {
         	CreateConfigsFile();
         	ReadFromDisk();
         	#region Sync
-			CheckString("Sync", "BBools", "0|1|0|0");
-			CheckString("Sync", "RBools", "1|1|1|1");
+			CheckString("Sync", "BBools", "0|1|0|0|0");
+			CheckString("Sync", "RBools", "1|1|1|1|0");
 			CheckString("Sync", "RLast", "");
 			CheckString("Sync", "BLast", "");
 			#endregion

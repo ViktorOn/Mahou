@@ -952,8 +952,8 @@ namespace Mahou {
 				SaveTrSets();
 				#endregion
 				#region Sync
-				MMain.MyConfs.Write("Sync", "BBools", string.Join("|", bin(chk_Mini.Checked), bin(chk_Stxt.Checked), bin(chk_Htxt.Checked), bin(chk_Ttxt.Checked)));
-				MMain.MyConfs.Write("Sync", "RBools", string.Join("|", bin(chk_rMini.Checked), bin(chk_rStxt.Checked), bin(chk_rHtxt.Checked), bin(chk_rTtxt.Checked)));
+				MMain.MyConfs.Write("Sync", "BBools", string.Join("|", bin(chk_Mini.Checked), bin(chk_Stxt.Checked), bin(chk_Htxt.Checked), bin(chk_Ttxt.Checked), bin(chk_andPROXY.Checked)));
+				MMain.MyConfs.Write("Sync", "RBools", string.Join("|", bin(chk_rMini.Checked), bin(chk_rStxt.Checked), bin(chk_rHtxt.Checked), bin(chk_rTtxt.Checked), bin(chk_andPROXY2.Checked)));
 				MMain.MyConfs.Write("Sync", "BLast", txt_backupId.Text);
 				MMain.MyConfs.Write("Sync", "RLast", txt_restoreId.Text);
 				#endregion
@@ -1319,18 +1319,20 @@ namespace Mahou {
 			#endregion
 			#region Sync
 			var bbools = MMain.MyConfs.Read("Sync", "BBools");
-			bool m, s, h, t;
-			SetBools(bbools, '|', out m, out s, out h, out t);
+			bool m, s, h, t, p;
+			SetBools(bbools, '|', out m, out s, out h, out t, out p);
 			chk_Mini.Checked = m;
 			chk_Stxt.Checked = s;
 			chk_Htxt.Checked = h;
 			chk_Ttxt.Checked = t;
+			chk_andPROXY.Checked = p;
 			var rbools = MMain.MyConfs.Read("Sync", "RBools");
-			SetBools(rbools, '|', out m, out s, out h, out t);
+			SetBools(rbools, '|', out m, out s, out h, out t, out p);
 			chk_rMini.Checked = m;
 			chk_rStxt.Checked = s;
 			chk_rHtxt.Checked = h;
 			chk_rTtxt.Checked = t;
+			chk_andPROXY2.Checked = p;
 			var blast = MMain.MyConfs.Read("Sync", "BLast");
 			if (!string.IsNullOrEmpty(blast)) {
 				txt_backupId.Text = blast;
@@ -1595,6 +1597,9 @@ namespace Mahou {
 			chk_SilentUpdate.Enabled = chk_StartupUpdatesCheck.Checked;
 			lnk_OpenHistory.Enabled = lbl_BackSpaceType.Enabled = cbb_BackSpaceType.Enabled = chk_WriteInputHistory.Checked;
 			lnk_OpenLogs.Enabled = chk_Logging.Checked;
+			// Sync tab
+			chk_andPROXY.Enabled = chk_Mini.Checked;
+			chk_andPROXY2.Enabled = chk_rMini.Checked;
 			// Layouts tab
 			lbl_SetsCount.Enabled = pan_KeySets.Enabled = btn_AddSet.Enabled = btn_SubSet.Enabled = 
 				lbl_KeysType.Enabled = cbb_SpecKeysType.Enabled = chk_SpecificLS.Checked;
@@ -3882,8 +3887,7 @@ DEL ""ExtractASD.cmd""";
 				}
 				debuginfo += "\r\n</details>";
 				debuginfo += "<details><summary>Mahou.ini</summary>\r\n\r\n```ini\r\n" + 
-					Regex.Match(File.ReadAllText(Path.Combine(nPath, "Mahou.ini")), @"(.*?)\[Proxy.+", RegexOptions.Singleline).Groups[1].Value +
-					"```";
+					MMain.MyConfs.GetRawWithoutGroup("[Proxy]");
 				debuginfo += "\r\n</details>";
 				if (File.Exists(Path.Combine(nPath, "snippets.txt")))
 				    debuginfo += "\r\n" + "<details><summary>Snippets</summary>\r\n\r\n```\r\n" + File.ReadAllText(Path.Combine(nPath, "snippets.txt")) + "\r\n```";
@@ -4358,7 +4362,7 @@ DEL ""ExtractASD.cmd""";
 		}
 		#endregion
 		#region Sync
-		string[] ReadToBackup(string id, string name, bool chk) {
+		string[] ReadToBackup(string id, string name, bool chk, bool proxyg = true) {
 			var r = "";
 			var stat = "";
 			var f = Path.Combine(nPath, name);
@@ -4372,7 +4376,10 @@ DEL ""ExtractASD.cmd""";
 					stat += name + MMain.Lang[Languages.Element.TooBig];
 				try {
 					r += "#------>"+id+Environment.NewLine;
-					r += File.ReadAllText(f);
+					if (f.Contains("Mahou.ini") && !proxyg)
+						r += MMain.MyConfs.GetRawWithoutGroup("[Proxy]");
+					else 
+						r += File.ReadAllText(f);
 					r += Environment.NewLine+"#------>"+id+Environment.NewLine;
 				} catch (Exception e) {
 					stat += name  + ": " + MMain.Lang[Languages.Element.CannotBe].ToLower() + " " + MMain.Lang[Languages.Element.Readen].ToLower() + e.Message;
@@ -4380,7 +4387,7 @@ DEL ""ExtractASD.cmd""";
 			}
 			return new []{r, stat};
 		}
-		string WriteRestoreFiles(string raw, bool mini, bool stxt, bool htxt, bool ttxt) {
+		string WriteRestoreFiles(string raw, bool mini, bool stxt, bool htxt, bool ttxt, bool proxyg = true) {
 			var stat = "";
 			var t = raw.Replace("\r", "");
 			var ll = t.Split('\n');
@@ -4432,7 +4439,10 @@ DEL ""ExtractASD.cmd""";
 					if (d.ContainsKey(ty)) {
 						try {
 							if (ty == "ini") {
-								MMain.MyConfs._INI.Raw = d[ty];
+								if (!proxyg) 
+									MMain.MyConfs._INI.Raw = MMain.MyConfs.GetRawWithoutGroup("[Proxy]", d[ty]);
+								else
+									MMain.MyConfs._INI.Raw = d[ty];
 							}
 							var f = Path.Combine(nPath, SYNC_NAMES[i]);
 							Debug.WriteLine("Writing: " +f);
@@ -4455,7 +4465,7 @@ DEL ""ExtractASD.cmd""";
 			var bb = new [] { chk_Mini.Checked, chk_Stxt.Checked, chk_Htxt.Checked, chk_Ttxt.Checked };
 			var stat = "OK";
 			for (int i = 0; i!= SYNC_NAMES.Length; i++) {
-				var r = ReadToBackup(SYNC_TYPES[i], SYNC_NAMES[i], bb[i]);
+				var r = ReadToBackup(SYNC_TYPES[i], SYNC_NAMES[i], bb[i], chk_andPROXY.Checked);
 				rawtext += r[0];
 				stat += r[1] != "" ? (Environment.NewLine + r[1]) : "";
 			}
@@ -4527,12 +4537,17 @@ DEL ""ExtractASD.cmd""";
 			txt_restoreStatus.Text = stat;
 			txt_restoreStatus.Visible = true;
 		}
-		void SetBools(string bools, char sep, out bool mini, out bool stxt, out bool htxt, out bool ttxt) {
+		void SetBools(string bools, char sep, out bool mini, out bool stxt, out bool htxt, out bool ttxt, out bool ptxt) {
 			var s = bools.Split(sep);
 			mini = boo(s[0]);
 			stxt = boo(s[1]);
 			htxt = boo(s[2]);
 			ttxt = boo(s[3]);
+			try {
+				ptxt = boo(s[4]);
+			} catch {
+				ptxt = false;
+			}
 		}
 		bool boo(string s) {
 			int i = 0;

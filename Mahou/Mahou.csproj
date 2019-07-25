@@ -170,6 +170,9 @@
       <DependentUpon>TranslatePanel.cs</DependentUpon>
     </Compile>
     <Compile Include="____commit.cs" />
+    <EmbeddedResource Include="MahouUI.resx">
+      <DependentUpon>MahouUI.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
