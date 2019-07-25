@@ -3378,31 +3378,37 @@ DEL ""ExtractASD.cmd""";
 		/// </summary>
 		void GetUpdateInfo() {
 			var Info = new string[5] {"","","","",""} ; // Update info
-			var url = "https://github.com/BladeMight/Mahou/releases/latest";
+			var GH = "https://github.com";
+			var url = GH+"/BladeMight/Mahou/releases/latest";
 			var beta = MMain.MyConfs.Read("Updates", "Channel") != "Stable";
 			if (beta) 
-				url = "https://github.com/BladeMight/Mahou/releases/tag/latest-commit";
+				url = GH+"/BladeMight/Mahou/releases/tag/latest-commit";
 			var data = getResponce(url);
 			if (!String.IsNullOrEmpty(data)) {
 				// Below are REGEX HTML PARSES!!
 				// I'm not kidding...
 				// They really works :)
 				var Title = Regex.Match(data,
-					            "release-header.+\n.+\n.+\n.+?\\>(.+)\\<").Groups[1].Value;
+					            "a href=\"/BladeMight/Mahou/releases/tag/.+?>(.+?)<").Groups[1].Value;
 				var Description = Regex.Replace(Regex.Match(data,
-                                       //These looks unsafe, but really they works!
+                                       //These looks unsafe, but hey, they really work!
 					                  "<div class=\"markdown-body\">\n\\s+(.+?)[\\n\\s]+</div>",
 					                  RegexOptions.IgnoreCase | RegexOptions.Singleline).Groups[1].Value, "<[^>]*>", "");
-				var Version = Regex.Match(data, "<span class=\"css-truncate-target\".+?>(.*)</span>").Groups[1].Value;
-				var Link = "https://github.com" + Regex.Match(data,
-					           "<li class=\"d-block py-.+\">\n\\s+<a href=\"(.+?)\"").Groups[1].Value;
+				var Version = Regex.Match(data, "a href=\"/BladeMight/Mahou/tree/(v.*?)\"").Groups[1].Value;
+				var Link = ""; GH + Regex.Match(data,
+					           "<a href=\"(/BladeMight/Mahou/releases/download.+?)\"").Groups[1].Value;
+				if (!Link.Contains("Mahou")) {
+		           	if (Version.Contains("v")) {
+				    	Link = GH+"/BladeMight/Mahou/releases/download/"+Version+"/Mahou-"+Version+".zip";
+				    }
+				}
 				var Commit = "";
 				if (beta) {
 					Commit = (Regex.Match(Title, @"\(\[?(.+?)(\]|\s)").Groups[1].Value);
-					Link = "https://github.com/BladeMight/Mahou/releases/download/latest-commit/Release_x86_x64.zip";
+					Link = GH+"/BladeMight/Mahou/releases/download/latest-commit/Release_x86_x64.zip";
 				}
-//					Debug.WriteLine(Title);
-//					Debug.WriteLine(Description);
+//				Debug.WriteLine(Title);
+//				Debug.WriteLine(Description);
 				Info[0] = Title;
 				Info[1] = Regex.Replace(Description, "\n", "\r\n"); // Regex needed to properly display new lines.
 				Info[2] = Version;
