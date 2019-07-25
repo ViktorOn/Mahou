@@ -4,9 +4,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Mahou {
-	/// <summary>
-	/// Language panel with display of flag, name, id of current layout.
-	/// </summary>
+	/// <summary> Language panel with display of flag, name, id of current layout. </summary>
 	public partial class LangPanel : Form {
 		public LangPanel() {
 			InitializeComponent();
