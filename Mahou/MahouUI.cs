@@ -3395,7 +3395,7 @@ DEL ""ExtractASD.cmd""";
 					                  "<div class=\"markdown-body\">\n\\s+(.+?)[\\n\\s]+</div>",
 					                  RegexOptions.IgnoreCase | RegexOptions.Singleline).Groups[1].Value, "<[^>]*>", "");
 				var Version = Regex.Match(data, "a href=\"/BladeMight/Mahou/tree/(v.*?)\"").Groups[1].Value;
-				var Link = ""; GH + Regex.Match(data,
+				var Link = GH + Regex.Match(data,
 					           "<a href=\"(/BladeMight/Mahou/releases/download.+?)\"").Groups[1].Value;
 				if (!Link.Contains("Mahou")) {
 		           	if (Version.Contains("v")) {
