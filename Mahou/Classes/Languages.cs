@@ -449,7 +449,7 @@ public class Languages
 		{ Element.Translation, "Translation" }, 
 		{ Element.TextFont, "Text Font:" }, 
 		{ Element.TitleFont, "Title Font:" }, 
-		{ Element.Direct, "Direct(faster/can: 429 Moved)" }, 
+		{ Element.Direct, "Direct(faster/can: 429 Too Many)" }, 
 		{ Element.WebScript, "Web Script(slower/stable)" }, 
 		{ Element.Method, "Method" }, 
 		#endregion
@@ -758,7 +758,7 @@ public class Languages
 		{ Element.Translation, "Перевод" }, 
 		{ Element.TextFont, "Шрифт текста:" }, 
 		{ Element.TitleFont, "Шрифт заголовка:" }, 
-		{ Element.Direct, "Прямое(быстрее/может:429 Moved)" }, 
+		{ Element.Direct, "Прямое(быстрее/может:429 Too Many)" }, 
 		{ Element.WebScript, "Web Скрипт(медленне/без ошибок)" }, 
 		{ Element.Method, "Метод" }, 
 		#endregion
