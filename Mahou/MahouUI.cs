@@ -941,6 +941,7 @@ namespace Mahou {
 				#endregion
 				#region Translate Panel
 				MMain.MyConfs.Write("TranslatePanel", "Enabled", chk_TrEnable.Checked.ToString());
+				MMain.MyConfs.Write("TranslatePanel", "UseGS", TranslatePanel.useGS.ToString());
 				MMain.MyConfs.Write("TranslatePanel", "Transparency", nud_TrTransparency.Value.ToString());
 				MMain.MyConfs.Write("TranslatePanel", "OnDoubleClick", chk_TrOnDoubleClick.Checked.ToString());
 				MMain.MyConfs.Write("TranslatePanel", "FG", ColorTranslator.ToHtml(btn_TrFG.BackColor));
@@ -1222,6 +1223,7 @@ namespace Mahou {
 			#endregion
 			#region Translate Panel
 			TrEnabled = chk_TrEnable.Checked = MMain.MyConfs.ReadBool("TranslatePanel", "Enabled");
+			TranslatePanel.useGS = MMain.MyConfs.ReadBool("TranslatePanel", "UseGS");
 			TrOnDoubleClick = chk_TrOnDoubleClick.Checked = MMain.MyConfs.ReadBool("TranslatePanel", "OnDoubleClick");
 			nud_TrTransparency.Value = TrTransparency = MMain.MyConfs.ReadInt("TranslatePanel", "Transparency");
 			btn_TrFG.BackColor = TrFore = GetColor(MMain.MyConfs.Read("TranslatePanel", "FG"));
@@ -1512,6 +1514,13 @@ namespace Mahou {
 			cbb_TrayDislpayType.Items.Add(MMain.Lang[Languages.Element.JustIcon]);
 			cbb_TrayDislpayType.Items.Add(MMain.Lang[Languages.Element.ContryFlags]);
 			cbb_TrayDislpayType.Items.Add(MMain.Lang[Languages.Element.TextLayout]);
+			cbb_TrMethod.Items.Clear();
+			cbb_TrMethod.Items.Add(MMain.Lang[Languages.Element.Direct]);
+			cbb_TrMethod.Items.Add(MMain.Lang[Languages.Element.WebScript]);
+			if (TranslatePanel.useGS)
+				cbb_TrMethod.SelectedIndex = 1;
+			else
+				cbb_TrMethod.SelectedIndex = 0;
 			if (TrayFlags)
 				cbb_TrayDislpayType.SelectedIndex = 1;
 			else if (TrayText)
@@ -3686,6 +3695,7 @@ DEL ""ExtractASD.cmd""";
 			lbl_LPFont.Text = MMain.Lang[Languages.Element.LDFont] + ":";
 			btn_LPFont.Text = MMain.Lang[Languages.Element.LDFont];
 			chk_LPUpperArrow.Text = MMain.Lang[Languages.Element.DisplayUpperArrow];
+			lbl_TrMethod.Text = MMain.Lang[Languages.Element.Method] + ":";
 			#endregion
 			#region TranslatePanel
 			chk_TrEnable.Text = MMain.Lang[Languages.Element.EnableTranslatePanel];
@@ -4291,6 +4301,9 @@ DEL ""ExtractASD.cmd""";
 		void Cbb_SpecTypeSelectedIndexChanged(object sender, EventArgs e) {
 			var cb = sender as ComboBox;
 			SpecKeySetsValues[cb.Name] = cb.SelectedItem.ToString();
+		}
+		void Cbb_TrMethodSelectedIndexChanged(object sender, EventArgs e) {
+			TranslatePanel.useGS = (cbb_TrMethod.SelectedIndex == 1) ? true : false;
 		}
 		void Cbb_FrToSelectedIndexChanged(object sender, EventArgs e) {
 			var cb = sender as ComboBox;

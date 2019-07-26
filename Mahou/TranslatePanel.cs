@@ -18,10 +18,11 @@ namespace Mahou {
 		public static List<GTResp> GTRs = new List<GTResp>();
 //		public static List<string> SPFs = new List<string>();
 //		public static List<string> SPUs = new List<string>();
-		public static bool running, multiline;
+		public static bool running, multiline, useGS = true;
 		public static readonly WebClient client = new WebClient();
 		public static readonly string GTSpeechLink = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob"; // tl & q
 		public static readonly string GTLink = "https://translate.googleapis.com/translate_a/single?client=gtx&dt=t"; // q, sl, & tl
+		public static readonly string GSLink = "https://script.google.com/macros/s/AKfycbz0CSalG4GlyRKRIfLFoC2N4GMAet2PNVaxQBEnRX_EUx2nlvsu/exec"; // [q, sl, tl] or multi 
 		public static object _LOCK = new object();
 		public TranslatePanel() {
 			InitializeComponent();
@@ -55,6 +56,46 @@ namespace Mahou {
 		  	SetOptimalWidth();
 		  	Prepare();
 		}
+		#region GScript Translation method
+		public static GTResp ParseGTResp(string raw_GTresp) {
+			var lines = raw_GTresp.Split('\n');
+			var gtresp = new GTResp();
+			foreach (var l in lines) {
+				if (l.Contains("_!_TR_TXT:"))
+					gtresp.translation = l.Replace("_!_TR_TXT:", "");
+				if (l.Contains("_!_TL_TXT:"))
+					gtresp.targ_lang = l.Replace("_!_TL_TXT:", "");
+				if (l.Contains("_!_SQ_TXT:"))
+					gtresp.source = l.Replace("_!_SQ_TXT:", "");
+				if (l.Contains("_!_SL_DET:"))
+					gtresp.src_lang = l.Replace("_!_SL_DET:", "");
+				if (l.Contains("_!_SP_URL:"))
+					gtresp.speech_url = l.Replace("_!_SP_URL:", "");
+			}
+			return gtresp;
+		}
+		public static string getMultiParams(string[] tls, string[] qs, string[] sls = null) {
+			var multi = "[";
+			for (int i = 0; i != qs.Length; i++) {
+				multi += "{\"q\":\""+HttpUtility.UrlEncode(HttpUtility.UrlPathEncode(
+					qs[i].Replace(" ", "%20")
+				))+"\"";
+				multi += ", \"sl\":\"";
+				try {
+					multi += sls[i];
+				} catch {
+					multi += "auto";
+ 				}
+				multi += "\"";
+				multi += ", \"tl\":\"" + tls[i] + "\"";
+				multi += "}";
+				if (i != qs.Length-1)
+					multi += ",";
+			}
+			multi += "]";
+			return multi;
+ 		}
+		#endregion
 		public static List<GTResp> GetGTResponceAll(string[] tls, string[] qs, string[] sls) {
 			var gtrlist = new List<GTResp>();
 			try {
@@ -108,15 +149,33 @@ namespace Mahou {
 			if (tls.Length == 0)
 				txt_Source.Text = str;
 			Debug.WriteLine("UPDATING TRANSLATION::");
-			var gtrs = GetGTResponceAll(tls, qs, sls);
-			if (gtrs.Count > 0) {
-				TITLE.Text = MMain.Lang[Languages.Element.Translation] + " <"+gtrs[0].src_lang+">";
-				TITLE.Font = MahouUI.TrTitle;
-				foreach (var gtr in gtrs) {
-	//				var gtr = TranslatePanel.ParseGTResp(raw_gtr);
+			if (useGS) {
+				Debug.WriteLine("GS MODE!");
+				var multi = HttpUtility.UrlEncode(TranslatePanel.getMultiParams(tls, qs, sls));
+	//			var multi_resp = getRespContent(TranslatePanel.GTLink+"?multi="+multi);
+				var multi_resp = "";
+				try { multi_resp = Encoding.UTF8.GetString(Encoding.Default.GetBytes(client.DownloadString(TranslatePanel.GSLink+"?multi="+multi)));
+					} catch(Exception e) { GTRespError(e.Message); }
+				Debug.WriteLine(multi);
+				Debug.WriteLine(multi_resp);
+				var gtrs = multi_resp.Split(new [] {"_!_!_!_SEPARATOR_!_!_!_"}, StringSplitOptions.None);
+				foreach (var raw_gtr in gtrs) {
+					var gtr = TranslatePanel.ParseGTResp(raw_gtr);
 					if (string.IsNullOrEmpty(gtr.translation)) continue;
 	//				Debug.WriteLine("Added " + gtr.targ_lang + ", " +gtr.source);
 					AddTranslation(gtr);
+				}
+			} else {
+				var gtrs = GetGTResponceAll(tls, qs, sls);
+				if (gtrs.Count > 0) {
+					TITLE.Text = MMain.Lang[Languages.Element.Translation] + " <"+gtrs[0].src_lang+">";
+					TITLE.Font = MahouUI.TrTitle;
+					foreach (var gtr in gtrs) {
+		//				var gtr = TranslatePanel.ParseGTResp(raw_gtr);
+						if (string.IsNullOrEmpty(gtr.translation)) continue;
+		//				Debug.WriteLine("Added " + gtr.targ_lang + ", " +gtr.source);
+						AddTranslation(gtr);
+					}
 				}
 			}
 			Location = pos;

@@ -161,6 +161,9 @@ public class Languages
 		Translation,
 		TextFont,
 		TitleFont,
+		Direct,
+		WebScript,
+		Method,
 		#endregion
 		#region Updates
 		CheckForUpdates,
@@ -446,6 +449,9 @@ public class Languages
 		{ Element.Translation, "Translation" }, 
 		{ Element.TextFont, "Text Font:" }, 
 		{ Element.TitleFont, "Title Font:" }, 
+		{ Element.Direct, "Direct(faster/can: 429 Moved)" }, 
+		{ Element.WebScript, "Web Script(slower/stable)" }, 
+		{ Element.Method, "Method" }, 
 		#endregion
 		#region Updates
 		{ Element.CheckForUpdates, "Check for updates:" }, 
@@ -752,6 +758,9 @@ public class Languages
 		{ Element.Translation, "Перевод" }, 
 		{ Element.TextFont, "Шрифт текста:" }, 
 		{ Element.TitleFont, "Шрифт заголовка:" }, 
+		{ Element.Direct, "Прямое(быстрее/может:429 Moved)" }, 
+		{ Element.WebScript, "Web Скрипт(медленне/без ошибок)" }, 
+		{ Element.Method, "Метод" }, 
 		#endregion
 		#region Updates
 		{ Element.CheckForUpdates, "Проверить обновления:" }, 

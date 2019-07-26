@@ -276,6 +276,8 @@ namespace Mahou
 		private System.Windows.Forms.PictureBox pctBkpCopy;
 		private System.Windows.Forms.CheckBox chk_andPROXY2;
 		private System.Windows.Forms.CheckBox chk_andPROXY;
+		private System.Windows.Forms.ComboBox cbb_TrMethod;
+		private System.Windows.Forms.Label lbl_TrMethod;
 		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
@@ -494,6 +496,8 @@ namespace Mahou
 			this.lbl_LPRefreshRate = new System.Windows.Forms.Label();
 			this.chk_DisplayLangPanel = new System.Windows.Forms.CheckBox();
 			this.tab_translator = new System.Windows.Forms.TabPage();
+			this.lbl_TrMethod = new System.Windows.Forms.Label();
+			this.cbb_TrMethod = new System.Windows.Forms.ComboBox();
 			this.chk_TrEnable = new System.Windows.Forms.CheckBox();
 			this.grb_TrConfs = new System.Windows.Forms.GroupBox();
 			this.btn_TrTitleFont = new System.Windows.Forms.Button();
@@ -2933,6 +2937,8 @@ namespace Mahou
 			// 
 			// tab_translator
 			// 
+			this.tab_translator.Controls.Add(this.lbl_TrMethod);
+			this.tab_translator.Controls.Add(this.cbb_TrMethod);
 			this.tab_translator.Controls.Add(this.chk_TrEnable);
 			this.tab_translator.Controls.Add(this.grb_TrConfs);
 			this.tab_translator.Location = new System.Drawing.Point(4, 44);
@@ -2943,10 +2949,31 @@ namespace Mahou
 			this.tab_translator.Text = "Translator";
 			this.tab_translator.UseVisualStyleBackColor = true;
 			// 
+			// lbl_TrMethod
+			// 
+			this.lbl_TrMethod.Location = new System.Drawing.Point(176, 3);
+			this.lbl_TrMethod.Name = "lbl_TrMethod";
+			this.lbl_TrMethod.Size = new System.Drawing.Size(108, 22);
+			this.lbl_TrMethod.TabIndex = 54;
+			this.lbl_TrMethod.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// cbb_TrMethod
+			// 
+			this.cbb_TrMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cbb_TrMethod.FormattingEnabled = true;
+			this.cbb_TrMethod.Items.AddRange(new object[] {
+			"Direct(can cause 419 Moved)",
+			"Web Script"});
+			this.cbb_TrMethod.Location = new System.Drawing.Point(290, 3);
+			this.cbb_TrMethod.Name = "cbb_TrMethod";
+			this.cbb_TrMethod.Size = new System.Drawing.Size(263, 23);
+			this.cbb_TrMethod.TabIndex = 53;
+			this.cbb_TrMethod.SelectedIndexChanged += new System.EventHandler(this.Cbb_TrMethodSelectedIndexChanged);
+			// 
 			// chk_TrEnable
 			// 
 			this.chk_TrEnable.AutoSize = true;
-			this.chk_TrEnable.Location = new System.Drawing.Point(8, 0);
+			this.chk_TrEnable.Location = new System.Drawing.Point(8, 3);
 			this.chk_TrEnable.Name = "chk_TrEnable";
 			this.chk_TrEnable.Size = new System.Drawing.Size(117, 19);
 			this.chk_TrEnable.TabIndex = 1;
@@ -2975,9 +3002,9 @@ namespace Mahou
 			this.grb_TrConfs.Controls.Add(this.btn_TrFG);
 			this.grb_TrConfs.Controls.Add(this.nud_TrTransparency);
 			this.grb_TrConfs.Controls.Add(this.lbl_TrTransparency);
-			this.grb_TrConfs.Location = new System.Drawing.Point(6, 17);
+			this.grb_TrConfs.Location = new System.Drawing.Point(6, 20);
 			this.grb_TrConfs.Name = "grb_TrConfs";
-			this.grb_TrConfs.Size = new System.Drawing.Size(547, 245);
+			this.grb_TrConfs.Size = new System.Drawing.Size(547, 242);
 			this.grb_TrConfs.TabIndex = 2;
 			this.grb_TrConfs.TabStop = false;
 			// 
@@ -3035,7 +3062,7 @@ namespace Mahou
 			this.pan_TrSets.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.pan_TrSets.Location = new System.Drawing.Point(28, 117);
 			this.pan_TrSets.Name = "pan_TrSets";
-			this.pan_TrSets.Size = new System.Drawing.Size(515, 124);
+			this.pan_TrSets.Size = new System.Drawing.Size(515, 122);
 			this.pan_TrSets.TabIndex = 42;
 			// 
 			// lbl_TrLanguages
