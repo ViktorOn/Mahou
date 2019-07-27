@@ -1764,6 +1764,9 @@ namespace Mahou {
 							KInputs.MakeInput(new []{
 							                  	KInputs.AddKey(Keys.LControlKey, true),
 							                  	KInputs.AddKey(Keys.V, true),
+							                  });
+							Thread.Sleep(30);
+							KInputs.MakeInput(new []{
 							                  	KInputs.AddKey(Keys.LControlKey, false),
 							                  	KInputs.AddKey(Keys.V, false)
 							                  });
