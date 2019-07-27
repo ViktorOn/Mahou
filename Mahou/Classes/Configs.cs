@@ -368,6 +368,7 @@ namespace Mahou {
 			#region Excluded
             CheckBool("Timings", "ChangeLayoutInExcluded", "true");
             CheckBool("Timings", "ExcludeCaretLD", "false");
+            CheckBool("Timings", "UsePasteInCS", "false");
 			CheckString("Timings", "ExcludedPrograms", "LA.exe SomeProg.exe");
 			#endregion
 			CheckInt("Timings", "SelectedTextGetMoreTriesCount", "5");

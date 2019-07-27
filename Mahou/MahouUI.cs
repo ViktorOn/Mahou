@@ -30,7 +30,7 @@ namespace Mahou {
 						   ShiftInHotkey, AltInHotkey, CtrlInHotkey, WinInHotkey, AutoStartAsAdmin, UseJKL, AutoSwitchEnabled, ReadOnlyNA,
 						   SoundEnabled, UseCustomSound, SoundOnAutoSwitch, SoundOnConvLast, SoundOnSnippets, SoundOnLayoutSwitch,
 						   UseCustomSound2, SoundOnAutoSwitch2, SoundOnConvLast2, SoundOnSnippets2, SoundOnLayoutSwitch2, TrOnDoubleClick,
-						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory, ExcludeCaretLD;
+						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory, ExcludeCaretLD, UsePaste = true;
 		static string[] UpdInfo;
 		static bool updating, was, isold = true, checking, snip_checking, as_checking, check_ASD_size = true;
 		public static bool ENABLED = true;
@@ -894,6 +894,7 @@ namespace Mahou {
 					MMain.MyConfs.Write("Timings", "LangTooltipForMouseSkipMessages", nud_LangTTMouseRefreshRate.Value.ToString());
 				else
 					MMain.MyConfs.Write("Timings", "LangTooltipForMouseRefreshRate", nud_LangTTMouseRefreshRate.Value.ToString());
+				MMain.MyConfs.Write("Timings", "UsePasteInCS", chk_CSUsePaste.Checked.ToString());
 				MMain.MyConfs.Write("Timings", "LangTooltipForCaretRefreshRate", nud_LangTTCaretRefreshRate.Value.ToString());
 				MMain.MyConfs.Write("Timings", "DoubleHotkey2ndPressWait", nud_DoubleHK2ndPressWaitTime.Value.ToString());
 				MMain.MyConfs.Write("Timings", "FlagsInTrayRefreshRate", nud_TrayFlagRefreshRate.Value.ToString());
@@ -1205,6 +1206,7 @@ namespace Mahou {
 			UseDelayAfterBackspaces = chk_UseDelayAfterBackspaces.Checked = MMain.MyConfs.ReadBool("Timings", "UseDelayAfterBackspaces");
 			#region Excluded
 			ExcludeCaretLD = MMain.MyConfs.ReadBool("Timings", "ExcludeCaretLD");
+			UsePaste = chk_CSUsePaste.Checked = MMain.MyConfs.ReadBool("Timings", "UsePasteInCS");
 			ExcludedPrograms = txt_ExcludedPrograms.Text = MMain.MyConfs.Read("Timings", "ExcludedPrograms").Replace("^cr^lf", Environment.NewLine);
 			KMHook.EXCLUDED_HWNDs.Clear();
 			KMHook.NOT_EXCLUDED_HWNDs.Clear();
@@ -3639,6 +3641,7 @@ DEL ""ExtractASD.cmd""";
 			chk_LDMessages.Text = MMain.Lang[Languages.Element.LDUseWinMessages];
 			#endregion
 			#region Timings
+			chk_CSUsePaste.Text = MMain.Lang[Languages.Element.UsePasteInCS];
 			lbl_LangTTMouseRefreshRate.Text = MMain.Lang[Languages.Element.LDForMouseRefreshRate];
 			lbl_LangTTCaretRefreshRate.Text = MMain.Lang[Languages.Element.LDForCaretRefreshRate];
 			lbl_DoubleHK2ndPressWaitTime.Text = MMain.Lang[Languages.Element.DoubleHKDelay];

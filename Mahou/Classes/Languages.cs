@@ -103,6 +103,7 @@ public class Languages
 		MoreTriesToGetSelectedText,
 		LD_MouseSkipMessages,
 		UseDelayAfterBackspaces,
+		UsePasteInCS,
 		#endregion
 		#region Excluded
 		ExcludedPrograms,
@@ -392,6 +393,7 @@ public class Languages
 		{ Element.MoreTriesToGetSelectedText, "Use more tries to get selected text:" }, 
 		{ Element.LD_MouseSkipMessages, "Mouse movement Messages to skip before updating language tooltips:" },
 		{ Element.UseDelayAfterBackspaces, "Use delay after backspaces in convert last word(ms):" },
+		{ Element.UsePasteInCS, "Use Paste in Selection Conversions." },
 		#endregion
 		#region Excluded
 		{ Element.ExcludedPrograms, "Excluded programs:" }, 
@@ -702,6 +704,7 @@ public class Languages
 		{ Element.MoreTriesToGetSelectedText, "Использовать больше попыток взятия текста:" }, 
 		{ Element.LD_MouseSkipMessages, "Сообщений движения мыши пропускается перед обновлением подсказок:" },
 		{ Element.UseDelayAfterBackspaces, "Использовать задержку после удаления слова в конвертации слов(мс):" },
+		{ Element.UsePasteInCS, "Использовать вставку для конвертаций выделенного." },
 		#endregion
 		#region Excluded
 		{ Element.ExcludedPrograms, "Программы исключения:" }, 

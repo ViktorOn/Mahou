@@ -1758,9 +1758,20 @@ namespace Mahou {
 							case ConvT.Lower:
 								output = ToSTULRSelection(ClipStr,false,false,true); break;
 						}
-						Logging.Log("Inputting ["+output+"] as "+tn);
-						KInputs.MakeInput(KInputs.AddString(output));
-						ReSelect(output.Length);
+						if (MahouUI.UsePaste) {
+							Logging.Log("Pasting ["+output+"] as "+ tn);
+							RestoreClipBoard(output);
+							KInputs.MakeInput(new []{
+							                  	KInputs.AddKey(Keys.LControlKey, true),
+							                  	KInputs.AddKey(Keys.V, true),
+							                  	KInputs.AddKey(Keys.LControlKey, false),
+							                  	KInputs.AddKey(Keys.V, false)
+							                  });
+						} else {
+							Logging.Log("Inputting ["+output+"] as "+tn);
+							KInputs.MakeInput(KInputs.AddString(output));
+							ReSelect(output.Length);
+						}
 					}
 					NativeClipboard.Clear();
 					RestoreClipBoard();

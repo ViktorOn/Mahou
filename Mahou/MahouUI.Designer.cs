@@ -278,6 +278,7 @@ namespace Mahou
 		private System.Windows.Forms.CheckBox chk_andPROXY;
 		private System.Windows.Forms.ComboBox cbb_TrMethod;
 		private System.Windows.Forms.Label lbl_TrMethod;
+		private System.Windows.Forms.CheckBox chk_CSUsePaste;
 		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
@@ -570,6 +571,7 @@ namespace Mahou
 			this.btn_Cancel = new System.Windows.Forms.Button();
 			this.btn_Apply = new System.Windows.Forms.Button();
 			this.HelpMeUnderstand = new System.Windows.Forms.ToolTip(this.components);
+			this.chk_CSUsePaste = new System.Windows.Forms.CheckBox();
 			this.tabs.SuspendLayout();
 			this.tab_functions.SuspendLayout();
 			this.tab_layouts.SuspendLayout();
@@ -1927,6 +1929,7 @@ namespace Mahou
 			// 
 			// tab_timings
 			// 
+			this.tab_timings.Controls.Add(this.chk_CSUsePaste);
 			this.tab_timings.Controls.Add(this.nud_DelayAfterBackspaces);
 			this.tab_timings.Controls.Add(this.chk_UseDelayAfterBackspaces);
 			this.tab_timings.Controls.Add(this.nud_SelectedTextGetTriesCount);
@@ -3763,6 +3766,16 @@ namespace Mahou
 			this.HelpMeUnderstand.ShowAlways = true;
 			this.HelpMeUnderstand.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			this.HelpMeUnderstand.Popup += new System.Windows.Forms.PopupEventHandler(this.HelpMeUnderstandPopup);
+			// 
+			// chk_CSUsePaste
+			// 
+			this.chk_CSUsePaste.AutoSize = true;
+			this.chk_CSUsePaste.Location = new System.Drawing.Point(8, 240);
+			this.chk_CSUsePaste.Name = "chk_CSUsePaste";
+			this.chk_CSUsePaste.Size = new System.Drawing.Size(211, 19);
+			this.chk_CSUsePaste.TabIndex = 20;
+			this.chk_CSUsePaste.Text = "Use Paste in Selection Conversions.";
+			this.chk_CSUsePaste.UseVisualStyleBackColor = true;
 			// 
 			// MahouUI
 			// 
