@@ -168,9 +168,9 @@ public class Auray {
 		return res;
 	}
 	SIZE __SIZE(string RAW) {
-		int mx = 0, lvl = -1, tvls = 0;
+		int mx = 0, lvl = 0, tvls = 0;
 		bool enq_s = false, enq_d = false;
-		for (int t = 0; t != RAW.Length-1; t++) {
+		for (int t = 0; t != RAW.Length; t++) {
 			var enq = enq_d || enq_s;
 			char v = RAW[t], l = '\0';
 			if (t-1 >= 0)

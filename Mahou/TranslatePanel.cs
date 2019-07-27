@@ -18,10 +18,11 @@ namespace Mahou {
 		public static List<GTResp> GTRs = new List<GTResp>();
 //		public static List<string> SPFs = new List<string>();
 //		public static List<string> SPUs = new List<string>();
-		public static bool running, multiline, useGS = true;
+		public static bool running, multiline, useGS = true, useNA = false;
 		public static readonly WebClient client = new WebClient();
 		public static readonly string GTSpeechLink = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob"; // tl & q
 		public static readonly string GTLink = "https://translate.googleapis.com/translate_a/single?client=gtx&dt=t"; // q, sl, & tl
+		public static readonly string GTNALink = "https://translate.google.com/translate_a/single?client=at&dt=t&dt=ld&dt=qca&dt=rm&dt=bd&dj=1&hl=en-US&ie=UTF-8&oe=UTF-8&inputm=2&otf=2&iid=1dd3b944-fa62-4b55-b330-74909a99969e"; // q, sl, & tl
 		public static readonly string GSLink = "https://script.google.com/macros/s/AKfycbz0CSalG4GlyRKRIfLFoC2N4GMAet2PNVaxQBEnRX_EUx2nlvsu/exec"; // [q, sl, tl] or multi 
 		public static object _LOCK = new object();
 		public TranslatePanel() {
@@ -100,26 +101,41 @@ namespace Mahou {
 			var gtrlist = new List<GTResp>();
 			try {
 				for (int i=0; i!= tls.Length; i++) {
+					var gl = GTLink;
+					if (useNA) gl = GTNALink;
 					// corrects GTLink responce encoding.
-					client.Headers["User-Agent"] = "User-Agent: Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:10.0) Gecko/20180501 Firefox/60.0";
-					var url = TranslatePanel.GTLink+"&q="+HttpUtility.UrlPathEncode(qs[i].Replace(" ", "%20"))+
+					client.Headers["User-Agent"] = "AndroidTranslate/5.3.0.RC02.130475354-53000263 5.1 phone TRANSLATE_OPM5_TEST_1";
+					var url = gl+"&q="+HttpUtility.UrlPathEncode(
+						qs[i].Replace(" ", "%20").Replace("\r", "%0D").Replace("\n", "%0A"))+
 						"&sl="+sls[i]+"&tl="+tls[i];
 					Debug.WriteLine("url: " + url);
 					var raw_array = Encoding.UTF8.GetString(client.DownloadData(url));
 					Debug.WriteLine("RAW:" +raw_array);
-					var aur = new Auray(raw_array);
+					var det_l = "";
 					var gtresp = new GTResp();
 					string src = "", tr = "";
-					var aur_dim_2 = new Auray(aur[0]);
-					for (int m=0; m != aur_dim_2.len+1; m++) { // combine all responce from all dimensions
-						var s = aur_dim_2[m,1];
-						src += s.Substring(1, s.Length-2);
-						s = aur_dim_2[m,0];
-						tr += s.Substring(1, s.Length-2);
+					if (!useNA) {
+						var aur = new Auri(raw_array);
+						var aur_dim_2 = new Auri(aur["^0"]);
+						var len = new Auray(aur.raw).len;
+						for (int m=0; m != len+1; m++) { // combine all responce from all dimensions
+							var s = aur_dim_2["^"+m,"^"+1];
+							src += s.Substring(1, s.Length-2);
+							s = aur_dim_2["^"+m,"^"+0];
+							tr += s.Substring(1, s.Length-2);
+						}
+						det_l = aur["^2"];
+					} else {
+						Debug.WriteLine("NA MODE :)");
+						var auri = new Auri(raw_array);
+						var s = auri["sentences", "^0", "orig"];
+						src = s.Substring(1, s.Length-2);
+						s = auri["sentences", "^0", "trans"];
+						tr = s.Substring(1, s.Length-2);
+					    det_l = auri["ld_result", "srclangs", "^0"];;
 					}
 					gtresp.source = src;
 					gtresp.translation = tr;
-					var det_l = aur[2];
 					det_l = det_l.Substring(1, det_l.Length-2);
 					gtresp.speech_url = GTSpeechLink+"&q="+HttpUtility.UrlEncode(tr)+"&sl="+det_l+"&tl="+tls[i];
 //					Debug.WriteLine(gtresp.speech_url);
@@ -129,7 +145,7 @@ namespace Mahou {
 					gtresp.targ_lang = tls[i];
 					gtrlist.Add(gtresp);
 				}
-			} catch(Exception e) { MMain.mahou._TranslatePanel.GTRespError(e.Message); }
+			} catch(Exception e) { MMain.mahou._TranslatePanel.GTRespError(e.Message/*+e.StackTrace*/); }
 			return gtrlist;
 		}
 		public void ShowTranslation(string str, Point pos) {

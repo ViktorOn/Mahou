@@ -218,7 +218,8 @@ namespace Mahou {
 			CheckString("TranslatePanel", "TextFont", "Microsoft Sans Serif; 8.25pt");
 			CheckString("TranslatePanel", "TitleFont", "Segoe UI; 12pt");
 			CheckBool("TranslatePanel", "Enabled", "False");
-			CheckBool("TranslatePanel", "UseGS", "True");
+			CheckBool("TranslatePanel", "UseGS", "False");
+			CheckBool("TranslatePanel", "UseNA", "True");
 			CheckBool("TranslatePanel", "OnDoubleClick", "False");
 			CheckBool("TranslatePanel", "BorderAero", "False");
 			CheckInt("TranslatePanel", "Transparency", "90");

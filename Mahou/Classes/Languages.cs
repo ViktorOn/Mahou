@@ -163,6 +163,7 @@ public class Languages
 		TitleFont,
 		Direct,
 		WebScript,
+		DirectV2,
 		Method,
 		#endregion
 		#region Updates
@@ -451,6 +452,7 @@ public class Languages
 		{ Element.TitleFont, "Title Font:" }, 
 		{ Element.Direct, "Direct(faster/can: 429 Too Many)" }, 
 		{ Element.WebScript, "Web Script(slower/stable)" }, 
+		{ Element.DirectV2, "Direct-v2(faster/more stabe)" }, 
 		{ Element.Method, "Method" }, 
 		#endregion
 		#region Updates
@@ -760,6 +762,7 @@ public class Languages
 		{ Element.TitleFont, "Шрифт заголовка:" }, 
 		{ Element.Direct, "Прямое(быстрее/может:429 Too Many)" }, 
 		{ Element.WebScript, "Web Скрипт(медленне/без ошибок)" }, 
+		{ Element.DirectV2, "Прямое-v2(быстрее/стабильнее)" }, 
 		{ Element.Method, "Метод" }, 
 		#endregion
 		#region Updates

@@ -126,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Auray.cs" />
+    <Compile Include="Classes\Auri.cs" />
     <Compile Include="Classes\CaretPos.cs" />
     <Compile Include="Classes\Hotkey.cs" />
     <Compile Include="Classes\ICheckings.cs" />
