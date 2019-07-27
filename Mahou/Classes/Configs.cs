@@ -367,6 +367,7 @@ namespace Mahou {
 			CheckInt("Timings", "LangTooltipForMouseSkipMessages", "5");
 			#region Excluded
             CheckBool("Timings", "ChangeLayoutInExcluded", "true");
+            CheckBool("Timings", "ExcludeCaretLD", "false");
 			CheckString("Timings", "ExcludedPrograms", "LA.exe SomeProg.exe");
 			#endregion
 			CheckInt("Timings", "SelectedTextGetMoreTriesCount", "5");

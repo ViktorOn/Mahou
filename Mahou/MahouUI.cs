@@ -30,7 +30,7 @@ namespace Mahou {
 						   ShiftInHotkey, AltInHotkey, CtrlInHotkey, WinInHotkey, AutoStartAsAdmin, UseJKL, AutoSwitchEnabled, ReadOnlyNA,
 						   SoundEnabled, UseCustomSound, SoundOnAutoSwitch, SoundOnConvLast, SoundOnSnippets, SoundOnLayoutSwitch,
 						   UseCustomSound2, SoundOnAutoSwitch2, SoundOnConvLast2, SoundOnSnippets2, SoundOnLayoutSwitch2, TrOnDoubleClick,
-						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory;
+						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory, ExcludeCaretLD;
 		static string[] UpdInfo;
 		static bool updating, was, isold = true, checking, snip_checking, as_checking, check_ASD_size = true;
 		public static bool ENABLED = true;
@@ -1204,6 +1204,7 @@ namespace Mahou {
 			nud_DelayAfterBackspaces.Value = DelayAfterBackspaces = MMain.MyConfs.ReadInt("Timings", "DelayAfterBackspaces");
 			UseDelayAfterBackspaces = chk_UseDelayAfterBackspaces.Checked = MMain.MyConfs.ReadBool("Timings", "UseDelayAfterBackspaces");
 			#region Excluded
+			ExcludeCaretLD = MMain.MyConfs.ReadBool("Timings", "ExcludeCaretLD");
 			ExcludedPrograms = txt_ExcludedPrograms.Text = MMain.MyConfs.Read("Timings", "ExcludedPrograms").Replace("^cr^lf", Environment.NewLine);
 			KMHook.EXCLUDED_HWNDs.Clear();
 			KMHook.NOT_EXCLUDED_HWNDs.Clear();
@@ -2244,7 +2245,10 @@ DEL "+restartMahouPath;
 					resC.Start();
 				}
 			} else {
-				if (KMHook.ff_chr_wheeled || caretLangDisplay.Empty)
+				var x = false;
+				if (ExcludeCaretLD)
+					x = KMHook.ExcludedProgram();
+				if (KMHook.ff_chr_wheeled || caretLangDisplay.Empty || x)
 					caretLangDisplay.HideWnd();
 				else if (crtOnly.X != 77777 && crtOnly.Y != 77777) // 77777x77777 is null/none point
 					caretLangDisplay.ShowInactiveTopmost();
