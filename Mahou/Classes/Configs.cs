@@ -208,8 +208,9 @@ namespace Mahou {
         public Configs() {
         	CreateConfigsFile();
         	ReadFromDisk();
-        	#region Sync
-			CheckString("Hidden", "LibreCtrlAltShiftV", "false");
+        	#region Hidden
+        	CheckBool("Hidden", "LibreCtrlAltShiftV", "false");
+			CheckString("Hidden", "CycleCaseOrder", "TULSR");
 			#endregion
         	#region Sync
 			CheckString("Sync", "BBools", "0|1|0|0|0");
@@ -269,6 +270,11 @@ namespace Mahou {
 			CheckBool("LangPanel", "Display", "false");
 			#endregion
 			#region Hotkeys section
+			CheckInt("Hotkeys", "CycleCase_Key", "114");
+			CheckString("Hotkeys", "CycleCase_Modifiers", "Shift");
+			CheckBool("Hotkeys", "CycleCase_Double", "false");
+			CheckBool("Hotkeys", "CycleCase_Enabled", "false");
+			// Cycle Case
 			CheckInt("Hotkeys", "ToggleMahou_Key", "112");
 			CheckString("Hotkeys", "ToggleMahou_Modifiers", "Win Shift");
 			CheckBool("Hotkeys", "ToggleMahou_Double", "false");

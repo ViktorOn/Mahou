@@ -146,6 +146,7 @@ public class Languages
 		ToggleLangPanel,
 		TranslateSelection,
 		ToggleMahou,
+		CycleCase,
 		#endregion
 		#region LangPanel
 		DisplayLangPanel,
@@ -287,6 +288,7 @@ public class Languages
 		TT_WriteInputHistory,
 		TT_ShowSelectionTranslationHotkey,
 		TT_LeftRightMB,
+		TT_CycleCase,
 		#endregion
 		#region Messages
 		MSG_SnippetsError
@@ -436,6 +438,7 @@ public class Languages
 		{ Element.ToggleLangPanel, "Toggle language panel" }, 
 		{ Element.TranslateSelection, "Show selected text translation" }, 
 		{ Element.ToggleMahou, "Toogle Pause Mahou" }, 
+		{ Element.CycleCase, "Cycle selected text case" }, 
 		#endregion
 		#region LangPanel
 		{ Element.DisplayLangPanel, "Display language panel." },
@@ -595,6 +598,7 @@ public class Languages
 		{ Element.TT_UseDelayAfterBackspaces, "If enabled Mahou will wait some time after deleting old word and before inputting converted word.\r\nUseful if in some apps Mahou's function to convert last word doesn't work properly." },
 		{ Element.TT_ShowSelectionTranslationHotkey, "Enable the translator in [Translator] tab in order this hotkey to work." },
 		{ Element.TT_LeftRightMB, "Left button - open file.\nRight button - open directory." },
+		{ Element.TT_CycleCase, "Cycle the selected text words case by:\r\nTitle => UPPER => lower => RanDoM => sWAP => Title => ..." },
 		#endregion
 		#region Messages
 		{ Element.MSG_SnippetsError, "Snippets contains error in syntax, check if there are errors, details on snippets syntax you can find on Wiki." }
@@ -747,6 +751,7 @@ public class Languages
 		{ Element.ToggleLangPanel, "Переключить видимость панели языка" }, 
 		{ Element.TranslateSelection, "Показать перевод выделенного текста" }, 
 		{ Element.ToggleMahou, "Переключать паузу Mahou" }, 
+		{ Element.CycleCase, "Цикличное переключение регистра" }, 
 		#endregion
 		#region LangPanel
 		{ Element.DisplayLangPanel, "Отображать языковую панель." },
@@ -904,6 +909,7 @@ public class Languages
 		{ Element.TT_UseDelayAfterBackspaces, "Если включено Mahou будет ждать некоторое время после удаления старого слова и перед вводом конвертированного слова.\r\nПолезно если в некоторых программах функция Mahou Конверт последнего слова не работает нормально." },
 		{ Element.TT_ShowSelectionTranslationHotkey, "Включите переводчик на вкладке [Переводчик], чтобы эта горячая клавиша работала." },
 		{ Element.TT_LeftRightMB, "Левая кнопка - открыть файл.\nПравая кнопка - открыть папку." },
+		{ Element.TT_CycleCase, "По циклу переключает регистр выделенных слов, по:\r\nЗаглавный => ВЕРХНИЙ => нижний => слУчАЙный => оБРАТНЫЙ => Заглавный => ..." },
 		#endregion
 		#region Messages
 		{ Element.MSG_SnippetsError, "Сниппеты содержат ошибки в синтаксисе, проверьте ваши сниппеты, детали синтаксиса можете найти на Wiki." }

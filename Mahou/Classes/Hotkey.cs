@@ -36,7 +36,8 @@ namespace Mahou {
 			Restart,
 			ToggleLangPanel,
 			ShowSelectionTranslation,
-			ToggleMahou
+			ToggleMahou,
+			CycleCase
 		}
 		/// <summary>
 		/// Gets all modifiers in hotkey.
