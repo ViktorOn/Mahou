@@ -209,6 +209,9 @@ namespace Mahou {
         	CreateConfigsFile();
         	ReadFromDisk();
         	#region Sync
+			CheckString("Hidden", "LibreCtrlAltShiftV", "false");
+			#endregion
+        	#region Sync
 			CheckString("Sync", "BBools", "0|1|0|0|0");
 			CheckString("Sync", "RBools", "1|1|1|1|0");
 			CheckString("Sync", "RLast", "");

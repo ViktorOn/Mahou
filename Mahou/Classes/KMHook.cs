@@ -1251,8 +1251,9 @@ namespace Mahou {
 				try { 
 					prc = Process.GetProcessById((int)pid);
 					if (prc == null) return false;
-					if (MahouUI.ExcludedPrograms.Replace(Environment.NewLine, " ").ToLower().Contains(prc.ProcessName.ToLower().Replace(" ", "_") + ".exe")) {
-						Logging.Log(prc.ProcessName + ".exe->excluded");
+					Logging.Log("Active Window Process NAME: " + prc.ProcessName);
+					if (MahouUI.ExcludedPrograms.Replace(Environment.NewLine, " ").ToLower().Contains(prc.ProcessName.ToLower().Replace(" ", "_"))) {
+						Logging.Log(prc.ProcessName + "->excluded");
 						EXCLUDED_HWNDs.Add(hwnd);
 						return true;
 					}
@@ -1761,15 +1762,25 @@ namespace Mahou {
 						if (MahouUI.UsePaste) {
 							Logging.Log("Pasting ["+output+"] as "+ tn);
 							RestoreClipBoard(output);
-							KInputs.MakeInput(new []{
-							                  	KInputs.AddKey(Keys.LControlKey, true),
-							                  	KInputs.AddKey(Keys.V, true),
-							                  });
-							Thread.Sleep(30);
-							KInputs.MakeInput(new []{
-							                  	KInputs.AddKey(Keys.LControlKey, false),
-							                  	KInputs.AddKey(Keys.V, false)
-							                  });
+							List<WinAPI.INPUT> a = new List<WinAPI.INPUT>();
+							a.Add(KInputs.AddKey(Keys.LControlKey, true));
+							var v = MahouUI.LibreCtrlAltShiftV && Locales.ActiveWindowProcess().ProcessName.ToLower().Contains("soffice.");
+							if (v) {
+								Logging.Log("Using Libre paste fix.");
+								a.Add(KInputs.AddKey(Keys.LShiftKey, true));
+								a.Add(KInputs.AddKey(Keys.LMenu, true));
+							}
+							a.Add(KInputs.AddKey(Keys.V, true));
+							KInputs.MakeInput(a.ToArray());
+							Thread.Sleep(50);
+							a.Clear();
+							a.Add(KInputs.AddKey(Keys.LControlKey, false));
+							if (v) {
+								a.Add(KInputs.AddKey(Keys.LShiftKey, false));
+								a.Add(KInputs.AddKey(Keys.LMenu, false));
+							}
+							a.Add(KInputs.AddKey(Keys.V, false));
+							KInputs.MakeInput(a.ToArray());
 						} else {
 							Logging.Log("Inputting ["+output+"] as "+tn);
 							KInputs.MakeInput(KInputs.AddString(output));
