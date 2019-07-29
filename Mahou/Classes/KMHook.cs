@@ -330,10 +330,12 @@ namespace Mahou {
 			#endregion
 			if ((ctrl||win||alt||ctrl_r||win_r||alt_r) && Key == Keys.Tab) {
 				ClearWord(true, true, true, "Any modifier + Tab");
+				MahouUI.CCReset("mod+tab");
 			}
 			#region Other, when KeyDown
 			if (MSG == WinAPI.WM_KEYDOWN && !waitfornum && !IsHotkey) {
 				if (Key == Keys.Back) { //Removes last item from current word when user press Backspace
+					MahouUI.CCReset("back");
 					if (MMain.c_word.Count != 0) {
 						MMain.c_word.RemoveAt(MMain.c_word.Count - 1);
 					}
@@ -369,6 +371,7 @@ namespace Mahou {
 							Key != Keys.ControlKey &&
 							Key != Keys.LControlKey &&
 							Key != Keys.RControlKey ))) { 
+					MahouUI.CCReset("cc/noShift.Hkey");
 					ClearWord(true, true, true, "Pressed combination of key and modifiers(not shift) or key that changes caret position.");
 				}
 				if (Key == Keys.Space) {
@@ -384,6 +387,7 @@ namespace Mahou {
 						ClearWord(true, false, false, "Pressed space");
 						afterEOS = false;
 					}
+					MahouUI.CCReset("space");
 				}
 				if (Key == Keys.Enter) {
 					if (MahouUI.Add1NL && MMain.c_word.Count != 0 && 
@@ -397,6 +401,7 @@ namespace Mahou {
 						afterEOL = false;
 					}
 					as_lword_layout = 0;
+					MahouUI.CCReset("enter");
 				}
 				if (printable && printable_mod) {
 					if (afterEOS) { //Clears word after Eat ONE space
@@ -411,6 +416,7 @@ namespace Mahou {
 					MMain.c_word.Add(new YuKey() { key = Key, upper = upr });
 					MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Key, upper = upr });
 					Logging.Log("[WORD] > Added [" + Key + "]^"+upr);
+					MahouUI.CCReset("key:"+Key);
 				}
 			}
 			#endregion
@@ -461,6 +467,7 @@ namespace Mahou {
 				}
 			}
 			if (MSG == (ushort)WinAPI.RawMouseButtons.LeftDown || MSG == (ushort)WinAPI.RawMouseButtons.RightDown) {
+				MahouUI.CCReset("mouse");
 				if (ctrl || ctrl_r)
 					clickAfterCTRL = true;
 				if (shift || shift_r)
@@ -563,11 +570,13 @@ namespace Mahou {
 				if (eventType == WinAPI.EVENT_OBJECT_FOCUS) {
 					if (MMain.mahou != null)
 						MMain.mahou.UpdateLDs();
+					MahouUI.CCReset("object-focus");
 				}
 			}
 		}
 		public static void EventHookCallback(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject,
 		                                       int idChild, uint dwEventThread, uint dwmsEventTime) {
+				MahouUI.CCReset("fg-window-change");
 			if (MahouUI.PersistentLayoutOnWindowChange) {
 				var proc = Locales.ActiveWindowProcess();
 				var cont = PLC_HWNDs.Contains(hwnd);

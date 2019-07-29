@@ -30,7 +30,8 @@ namespace Mahou {
 						   ShiftInHotkey, AltInHotkey, CtrlInHotkey, WinInHotkey, AutoStartAsAdmin, UseJKL, AutoSwitchEnabled, ReadOnlyNA,
 						   SoundEnabled, UseCustomSound, SoundOnAutoSwitch, SoundOnConvLast, SoundOnSnippets, SoundOnLayoutSwitch,
 						   UseCustomSound2, SoundOnAutoSwitch2, SoundOnConvLast2, SoundOnSnippets2, SoundOnLayoutSwitch2, TrOnDoubleClick,
-						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory, ExcludeCaretLD, UsePaste, LibreCtrlAltShiftV;
+						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory, ExcludeCaretLD, UsePaste, LibreCtrlAltShiftV,
+						   CycleCaseReset;
 		static string[] UpdInfo;
 		static string CycleCaseOrder = "TULSR";
 		static bool updating, was, isold = true, checking, snip_checking, as_checking, check_ASD_size = true;
@@ -453,7 +454,16 @@ namespace Mahou {
 			}
 			base.WndProc(ref m);
 		}
-		public int CCPos = 0;
+		public static void CCReset(string info = "") {
+			if (CycleCaseReset) {
+				CCPos = 0;
+				if (!string.IsNullOrEmpty(info)) {
+					Logging.Log("CCPos reset, "+info);
+					Debug.WriteLine("CCPos reset, "+info);
+				}
+			}
+		}
+		public static int CCPos = 0;
 		public void CycleCase() {
 			if (CCPos >= CycleCaseOrder.Length)
 				CCPos = 0;
@@ -1215,6 +1225,7 @@ namespace Mahou {
 			#region Hidden
 			LibreCtrlAltShiftV = MMain.MyConfs.ReadBool("Hidden", "LibreCtrlAltShiftV");
 			CycleCaseOrder = MMain.MyConfs.Read("Hidden", "CycleCaseOrder");
+			CycleCaseReset = MMain.MyConfs.ReadBool("Hidden", "CycleCaseReset");
 			#endregion
 			#region Timings
 			LD_MouseSkipMessagesCount = MMain.MyConfs.ReadInt("Timings", "LangTooltipForMouseSkipMessages");

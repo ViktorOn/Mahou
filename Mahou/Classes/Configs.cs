@@ -211,6 +211,7 @@ namespace Mahou {
         	#region Hidden
         	CheckBool("Hidden", "LibreCtrlAltShiftV", "false");
 			CheckString("Hidden", "CycleCaseOrder", "TULSR");
+			CheckBool("Hidden", "CycleCaseReset", "false");
 			#endregion
         	#region Sync
 			CheckString("Sync", "BBools", "0|1|0|0|0");
