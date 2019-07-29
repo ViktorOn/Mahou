@@ -148,7 +148,8 @@ namespace Mahou {
 							KMHook.RePressAfter(Convert.ToInt32(hotkey.Modifiers));
 						}
 					}
-					if (hotkey.ID <= (int)Hotkey.HKID.TransliterateSelection || hotkey.ID == (int)Hotkey.HKID.ShowSelectionTranslation
+					if (hotkey.ID <= (int)Hotkey.HKID.TransliterateSelection || hotkey.ID == (int)Hotkey.HKID.ShowSelectionTranslation ||
+					    hotkey.ID == (int)Hotkey.HKID.CycleCase
 					   ) {
 						KMHook.SendModsUp(Convert.ToInt32(hotkey.Modifiers));
 					}
