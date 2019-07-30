@@ -570,7 +570,7 @@ namespace Mahou {
 				if (eventType == WinAPI.EVENT_OBJECT_FOCUS) {
 					if (MMain.mahou != null)
 						MMain.mahou.UpdateLDs();
-					MahouUI.CCReset("object-focus");
+					//MahouUI.CCReset("object-focus");
 				}
 			}
 		}
