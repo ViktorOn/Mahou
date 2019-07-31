@@ -35,6 +35,14 @@ namespace Mahou {
 				return WinAPI.CallNextHookEx(_LLHook_ID, nCode, wParam, lParam);
 			var vk = Marshal.ReadInt32(lParam);
 			var Key = (Keys)vk;
+			if (MahouUI.BlockAltUpNOW) {
+				if ((wParam == (IntPtr)WinAPI.WM_SYSKEYUP || wParam == (IntPtr)WinAPI.WM_KEYUP) && 
+				    (Key == Keys.LMenu || Key == Keys.RMenu || Key == Keys.Menu)) {
+					Debug.WriteLine("ihihihihihihihih-hihih-hi blocked alt :)))))");
+					MahouUI.BlockAltUpNOW = false;
+					return(IntPtr)1;
+				}
+			}
 			SetModifs(Key, wParam);
 			if (MahouUI.SnippetsEnabled)
 				if (KMHook.c_snip.Count > 0)

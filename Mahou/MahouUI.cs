@@ -33,6 +33,8 @@ namespace Mahou {
 						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory, ExcludeCaretLD, UsePaste, LibreCtrlAltShiftV,
 						   CycleCaseReset;
 		static string[] UpdInfo;
+		public static List<int> HKBlockAlt = new List<int>();
+		public static bool BlockAltUpNOW = false;
 		static string CycleCaseOrder = "TULSR";
 		static bool updating, was, isold = true, checking, snip_checking, as_checking, check_ASD_size = true;
 		public static bool ENABLED = true;
@@ -309,6 +311,9 @@ namespace Mahou {
 			}
 //			Logging.Log("MSG: "+m.Msg+", LP: "+m.LParam+", WP: "+m.WParam+", KMS: "+KMHook.self+" 0x312");
 			if (m.Msg == WinAPI.WM_HOTKEY) {
+				if (HKBlockAlt.Contains(m.WParam.ToInt32())) {
+					BlockAltUpNOW = true;
+				}
 				var id = (Hotkey.HKID)m.WParam.ToInt32();
 				var mods = (int)m.LParam & 0xFFFF;
 				if (mods == WinAPI.MOD_ALT) { // Experimental fix for [only Alt] + something.
@@ -2766,6 +2771,13 @@ DEL "+restartMahouPath;
 						var mods = Hotkey.GetMods(SpecKeySetsValues["txt_key"+i+"_mods"]);
 						if (key == (int)Keys.CapsLock && RemapCapslockAsF18)
 							key = (int)Keys.F18;
+						if ((key == (int)Keys.LControlKey || key == (int)Keys.RControlKey || key == (int)Keys.ControlKey ||
+							key == (int)Keys.LShiftKey || key == (int)Keys.ShiftKey || key == (int)Keys.RShiftKey) &&
+							Hotkey.ContainsModifier((int)mods, (int) WinAPI.MOD_ALT)) {
+							HKBlockAlt.Add(200+i);
+							Debug.WriteLine("hiHI: "+(200+i));
+						}
+						Debug.WriteLine("Key:" +key);
 						var hk = new Hotkey(true, (uint)key, mods, 200+i);
 						SpecificSwitchHotkeys.Add(hk);
 						WinAPI.RegisterHotKey(Handle, 200+i, mods, key);
