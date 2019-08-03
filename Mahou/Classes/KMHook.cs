@@ -907,7 +907,7 @@ namespace Mahou {
               });
 		}
 		#region in Snippets expressions  
-		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert" };
+		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert", "__setlayout" };
 		static void ExpandSnippetWithExpressions(string expand) {
 			string ex = "", args = "", raw = "", err = "";
 			bool args_getting = false, is_expr = false, escaped = false;
@@ -1105,6 +1105,31 @@ namespace Mahou {
 					break;
 				case "__convert":
 					KInputs.MakeInput(KInputs.AddString(ConvertText(args)));
+					break;
+				case "__setlayout":
+					bool err = false;
+					uint l = 0;
+					try {
+						UInt32.TryParse(args, out l);
+						var i = new System.Globalization.CultureInfo((int)l);
+					} catch (Exception e) {
+			         	err = true;	
+						Logging.Log("__setlayout: ERR: " + e.Message);
+						var l1 = l == 1;
+						var l2 = l == 2;
+						if (l1)
+							l = MahouUI.MAIN_LAYOUT1;
+						if (l2)
+							l = MahouUI.MAIN_LAYOUT2;
+						if (l1 || l2) {
+							Logging.Log("[SELAE] Changing to " +l);
+							ChangeToLayout(Locales.ActiveWindow(), l);
+						}
+					}
+					if (!err) {
+						Logging.Log("[SELA] Changing to " +l);
+						ChangeToLayout(Locales.ActiveWindow(), l);
+					}
 					break;
 			}
 		}
