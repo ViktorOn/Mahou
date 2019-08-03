@@ -1111,7 +1111,7 @@ namespace Mahou {
 					uint l = 0;
 					try {
 						UInt32.TryParse(args, out l);
-						var i = new System.Globalization.CultureInfo((int)l);
+						var i = new System.Globalization.CultureInfo((int)(l&0xffff));
 					} catch (Exception e) {
 			         	err = true;	
 						Logging.Log("__setlayout: ERR: " + e.Message);
