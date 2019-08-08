@@ -654,9 +654,11 @@ namespace Mahou {
 		#endregion
 		#region Functions/Struct
 		static void snipsel() {
+			var clipr = GetClipboard(4,10);
 			snip_selection = GetClipStr(); 
 			skip_kbd_events+=2;
 			Debug.WriteLine("SEL>> "+snip_selection);
+			RestoreClipBoard(clipr);
 		}
 		static bool _hasKey(string[] ar, string key) {
 			for (int i = 0; i < ar.Length; i++) {
