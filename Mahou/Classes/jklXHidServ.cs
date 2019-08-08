@@ -146,13 +146,13 @@ namespace Mahou {
 		}
 	    static IntPtr jklWndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)  {
 			if (msg == jkluMSG) {
-				uint layout = (uint)lParam;
+				uint layout = (uint)lParam, laysho = layout & 0xffff;
 				MahouUI.GlobalLayout = MahouUI.currentLayout = layout;
 				Logging.Log("[JKL] > Layout changed to [" + layout + "] / [0x"+layout.ToString("X") +"].");
 				Debug.WriteLine(">> JKL LC: " + layout);
 				Logging.Log("[JKL] > On layout act:" +OnLayoutAction);
 				Logging.Log("[JKL] > ACtion: " +(ActionOnLayout==null?"null":ActionOnLayout.Method.Name));
-				if (layout == OnLayoutAction) {
+				if (layout == OnLayoutAction || (layout & 0xffff) == (OnLayoutAction & 0xffff)) {
 					actionOnLayoutExecuted = true;
 					OnLayoutAction = 0;
 					Debug.WriteLine("Executing action: " + ActionOnLayout.Method.Name + " on layout: " +layout);
@@ -160,7 +160,7 @@ namespace Mahou {
 					ActionOnLayout = null;
 				}
 				if (start_cyclEmuSwitch) {
-					if (layout != cycleEmuDesiredLayout)
+					if (layout != cycleEmuDesiredLayout && laysho != cycleEmuDesiredLayout)
 						KMHook.CycleEmulateLayoutSwitch();
 					else
 						start_cyclEmuSwitch = false;

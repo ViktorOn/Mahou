@@ -1150,19 +1150,15 @@ namespace Mahou {
 					} catch (Exception e) {
 			         	err = true;	
 						Logging.Log("__setlayout: ERR: " + e.Message);
-						var l1 = l == 1;
-						var l2 = l == 2;
-						if (l1)
-							l = MahouUI.MAIN_LAYOUT1;
-						if (l2)
-							l = MahouUI.MAIN_LAYOUT2;
-						if (l1 || l2) {
-							Logging.Log("[SELAE] Changing to " +l);
-							ChangeToLayout(Locales.ActiveWindow(), l);
-						}
 					}
-					if (!err) {
-						Logging.Log("[SELA] Changing to " +l);
+					var l1 = l == 1;
+					var l2 = l == 2;
+					if (l1)
+						l = MahouUI.MAIN_LAYOUT1;
+					if (l2)
+						l = MahouUI.MAIN_LAYOUT2;
+					if (l > 2) {
+						Logging.Log("[SELAE] Changing to " +l);
 						ChangeToLayout(Locales.ActiveWindow(), l);
 					}
 					break;
@@ -2467,6 +2463,7 @@ namespace Mahou {
 		static void EmulateChangeToLayout(uint LayoutId, bool conhost = false) {
 			Debug.WriteLine(">> E-CTL");
 			var last = MahouUI.currentLayout;
+			var lash = last & 0xffff;
 			if (last == LayoutId) {
 				if (!conhost && last == Locales.GetCurrentLocale()) {
 					Debug.WriteLine("Layout already " + LayoutId);
@@ -2477,8 +2474,9 @@ namespace Mahou {
 			Logging.Log("Changing to specific layout ["+LayoutId+"] by emulating layout switch.");
 			for (int i = MMain.locales.Length; i != 0; i--) {
 				uint loc = Locales.GetCurrentLocale();
+				uint locsh = loc & 0xffff;
 //				Debug.WriteLine(loc + " " + last);
-				if (MahouUI.UseJKL && !KMHook.JKLERR && ((loc == 0 || loc == last) || conhost)) {
+				if (MahouUI.UseJKL && !KMHook.JKLERR && ((loc == 0 || loc == last || locsh == lash) || conhost)) {
 					jklXHidServ.start_cyclEmuSwitch = true;
 					jklXHidServ.cycleEmuDesiredLayout = LayoutId;
 					Debug.WriteLine("LI: " + LayoutId);
@@ -2486,7 +2484,7 @@ namespace Mahou {
 					break;
 				} else {
 //					Debug.WriteLine(i+".LayoutID: " + LayoutId + ", loc: " +loc);
-					if (loc == LayoutId) {
+					if (loc == LayoutId || locsh == LayoutId) {
 						failed = false;
 						break;
 					}
@@ -2494,6 +2492,7 @@ namespace Mahou {
 					Thread.Sleep(30);
 				}
 				last = loc;
+				lash = locsh;
 				if (!failed)
 					break;
 			}
