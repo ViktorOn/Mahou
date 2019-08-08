@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Mahou {
 	static class KMHook  { // Keyboard & Mouse Listeners & Event hook		#region Variables
-		public static string __ANY__ = "***ANY***", last_snip;
+		public static string __ANY__ = "***ANY***", last_snip, snip_selection;
 		public static bool win, alt, ctrl, shift,
 			win_r, alt_r, ctrl_r, shift_r,
 			shiftRP, ctrlRP, altRP, winRP, //RP = Re-Press
@@ -18,10 +18,11 @@ namespace Mahou {
 			clickAfterCTRL, clickAfterALT, clickAfterSHIFT,
 			hotkeywithmodsfired, csdoing, incapt, waitfornum, 
 			IsHotkey, ff_chr_wheeled, preSnip, LMB_down, RMB_down, MMB_down,
-			dbl_click, click, selfie, aftsingleAS, JKLERR, JKLERRchecking, last_snipANY;
+			dbl_click, click, selfie, aftsingleAS, JKLERR, JKLERRchecking, last_snipANY,
+			_selis, _mselis;
 		public static System.Windows.Forms.Timer click_reset = new System.Windows.Forms.Timer();
 		public static System.Windows.Forms.Timer JKLERRT = new System.Windows.Forms.Timer();
-		public static int skip_mouse_events, skip_spec_keys, cursormove = -1, guess_tries;
+		public static int skip_mouse_events, skip_spec_keys, cursormove = -1, guess_tries, skip_kbd_events;
 		static uint as_lword_layout = 0;
 		static uint cs_layout_last = 0;
 		static string lastClipText = "", busy_on = "", lastLWClearReason = "";
@@ -65,6 +66,10 @@ namespace Mahou {
 		#endregion
 		#region Keyboard, Mouse & Event hooks callbacks
 		public static void ListenKeyboard(int vkCode, uint MSG, short Flags = 0) {
+			if (skip_kbd_events > 0) {
+				skip_kbd_events--;
+				return;
+			}
 			if (MahouUI.CaretLangTooltipEnabled)
 				ff_chr_wheeled = false;
 			if (vkCode > 254) return;
@@ -111,6 +116,22 @@ namespace Mahou {
 				IsHotkey = true;
 			if (MahouUI.OnceSpecific && !down) {
 				MahouUI.OnceSpecific = false;
+			}
+			if (MahouUI.__selection) {
+				if (shift || shift_r) {
+					switch (Key) {
+						case Keys.PageDown:
+						case Keys.PageUp:
+						case Keys.Up:
+						case Keys.Down:
+						case Keys.Left:
+						case Keys.Right:
+						case Keys.Home:
+						case Keys.End:
+							snipsel();
+							break;
+					}
+				}
 			}
 			var printable = ((Key >= Keys.D0 && Key <= Keys.Z) || // This is 0-9 & A-Z
 			                 Key >= Keys.Oem1 && Key <= Keys.OemBackslash || // Other printable
@@ -222,6 +243,8 @@ namespace Mahou {
 		            		matched = CheckSnippet(last_snip+" "+snip, true);
 						if (matched || preSnip)
 							c_snip.Clear();
+						if (MahouUI.__selection)
+							snip_selection = "";
 					}
 					if (MahouUI.AutoSwitchEnabled && !matched && as_wrongs != null && Key == Keys.Space) {
 						var CW = c_word_backup;
@@ -456,6 +479,11 @@ namespace Mahou {
 			#endregion
 		}
 		public static void ListenMouse(ushort MSG) {
+			if (MahouUI.__selection) {
+				if (MSG == (ushort)WinAPI.RawMouseButtons.LeftUp && ICheckings.IsICursor()) {
+					snipsel();
+				}
+			}
 			if ((MSG == (ushort)WinAPI.RawMouseButtons.MouseWheel)) {
 				if (MMain.mahou.caretLangDisplay.Visible && MahouUI.CaretLangTooltipEnabled) {
 					var _fw = WinAPI.GetForegroundWindow();
@@ -625,6 +653,11 @@ namespace Mahou {
 		}
 		#endregion
 		#region Functions/Struct
+		static void snipsel() {
+			snip_selection = GetClipStr(); 
+			skip_kbd_events+=2;
+			Debug.WriteLine("SEL>> "+snip_selection);
+		}
 		static bool _hasKey(string[] ar, string key) {
 			for (int i = 0; i < ar.Length; i++) {
 				if (ar[i] == null) continue;
@@ -907,7 +940,7 @@ namespace Mahou {
               });
 		}
 		#region in Snippets expressions  
-		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert", "__setlayout" };
+		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert", "__setlayout", "__selection" };
 		static void ExpandSnippetWithExpressions(string expand) {
 			string ex = "", args = "", raw = "", err = "";
 			bool args_getting = false, is_expr = false, escaped = false;
@@ -1130,6 +1163,10 @@ namespace Mahou {
 						Logging.Log("[SELA] Changing to " +l);
 						ChangeToLayout(Locales.ActiveWindow(), l);
 					}
+					break;
+				case "__selection":
+					if (!string.IsNullOrEmpty(snip_selection))
+						KInputs.MakeInput(KInputs.AddString(snip_selection));
 					break;
 			}
 		}
