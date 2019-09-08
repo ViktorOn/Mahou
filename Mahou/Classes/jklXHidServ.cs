@@ -135,7 +135,7 @@ namespace Mahou {
 	    }
 		public static void CycleAllLayouts(IntPtr hwnd) {
 			self_change = true;
-			for (int i = 1; i<=MMain.locales.Length; i++) {
+			for (int i = 1; i!=MMain.locales.Length; i++) {
 				if (MMain.MahouActive()) return; // Else creates invalid culture 0 exception.
 				WinAPI.SendMessage(hwnd, (int)WinAPI.WM_INPUTLANGCHANGEREQUEST, 0, WinAPI.HKL_NEXT);
 				Logging.Log("[JKL] > Cycle all: "+i+"/"+MMain.locales.Length);
