@@ -3936,7 +3936,10 @@ DEL ""ExtractASD.cmd""";
 			} catch (Exception ex) { Logging.Log("No program to open "+type+", opening skiped. Details:\r\n"+ex.Message + "\r\n" + ex.StackTrace, 2); }
 		}
 		void Lnk_OpenHistoryClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-			__lopen(Path.Combine(nPath, "history.txt"), "txt", e.Button == MouseButtons.Right);
+			var path = Path.Combine(nPath, "history.txt");
+			if (WriteInputHistoryByDate)
+				path = KMHook.GetHistoryByDatePath();
+			__lopen(path, "txt", e.Button == MouseButtons.Right);
 		}
 		void Lnk_OpenConfigClicked(object sender, LinkLabelLinkClickedEventArgs e) {
 			__lopen(Path.Combine(nPath, "Mahou.ini"), "ini", e.Button == MouseButtons.Right);

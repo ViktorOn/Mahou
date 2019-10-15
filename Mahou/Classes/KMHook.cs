@@ -834,7 +834,7 @@ namespace Mahou {
 				Logging.Log("Write history(r) error: "+e.Message, 1);
 			}
 		}
-		static string GetHistoryByDatePath() {
+		public static string GetHistoryByDatePath() {
 			var date = DateTime.Now;
 			var ymd = date.ToString("yy-MM-dd");
 			var h = date.ToString("HH");
