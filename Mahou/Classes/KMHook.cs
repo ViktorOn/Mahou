@@ -820,7 +820,11 @@ namespace Mahou {
 		}
 		static void RemLastHistory() {
 			try {
-				var txt = System.IO.File.ReadAllText(System.IO.Path.Combine(MahouUI.nPath, "history.txt"));
+				var path = System.IO.Path.Combine(MahouUI.nPath, "history.txt");
+				if (MahouUI.WriteInputHistoryByDate) {
+					path = GetHistoryByDatePath();
+				}
+				var txt = System.IO.File.ReadAllText(path);
 				if (txt.Length<1) return;
 				txt = txt.Substring(0, txt.Length-1);
 				System.IO.File.WriteAllText(System.IO.Path.Combine(MahouUI.nPath, "history.txt"), txt);
@@ -830,9 +834,23 @@ namespace Mahou {
 				Logging.Log("Write history(r) error: "+e.Message, 1);
 			}
 		}
+		static string GetHistoryByDatePath() {
+			var date = DateTime.Now;
+			var ymd = date.ToString("yy-MM-dd");
+			var h = date.ToString("HH");
+			var dir = System.IO.Path.Combine(MahouUI.nPath, "histories");
+			if (!System.IO.Directory.Exists(dir)) {
+				System.IO.Directory.CreateDirectory(dir);
+			}
+			return System.IO.Path.Combine(dir, ymd + (MahouUI.WriteInputHistoryHourly ? ("-["+h+"]") : "")+".txt");
+		}
 		static void WriteToHistory(char c) {
 			try {
-				var sw = System.IO.File.AppendText(System.IO.Path.Combine(MahouUI.nPath, "history.txt"));
+				var path = System.IO.Path.Combine(MahouUI.nPath, "history.txt");
+				if (MahouUI.WriteInputHistoryByDate) {
+					path = GetHistoryByDatePath();
+				}
+				var sw = System.IO.File.AppendText(path);
 				sw.Write(c);
 				sw.Close();
 			} catch (Exception e) {

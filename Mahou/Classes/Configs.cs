@@ -490,6 +490,8 @@ namespace Mahou {
             CheckBool("Functions", "TrayText", "false");
             CheckInt("Functions", "WriteInputHistoryBackSpaceType", "0");
             CheckBool("Functions", "WriteInputHistory", "false");
+            CheckBool("Functions", "WriteInputHistoryByDate", "false");
+            CheckBool("Functions", "WriteInputHistoryHourly", "false");
             CheckBool("Functions", "ReadOnlyNA", "false");
             CheckBool("Functions", "UseJKL", "true");
             CheckBool("Functions", "RemapCapslockAsF18", "true");

@@ -31,7 +31,7 @@ namespace Mahou {
 						   SoundEnabled, UseCustomSound, SoundOnAutoSwitch, SoundOnConvLast, SoundOnSnippets, SoundOnLayoutSwitch,
 						   UseCustomSound2, SoundOnAutoSwitch2, SoundOnConvLast2, SoundOnSnippets2, SoundOnLayoutSwitch2, TrOnDoubleClick,
 						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory, ExcludeCaretLD, UsePaste, LibreCtrlAltShiftV,
-						   CycleCaseReset, __selection;
+						   CycleCaseReset, __selection, WriteInputHistoryByDate, WriteInputHistoryHourly;
 		static string[] UpdInfo;
 		public static List<int> HKBlockAlt = new List<int>();
 		public static bool BlockAltUpNOW = false;
@@ -1171,6 +1171,8 @@ namespace Mahou {
 			UseJKL = chk_GetLayoutFromJKL.Checked = MMain.MyConfs.ReadBool("Functions", "UseJKL");
 			ReadOnlyNA = chk_ReadOnlyNA.Checked = MMain.MyConfs.ReadBool("Functions", "ReadOnlyNA");
 			WriteInputHistory = chk_WriteInputHistory.Checked = MMain.MyConfs.ReadBool("Functions", "WriteInputHistory");
+			WriteInputHistoryByDate = MMain.MyConfs.ReadBool("Functions", "WriteInputHistoryByDate");
+			WriteInputHistoryHourly = MMain.MyConfs.ReadBool("Functions", "WriteInputHistoryHourly");
 			#endregion
 			#region Layouts
 			SwitchBetweenLayouts = chk_SwitchBetweenLayouts.Checked = MMain.MyConfs.ReadBool("Layouts", "SwitchBetweenLayouts");
