@@ -861,7 +861,11 @@ namespace Mahou {
 		}
 		static void WriteToHistory(string s) {
 			try {
-				var sw = System.IO.File.AppendText(System.IO.Path.Combine(MahouUI.nPath, "history.txt"));
+				var path = System.IO.Path.Combine(MahouUI.nPath, "history.txt");
+				if (MahouUI.WriteInputHistoryByDate) {
+					path = GetHistoryByDatePath();
+				}
+				var sw = System.IO.File.AppendText(path);
 				sw.Write(s);
 				sw.Close();
 			} catch (Exception e) {
