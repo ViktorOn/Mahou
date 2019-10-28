@@ -818,12 +818,27 @@ namespace Mahou {
 			}
 			return matched;
 		}
+		static string CreateHFDir() {
+			var dir = System.IO.Path.Combine(MahouUI.nPath, "histories");
+			if (!System.IO.Directory.Exists(dir)) {
+				System.IO.Directory.CreateDirectory(dir);
+			}
+			return dir;
+		}
+		static void ReCreateHF(string path) {
+			if (!System.IO.File.Exists(path)) {
+				Debug.WriteLine("Creating history file: " + path);
+				var fs = System.IO.File.Create(path);
+				fs.Close();
+			}
+		}
 		static void RemLastHistory() {
 			try {
 				var path = System.IO.Path.Combine(MahouUI.nPath, "history.txt");
 				if (MahouUI.WriteInputHistoryByDate) {
 					path = GetHistoryByDatePath();
 				}
+				ReCreateHF(path);
 				var txt = System.IO.File.ReadAllText(path);
 				if (txt.Length<1) return;
 				txt = txt.Substring(0, txt.Length-1);
@@ -838,11 +853,7 @@ namespace Mahou {
 			var date = DateTime.Now;
 			var ymd = date.ToString("yy-MM-dd");
 			var h = date.ToString("HH");
-			var dir = System.IO.Path.Combine(MahouUI.nPath, "histories");
-			if (!System.IO.Directory.Exists(dir)) {
-				System.IO.Directory.CreateDirectory(dir);
-			}
-			return System.IO.Path.Combine(dir, ymd + (MahouUI.WriteInputHistoryHourly ? ("-["+h+"]") : "")+".txt");
+			return System.IO.Path.Combine(CreateHFDir(), ymd + (MahouUI.WriteInputHistoryHourly ? ("-["+h+"]") : "")+".txt");
 		}
 		static void WriteToHistory(char c) {
 			try {
@@ -850,6 +861,7 @@ namespace Mahou {
 				if (MahouUI.WriteInputHistoryByDate) {
 					path = GetHistoryByDatePath();
 				}
+				ReCreateHF(path);
 				var sw = System.IO.File.AppendText(path);
 				sw.Write(c);
 				sw.Close();
@@ -865,6 +877,7 @@ namespace Mahou {
 				if (MahouUI.WriteInputHistoryByDate) {
 					path = GetHistoryByDatePath();
 				}
+				ReCreateHF(path);
 				var sw = System.IO.File.AppendText(path);
 				sw.Write(s);
 				sw.Close();
