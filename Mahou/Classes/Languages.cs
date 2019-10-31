@@ -719,7 +719,7 @@ public class Languages
 		{ Element.SnippetSpaceAfter, "Добавлять 1 пробел после сниппетов." },
 		{ Element.SnippetSwitchToGuessLayout, "Переключать на предполагаемую раскладку сниппетов." }, 
 		{ Element.SnippetsCount, "Сниппетов: " }, 
-		{ Element.SnippetsExpandKey, "Клавшиа развертывания:" }, 
+		{ Element.SnippetsExpandKey, "Клавиша развертывания:" }, 
 		#region AutoSwitch
 		{ Element.AutoSwitchEnabled, "Включить автозамену." }, 
 		{ Element.AutoSwitchSpaceAfter, "Добавлять 1 пробел после автозамены." }, 
