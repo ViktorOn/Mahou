@@ -188,7 +188,7 @@ namespace Mahou {
 			#region
 			var upper = false;
 			if (MahouUI.LangPanelUpperArrow || MahouUI.mouseLTUpperArrow || MahouUI.caretLTUpperArrow)
-				upper = IsUpperInput();
+				upper = IsUpperInput(!Char.IsLetterOrDigit(getSym(vkCode, true)));
 			if (MahouUI.LangPanelDisplay)
 				if (MahouUI.LangPanelUpperArrow)
 					MMain.mahou._langPanel.DisplayUpper(upper);
@@ -435,7 +435,7 @@ namespace Mahou {
 						ClearWord(true, false, false, "Clear last word after 1 enter");
 						afterEOL = false;
 					}
-					var upr = IsUpperInput();
+					var upr = IsUpperInput(!Char.IsLetterOrDigit(getSym(vkCode, true)));
 					MMain.c_word.Add(new YuKey() { key = Key, upper = upr });
 					MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Key, upper = upr });
 					Logging.Log("[WORD] > Added [" + Key + "]^"+upr);
@@ -887,12 +887,12 @@ namespace Mahou {
 				Logging.Log("Write history(s) error: "+e.Message, 1);
 			}
 		}
-		static char getSym(int vkCode) {
+		static char getSym(int vkCode, bool ignore = false) {
 			var stb = new StringBuilder(10);
 			var byt = new byte[256];
-			if (IsUpperInput()) {
-				byt[(int)Keys.ShiftKey] = 0xFF;
-			}
+			if (!ignore)
+				if (IsUpperInput(!Char.IsLetterOrDigit(getSym(vkCode, true))))
+					byt[(int)Keys.ShiftKey] = 0xFF;
 			uint layout = Locales.GetCurrentLocale() & 0xffff;
 			if (MahouUI.UseJKL && !KMHook.JKLERR) {
 				if (layout != (MahouUI.currentLayout & 0xffff)) {
@@ -1331,13 +1331,15 @@ namespace Mahou {
 //				CUR_IND = 0;
 //			Debug.WriteLine("NEXT LAYOUT: " + MMain.locales[CUR_IND].Lang + " IND " + CUR_IND  + " LEN " + MMain.locales.Length + " CUR " + CUR) ;
 //		}
-		static bool IsUpperInput() {
-			bool caps = Control.IsKeyLocked(Keys.CapsLock);
+		static bool IsUpperInput(bool symbolic=false) {
+			bool caps = Control.IsKeyLocked(Keys.CapsLock), shishift = (shift || shift_r);
 			if (MahouUI.CapsLockDisablerTimer)
 				caps = false;
-			if (((shift || shift_r) && !caps) || (!(shift || shift_r) && caps))
+			if (symbolic)
+				return shishift;
+			if ((shishift && !caps) || (!shishift && caps))
 				return true;
-			if (((shift || shift_r) && caps) || (!(shift || shift_r) && !caps))
+			if ((shishift && caps) || (!shishift && !caps))
 				return false;
 			return false;
 		}
