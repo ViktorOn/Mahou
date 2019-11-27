@@ -279,6 +279,7 @@ namespace Mahou
 		private System.Windows.Forms.ComboBox cbb_TrMethod;
 		private System.Windows.Forms.Label lbl_TrMethod;
 		private System.Windows.Forms.CheckBox chk_CSUsePaste;
+		private System.Windows.Forms.LinkLabel lnk_SnipOpen;
 		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
@@ -414,6 +415,7 @@ namespace Mahou
 			this.chk_LangTooltipCaret = new System.Windows.Forms.CheckBox();
 			this.chk_LangTooltipMouse = new System.Windows.Forms.CheckBox();
 			this.tab_timings = new System.Windows.Forms.TabPage();
+			this.chk_CSUsePaste = new System.Windows.Forms.CheckBox();
 			this.nud_DelayAfterBackspaces = new System.Windows.Forms.NumericUpDown();
 			this.chk_UseDelayAfterBackspaces = new System.Windows.Forms.CheckBox();
 			this.nud_SelectedTextGetTriesCount = new System.Windows.Forms.NumericUpDown();
@@ -435,6 +437,7 @@ namespace Mahou
 			this.lbl_ExcludedPrograms = new System.Windows.Forms.Label();
 			this.chk_Change1KeyL = new System.Windows.Forms.CheckBox();
 			this.tab_snippets = new System.Windows.Forms.TabPage();
+			this.lnk_SnipOpen = new System.Windows.Forms.LinkLabel();
 			this.cbb_SnippetExpandKeys = new System.Windows.Forms.ComboBox();
 			this.lbl_SnippetExpandKey = new System.Windows.Forms.Label();
 			this.txt_Snippets = new Mahou.MahouUI.TextBoxCA();
@@ -571,7 +574,6 @@ namespace Mahou
 			this.btn_Cancel = new System.Windows.Forms.Button();
 			this.btn_Apply = new System.Windows.Forms.Button();
 			this.HelpMeUnderstand = new System.Windows.Forms.ToolTip(this.components);
-			this.chk_CSUsePaste = new System.Windows.Forms.CheckBox();
 			this.tabs.SuspendLayout();
 			this.tab_functions.SuspendLayout();
 			this.tab_layouts.SuspendLayout();
@@ -1954,6 +1956,16 @@ namespace Mahou
 			this.tab_timings.Text = "Timings";
 			this.tab_timings.UseVisualStyleBackColor = true;
 			// 
+			// chk_CSUsePaste
+			// 
+			this.chk_CSUsePaste.AutoSize = true;
+			this.chk_CSUsePaste.Location = new System.Drawing.Point(8, 240);
+			this.chk_CSUsePaste.Name = "chk_CSUsePaste";
+			this.chk_CSUsePaste.Size = new System.Drawing.Size(211, 19);
+			this.chk_CSUsePaste.TabIndex = 20;
+			this.chk_CSUsePaste.Text = "Use Paste in Selection Conversions.";
+			this.chk_CSUsePaste.UseVisualStyleBackColor = true;
+			// 
 			// nud_DelayAfterBackspaces
 			// 
 			this.nud_DelayAfterBackspaces.Increment = new decimal(new int[] {
@@ -2225,6 +2237,7 @@ namespace Mahou
 			// 
 			// tab_snippets
 			// 
+			this.tab_snippets.Controls.Add(this.lnk_SnipOpen);
 			this.tab_snippets.Controls.Add(this.cbb_SnippetExpandKeys);
 			this.tab_snippets.Controls.Add(this.lbl_SnippetExpandKey);
 			this.tab_snippets.Controls.Add(this.txt_Snippets);
@@ -2239,6 +2252,17 @@ namespace Mahou
 			this.tab_snippets.TabIndex = 3;
 			this.tab_snippets.Text = "Snippets";
 			this.tab_snippets.UseVisualStyleBackColor = true;
+			// 
+			// lnk_SnipOpen
+			// 
+			this.lnk_SnipOpen.AutoSize = true;
+			this.lnk_SnipOpen.Location = new System.Drawing.Point(354, 35);
+			this.lnk_SnipOpen.Name = "lnk_SnipOpen";
+			this.lnk_SnipOpen.Size = new System.Drawing.Size(36, 15);
+			this.lnk_SnipOpen.TabIndex = 32;
+			this.lnk_SnipOpen.TabStop = true;
+			this.lnk_SnipOpen.Text = "Open";
+			this.lnk_SnipOpen.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Lnk_SnipOpenLinkClicked);
 			// 
 			// cbb_SnippetExpandKeys
 			// 
@@ -3766,16 +3790,6 @@ namespace Mahou
 			this.HelpMeUnderstand.ShowAlways = true;
 			this.HelpMeUnderstand.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			this.HelpMeUnderstand.Popup += new System.Windows.Forms.PopupEventHandler(this.HelpMeUnderstandPopup);
-			// 
-			// chk_CSUsePaste
-			// 
-			this.chk_CSUsePaste.AutoSize = true;
-			this.chk_CSUsePaste.Location = new System.Drawing.Point(8, 240);
-			this.chk_CSUsePaste.Name = "chk_CSUsePaste";
-			this.chk_CSUsePaste.Size = new System.Drawing.Size(211, 19);
-			this.chk_CSUsePaste.TabIndex = 20;
-			this.chk_CSUsePaste.Text = "Use Paste in Selection Conversions.";
-			this.chk_CSUsePaste.UseVisualStyleBackColor = true;
 			// 
 			// MahouUI
 			// 

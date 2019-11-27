@@ -37,7 +37,7 @@ namespace Mahou {
 		public static bool BlockAltUpNOW = false;
 		static string CycleCaseOrder = "TULSR";
 		static bool updating, was, isold = true, checking, snip_checking, as_checking, check_ASD_size = true;
-		public static bool ENABLED = true;
+		public static bool ENABLED = true, reload_snip = false;
 		#region Timers
 		static Timer tmr = new Timer();
 		static Timer old = new Timer();
@@ -1696,7 +1696,7 @@ namespace Mahou {
 				chk_LangTTMouseOnChange.Enabled = !chk_MouseTTAlways.Checked;
 			}
 			// Snippets tab
-			lbl_SnippetsCount.Enabled = lbl_SnippetExpandKey.Enabled = cbb_SnippetExpandKeys.Enabled = txt_Snippets.Enabled = chk_SnippetsSwitchToGuessLayout.Enabled = chk_SnippetsSpaceAfter.Enabled = chk_Snippets.Checked;
+			lbl_SnippetsCount.Enabled = lbl_SnippetExpandKey.Enabled = cbb_SnippetExpandKeys.Enabled = txt_Snippets.Enabled = chk_SnippetsSwitchToGuessLayout.Enabled = chk_SnippetsSpaceAfter.Enabled = lnk_SnipOpen.Enabled = chk_Snippets.Checked;
 			// Auto Switch tab
 			lbl_AutoSwitchWordsCount.Enabled = btn_UpdateAutoSwitchDictionary.Enabled = txt_AutoSwitchDictionary.Enabled = chk_AutoSwitchSwitchToGuessLayout.Enabled = chk_AutoSwitchSpaceAfter.Enabled = chk_DownloadASD_InZip.Enabled = chk_AutoSwitch.Checked;
 			// Persistent Layout tab
@@ -3665,7 +3665,7 @@ DEL ""ExtractASD.cmd""";
 			chk_ReadOnlyNA.Text = MMain.Lang[Languages.Element.ReadOnlyNA];
 			chk_WriteInputHistory.Text = MMain.Lang[Languages.Element.WriteInputHistory];
 			lbl_BackSpaceType.Text = MMain.Lang[Languages.Element.BackSpaceType];
-			lnk_OpenLogs.Text = lnk_OpenConfig.Text = lnk_OpenHistory.Text = MMain.Lang[Languages.Element.Open];
+			lnk_OpenLogs.Text = lnk_OpenConfig.Text = lnk_OpenHistory.Text = lnk_SnipOpen.Text = MMain.Lang[Languages.Element.Open];
 			#endregion
 			#region Layouts
 			chk_SwitchBetweenLayouts.Text = MMain.Lang[Languages.Element.SwitchBetween]+":";
@@ -3965,6 +3965,10 @@ DEL ""ExtractASD.cmd""";
 		void Lnk_pluginLinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
 			__lopen("http://github.com/BladeMight/MahouCaretDisplayServer", "http");
 		}
+		void Lnk_SnipOpenLinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+			__lopen(snipfile, "txt");
+			reload_snip = true;
+		}
 		#endregion
 		#region Mahou UI controls events
 		void Chk_CheckedChanged(object sender, EventArgs e) {
@@ -4226,6 +4230,10 @@ DEL ""ExtractASD.cmd""";
 			RegisterHotkeys();
 		}
 		void MahouUIActivated(object sender, EventArgs e) {
+			if (reload_snip) {
+				txt_Snippets.Text = File.ReadAllText(snipfile);
+				reload_snip = false;
+			}
 			if (tabs.SelectedIndex == tabs.TabPages.IndexOf(tab_hotkeys)) {
 				UnregisterHotkeys(1);
 				ScrlCheck.Stop();
