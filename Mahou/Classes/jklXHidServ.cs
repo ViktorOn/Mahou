@@ -151,13 +151,18 @@ namespace Mahou {
 				Logging.Log("[JKL] > Layout changed to [" + layout + "] / [0x"+layout.ToString("X") +"].");
 				Debug.WriteLine(">> JKL LC: " + layout);
 				Logging.Log("[JKL] > On layout act:" +OnLayoutAction);
-				Logging.Log("[JKL] > ACtion: " +(ActionOnLayout==null?"null":ActionOnLayout.Method.Name));
+				var anull = ActionOnLayout==null;
+				Logging.Log("[JKL] > ACtion: " +(anull?"null":ActionOnLayout.Method.Name));
 				if (layout == OnLayoutAction || (layout & 0xffff) == (OnLayoutAction & 0xffff)) {
 					actionOnLayoutExecuted = true;
 					OnLayoutAction = 0;
-					Debug.WriteLine("Executing action: " + ActionOnLayout.Method.Name + " on layout: " +layout);
-					ActionOnLayout();
-					ActionOnLayout = null;
+					if (anull) {
+						Logging.Log("[JKL] > Action is null, something terribly went wrong... Please try to disable JKL, if layout changing went wild.",1);
+					} else {
+						Debug.WriteLine("Executing action: " + ActionOnLayout.Method.Name + " on layout: " +layout);
+					    ActionOnLayout();
+					    ActionOnLayout = null;
+					}
 				}
 				if (start_cyclEmuSwitch) {
 					if (layout != cycleEmuDesiredLayout && laysho != cycleEmuDesiredLayout)
