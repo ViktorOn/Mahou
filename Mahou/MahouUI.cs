@@ -11,7 +11,8 @@ using System.Text.RegularExpressions;
 using System.Reflection;
 using Microsoft.Win32;
 using System.Runtime.InteropServices;
-	
+using System.Web;
+
 namespace Mahou {
 	public partial class MahouUI : Form {
 		#region Variables
@@ -3493,10 +3494,10 @@ DEL ""ExtractASD.cmd""";
 				// They really works :)
 				var Title = Regex.Match(data,
 					            "a href=\"/BladeMight/Mahou/releases/tag/.+?>(.+?)<").Groups[1].Value;
-				var Description = Regex.Replace(Regex.Match(data,
+				var Description = HttpUtility.HtmlDecode(Regex.Replace(Regex.Match(data,
                                        //These looks unsafe, but hey, they really work!
 					                  "<div class=\"markdown-body\">\n\\s+(.+?)[\\n\\s]+</div>",
-					                  RegexOptions.IgnoreCase | RegexOptions.Singleline).Groups[1].Value, "<[^>]*>", "");
+					                  RegexOptions.IgnoreCase | RegexOptions.Singleline).Groups[1].Value, "<[^>]*>", ""));
 				var Version = Regex.Match(data, "a href=\"/BladeMight/Mahou/tree/(v.*?)\"").Groups[1].Value;
 				var Link = GH + Regex.Match(data,
 					           "<a href=\"(/BladeMight/Mahou/releases/download.+?)\"").Groups[1].Value;
@@ -3600,7 +3601,7 @@ DEL ""ExtractASD.cmd""";
 			    txt_UpdateDetails.Text = UpdInfo[1];
 			});
 			this.btn_DownloadUpdate.Invoke((MethodInvoker)delegate {
-               	btn_DownloadUpdate.Text = MMain.Lang[Languages.Element.DownloadUpdate]; // Resotre download button text
+               	btn_DownloadUpdate.Text = MMain.Lang[Languages.Element.DownloadUpdate]; // Restore download button text
 			    btn_DownloadUpdate.Text = Regex.Replace(btn_DownloadUpdate.Text, @"\<.+?\>", UpdInfo[2]);
 			});
 		}
