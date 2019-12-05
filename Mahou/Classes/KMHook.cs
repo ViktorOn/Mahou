@@ -757,7 +757,7 @@ namespace Mahou {
 			for (int i = 0; i < snipps.Length; i++) {
 				if (snipps[i] == null) break;
 				if (snipps[i].StartsWith(REGEXSNIP, StringComparison.InvariantCulture) &&
-				    snipps[i].EndsWith("/", StringComparison.InvariantCulture) && !xx2) {
+				    snipps[i].EndsWith("/", StringComparison.InvariantCulture)) {
 					var regex_r = snipps[i].Substring(6, snipps[i].Length-7);
 					var ism = Regex.IsMatch(snip, regex_r);
 					Debug.WriteLine("[SNI] > regex: /"+regex_r+"/, snip ["+snip+"], matches: "+ism);
