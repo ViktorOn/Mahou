@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Mahou {
 	static class KMHook  { // Keyboard & Mouse Listeners & Event hook		#region Variables
-		public static string __ANY__ = "***ANY***", last_snip, snip_selection;
+		public static string __ANY__ = "***ANY***", REGEXSNIP = "regex/", last_snip, snip_selection;
 		public static bool win, alt, ctrl, shift,
 			win_r, alt_r, ctrl_r, shift_r,
 			shiftRP, ctrlRP, altRP, winRP, //RP = Re-Press
@@ -756,6 +756,41 @@ namespace Mahou {
 			Logging.Log("[SNI] > Current snippet is [" + snip + "].");
 			for (int i = 0; i < snipps.Length; i++) {
 				if (snipps[i] == null) break;
+				if (snipps[i].StartsWith(REGEXSNIP, StringComparison.InvariantCulture) &&
+				    snipps[i].EndsWith("/", StringComparison.InvariantCulture) && !xx2) {
+					var regex_r = snipps[i].Substring(6, snipps[i].Length-7);
+					var ism = Regex.IsMatch(snip, regex_r);
+					Debug.WriteLine("[SNI] > regex: /"+regex_r+"/, snip ["+snip+"], matches: "+ism);
+					if (ism) {
+						var repl = Regex.Replace(snip, regex_r, exps[i]);
+						Debug.WriteLine("PRE UL : " +repl);
+						var toupper = repl.Contains("\\U") || repl.Contains("\\u");
+						var tolower = repl.Contains("\\L") || repl.Contains("\\l");
+						if (toupper) {
+							var e = Regex.Matches(repl, @"\\[Uu](.*?)(\\[eE]|$)");
+							foreach (Match e_ in e) {
+								var gv = e_.Value;
+								repl = repl.Replace(gv, gv.ToUpperInvariant());
+								repl = Regex.Replace(repl, @"\\[uUeE]", "");
+							}
+						}
+						if (tolower) {
+							var e = Regex.Matches(repl, @"\\[lL](.*?)(\\[eE]|$)");
+							foreach (Match e_ in e) {
+								var gv = e_.Value;
+								repl = repl.Replace(gv, gv.ToLowerInvariant());
+								repl = Regex.Replace(repl, @"\\[lLeE]", "");
+							}
+						}
+						if (repl.Contains("\\e") || repl.Contains("\\E")) {
+							repl = Regex.Replace(repl, @"\\[eE]", "");
+						}
+						Debug.WriteLine("replaced: "+repl);
+						ExpandSnippet(snip, repl, MahouUI.SnippetSpaceAfter, MahouUI.SnippetsSwitchToGuessLayout, false, x2);
+						aftsingleAS = false;
+						break;
+					}
+				}
 				if (snipps[i].Contains(__ANY__)) {
 					var any = "";
 					var pins = snipps[i];

@@ -1954,7 +1954,7 @@ DEL "+restartMahouPath;
 				lcid = Locales.GetCurrentLocale();
 			else 
 				lcid = MahouUI.currentLayout;
-			Debug.WriteLine("refresh?"+ (lastTrayFlagLayout != lcid || force));
+//			Debug.WriteLine("refresh?"+ (lastTrayFlagLayout != lcid || force));
 			if (lastTrayFlagLayout != lcid || force) {
 				RefreshFLAG(force);
 				var b = FLAG;
