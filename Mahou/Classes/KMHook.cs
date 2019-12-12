@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Mahou {
 	static class KMHook  { // Keyboard & Mouse Listeners & Event hook		#region Variables
-		public static string __ANY__ = "***ANY***", REGEXSNIP = "regex/", last_snip, snip_selection;
+		public static string __ANY__ = "***ANY***", REGEXSNIP = "regex/", IGNLAYSNIP = "?~?", last_snip, snip_selection;
 		public static bool win, alt, ctrl, shift,
 			win_r, alt_r, ctrl_r, shift_r,
 			shiftRP, ctrlRP, altRP, winRP, //RP = Re-Press
@@ -756,6 +756,45 @@ namespace Mahou {
 			Logging.Log("[SNI] > Current snippet is [" + snip + "].");
 			for (int i = 0; i < snipps.Length; i++) {
 				if (snipps[i] == null) break;
+				if (snipps[i].StartsWith(IGNLAYSNIP, StringComparison.InvariantCulture)) {
+					var ignlaysnip = snipps[i].Replace(IGNLAYSNIP, "");
+					if (ignlaysnip.Length != snip.Length) {
+						Debug.WriteLine("length mismatch, it would never match");
+						continue;
+					}
+					bool allok = true;
+					if (ignlaysnip != snip) {
+						var _ = WordGuessLayout(snip);
+						var __ = WordGuessLayout(ignlaysnip);
+						Debug.WriteLine(_.Item2 + "/" + __.Item2);
+						for (int q = 0; q != snip.Length; q++) {
+							char c = snip[q], cq = ignlaysnip[q];
+							var kk = WinAPI.VkKeyScanEx(c, _.Item2);
+							if (kk == -1) {
+								foreach (var l in MMain.locales) {
+									kk = WinAPI.VkKeyScanEx(c, l.uId);
+									if (kk != -1) break;
+								}
+							}
+	//						var l = Locales.GetCurrentLocale(Locales.ActiveWindow());
+	//						Debug.WriteLine("Scan "+cq+" + " +l);
+							var kq = WinAPI.VkKeyScanEx(cq, __.Item2);
+							Debug.WriteLine("kk = " + kk + ", kq = " + kq);
+							if (kk != kq) {
+								allok = false;
+								break;
+							}
+						}
+					} else {
+						Debug.WriteLine("input: ["+snip+"] actually equals snippet by characters exactly!: ["+ignlaysnip+"], no need to check key-equality.");
+					}
+					if (allok) {
+						Debug.WriteLine("All chars from ["+snip+"] are key-equally to snippet: ["+snipps[i]+"].");
+						ExpandSnippet(snip, exps[i], MahouUI.SnippetSpaceAfter, MahouUI.SnippetsSwitchToGuessLayout, false, x2);
+						aftsingleAS = false;
+						break;
+					}
+				}
 				if (snipps[i].StartsWith(REGEXSNIP, StringComparison.InvariantCulture) &&
 				    snipps[i].EndsWith("/", StringComparison.InvariantCulture)) {
 					var regex_r = snipps[i].Substring(6, snipps[i].Length-7);
