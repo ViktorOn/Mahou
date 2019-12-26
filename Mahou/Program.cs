@@ -25,6 +25,7 @@ namespace Mahou
 		public static WinAPI.WinEventDelegate _evt_proc = KMHook.EventHookCallback;
 		public static WinAPI.WinEventDelegate _LDevt_proc = KMHook.LDEventHook;
 		public static Locales.Locale[] locales = Locales.AllList();
+		public static int PHLayouts = 0;
 		public static string _language = "";
 		public static Dictionary<Languages.Element, string> Lang = Languages.English;
 		public static Configs MyConfs;

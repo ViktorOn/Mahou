@@ -63,7 +63,6 @@ namespace Mahou
 			var gui = new WinAPI.GUITHREADINFO();
 			gui.cbSize = Marshal.SizeOf(gui);
 			WinAPI.GetGUIThreadInfo(WinAPI.GetWindowThreadProcessId(WinAPI.GetForegroundWindow(), IntPtr.Zero), ref gui);
-
 			awHandle = gui.hwndFocus;
 			if (awHandle == IntPtr.Zero) {
 				awHandle = WinAPI.GetForegroundWindow();
@@ -85,13 +84,19 @@ namespace Mahou
 		public static Locale[] AllList() {
 			int count = 0;
 			var locs = new List<Locale>();
+			var PHl = new List<uint>();
 			foreach (InputLanguage lang in InputLanguage.InstalledInputLanguages) {
+				uint u = (uint)lang.Handle;
+				uint shc = u & 0xffff;
+				if (!PHl.Contains(shc))
+					PHl.Add(shc);
 				count++;
 				locs.Add(new Locale {
 					Lang = lang.LayoutName,
-					uId = (uint)lang.Handle
+					uId = u
 				});
 			}
+			MMain.PHLayouts = PHl.Count;
 			return locs.ToArray();
 		}
 		/// <summary>
