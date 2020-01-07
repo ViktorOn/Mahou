@@ -62,6 +62,14 @@ namespace Mahou {
 				{"у", "u"}, {"ф", "f"}, {"х", "h"}, {"ц", "c"}, {"ъ", ":"},
 				{"Ы", "Y"}, {"Ь", "J"}, {"е", "e"}, {"т", "t"}, {"ы", "y"}
 		};
+		static Dictionary<string, string> LayReplDict = new Dictionary<string, string>() {
+			{"ä", "э"},{"э", "ä"},{"ö", "ж"},{"ж", "ö"},
+			{"ü", "х"},{"х", "ü"},{"Ä", "Э"},{"Э", "Ä"},
+			{"Ö", "Ж"},{"Ж", "Ö"},{"Ü", "Х"},{"Х", "Ü"},
+			{"Я", "Y"},{"Y", "Я"},{"Н", "Z"},{"Z", "Н"},
+			{"я", "y"},{"y", "я"},{"н", "z"},{"z", "н"},
+			{"-", "ß"}
+		};
 		static Dictionary<string, string> transliterationDict = new Dictionary<string, string>(DefaultTransliterationDict);
 		#endregion
 		#region Keyboard, Mouse & Event hooks callbacks
@@ -983,29 +991,56 @@ namespace Mahou {
 			}
 			return '\0';
 		}
+		public static Dictionary<string, string> ParseDictionary(string[] raw_dict) {
+			var dict = new Dictionary<string, string>();
+			for (int i = 0; i != raw_dict.Length; i++) {
+				var line = raw_dict[i];
+				if (line.Contains("|")) {
+			    	var lr = line.Split('|');
+			    	dict[lr[0]] = lr[1];
+				} else {
+					Logging.Log("[DICT] > Wrong Dictionary, line #"+i+", => " +line);
+			    	dict = null;
+			    	break;
+				}
+			}
+			return dict;
+		}
+		public static string DictToRaw(Dictionary<string, string> dict) {
+			var raw = "";
+			foreach (var kv in dict) {
+				raw += kv.Key+"|"+kv.Value+"\r\n";
+			}
+			return raw;
+		}
+		public static void ReloadLayReplDict() {
+			Dictionary<string,string> lrdict = null;
+			var lrdictp = System.IO.Path.Combine(MahouUI.nPath, "LayoutReplaces.txt");
+			var load = false;
+			if (System.IO.File.Exists(lrdictp)) {
+				var lines = System.IO.File.ReadAllLines(lrdictp);
+				lrdict = ParseDictionary(lines);
+				load = true;
+			} else if (MahouUI.QWERTZ_fix) {
+				System.IO.File.WriteAllText(lrdictp, DictToRaw(LayReplDict));
+			}
+			if (load) {
+				if (lrdict != null && lrdict.Count != 0) {
+					Logging.Log("[LayoutReplace] > Succesfully initialized LayRepl Dictionary from ["+lrdict+"].");
+					LayReplDict = lrdict;
+				} else {
+					Logging.Log("[LayoutReplace] > "+lrdictp+" wrong syntax, dictionary not updated.", 1);
+				}
+			} 
+		}
 		public static void ReloadTSDict() {
-			var tsdict = new Dictionary<string, string>();
+			Dictionary<string,string> tsdict = null;
 			var tsdictp = System.IO.Path.Combine(MahouUI.nPath, "TSDict.txt");
 			if (System.IO.File.Exists(tsdictp)) {
 				var lines = System.IO.File.ReadAllLines(tsdictp);
-				for (int i = 0; i != lines.Length; i++) {
-					var line = lines[i];
-					if (line.Contains("|")) {
-				    	var lr = line.Split('|');
-				    	tsdict[lr[0]] = lr[1];
-//				    	Debug.WriteLine("Added to TSDict: " +lr[0] +" <=> " + lr[1]);
-					} else {
-						Logging.Log("[TRANSLTRT] > Wrong Transliteration Dict line #"+i+", => " +line);
-				    	tsdict = null;
-				    	break;
-					}
-				}
+				tsdict = ParseDictionary(lines);
 			} else {
-				var raw = "";
-				foreach (var kv in DefaultTransliterationDict) {
-					raw += kv.Key+"|"+kv.Value+"\r\n";
-				}
-				System.IO.File.WriteAllText(tsdictp, raw);
+				System.IO.File.WriteAllText(tsdictp, DictToRaw(DefaultTransliterationDict));
 			}
 			if (tsdict != null && tsdict.Count != 0) {
 				Logging.Log("[TRANSLTRT] > Succesfully initialized Transliteration Dictionary from ["+tsdictp+"].");
@@ -2078,51 +2113,9 @@ namespace Mahou {
 			if (!MahouUI.QWERTZ_fix)
 				return "";
 			var T = "";
-			switch (c) {
-				case 'ä':
-					T = "э"; break; 
-				case 'э':
-					T = "ä"; break;
-				case 'ö':
-					T = "ж"; break;
-				case 'ж':
-					T = "ö"; break;
-				case 'ü':
-					T = "х"; break;
-				case 'х':
-					T = "ü"; break;
-				case 'Ä':
-					T = "Э"; break;
-				case 'Э':
-					T = "Ä"; break;
-				case 'Ö':
-					T = "Ж"; break;
-				case 'Ж':
-					T = "Ö"; break;
-				case 'Ü':
-					T = "Х"; break;
-				case 'Х':
-					T = "Ü"; break;
-				case 'Я':
-					T = "Y"; break;
-				case 'Y':
-					T = "Я"; break;
-				case 'Н':
-					T = "Z"; break;
-				case 'Z':
-					T = "Н"; break;
-				case 'я':
-					T = "y"; break;
-				case 'y':
-					T = "я"; break;
-				case 'н':
-					T = "z"; break;
-				case 'z':
-					T = "н"; break;
-				case '-':
-					T = "ß"; break;
-				default:
-					T = ""; break;
+			foreach(var v in LayReplDict) {
+				if (c == v.Key[0])
+					T = v.Value;
 			}
 			Logging.Log("German fix T:" + T +  "/ c: " + c);
 			return T;

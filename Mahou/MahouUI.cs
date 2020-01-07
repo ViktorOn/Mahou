@@ -1339,6 +1339,7 @@ namespace Mahou {
 			}
 			#endregion
 			KMHook.ReloadTSDict();
+			KMHook.ReloadLayReplDict();
 			#region Appearence & Hotkeys
 			LoadTemps();
 			UpdateLangDisplayControlsSwitch();
