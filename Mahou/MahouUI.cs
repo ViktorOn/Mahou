@@ -1117,12 +1117,13 @@ namespace Mahou {
 			return font;
 		}
 		string FontDecimReplace(string font_raw) {
-			var pattern = "(?:(\\.|\\,))([0-9]+)pt";
+			var pattern = @"(?:([.,]))([0-9]+pt)";
 			var repl = font_raw;
 			var mt = new Regex(pattern).Match(repl);
+//			Debug.WriteLine("DECIM REPL FONT :" +mt.Groups[1] + " == " + decim);
 			if (mt.Groups[1].Value != decim && !string.IsNullOrEmpty(mt.Groups[1].Value)) {
-				repl = Regex.Replace(font_raw, pattern, decim+"$1pt");
-				Logging.Log("Replaced decimal in font " + font_raw + ", with: " + decim);
+				repl = Regex.Replace(font_raw, pattern, decim+"$2");
+				Logging.Log("Replaced decimal in font " + font_raw + ", with: " + decim + " => " + repl);
 			}
 			return repl;
 		}
