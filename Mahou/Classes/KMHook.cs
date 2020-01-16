@@ -997,7 +997,13 @@ namespace Mahou {
 				var line = raw_dict[i];
 				if (line.Contains("|")) {
 			    	var lr = line.Split('|');
-			    	dict[lr[0]] = lr[1];
+			    	var cc = lr[0];
+			    	var rr = lr[1];
+//			    	Debug.WriteLine("Noth: "+cc+" " +rr);
+			    	if (cc != "") 
+			    		dict[cc] = rr;
+			    	else 
+			    		Logging.Log("[DICT] Bad entry, first can't be empty: " +lr, 2);
 				} else {
 					Logging.Log("[DICT] > Wrong Dictionary, line #"+i+", => " +line);
 			    	dict = null;
@@ -2016,19 +2022,25 @@ namespace Mahou {
 			Logging.Log("[TRANSLTRT] > Starting Transliterate text.");
 			string output = ClipStr;
 			foreach (KeyValuePair<string, string> key in transliterationDict) {
-				if (output.Contains(key.Key))
-                	output.Replace(key.Key, key.Value);
+				if (output.Contains(key.Key)) {
+					var kv = key.Value;
+//					if (key.Value == "") {
+//						Debug.WriteLine("empty replace");
+//					}
+                	output = output.Replace(key.Key, key.Value);
+				}
+//				Debug.WriteLine(key.Key + " => " + key.Value + " = " +output);
             }
 			if (ClipStr == output) {
 				foreach (KeyValuePair<string, string> key in transliterationDict) {
-					if (ClipStr.Contains(key.Value))
+					if (ClipStr.Contains(key.Value) && !String.IsNullOrEmpty(key.Value))
 	                	ClipStr = ClipStr.Replace(key.Value, key.Key);
             	}
-				if (ClipStr == output)
-				foreach (KeyValuePair<string, string> key in transliterationDict) {
-					if (ClipStr.Contains(key.Key))
-	                	ClipStr = ClipStr.Replace(key.Key, key.Value);
-            	}
+//				if (ClipStr == output)
+//				foreach (KeyValuePair<string, string> key in transliterationDict) {
+//					if (ClipStr.Contains(key.Key))
+//	                	ClipStr = ClipStr.Replace(key.Key, key.Value);
+//            	}
 				return ClipStr;
 			}
 			return output;
