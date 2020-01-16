@@ -1116,8 +1116,13 @@ namespace Mahou {
 				var args_get = false;
 				var e = expand[i]; 
 //				Debug.WriteLine("i:"+i+", e:"+e);
-				if (!is_expr)
-					ex += e;
+				if (!is_expr) {
+					if (ex == "__" && e == '_') { // Fix for multiple "_" repeats before __expr
+						raw += e;
+					} else {
+					  ex += e;
+					}
+				}
 				else err+=e;
 				if (is_expr && e == ')') { // Escape closing
 					if (expand[i-1] == '\\') {
