@@ -1002,8 +1002,10 @@ namespace Mahou {
 //			    	Debug.WriteLine("Noth: "+cc+" " +rr);
 			    	if (cc != "") 
 			    		dict[cc] = rr;
-			    	else 
-			    		Logging.Log("[DICT] Bad entry, first can't be empty: " +lr, 2);
+			    	else if (rr != "")
+			    		dict[rr] = cc;
+			    	else
+			    		Logging.Log("[DICT] Empty entry, just | : " +lr, 2);
 				} else {
 					Logging.Log("[DICT] > Wrong Dictionary, line #"+i+", => " +line);
 			    	dict = null;
