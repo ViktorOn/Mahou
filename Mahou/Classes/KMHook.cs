@@ -45,7 +45,7 @@ namespace Mahou {
 		};
 		public static string[] as_wrongs;
 		public static string[] as_corrects;
-		static Dictionary<string, string> DefaultTransliterationDict = new Dictionary<string, string>() { 
+		static DICT<string> DefaultTransliterationDict = new DICT<string>( new Dictionary<string,string>() {
 				{"Щ", "SCH"}, {"щ", "sch"}, {"Ч", "CH"}, {"Ш", "SH"}, {"Ё", "JO"}, {"ВВ", "W"},
 				{"Є", "EH"}, {"ю", "yu"}, {"я", "ya"}, {"є", "eh"}, {"Ж", "ZH"},
 				{"ч", "ch"}, {"ш", "sh"}, {"Й", "JJ"}, {"ж", "zh"},
@@ -61,16 +61,16 @@ namespace Mahou {
 				{"н", "n"}, {"о", "o"}, {"п", "p"}, {"р", "r"}, {"с", "s"}, 
 				{"у", "u"}, {"ф", "f"}, {"х", "h"}, {"ц", "c"}, {"ъ", ":"},
 				{"Ы", "Y"}, {"Ь", "J"}, {"е", "e"}, {"т", "t"}, {"ы", "y"}
-		};
-		static Dictionary<string, string> LayReplDict = new Dictionary<string, string>() {
+        });
+		static DICT<string> LayReplDict = new DICT<string>(new Dictionary<string, string>() {
 			{"ä", "э"},{"э", "ä"},{"ö", "ж"},{"ж", "ö"},
 			{"ü", "х"},{"х", "ü"},{"Ä", "Э"},{"Э", "Ä"},
 			{"Ö", "Ж"},{"Ж", "Ö"},{"Ü", "Х"},{"Х", "Ü"},
 			{"Я", "Y"},{"Y", "Я"},{"Н", "Z"},{"Z", "Н"},
 			{"я", "y"},{"y", "я"},{"н", "z"},{"z", "н"},
 			{"-", "ß"}
-		};
-		static Dictionary<string, string> transliterationDict = new Dictionary<string, string>(DefaultTransliterationDict);
+        });
+		static DICT<string> transliterationDict = DefaultTransliterationDict;
 		#endregion
 		#region Keyboard, Mouse & Event hooks callbacks
 		public static void ListenKeyboard(int vkCode, uint MSG, short Flags = 0) {
@@ -967,8 +967,8 @@ namespace Mahou {
 			}
 			return '\0';
 		}
-		public static Dictionary<string, string> ParseDictionary(string[] raw_dict, bool tsdict = false) {
-			var dict = new Dictionary<string, string>();
+		public static DICT<string> ParseDictionary(string[] raw_dict, bool tsdict = false) {
+			var dict = new DICT<string>();
 			for (int i = 0; i != raw_dict.Length; i++) {
 				var line = raw_dict[i];
 				if (line.Contains("|")) {
@@ -1001,16 +1001,16 @@ namespace Mahou {
 				}
 			}
 			return dict;
-		}
-		public static string DictToRaw(Dictionary<string, string> dict) {
-			var raw = "";
-			foreach (var kv in dict) {
-				raw += kv.Key+"|"+kv.Value+"\r\n";
+		} 
+		public static string DictToRaw(DICT<string> dict) {
+			var raw = new StringBuilder();
+			for(int i = 0; i != dict.len; i++) {
+				raw.Append(dict[i].k+"|"+dict[i].v);
 			}
-			return raw;
+			return raw.ToString();
 		}
 		public static void ReloadLayReplDict() {
-			Dictionary<string,string> lrdict = null;
+			DICT<string> lrdict = null;
 			var lrdictp = System.IO.Path.Combine(MahouUI.nPath, "LayoutReplaces.txt");
 			var load = false;
 			if (System.IO.File.Exists(lrdictp)) {
@@ -1021,7 +1021,7 @@ namespace Mahou {
 				System.IO.File.WriteAllText(lrdictp, DictToRaw(LayReplDict));
 			}
 			if (load) {
-				if (lrdict != null && lrdict.Count != 0) {
+				if (lrdict != null && lrdict.len != 0) {
 					Logging.Log("[LayoutReplace] > Succesfully initialized LayRepl Dictionary from ["+lrdict+"].");
 					LayReplDict = lrdict;
 				} else {
@@ -1060,7 +1060,7 @@ namespace Mahou {
 			return input;
 		}
 		public static void ReloadTSDict() {
-			Dictionary<string,string> tsdict = null;
+			DICT<string> tsdict = null;
 			var tsdictp = System.IO.Path.Combine(MahouUI.nPath, "TSDict.txt");
 			if (System.IO.File.Exists(tsdictp)) {
 				var lines = System.IO.File.ReadAllLines(tsdictp);
@@ -1068,7 +1068,7 @@ namespace Mahou {
 			} else {
 				System.IO.File.WriteAllText(tsdictp, DictToRaw(DefaultTransliterationDict));
 			}
-			if (tsdict != null && tsdict.Count != 0) {
+			if (tsdict != null && tsdict.len != 0) {
 				Logging.Log("[TRANSLTRT] > Succesfully initialized Transliteration Dictionary from ["+tsdictp+"].");
 				transliterationDict = tsdict;
 			} else {
@@ -2071,9 +2071,9 @@ namespace Mahou {
 			return result.ToArray();
 		}
 		public static bool __TSDictContainsOnlyRegex() {
-			foreach (KeyValuePair<string, string> key in transliterationDict) {
-				if (!LooksLikeRegex(key.Key)) {
-					Debug.WriteLine("TSDict actually not all regex, the: "+key.Key+" is not regex");
+			for (int z = 0; z != transliterationDict.len; z++) {
+				if (!LooksLikeRegex(transliterationDict[z].k)) {
+					Debug.WriteLine("TSDict actually not all regex, the: "+transliterationDict[z].k+" is not regex");
 					return false;
 				}
 			}
@@ -2081,10 +2081,10 @@ namespace Mahou {
 		}
 		public static string __TSDictReplace(string input, bool reverse = false) {
 			bool only_regex = true;
-			foreach (KeyValuePair<string, string> key in transliterationDict) {
-				var repl = key.Key;
-				var tore = key.Value;
-				if (reverse) { tore = repl; repl = key.Value; }
+			for (int z = 0; z != transliterationDict.len; z++) {
+				var repl = transliterationDict[z].k;
+				var tore = transliterationDict[z].v;
+				if (reverse) { tore = repl; repl = transliterationDict[z].v; }
 				var isRegex = LooksLikeRegex(repl);
 				Debug.WriteLine("CHECK: "+repl + " " +isRegex);
 				if (String.IsNullOrEmpty(repl)) { 
@@ -2103,7 +2103,8 @@ namespace Mahou {
 					if (spl.Length<3) { Debug.WriteLine("Wrong regex, unerminated /, etc."); continue; }
 					var regex = spl[1];
 					var regex_r = spl[2];
-					Debug.WriteLine("REGEX_REPLACE: "+repl);
+					//Debug.WriteLine("REGEX_REPLACE: "+repl);
+					Debug.WriteLine(input + " => s/" + regex + "/"+regex_r);
 					//if (!rir) { Debug.WriteLine("NOT REGEX
 //					if ((!rir && rr)) {
 //						Debug.WriteLine("SWAP REGEX.");
@@ -2216,9 +2217,9 @@ namespace Mahou {
 			if (!MahouUI.QWERTZ_fix)
 				return "";
 			var T = "";
-			foreach(var v in LayReplDict) {
-				if (c == v.Key[0])
-					T = v.Value;
+			for(int z = 0; z != LayReplDict.len; z++) {
+				if (c == LayReplDict[z].k[0])
+					T = LayReplDict[z].v;
 			}
 			Logging.Log("German fix T:" + T +  "/ c: " + c);
 			return T;
