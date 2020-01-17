@@ -812,9 +812,9 @@ namespace Mahou {
 					Debug.WriteLine("replaced: "+repl);
 					if (!String.IsNullOrEmpty(repl)) {
 					  ExpandSnippet(snip, repl, MahouUI.SnippetSpaceAfter, MahouUI.SnippetsSwitchToGuessLayout, false, x2);
+					  aftsingleAS = false;
+					  break;
 				    }
-					aftsingleAS = false;
-					break;
 				}
 				if (snipps[i].Contains(__ANY__)) {
 					var any = "";
@@ -2085,7 +2085,7 @@ namespace Mahou {
 				} else {
 					var spl = SplitNoEsc(repl, '/');
 					Debug.WriteLine("SplitNoEsc: " + spl.Length);
-					if (spl.Length<3) { Debug.WriteLine("Wrong regex, unerminated /, etc."); }
+					if (spl.Length<3) { Debug.WriteLine("Wrong regex, unerminated /, etc."); continue; }
 					var regex = spl[1];
 					var regex_r = spl[2];
 					Debug.WriteLine("REGEX_REPLACE: "+repl);
