@@ -808,37 +808,13 @@ namespace Mahou {
 				if (snipps[i].StartsWith(REGEXSNIP, StringComparison.InvariantCulture) &&
 				    snipps[i].EndsWith("/", StringComparison.InvariantCulture)) {
 					var regex_r = snipps[i].Substring(6, snipps[i].Length-7);
-					var ism = Regex.IsMatch(snip, regex_r);
-					Debug.WriteLine("[SNI] > regex: /"+regex_r+"/, snip ["+snip+"], matches: "+ism);
-					if (ism) {
-						var repl = Regex.Replace(snip, regex_r, exps[i]);
-						Debug.WriteLine("PRE UL : " +repl);
-						var toupper = repl.Contains("\\U") || repl.Contains("\\u");
-						var tolower = repl.Contains("\\L") || repl.Contains("\\l");
-						if (toupper) {
-							var e = Regex.Matches(repl, @"\\[Uu](.*?)(\\[eE]|$)");
-							foreach (Match e_ in e) {
-								var gv = e_.Value;
-								repl = repl.Replace(gv, gv.ToUpperInvariant());
-								repl = Regex.Replace(repl, @"\\[uUeE]", "");
-							}
-						}
-						if (tolower) {
-							var e = Regex.Matches(repl, @"\\[lL](.*?)(\\[eE]|$)");
-							foreach (Match e_ in e) {
-								var gv = e_.Value;
-								repl = repl.Replace(gv, gv.ToLowerInvariant());
-								repl = Regex.Replace(repl, @"\\[lLeE]", "");
-							}
-						}
-						if (repl.Contains("\\e") || repl.Contains("\\E")) {
-							repl = Regex.Replace(repl, @"\\[eE]", "");
-						}
-						Debug.WriteLine("replaced: "+repl);
-						ExpandSnippet(snip, repl, MahouUI.SnippetSpaceAfter, MahouUI.SnippetsSwitchToGuessLayout, false, x2);
-						aftsingleAS = false;
-						break;
-					}
+					var repl = RegexREPLACEP(snip, regex_r, exps[i]);
+					Debug.WriteLine("replaced: "+repl);
+					if (!String.IsNullOrEmpty(repl)) {
+					  ExpandSnippet(snip, repl, MahouUI.SnippetSpaceAfter, MahouUI.SnippetsSwitchToGuessLayout, false, x2);
+				    }
+					aftsingleAS = false;
+					break;
 				}
 				if (snipps[i].Contains(__ANY__)) {
 					var any = "";
@@ -1040,6 +1016,36 @@ namespace Mahou {
 					Logging.Log("[LayoutReplace] > "+lrdictp+" wrong syntax, dictionary not updated.", 1);
 				}
 			} 
+		}
+		public static string RegexREPLACEP(string input, string regex_raw, string replacement) {
+			var ism = Regex.IsMatch(input, regex_raw);
+			Debug.WriteLine("[REEX] > regex: /"+regex_raw+"/, snip ["+input+"], matches: "+ism);
+			if (ism) {
+				input = Regex.Replace(input, regex_raw, replacement);
+				Debug.WriteLine("PRE UL : " +input);
+				var toupper = input.Contains("\\U") || input.Contains("\\u");
+				var tolower = input.Contains("\\L") || input.Contains("\\l");
+				if (toupper) {
+					var e = Regex.Matches(input, @"\\[Uu](.*?)(\\[eE]|$)");
+					foreach (Match e_ in e) {
+						var gv = e_.Value;
+						input = input.Replace(gv, gv.ToUpperInvariant());
+						input = Regex.Replace(input, @"\\[uUeE]", "");
+					}
+				}
+				if (tolower) {
+					var e = Regex.Matches(input, @"\\[lL](.*?)(\\[eE]|$)");
+					foreach (Match e_ in e) {
+						var gv = e_.Value;
+						input = input.Replace(gv, gv.ToLowerInvariant());
+						input = Regex.Replace(input, @"\\[lLeE]", "");
+					}
+				}
+				if (input.Contains("\\e") || input.Contains("\\E")) {
+					input = Regex.Replace(input, @"\\[eE]", "");
+				}
+			} else { return ""; }
+			return input;
 		}
 		public static void ReloadTSDict() {
 			Dictionary<string,string> tsdict = null;
@@ -2025,30 +2031,93 @@ namespace Mahou {
 				}
 			Memory.Flush();
 		}
+		public static bool LooksLikeRegex(string regex) {
+			if (regex.Length > 3) {
+				if (regex[0] == 's' && regex[1] == '/' && regex[regex.Length-1] == '/')
+					return true;
+			}
+			return false;
+		}
+		public static string[] SplitNoEsc(string input, char sep, char esc = '\\') {
+			bool esca = false; 
+			var result = new List<string>();
+			StringBuilder buf = new StringBuilder();
+			for(int i=0; i!= input.Length; i++) {
+				var c = input[i];
+				if (!esca && c == sep) {
+					result.Add(buf.ToString());
+					buf.Clear();
+					continue;
+				}
+				if (esca && c != sep) { esca = false; }
+				if (c == esc) { esca = true; }
+				buf.Append(c);
+			}
+			return result.ToArray();
+		}
+		public static bool __TSDictContainsOnlyRegex() {
+			foreach (KeyValuePair<string, string> key in transliterationDict) {
+				if (!LooksLikeRegex(key.Key)) {
+					Debug.WriteLine("TSDict actually not all regex, the: "+key.Key+" is not regex");
+					return false;
+				}
+			}
+			return true;
+		}
+		public static string __TSDictReplace(string input, bool reverse = false) {
+			bool only_regex = true;
+			foreach (KeyValuePair<string, string> key in transliterationDict) {
+				var repl = key.Key;
+				var tore = key.Value;
+				if (reverse) { tore = repl; repl = key.Value; }
+				var isRegex = LooksLikeRegex(repl);
+				//Debug.WriteLine("CHECK: "+repl + " " +isRegex);
+				if (String.IsNullOrEmpty(repl)) { 
+					if (LooksLikeRegex(tore)) {isRegex = true; repl = tore; } 
+					else { continue; } 
+				}
+				if (!isRegex) {
+					if (input.Contains(repl)) {
+	                	input = input.Replace(repl, tore);
+	                	Debug.WriteLine("Replace: "+repl+" => "+tore + " ["+input+"]");
+						only_regex = false;
+					}
+				} else {
+					var spl = SplitNoEsc(repl, '/');
+					Debug.WriteLine("SplitNoEsc: " + spl.Length);
+					if (spl.Length<3) { Debug.WriteLine("Wrong regex, unerminated /, etc."); }
+					var regex = spl[1];
+					var regex_r = spl[2];
+					Debug.WriteLine("REGEX_REPLACE: "+repl);
+					//if (!rir) { Debug.WriteLine("NOT REGEX
+//					if ((!rir && rr)) {
+//						Debug.WriteLine("SWAP REGEX.");
+//						var rx = regex;
+//						regex = regex_r; regex = rx;
+//					}
+//					if (rir&&rr) { Debug.WriteLine("You can't replace regex to regex"); continue; }
+					var repi = RegexREPLACEP(input, regex, regex_r);
+					if (!String.IsNullOrEmpty(repi)) {
+						Debug.WriteLine("Regex replace success: " +repi+", s/"+regex+"/"+regex_r+"/g & "+input);
+						input = repi;
+					}
+				}
+            }
+			Debug.WriteLine("Replaced: " +input +" only regex? " + only_regex);
+			if (only_regex && !__TSDictContainsOnlyRegex()) {
+				var test = __TSDictReplace(input, true);
+				Debug.WriteLine("One more time with reverse: "+input+" & " + test);
+				input = test;
+			}
+			return input;
+		}
 		public static string TransliterateText(string ClipStr) {
 			Logging.Log("[TRANSLTRT] > Starting Transliterate text.");
-			string output = ClipStr;
-			foreach (KeyValuePair<string, string> key in transliterationDict) {
-				if (output.Contains(key.Key)) {
-					var kv = key.Value;
-//					if (key.Value == "") {
-//						Debug.WriteLine("empty replace");
-//					}
-                	output = output.Replace(key.Key, key.Value);
-				}
-//				Debug.WriteLine(key.Key + " => " + key.Value + " = " +output);
-            }
+			string output = __TSDictReplace(ClipStr);
+			Debug.WriteLine("1st TR: " +output);
 			if (ClipStr == output) {
-				foreach (KeyValuePair<string, string> key in transliterationDict) {
-					if (ClipStr.Contains(key.Value) && !String.IsNullOrEmpty(key.Value))
-	                	ClipStr = ClipStr.Replace(key.Value, key.Key);
-            	}
-//				if (ClipStr == output)
-//				foreach (KeyValuePair<string, string> key in transliterationDict) {
-//					if (ClipStr.Contains(key.Key))
-//	                	ClipStr = ClipStr.Replace(key.Key, key.Value);
-//            	}
-				return ClipStr;
+				output = __TSDictReplace(ClipStr, true);
+				//if (ClipStr == output)
 			}
 			return output;
 		}
@@ -2185,6 +2254,7 @@ namespace Mahou {
 		/// <returns>string</returns>
 		static string MakeCopy()  {
 			Debug.WriteLine(">> MC");
+			ClearModifiers();
 			KInputs.MakeInput(KInputs.AddPress(Keys.Insert), (int)WinAPI.MOD_CONTROL);
 			Thread.Sleep(30);
 			var txt = NativeClipboard.GetText();
