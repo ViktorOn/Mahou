@@ -2079,14 +2079,15 @@ namespace Mahou {
 			}
 			return true;
 		}
-		public static string __TSDictReplace(string input, bool reverse = false) {
+		public static string __TSDictReplace(string input, bool reverse = false, bool noloop = false) {
 			bool only_regex = true;
+			var orig = input;
 			for (int z = 0; z != transliterationDict.len; z++) {
 				var repl = transliterationDict[z].k;
 				var tore = transliterationDict[z].v;
 				if (reverse) { tore = repl; repl = transliterationDict[z].v; }
 				var isRegex = LooksLikeRegex(repl);
-				Debug.WriteLine("CHECK: "+repl + " " +isRegex);
+//				Debug.WriteLine("CHECK: "+repl + " " +isRegex);
 				if (String.IsNullOrEmpty(repl)) { 
 					if (LooksLikeRegex(tore)) {isRegex = true; repl = tore; } 
 					else { continue; } 
@@ -2120,10 +2121,11 @@ namespace Mahou {
 				}
             }
 			Debug.WriteLine("Replaced: " +input +" only regex? " + only_regex);
-			if (only_regex && !__TSDictContainsOnlyRegex()) {
-				var test = __TSDictReplace(input, true);
+			if (only_regex && !__TSDictContainsOnlyRegex() && !noloop) {
+				var test = __TSDictReplace(input, true, true);
 				Debug.WriteLine("One more time with reverse: "+input+" & " + test);
-				input = test;
+				if (test != orig)
+					input = test;
 			}
 			return input;
 		}
