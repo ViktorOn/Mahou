@@ -229,7 +229,7 @@ namespace Mahou {
 						sym = getSym(vkCode);
 					c_snip.Add(sym);
 					Logging.Log("[SNI] > Added ["+ sym + "] to current snippet.");
-					Debug.WriteLine("added " + sym);
+					//Debug.WriteLine("added " + sym);
 				}
 				var seKey = Keys.Space;
 				var asls = false;
@@ -244,7 +244,7 @@ namespace Mahou {
 //						Debug.WriteLine(ch);
 					}
 					var matched = false;
-					Debug.WriteLine("Snip " + snip + ", last: " + last_snip);
+					//Debug.WriteLine("Snip " + snip + ", last: " + last_snip);
 					if (Key == seKey) {
 		            	matched = CheckSnippet(snip);
 		            	if (!matched && !last_snipANY)
@@ -264,7 +264,7 @@ namespace Mahou {
 		            	asls = matched = CheckAutoSwitch(snip, CW);
 		            	if (!matched) {
 		            		var snip2x = last_snip+" "+snip;
-		            		Debug.WriteLine("SNIp2x! " + snip2x);
+		            		//Debug.WriteLine("SNIp2x! " + snip2x);
 		            		var SPace = new List<YuKey>(){ new YuKey() { key = Keys.Space, altnum = false, upper = false } };
 		            		var dash = new List<YuKey>(){ new YuKey() { key = Keys.OemMinus, altnum = false, upper = false } };
 		            		var last2words = CLW.Concat(dash).Concat(CW).ToList();
@@ -349,12 +349,12 @@ namespace Mahou {
 			if (MSG == WinAPI.WM_KEYDOWN || MSG == WinAPI.WM_SYSKEYDOWN) {
 				if (preKey == Keys.None) {
 					preKey = Key;
-					Debug.WriteLine("PREKEY: " +preKey);
+					//Debug.WriteLine("PREKEY: " +preKey);
 				}
 			}
 			if (MSG == WinAPI.WM_KEYUP || MSG == WinAPI.WM_SYSKEYUP) {
 				if ((int)Key == (int)preKey) {
-					Debug.WriteLine("PREKEY-OFF: " +preKey);
+					//Debug.WriteLine("PREKEY-OFF: " +preKey);
 					preKey = Keys.None;
 				}
 			}
@@ -712,7 +712,7 @@ namespace Mahou {
 	        					}
     							as_lword_layout = asl;
 	        					var skipLS = (snl == asl);
-	        					Debug.WriteLine("snl: " +snil + ", l:" +snl + "\nas_crI: " + as_corrects[i] + ", l: " +asl + "\nSKIP: " +skipLS);
+	        					//Debug.WriteLine("snl: " +snil + ", l:" +snl + "\nas_crI: " + as_corrects[i] + ", l: " +asl + "\nSKIP: " +skipLS);
 	        					var ofk = false;
 	        					if (!skipLS) {
 	        						if (MahouUI.UseJKL && MahouUI.SwitchBetweenLayouts && MahouUI.EmulateLS && !KMHook.JKLERR) {
@@ -967,7 +967,7 @@ namespace Mahou {
 			}
 			return '\0';
 		}
-		public static Dictionary<string, string> ParseDictionary(string[] raw_dict) {
+		public static Dictionary<string, string> ParseDictionary(string[] raw_dict, bool tsdict = false) {
 			var dict = new Dictionary<string, string>();
 			for (int i = 0; i != raw_dict.Length; i++) {
 				var line = raw_dict[i];
@@ -975,6 +975,18 @@ namespace Mahou {
 			    	var lr = line.Split('|');
 			    	var cc = lr[0];
 			    	var rr = lr[1];
+			    	if (tsdict) {
+			    		if (line.Length> 3 && lr.Length > 2) {
+			    			if (line[0] == 's' && line[1] == '/') {
+			    				lr = SplitNoEsc(line, '|', '\\', '/', 3);
+			    				foreach (var e in lr) {
+			    				   Debug.WriteLine("LR Noesc split: " +e);
+			    				}
+			    				cc=lr[0];
+			    				rr=lr[1];
+			    			}
+			    		}
+			    	}
 //			    	Debug.WriteLine("Noth: "+cc+" " +rr);
 			    	if (cc != "") 
 			    		dict[cc] = rr;
@@ -1052,7 +1064,7 @@ namespace Mahou {
 			var tsdictp = System.IO.Path.Combine(MahouUI.nPath, "TSDict.txt");
 			if (System.IO.File.Exists(tsdictp)) {
 				var lines = System.IO.File.ReadAllLines(tsdictp);
-				tsdict = ParseDictionary(lines);
+				tsdict = ParseDictionary(lines, true);
 			} else {
 				System.IO.File.WriteAllText(tsdictp, DictToRaw(DefaultTransliterationDict));
 			}
@@ -2038,17 +2050,20 @@ namespace Mahou {
 			}
 			return false;
 		}
-		public static string[] SplitNoEsc(string input, char sep, char esc = '\\') {
+		public static string[] SplitNoEsc(string input, char sep, char esc = '\\', char reCh = '\0', int reC = -1) {
 			bool esca = false; 
 			var result = new List<string>();
 			StringBuilder buf = new StringBuilder();
+			var REs = reCh != '\0';
 			for(int i=0; i!= input.Length; i++) {
 				var c = input[i];
-				if (!esca && c == sep) {
+				if ((!REs &&!esca && c == sep) || (reCh != '\0' && reC == 0)) {
 					result.Add(buf.ToString());
 					buf.Clear();
+					if (reC == 0) { result.Add(input.Substring(i+1, input.Length-1-i)); break; }
 					continue;
 				}
+				if (REs) { if (!esca && c == reCh) { reC--; } }
 				if (esca && c != sep) { esca = false; }
 				if (c == esc) { esca = true; }
 				buf.Append(c);
@@ -2071,7 +2086,7 @@ namespace Mahou {
 				var tore = key.Value;
 				if (reverse) { tore = repl; repl = key.Value; }
 				var isRegex = LooksLikeRegex(repl);
-				//Debug.WriteLine("CHECK: "+repl + " " +isRegex);
+				Debug.WriteLine("CHECK: "+repl + " " +isRegex);
 				if (String.IsNullOrEmpty(repl)) { 
 					if (LooksLikeRegex(tore)) {isRegex = true; repl = tore; } 
 					else { continue; } 

@@ -14,7 +14,7 @@ namespace Mahou {
 	    public static WinAPI.INPUT AddKey(Keys key, bool down) {
 	        var vk = (UInt16)key;
 	        var scan = (ushort)WinAPI.MapVirtualKey(vk, 0);
-	        System.Diagnostics.Debug.WriteLine("ADDED VK: " +vk + " KEY: " + key + " scan: " + scan);
+	        //System.Diagnostics.Debug.WriteLine("ADDED VK: " +vk + " KEY: " + key + " scan: " + scan);
 	        var input = new WinAPI.INPUT {
 	            Type = WinAPI.INPUT_KEYBOARD,
 	            Data = {
@@ -34,7 +34,7 @@ namespace Mahou {
 	    public static WinAPI.INPUT[] AddPress(Keys key, int times = 1) {
 			var q = new List<WinAPI.INPUT>();
 			for (int j = 0; j <= times-1; j++) {
-				System.Diagnostics.Debug.WriteLine("Sending "+j+", key:"+key);
+				//System.Diagnostics.Debug.WriteLine("Sending "+j+", key:"+key);
 				q.Add(AddKey(key, true));
 				q.Add(AddKey(key, false));
 			}
@@ -156,7 +156,7 @@ namespace Mahou {
 	    	if (Hotkey.ContainsModifier(mods, (int)WinAPI.MOD_WIN)) rinputs.Add(AddKey(Keys.LWin, false));
 	    	var sinputs = rinputs.ToArray();
 	    	var done = WinAPI.SendInput((UInt32)sinputs.Length, sinputs, Marshal.SizeOf(typeof(WinAPI.INPUT)));
-	    	System.Diagnostics.Debug.WriteLine("VK SENDED: " + sinputs[0].Data.Keyboard.Vk);
+	    	//System.Diagnostics.Debug.WriteLine("VK SENDED: " + sinputs[0].Data.Keyboard.Vk);
 	    	if (done != sinputs.Length)
 	    		Mahou.Logging.Log("ERROR during send input, lenght: " +done+ ", Win32ERR: " + Marshal.GetLastWin32Error());
 	    }
