@@ -266,7 +266,7 @@ namespace Mahou {
 						}
 						if (MahouUI.QWERTZ_fix) {
 							var ASsymDR = ASsymDiffReplace(snip);
-							Debug.WriteLine("ASsymDiff: " + snip + " => " + snip);
+							snip = ASsymDR;
 						}
 		            	asls = matched = CheckAutoSwitch(snip, CW);
 		            	if (!matched) {
@@ -2218,6 +2218,7 @@ namespace Mahou {
 			return repl;
 		}
 		static string ASsymDiffReplace(string input) {
+			if (ASsymDiffDICT.len < 1) return input;
 			var buf = new StringBuilder();
 			for (int i = 0; i != input.Length; i++) {
 				var c = input[i];
