@@ -1049,7 +1049,13 @@ namespace Mahou {
 			             "LayoutReplace", false, MahouUI.QWERTZ_fix, LayReplDict);
 		}
 		public static string RegexREPLACEP(string input, string regex_raw, string replacement) {
-			var ism = Regex.IsMatch(input, regex_raw);
+			bool ism = false;
+			try {
+			  ism = Regex.IsMatch(input, regex_raw);
+			} catch(Exception e) {
+				Logging.Log("[RegexRP] > Regex replace FAILED, error in regex: "+regex_raw+" error message: " +e.Message, 1);
+				return input;
+			}
 			Debug.WriteLine("[REEX] > regex: /"+regex_raw+"/, snip ["+input+"], matches: "+ism);
 			if (ism) {
 				input = Regex.Replace(input, regex_raw, replacement);
