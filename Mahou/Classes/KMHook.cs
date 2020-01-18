@@ -1009,25 +1009,32 @@ namespace Mahou {
 			}
 			return raw.ToString();
 		}
-		public static void ReloadLayReplDict() {
-			DICT<string> lrdict = null;
-			var lrdictp = System.IO.Path.Combine(MahouUI.nPath, "LayoutReplaces.txt");
+		public static void __RELOADDict(string PATH, ref DICT<string> OUTD, string type, bool tsdict = false, bool writedef = false, DICT<string> def = null) {
+			DICT<string> __dict = null;
 			var load = false;
-			if (System.IO.File.Exists(lrdictp)) {
-				var lines = System.IO.File.ReadAllLines(lrdictp);
-				lrdict = ParseDictionary(lines);
+			if (System.IO.File.Exists(PATH)) {
+				var lines = System.IO.File.ReadAllLines(PATH);
+				__dict = ParseDictionary(lines, tsdict);
 				load = true;
-			} else if (MahouUI.QWERTZ_fix) {
-				System.IO.File.WriteAllText(lrdictp, DictToRaw(LayReplDict));
+			} else if (writedef) {
+				System.IO.File.WriteAllText(PATH, DictToRaw(def));
 			}
 			if (load) {
-				if (lrdict != null && lrdict.len != 0) {
-					Logging.Log("[LayoutReplace] > Succesfully initialized LayRepl Dictionary from ["+lrdict+"].");
-					LayReplDict = lrdict;
+				if (__dict != null && __dict.len != 0) {
+					Logging.Log("["+type+"] > Succesfully initialized "+type+" DICT from ["+PATH+"].");
+					OUTD = __dict;
 				} else {
-					Logging.Log("[LayoutReplace] > "+lrdictp+" wrong syntax, dictionary not updated.", 1);
+					Logging.Log("["+type+"] > "+PATH+" wrong syntax, DICT not updated.", 1);
 				}
 			} 
+		}
+		public static void ReloadTSDict() {
+			__RELOADDict(System.IO.Path.Combine(MahouUI.nPath, "TSDict.txt"), ref transliterationDict,
+			             "TRANSLTRT", true, true, DefaultTransliterationDict);
+		}
+		public static void ReloadLayReplDict() {
+			__RELOADDict(System.IO.Path.Combine(MahouUI.nPath, "LayoutReplaces.txt"),ref LayReplDict,
+			             "LayoutReplace", false, MahouUI.QWERTZ_fix, LayReplDict);
 		}
 		public static string RegexREPLACEP(string input, string regex_raw, string replacement) {
 			var ism = Regex.IsMatch(input, regex_raw);
@@ -1058,23 +1065,6 @@ namespace Mahou {
 				}
 			} else { return ""; }
 			return input;
-		}
-		public static void ReloadTSDict() {
-			DICT<string> tsdict = null;
-			var tsdictp = System.IO.Path.Combine(MahouUI.nPath, "TSDict.txt");
-			if (System.IO.File.Exists(tsdictp)) {
-				var lines = System.IO.File.ReadAllLines(tsdictp);
-				tsdict = ParseDictionary(lines, true);
-			} else {
-				System.IO.File.WriteAllText(tsdictp, DictToRaw(DefaultTransliterationDict));
-			}
-			if (tsdict != null && tsdict.len != 0) {
-				Logging.Log("[TRANSLTRT] > Succesfully initialized Transliteration Dictionary from ["+tsdictp+"].");
-				transliterationDict = tsdict;
-			} else {
-				Logging.Log("[TRANSLTRT] > "+tsdictp+" missing or wrong syntax reset to default transliteration Dictionary.");
-				transliterationDict = DefaultTransliterationDict;
-			}
 		}
 		static void ExpandSnippet(string snip, string expand, bool spaceAft, bool switchLayout, bool ignoreExpand = false, bool x2 = false) {
 			DoSelf(() => {
