@@ -1340,7 +1340,10 @@ namespace Mahou {
 			}
 			#endregion
 			KMHook.ReloadTSDict();
-			KMHook.ReloadLayReplDict();
+			if (QWERTZ_fix) {
+				KMHook.ReloadLayReplDict();
+				KMHook.ReloadASsymDiffDict();
+			}
 			#region Appearence & Hotkeys
 			LoadTemps();
 			UpdateLangDisplayControlsSwitch();

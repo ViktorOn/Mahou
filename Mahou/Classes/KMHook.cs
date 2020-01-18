@@ -70,6 +70,9 @@ namespace Mahou {
 			{"я", "y"},{"y", "я"},{"н", "z"},{"z", "н"},
 			{"-", "ß"}
         });
+		static DICT<string> ASsymDiffDICT = new DICT<string>(new Dictionary<string, string>() {
+     	    {"z", "y"}, { "Z", "Y" }
+		});
 		static DICT<string> transliterationDict = DefaultTransliterationDict;
 		#endregion
 		#region Keyboard, Mouse & Event hooks callbacks
@@ -260,6 +263,10 @@ namespace Mahou {
 						if (MahouUI.AddOneSpace) {
 							CW = MMain.c_word;
 							CLW = c_word_backup;
+						}
+						if (MahouUI.QWERTZ_fix) {
+							var ASsymDR = ASsymDiffReplace(snip);
+							Debug.WriteLine("ASsymDiff: " + snip + " => " + snip);
 						}
 		            	asls = matched = CheckAutoSwitch(snip, CW);
 		            	if (!matched) {
@@ -1003,11 +1010,11 @@ namespace Mahou {
 			return dict;
 		} 
 		public static string DictToRaw(DICT<string> dict) {
-			var raw = new StringBuilder();
+			var raw = "";
 			for(int i = 0; i != dict.len; i++) {
-				raw.Append(dict[i].k+"|"+dict[i].v);
+				raw += dict[i].k+"|"+dict[i].v+Environment.NewLine;
 			}
-			return raw.ToString();
+			return raw;
 		}
 		public static void __RELOADDict(string PATH, ref DICT<string> OUTD, string type, bool tsdict = false, bool writedef = false, DICT<string> def = null) {
 			DICT<string> __dict = null;
@@ -1017,7 +1024,8 @@ namespace Mahou {
 				__dict = ParseDictionary(lines, tsdict);
 				load = true;
 			} else if (writedef) {
-				System.IO.File.WriteAllText(PATH, DictToRaw(def));
+				if (def != null) 
+					System.IO.File.WriteAllText(PATH, DictToRaw(def));
 			}
 			if (load) {
 				if (__dict != null && __dict.len != 0) {
@@ -1027,6 +1035,10 @@ namespace Mahou {
 					Logging.Log("["+type+"] > "+PATH+" wrong syntax, DICT not updated.", 1);
 				}
 			} 
+		}
+		public static void ReloadASsymDiffDict() {
+			__RELOADDict(System.IO.Path.Combine(MahouUI.nPath, "ASsymDiff.txt"), ref ASsymDiffDICT,
+			             "ASsymDiff", false, MahouUI.QWERTZ_fix, ASsymDiffDICT);
 		}
 		public static void ReloadTSDict() {
 			__RELOADDict(System.IO.Path.Combine(MahouUI.nPath, "TSDict.txt"), ref transliterationDict,
@@ -2204,6 +2216,19 @@ namespace Mahou {
 //				word.Replace("Ու", "Г").Replace("ու", "г");
 			Debug.WriteLine("RELT: " + repl);
 			return repl;
+		}
+		static string ASsymDiffReplace(string input) {
+			var buf = new StringBuilder();
+			for (int i = 0; i != input.Length; i++) {
+				var c = input[i];
+				string T = c.ToString();
+				for(int z = 0; z != ASsymDiffDICT.len; z++) {
+					if (c == ASsymDiffDICT[z].k[0])
+						T = ASsymDiffDICT[z].v;
+				}
+				buf.Append(T);
+			}
+			return buf.ToString();
 		}
 		static string GermanLayoutFix(char c) {
 			if (!MahouUI.QWERTZ_fix)
