@@ -2055,6 +2055,28 @@ namespace Mahou {
 							KInputs.MakeInput(a.ToArray());
 						} else {
 							Logging.Log("Inputting ["+output+"] as "+tn);
+							if (output[output.Length-1] == '\n') {
+								var ac = Locales.ActiveWindowProcess().ProcessName.ToLower();
+								Debug.WriteLine("AC: " +ac);
+								if (ac == "winword") {
+									Debug.WriteLine("Last char is line, and active is word");
+									var n = 0;
+									while(output[output.Length-1] == '\n') {
+										output = output.Substring(0, output.Length-1);
+										n++;
+									}
+									var x = "";
+									n--;
+									int real = n-1;
+									Debug.WriteLine("EXTRA empty lines:"+real);
+									if(real > 0) {
+										for (int i = 0; i!=real; i++) {
+											x+="\n";
+										}
+									}
+									output = output + x;
+								}
+							}
 							KInputs.MakeInput(KInputs.AddString(output));
 							ReSelect(output.Length);
 						}
