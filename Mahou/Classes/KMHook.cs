@@ -266,6 +266,7 @@ namespace Mahou {
 						}
 						if (MahouUI.QWERTZ_fix) {
 							var ASsymDR = ASsymDiffReplace(snip);
+							Debug.WriteLine("[ASsymDiff] > ["+snip+"] => ["+ASsymDR+"].");
 							snip = ASsymDR;
 						}
 		            	asls = matched = CheckAutoSwitch(snip, CW);
@@ -708,8 +709,8 @@ namespace Mahou {
 	        					if (MahouUI.SoundOnAutoSwitch2)
 	        						MahouUI.Sound2Play();
 	        					corr = as_corrects[i];
-	        					var snl = WordGuessLayout(snil).Item2;
-	        					var asl = WordGuessLayout(as_corrects[i]).Item2;
+	        					var snl = WordGuessLayout(snil,0,false).Item2;
+	        					var asl = WordGuessLayout(as_corrects[i],0,false).Item2;
 	        					if (_hasKey(as_wrongs, as_corrects[i])) {
 	        						Logging.Log("[AS] > Double-layout autoswitch rule: " +as_wrongs[i] +"<=>" +as_corrects[i]);
 	        						if (snl == as_lword_layout) {
@@ -719,7 +720,7 @@ namespace Mahou {
 	        					}
     							as_lword_layout = asl;
 	        					var skipLS = (snl == asl);
-	        					//Debug.WriteLine("snl: " +snil + ", l:" +snl + "\nas_crI: " + as_corrects[i] + ", l: " +asl + "\nSKIP: " +skipLS);
+	        					Debug.WriteLine("snl: " +snil + ", l:" +snl + "\nas_crI: " + as_corrects[i] + ", l: " +asl + "\nSKIP: " +skipLS);
 	        					var ofk = false;
 	        					if (!skipLS) {
 	        						if (MahouUI.UseJKL && MahouUI.SwitchBetweenLayouts && MahouUI.EmulateLS && !KMHook.JKLERR) {
@@ -732,6 +733,7 @@ namespace Mahou {
 												KInputs.MakeInput(KInputs.AddPress(Keys.Back));
 												word.RemoveAt(word.Count-1);
 											}
+											word = QWERTZ_wordFIX(word);
 				        					StartConvertWord(word.ToArray(), was, true);
 											ExpandSnippet(snip, as_corrects[i], !MahouUI.AddOneSpace && MahouUI.AutoSwitchSpaceAfter,
 											MahouUI.AutoSwitchSwitchToGuessLayout, true);
@@ -747,6 +749,7 @@ namespace Mahou {
 										KInputs.MakeInput(KInputs.AddPress(Keys.Back));
 										word.RemoveAt(word.Count-1);
 									}
+									word = QWERTZ_wordFIX(word);
 									StartConvertWord(word.ToArray(), Locales.GetCurrentLocale(), true);
 									ExpandSnippet(snip, as_corrects[i], !MahouUI.AddOneSpace && MahouUI.AutoSwitchSpaceAfter,
 		        					              MahouUI.AutoSwitchSwitchToGuessLayout, true);
@@ -2237,6 +2240,20 @@ namespace Mahou {
 			}
 			return buf.ToString();
 		}
+		static List<YuKey> QWERTZ_wordFIX(List<YuKey> word) {
+			if (MahouUI.QWERTZ_fix) {
+				for(int a = 0; a != word.Count; a++) {
+					if (word[a].key == Keys.Z) {
+						Debug.WriteLine("AS: QWERTZ REPLACE Z=>Y :"+a);
+						word[a] = new YuKey(){ key = Keys.Y, upper = word[a].upper, altnum = word[a].altnum};
+					} else if (word[a].key == Keys.Y) {
+						Debug.WriteLine("AS: QWERTZ REPLACE Y=>Z :"+a);
+						word[a] = new YuKey(){ key = Keys.Z, upper = word[a].upper, altnum = word[a].altnum};
+					}
+				}
+			}
+			return word;
+		}
 		static string GermanLayoutFix(char c) {
 			if (!MahouUI.QWERTZ_fix)
 				return "";
@@ -2425,24 +2442,25 @@ namespace Mahou {
 						}
 						q.Add(KInputs.AddKey(Keys.LMenu, false));
 					} else {
-						Logging.Log("An YuKey with state passed, key = {" + YuKeys[i].key + "}, upper = [" + YuKeys[i].upper + "].");
-						var upp = YuKeys[i].upper && !Control.IsKeyLocked(Keys.CapsLock);
+						var k = YuKeys[i].key; var u = YuKeys[i].upper;
+						Logging.Log("An YuKey with state passed, key = {" + k + "}, upper = [" + u + "].");
+						var upp = u && !Control.IsKeyLocked(Keys.CapsLock);
 						if (upp)
 							q.Add(KInputs.AddKey(Keys.LShiftKey, true));
-						if (!SymbolIgnoreRules(YuKeys[i].key, YuKeys[i].upper, wasLocale))
-							q.AddRange(KInputs.AddPress(YuKeys[i].key));
+						if (!SymbolIgnoreRules(k, u, wasLocale))
+							q.AddRange(KInputs.AddPress(k));
 						if (upp)
 							q.Add(KInputs.AddKey(Keys.LShiftKey, false));
 						var c = new StringBuilder();
 						var byu = new byte[256];
-						if (YuKeys[i].upper) {
+						if (u) {
 							byu[(int)Keys.ShiftKey] = 0xFF;
 						}
 						if (!skipsnip) {
 							var loc = (Locales.GetCurrentLocale() & 0xffff);
 							if (MahouUI.UseJKL && !KMHook.JKLERR)
 								loc = MahouUI.currentLayout & 0xffff;
-							WinAPI.ToUnicodeEx((uint)YuKeys[i].key, (uint)WinAPI.MapVirtualKey((uint)YuKeys[i].key, 0), byu, c, (int)5, (uint)0, (IntPtr)loc);
+							WinAPI.ToUnicodeEx((uint)k, (uint)WinAPI.MapVirtualKey((uint)k, 0), byu, c, (int)5, (uint)0, (IntPtr)loc);
 							c_snip.Add(c[0]);
 						}
 					}
@@ -2923,7 +2941,7 @@ namespace Mahou {
 			if (mods > 0)
 				SendModsUp((int)mods);
 		}
-		public static Tuple<string, uint> WordGuessLayout(string word, uint _target = 0) {
+		public static Tuple<string, uint> WordGuessLayout(string word, uint _target = 0, bool glfix = true) {
 			uint layout = 0;
 			string guess = "";
 			uint target = 0;
@@ -2950,6 +2968,7 @@ namespace Mahou {
 				var wordL = "";
 				var wordL2 = "";
 				var result = "";
+				var nany = false;
 				Debug.WriteLine("Testing " +word+" against: " +l+" and "+l2);
 				for (int I = 0; I!=word.Length; I++) {
 					var c = word[I];
@@ -2979,11 +2998,14 @@ namespace Mahou {
 							}
 						}
 					}
-					var T3 = GermanLayoutFix(c);
-					if (T3 != "") {
-						wordL += T3;
-						wordL2 += T3;
-						continue;
+					if (glfix) {
+						var T3 = GermanLayoutFix(c);
+						Debug.WriteLine("GEFIX: "+c+" T3"+T3);
+						if (T3 != "") {
+							wordL += T3;
+							wordL2 += T3;
+							continue;
+						}
 					}
 					if (c == '\n') {
 						wordL += "\n";
@@ -2996,9 +3018,10 @@ namespace Mahou {
 					var T2 = InAnother(c, l2 & 0xffff, l & 0xffff);
 					wordL2 += T2;
 					if (T2 == "") wordL2Minuses++;
-//					Debug.WriteLine("T1: "+ T1 + ", T2: "+ T2 + ", C: " +c);
+					Debug.WriteLine("T1: "+ T1 + ", T2: "+ T2 + ", C: " +c);
 					if (T2 == "" && T1 == "") {
-//							Debug.WriteLine("Char ["+c+"] is not in any of two layouts ["+l+"], ["+l2+"] just rewriting.");
+						nany = true;
+						Debug.WriteLine("Char ["+c+"] is not in any of two layouts ["+l+"], ["+l2+"] just rewriting.");
 						wordL += word[I].ToString();
 						wordL2 += word[I].ToString();
 					}
@@ -3013,11 +3036,16 @@ namespace Mahou {
 					lay = l;
 					result = wordL;
 				}
-//				Debug.WriteLine("End, " + lay + "|" +wordL + ", " + wordL2 + "|" +wordLMinuses + ", " +wordL2Minuses);
+				Debug.WriteLine("End, " + lay + "|" +wordL + ", " + wordL2 + "|" +wordLMinuses + ", " +wordL2Minuses);
 				if (wordLMinuses == wordL2Minuses) {
-					thismin = wordLMinuses;
-					lay = 0;
-					result = word;
+					if (wordLMinuses == 0 && wordL2Minuses == 0) {
+						lay = l;
+						result = wordL;
+					} else {
+						thismin = wordLMinuses;
+						lay = 0;
+						result = word;
+					}
 				}
 				if (result.Length > guess.Length || (lay != 0 && thismin <= minmin)) {
 					guess = result;
