@@ -19,7 +19,7 @@ namespace Mahou {
 			hotkeywithmodsfired, csdoing, incapt, waitfornum, 
 			IsHotkey, ff_chr_wheeled, preSnip, LMB_down, RMB_down, MMB_down,
 			dbl_click, click, selfie, aftsingleAS, JKLERR, JKLERRchecking, last_snipANY,
-			_selis, _mselis;
+			_selis, _mselis, snipselshiftpressed, snipselwassel;
 		public static System.Windows.Forms.Timer click_reset = new System.Windows.Forms.Timer();
 		public static System.Windows.Forms.Timer JKLERRT = new System.Windows.Forms.Timer();
 		public static int skip_mouse_events, skip_spec_keys, cursormove = -1, guess_tries, skip_kbd_events;
@@ -129,7 +129,20 @@ namespace Mahou {
 				MahouUI.OnceSpecific = false;
 			}
 			if (MahouUI.__selection) {
+				Debug.WriteLine("SHC: "+snipselshiftpressed +", SW: "+snipselwassel +", "+shift+" +"+shift_r);
+				if (snipselwassel && snipselshiftpressed && (!shift && !shift_r)) {
+					if (!down) {
+						switch (Key) {
+							case Keys.LShiftKey:
+							case Keys.RShiftKey:
+								snipsel();
+								break;
+						}
+					}
+					snipselwassel = snipselshiftpressed = false;
+				}
 				if (shift || shift_r) {
+					snipselshiftpressed = true;
 					switch (Key) {
 						case Keys.PageDown:
 						case Keys.PageUp:
@@ -139,7 +152,7 @@ namespace Mahou {
 						case Keys.Right:
 						case Keys.Home:
 						case Keys.End:
-							snipsel();
+							snipselwassel = true;
 							break;
 					}
 				}
