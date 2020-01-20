@@ -213,6 +213,7 @@ namespace Mahou {
 			CheckString("Hidden", "CycleCaseOrder", "TULSR");
 			CheckBool("Hidden", "CycleCaseReset", "false");
 			CheckBool("Hidden", "__selection", "false");
+			CheckString("Hidden", "onlySnippetsExcluded", "");
 			#endregion
         	#region Sync
 			CheckString("Sync", "BBools", "0|1|0|0|0");

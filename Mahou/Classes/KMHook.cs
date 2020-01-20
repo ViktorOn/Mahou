@@ -239,7 +239,7 @@ namespace Mahou {
 			}
 			#endregion
 			#region Snippets
-			if (MahouUI.SnippetsEnabled && !ExcludedProgram()) {
+			if (MahouUI.SnippetsEnabled && !ExcludedProgram(true)) {
 				if (printable && printable_mod && down) {
 					if (sym == '\0')
 						sym = getSym(vkCode);
@@ -1509,10 +1509,10 @@ namespace Mahou {
 				return false;
 			return false;
 		}
-		public static bool ExcludedProgram() {
+		public static bool ExcludedProgram(bool onlysnip = false) {
 			if (MMain.mahou == null) return false;
 			var hwnd = WinAPI.GetForegroundWindow();
-		if (NOT_EXCLUDED_HWNDs.Contains(hwnd)) {
+			if (NOT_EXCLUDED_HWNDs.Contains(hwnd)) {
 				Logging.Log("[EXCL] > This program was been checked already, it is not excluded hwnd: " + hwnd);
 				return false;
 			}
@@ -1524,9 +1524,18 @@ namespace Mahou {
 					prc = Process.GetProcessById((int)pid);
 					if (prc == null) return false;
 					Logging.Log("Active Window Process NAME: " + prc.ProcessName);
-					if (MahouUI.ExcludedPrograms.Replace(Environment.NewLine, " ").ToLower().Contains(prc.ProcessName.ToLower().Replace(" ", "_"))) {
-						Logging.Log(prc.ProcessName + "->excluded");
-						EXCLUDED_HWNDs.Add(hwnd);
+					var onlys = false;
+					if (onlysnip) {
+						Debug.WriteLine("ONLY SNIP CHECK...");
+						if (!String.IsNullOrEmpty(MahouUI.onlySnippetsExcluded)) {
+							onlys = MahouUI.onlySnippetsExcluded.Split('|').Contains(prc.ProcessName.ToLower()+".exe");
+							Debug.WriteLine("ONLYSNIP EXCLUDE?: " +onlys);
+						}
+					}
+					if (MahouUI.ExcludedPrograms.Replace(Environment.NewLine, " ").ToLower().Contains(prc.ProcessName.ToLower().Replace(" ", "_")) || onlys) {
+						Logging.Log(prc.ProcessName + "->excluded" + (onlys ? " ONLY SNIPPETS" : ""));
+						if (!onlys)
+							EXCLUDED_HWNDs.Add(hwnd);
 						return true;
 					}
 				} catch { Logging.Log("[EXCL] > Process with id ["+pid+"] not exist...", 1); }

@@ -27,6 +27,7 @@ namespace Mahou {
 		public bool hksTTCOK, hksTRCOK, hksTSCOK, hksTrslOK, hkShWndOK, hkcwdsOK, hklOK, 
 					hksOK, hklineOK, hkSIOK, hkExitOK, hkToglLPOK, hkShowTSOK, hkToggleMahouOK, hkUcOK, hklcOK, hkccOK;
 		public static string nPath = AppDomain.CurrentDomain.BaseDirectory, CustomSound, CustomSound2;
+		public static string onlySnippetsExcluded = "";
 		public static bool LoggingEnabled, dummy, CapsLockDisablerTimer, LangPanelUpperArrow, mouseLTUpperArrow, caretLTUpperArrow,
 						   ShiftInHotkey, AltInHotkey, CtrlInHotkey, WinInHotkey, AutoStartAsAdmin, UseJKL, AutoSwitchEnabled, ReadOnlyNA,
 						   SoundEnabled, UseCustomSound, SoundOnAutoSwitch, SoundOnConvLast, SoundOnSnippets, SoundOnLayoutSwitch,
@@ -1236,6 +1237,7 @@ namespace Mahou {
 			CycleCaseOrder = MMain.MyConfs.Read("Hidden", "CycleCaseOrder");
 			CycleCaseReset = MMain.MyConfs.ReadBool("Hidden", "CycleCaseReset");
 			__selection = MMain.MyConfs.ReadBool("Hidden", "__selection");
+			onlySnippetsExcluded = MMain.MyConfs.Read("Hidden", "onlySnippetsExcluded");
 			#endregion
 			#region Timings
 			LD_MouseSkipMessagesCount = MMain.MyConfs.ReadInt("Timings", "LangTooltipForMouseSkipMessages");
