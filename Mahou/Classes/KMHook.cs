@@ -1397,6 +1397,12 @@ namespace Mahou {
 		static void SimKeyboard(string args) {
 			string[] multi_args;
 			var all_keys = new List<List<Keys>>();
+			var delay = 0;
+			if (args.Contains("|")) {
+				var axy = args.Split(new[]{'|'}, 2);
+				args = axy[0];
+				Int32.TryParse(axy[1], out delay);
+			}
 			if (args.Contains(" "))
 				multi_args = args.Split(' ');
 			else
@@ -1485,13 +1491,23 @@ namespace Mahou {
 				var q = new List<WinAPI.INPUT>();
 				foreach (var key in keys) {
 					Logging.Log("[EXPR] > Pressing: " +key);
-					q.Add(KInputs.AddKey(key, true));
+					if (delay > 0) {
+						KInputs.MakeInput(new [] {KInputs.AddKey(key, true)});
+						Thread.Sleep(delay);
+					} else 
+						q.Add(KInputs.AddKey(key, true));
 				}
 				foreach (var key in keys) {
 					Logging.Log("[EXPR] > Releasing: " +key);
-					q.Add(KInputs.AddKey(key, false));
+					if (delay > 0) {
+						KInputs.MakeInput(new [] {KInputs.AddKey(key, false)});
+						Thread.Sleep(delay);
+					} else 
+						q.Add(KInputs.AddKey(key, false));
 				}
-				KInputs.MakeInput(q.ToArray());
+				if (delay <= 0) {
+					KInputs.MakeInput(q.ToArray());
+				}
 				Thread.Sleep(5);
 			}
 			Thread.Sleep(30);
