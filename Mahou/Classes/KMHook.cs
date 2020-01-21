@@ -1409,8 +1409,16 @@ namespace Mahou {
 					multi_keys = _args.Split('+');
 				else 
 					multi_keys = new []{_args};
+				var multim = "(.*?)\\*(\\d+)$";
 				for (int j = 0; j != multi_keys.Length; j++) {
 					var key =  multi_keys[j].ToLower();
+					var rma = Regex.Matches(key, multim);
+					var times = 1;
+					if (rma.Count > 0) {
+						key = rma[0].Groups[1].Value;
+						Int32.TryParse(rma[0].Groups[2].Value, out times);
+					}
+					Debug.WriteLine("SimKey: "+key + " " + times +" times");
 					foreach (Keys k in Enum.GetValues(typeof(Keys))) {
 						var _n = k.ToString().ToLower()
 							.Replace("menu", "alt").Replace("control", "ctrl")
@@ -1422,7 +1430,9 @@ namespace Mahou {
 							.Replace("return", "enter").Replace("numpa", "numpad");
 						if (_n == key+"key") { // controlkey, shiftkey
 							Logging.Log("Added the " + _n);
-							keys.Add(k);
+							for (int x = 0; x != times; x++) {
+								keys.Add(k);
+							}
 							break;
 						}
 						if (key.Length>1) {
@@ -1439,24 +1449,32 @@ namespace Mahou {
 								if (ok)
 									if (code == (int)k) { 
 										Logging.Log("[EXPR] > Added the key by code: " + code + ", key: " + k);
-										keys.Add(k);
+										for (int x = 0; x != times; x++) {
+											keys.Add(k);
+										}
 										break;
 									}
 							}
 						}
 						if (key == "esc") {
 							Logging.Log("[EXPR] > Added the short escape: " + key);
-							keys.Add(Keys.Escape);
+							for (int x = 0; x != times; x++) {
+								keys.Add(k);
+							}
 							break;
 						}
 						if (key == "win") {
 							Logging.Log("[EXPR] > Added the lwin as base of: " + _n);
-							keys.Add(Keys.LWin);
+							for (int x = 0; x != times; x++) {
+								keys.Add(k);
+							}
 							break;
 						}
 						if (_n == key) {
 							Logging.Log("[EXPR] > Added the " + _n);
-							keys.Add(k);
+							for (int x = 0; x != times; x++) {
+								keys.Add(k);
+							}
 							break;
 						}
 					}
