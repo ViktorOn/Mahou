@@ -1056,7 +1056,7 @@ namespace Mahou {
 			} 
 		}
 		public static void ReloadCusRepDict() {
-			__RELOADDict(System.IO.Path.Combine(MahouUI.nPath, "CustomReplaces.txt"), ref CustomConversionDICT,
+			__RELOADDict(System.IO.Path.Combine(MahouUI.nPath, "CustomConversion.txt"), ref CustomConversionDICT,
 			             "CustomConversion", false, MahouUI.HKSelCustConv_tempEnabled, CustomConversionDICT);
 		}
 		public static void ReloadASsymDiffDict() {
