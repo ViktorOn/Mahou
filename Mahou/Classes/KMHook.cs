@@ -73,6 +73,9 @@ namespace Mahou {
 		static DICT<string> ASsymDiffDICT = new DICT<string>(new Dictionary<string, string>() {
      	    {"z", "y"}, { "Z", "Y" }
 		});
+		static DICT<string> CustomConversionDICT = new DICT<string>(new Dictionary<string, string>() {
+        	{"abc", "xyz"}, { "s/^hold/bold/", "" } 
+		});
 		static DICT<string> transliterationDict = DefaultTransliterationDict;
 		#endregion
 		#region Keyboard, Mouse & Event hooks callbacks
@@ -1051,6 +1054,10 @@ namespace Mahou {
 					Logging.Log("["+type+"] > "+PATH+" wrong syntax, DICT not updated.", 1);
 				}
 			} 
+		}
+		public static void ReloadCusRepDict() {
+			__RELOADDict(System.IO.Path.Combine(MahouUI.nPath, "CustomReplaces.txt"), ref CustomConversionDICT,
+			             "CustomConversion", false, MahouUI.HKSelCustConv_tempEnabled, CustomConversionDICT);
 		}
 		public static void ReloadASsymDiffDict() {
 			__RELOADDict(System.IO.Path.Combine(MahouUI.nPath, "ASsymDiff.txt"), ref ASsymDiffDICT,
@@ -2049,7 +2056,8 @@ namespace Mahou {
 			Title,
 			Swap,
 			Upper,
-			Lower
+			Lower,
+			Custom
 		}
 		public static void SelectionConversion(ConvT t = 0) {
 			var tn = Enum.GetName(typeof(ConvT), t);
@@ -2061,6 +2069,8 @@ namespace Mahou {
 					if (!String.IsNullOrEmpty(ClipStr)) {
 						var output = "";
 						switch (t) {
+							case ConvT.Custom:
+								output = CustomReplaceText(ClipStr); break;
 							case ConvT.Transliteration:
 								output = TransliterateText(ClipStr); break;
 							case ConvT.Random:
@@ -2168,47 +2178,58 @@ namespace Mahou {
 			}
 			return true;
 		}
+		public static string __dictReplace(DICT<string> d, string input, ref bool only_regex, bool reverse = false) {
+			var ir = input.Replace("\r","");
+			var lines = ir.Split('\n');
+			var result = "";
+			for (int o = 0; o != lines.Length; o++) {
+				var line = lines[o];
+				for (int z = 0; z != d.len; z++) {
+					var repl = d[z].k;
+					var tore = d[z].v;
+					if (reverse) { tore = repl; repl = d[z].v; }
+					var isRegex = LooksLikeRegex(repl);
+	//				Debug.WriteLine("CHECK: "+repl + " " +isRegex);
+					if (String.IsNullOrEmpty(repl)) { 
+						if (LooksLikeRegex(tore)) {isRegex = true; repl = tore; } 
+						else { continue; } 
+					}
+					if (!isRegex) {
+						if (line.Contains(repl)) {
+		                	line = line.Replace(repl, tore);
+		                	Debug.WriteLine("Replace: "+repl+" => "+tore + " ["+line+"]");
+							only_regex = false;
+						}
+					} else {
+						var spl = SplitNoEsc(repl, '/');
+						Debug.WriteLine("SplitNoEsc: " + spl.Length);
+						if (spl.Length<3) { Debug.WriteLine("Wrong regex, unerminated /, etc."); continue; }
+						var regex = spl[1];
+						var regex_r = spl[2];
+						//Debug.WriteLine("REGEX_REPLACE: "+repl);
+						Debug.WriteLine(line + " => s/" + regex + "/"+regex_r);
+						//if (!rir) { Debug.WriteLine("NOT REGEX
+	//					if ((!rir && rr)) {
+	//						Debug.WriteLine("SWAP REGEX.");
+	//						var rx = regex;
+	//						regex = regex_r; regex = rx;
+	//					}
+	//					if (rir&&rr) { Debug.WriteLine("You can't replace regex to regex"); continue; }
+						var repi = RegexREPLACEP(line, regex, regex_r);
+						if (!String.IsNullOrEmpty(repi)) {
+							Debug.WriteLine("Regex replace success: " +repi+", s/"+regex+"/"+regex_r+"/g & "+line);
+							line = repi;
+						}
+					}
+	            }
+				result = result + line + (o == lines.Length-1 ? "" : "\n");
+			}
+			return result;
+		}
 		public static string __TSDictReplace(string input, bool reverse = false, bool noloop = false) {
 			bool only_regex = true;
 			var orig = input;
-			for (int z = 0; z != transliterationDict.len; z++) {
-				var repl = transliterationDict[z].k;
-				var tore = transliterationDict[z].v;
-				if (reverse) { tore = repl; repl = transliterationDict[z].v; }
-				var isRegex = LooksLikeRegex(repl);
-//				Debug.WriteLine("CHECK: "+repl + " " +isRegex);
-				if (String.IsNullOrEmpty(repl)) { 
-					if (LooksLikeRegex(tore)) {isRegex = true; repl = tore; } 
-					else { continue; } 
-				}
-				if (!isRegex) {
-					if (input.Contains(repl)) {
-	                	input = input.Replace(repl, tore);
-	                	Debug.WriteLine("Replace: "+repl+" => "+tore + " ["+input+"]");
-						only_regex = false;
-					}
-				} else {
-					var spl = SplitNoEsc(repl, '/');
-					Debug.WriteLine("SplitNoEsc: " + spl.Length);
-					if (spl.Length<3) { Debug.WriteLine("Wrong regex, unerminated /, etc."); continue; }
-					var regex = spl[1];
-					var regex_r = spl[2];
-					//Debug.WriteLine("REGEX_REPLACE: "+repl);
-					Debug.WriteLine(input + " => s/" + regex + "/"+regex_r);
-					//if (!rir) { Debug.WriteLine("NOT REGEX
-//					if ((!rir && rr)) {
-//						Debug.WriteLine("SWAP REGEX.");
-//						var rx = regex;
-//						regex = regex_r; regex = rx;
-//					}
-//					if (rir&&rr) { Debug.WriteLine("You can't replace regex to regex"); continue; }
-					var repi = RegexREPLACEP(input, regex, regex_r);
-					if (!String.IsNullOrEmpty(repi)) {
-						Debug.WriteLine("Regex replace success: " +repi+", s/"+regex+"/"+regex_r+"/g & "+input);
-						input = repi;
-					}
-				}
-            }
+			input = __dictReplace(transliterationDict, input, ref only_regex, reverse);
 			Debug.WriteLine("Replaced: " +input +" only regex? " + only_regex);
 			if (only_regex && !__TSDictContainsOnlyRegex() && !noloop) {
 				var test = __TSDictReplace(input, true, true);
@@ -2217,6 +2238,11 @@ namespace Mahou {
 					input = test;
 			}
 			return input;
+		}
+		public static string CustomReplaceText(string ClipStr) {
+			bool onre = false;
+			if (CustomConversionDICT == null) return ClipStr;
+			return __dictReplace(CustomConversionDICT, ClipStr, ref onre);
 		}
 		public static string TransliterateText(string ClipStr) {
 			Logging.Log("[TRANSLTRT] > Starting Transliterate text.");

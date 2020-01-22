@@ -331,6 +331,11 @@ namespace Mahou {
 			CheckString("Hotkeys", "SelectedTextToTitleCase_Modifiers", "Shift");
 			CheckBool("Hotkeys", "SelectedTextToTitleCase_Double", "true");
 			CheckBool("Hotkeys", "SelectedTextToTitleCase_Enabled", "false");
+			// Selected text To custom converison
+			CheckInt("Hotkeys", "SelectedTextToCustomConv_Key", "0");
+			CheckString("Hotkeys", "SelectedTextToCustomConv_Modifiers", "");
+			CheckBool("Hotkeys", "SelectedTextToCustomConv_Double", "false");
+			CheckBool("Hotkeys", "SelectedTextToCustomConv_Enabled", "false");
 			// Selected text to title case hotkey
 			CheckInt("Hotkeys", "ToggleSymbolIgnoreMode_Key", "122");
 			CheckString("Hotkeys", "ToggleSymbolIgnoreMode_Modifiers", "Shift + Control");

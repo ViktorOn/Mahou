@@ -147,6 +147,7 @@ public class Languages
 		TranslateSelection,
 		ToggleMahou,
 		CycleCase,
+		CustomConversion,
 		#endregion
 		#region LangPanel
 		DisplayLangPanel,
@@ -289,6 +290,7 @@ public class Languages
 		TT_ShowSelectionTranslationHotkey,
 		TT_LeftRightMB,
 		TT_CycleCase,
+		TT_CustomConversion,
 		#endregion
 		#region Messages
 		MSG_SnippetsError
@@ -439,6 +441,7 @@ public class Languages
 		{ Element.TranslateSelection, "Show selected text translation" }, 
 		{ Element.ToggleMahou, "Toogle Pause Mahou" }, 
 		{ Element.CycleCase, "Cycle selected text case" }, 
+		{ Element.CustomConversion, "Custom text conversion" }, 
 		#endregion
 		#region LangPanel
 		{ Element.DisplayLangPanel, "Display language panel." },
@@ -599,6 +602,7 @@ public class Languages
 		{ Element.TT_ShowSelectionTranslationHotkey, "Enable the translator in [Translator] tab in order this hotkey to work." },
 		{ Element.TT_LeftRightMB, "Left button - open file.\nRight button - open directory." },
 		{ Element.TT_CycleCase, "Cycle the selected text words case by:\r\nTitle => UPPER => lower => RanDoM => sWAP => Title => ..." },
+		{ Element.TT_CustomConversion, "Converts selected text according to rules in CustomConversion.txt" },
 		#endregion
 		#region Messages
 		{ Element.MSG_SnippetsError, "Snippets contains error in syntax, check if there are errors, details on snippets syntax you can find on Wiki." }
@@ -752,6 +756,7 @@ public class Languages
 		{ Element.TranslateSelection, "Показать перевод выделенного текста" }, 
 		{ Element.ToggleMahou, "Переключать паузу Mahou" }, 
 		{ Element.CycleCase, "Цикличное переключение регистра" }, 
+		{ Element.CustomConversion, "Особое изменение текста" }, 
 		#endregion
 		#region LangPanel
 		{ Element.DisplayLangPanel, "Отображать языковую панель." },
@@ -910,6 +915,7 @@ public class Languages
 		{ Element.TT_ShowSelectionTranslationHotkey, "Включите переводчик на вкладке [Переводчик], чтобы эта горячая клавиша работала." },
 		{ Element.TT_LeftRightMB, "Левая кнопка - открыть файл.\nПравая кнопка - открыть папку." },
 		{ Element.TT_CycleCase, "По циклу переключает регистр выделенных слов, по:\r\nЗаглавный => ВЕРХНИЙ => нижний => слУчАЙный => оБРАТНЫЙ => Заглавный => ..." },
+		{ Element.TT_CustomConversion, "Меняет выделенный текст по заданным правилам в CustomConversion.txt" },
 		#endregion
 		#region Messages
 		{ Element.MSG_SnippetsError, "Сниппеты содержат ошибки в синтаксисе, проверьте ваши сниппеты, детали синтаксиса можете найти на Wiki." }
