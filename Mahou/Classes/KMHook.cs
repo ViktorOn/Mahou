@@ -3231,7 +3231,7 @@ namespace Mahou {
 					if (len == -1)
 						len = endl-(k+2);
 					var sm = snippets.Substring(k+2, len).Replace("\r", "");
-					if (sm.Contains("|")) {
+					if (sm.Contains("|") && !(sm.StartsWith(REGEXSNIP, StringComparison.InvariantCulture) && sm.EndsWith("/"))) {
 						var esm = sm.Replace("||", pipe_esc);
 						foreach (var n in esm.Split('|')) {
 							smalls[ids] = n.Replace(pipe_esc , "|");
