@@ -1057,7 +1057,7 @@ namespace Mahou {
 		}
 		public static void ReloadCusRepDict() {
 			__RELOADDict(System.IO.Path.Combine(MahouUI.nPath, "CustomConversion.txt"), ref CustomConversionDICT,
-			             "CustomConversion", false, MahouUI.HKSelCustConv_tempEnabled, CustomConversionDICT);
+			             "CustomConversion", true, MahouUI.HKSelCustConv_tempEnabled, CustomConversionDICT);
 		}
 		public static void ReloadASsymDiffDict() {
 			__RELOADDict(System.IO.Path.Combine(MahouUI.nPath, "ASsymDiff.txt"), ref ASsymDiffDICT,
@@ -1087,10 +1087,13 @@ namespace Mahou {
 				var tolower = input.Contains("\\L") || input.Contains("\\l");
 				if (toupper) {
 					var e = Regex.Matches(input, @"\\[Uu](.*?)(\\[eE]|$)");
+					Debug.WriteLine("All matches: " + e.Count);
 					foreach (Match e_ in e) {
-						var gv = e_.Value;
-						input = input.Replace(gv, gv.ToUpperInvariant());
-						input = Regex.Replace(input, @"\\[uUeE]", "");
+						var ma = e_.Value;
+						var gv = e_.Groups[1].Value;
+						input = input.Replace(ma, gv.ToUpperInvariant());
+						Debug.WriteLine("ma gv rep: "+ma +" & " +gv);
+//						input = Regex.Replace(input, @"\\[uUeE]", "");
 					}
 				}
 				if (tolower) {
