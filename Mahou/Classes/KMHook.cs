@@ -411,7 +411,7 @@ namespace Mahou {
 					}
 				}
 				//Pressing any of these Keys will empty current word, and snippet
-				if (Key == Keys.Home || Key == Keys.End ||
+				if (Key == Keys.Home || Key == Keys.End || Key == Keys.Escape || 
 				    (Key == Keys.Tab && MMain.mahou.SnippetsExpandType != "Tab" && snipps.Length > 0) || Key == Keys.PageDown || Key == Keys.PageUp ||
 				   Key == Keys.Left || Key == Keys.Right || Key == Keys.Down || Key == Keys.Up ||
 				   Key == Keys.BrowserSearch || ((win||win_r) && (Key >= Keys.D1 && Key <= Keys.D9)) ||
