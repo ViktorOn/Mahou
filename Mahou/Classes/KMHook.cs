@@ -831,10 +831,11 @@ namespace Mahou {
 						break;
 					}
 				}
+				var igncase = snipps[i].EndsWith("/i", StringComparison.InvariantCulture);
 				if (snipps[i].StartsWith(REGEXSNIP, StringComparison.InvariantCulture) &&
-				    snipps[i].EndsWith("/", StringComparison.InvariantCulture)) {
-					var regex_r = snipps[i].Substring(6, snipps[i].Length-7);
-					var repl = RegexREPLACEP(snip, regex_r, exps[i]);
+				    (snipps[i].EndsWith("/", StringComparison.InvariantCulture) || igncase)) {
+					var regex_r = snipps[i].Substring(6, snipps[i].Length-7 +(igncase ? -1 : 0));
+					var repl = RegexREPLACEP(snip, regex_r, exps[i], igncase);
 					Debug.WriteLine("replaced: "+repl);
 					if (!String.IsNullOrEmpty(repl)) {
 					  ExpandSnippet(snip, repl, MahouUI.SnippetSpaceAfter, MahouUI.SnippetsSwitchToGuessLayout, false, x2);
@@ -1071,22 +1072,23 @@ namespace Mahou {
 			__RELOADDict(System.IO.Path.Combine(MahouUI.nPath, "LayoutReplaces.txt"),ref LayReplDict,
 			             "LayoutReplace", false, MahouUI.QWERTZ_fix, LayReplDict);
 		}
-		public static string RegexREPLACEP(string input, string regex_raw, string replacement) {
+		public static string RegexREPLACEP(string input, string regex_raw, string replacement, bool ignorecase = false) {
 			bool ism = false;
+			RegexOptions ics = (ignorecase ? RegexOptions.IgnoreCase : RegexOptions.None);
 			try {
-			  ism = Regex.IsMatch(input, regex_raw);
+			  ism = Regex.IsMatch(input, regex_raw, ics);
 			} catch(Exception e) {
 				Logging.Log("[RegexRP] > Regex replace FAILED, error in regex: "+regex_raw+" error message: " +e.Message, 1);
 				return input;
 			}
-			Debug.WriteLine("[REEX] > regex: /"+regex_raw+"/, snip ["+input+"], matches: "+ism);
+			Debug.WriteLine("[REEX] > regex: /"+regex_raw+"/"+(ignorecase ? "i" : "")+", snip ["+input+"], matches: "+ism);
 			if (ism) {
-				input = Regex.Replace(input, regex_raw, replacement);
+				input = Regex.Replace(input, regex_raw, replacement, ics);
 				Debug.WriteLine("PRE UL : " +input);
 				var toupper = input.Contains("\\U") || input.Contains("\\u");
 				var tolower = input.Contains("\\L") || input.Contains("\\l");
 				if (toupper) {
-					var e = Regex.Matches(input, @"\\[Uu](.*?)(\\[eE]|$)");
+					var e = Regex.Matches(input, @"\\[Uu](.*?)(\\[eE]|$)", ics);
 					Debug.WriteLine("All matches: " + e.Count);
 					foreach (Match e_ in e) {
 						var ma = e_.Value;
@@ -1097,15 +1099,15 @@ namespace Mahou {
 					}
 				}
 				if (tolower) {
-					var e = Regex.Matches(input, @"\\[lL](.*?)(\\[eE]|$)");
+					var e = Regex.Matches(input, @"\\[lL](.*?)(\\[eE]|$)", ics);
 					foreach (Match e_ in e) {
 						var gv = e_.Value;
 						input = input.Replace(gv, gv.ToLowerInvariant());
-						input = Regex.Replace(input, @"\\[lLeE]", "");
+						input = Regex.Replace(input, @"\\[lLeE]", "", ics);
 					}
 				}
 				if (input.Contains("\\e") || input.Contains("\\E")) {
-					input = Regex.Replace(input, @"\\[eE]", "");
+					input = Regex.Replace(input, @"\\[eE]", "", ics);
 				}
 			} else { return ""; }
 			return input;
@@ -2192,7 +2194,7 @@ namespace Mahou {
 					var tore = d[z].v;
 					if (reverse) { tore = repl; repl = d[z].v; }
 					var isRegex = LooksLikeRegex(repl);
-	//				Debug.WriteLine("CHECK: "+repl + " " +isRegex);
+					Debug.WriteLine("CHECK: "+repl + " " +isRegex);
 					if (String.IsNullOrEmpty(repl)) { 
 						if (LooksLikeRegex(tore)) {isRegex = true; repl = tore; } 
 						else { continue; } 
@@ -3234,7 +3236,9 @@ namespace Mahou {
 					if (len == -1)
 						len = endl-(k+2);
 					var sm = snippets.Substring(k+2, len).Replace("\r", "");
-					if (sm.Contains("|") && !(sm.StartsWith(REGEXSNIP, StringComparison.InvariantCulture) && sm.EndsWith("/"))) {
+					if (sm.Contains("|") && !(sm.StartsWith(REGEXSNIP, StringComparison.InvariantCulture) && 
+					                          (sm.EndsWith("/",StringComparison.InvariantCulture) || 
+					                           sm.EndsWith("/i",StringComparison.InvariantCulture)))) {
 						var esm = sm.Replace("||", pipe_esc);
 						foreach (var n in esm.Split('|')) {
 							smalls[ids] = n.Replace(pipe_esc , "|");
