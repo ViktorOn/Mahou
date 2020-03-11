@@ -2121,8 +2121,8 @@ namespace Mahou {
 								}
 							}
 							KInputs.MakeInput(KInputs.AddString(output));
-							ReSelect(output.Length, cT);
 						}
+						ReSelect(output.Length, cT);
 					}
 					NativeClipboard.Clear();
 					RestoreClipBoard();
