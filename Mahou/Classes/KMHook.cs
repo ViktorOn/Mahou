@@ -2045,7 +2045,7 @@ namespace Mahou {
 							KInputs.MakeInput(KInputs.AddString(result));
 							items = result.Length;
 						}
-						ReSelect(items);
+						ReSelect(items, "N");
 					}
 					NativeClipboard.Clear();
 					RestoreClipBoard();
@@ -2071,23 +2071,24 @@ namespace Mahou {
 				DoSelf(() => {
 					Logging.Log("["+tn+"] > Starting "+tn+" selection.");
 					string ClipStr = GetClipStr();
+					var cT = "";
 					if (!String.IsNullOrEmpty(ClipStr)) {
 						var output = "";
 						switch (t) {
 							case ConvT.Custom:
-								output = CustomReplaceText(ClipStr); break;
+								output = CustomReplaceText(ClipStr); cT = "C"; break;
 							case ConvT.Transliteration:
-								output = TransliterateText(ClipStr); break;
+								output = TransliterateText(ClipStr); cT = "t"; break;
 							case ConvT.Random:
-								output = ToSTULRSelection(ClipStr,false,false,false,true); break;
+								output = ToSTULRSelection(ClipStr,false,false,false,true); cT = "R"; break;
 							case ConvT.Title:
-								output = ToSTULRSelection(ClipStr,false,true); break;
+								output = ToSTULRSelection(ClipStr,false,true); cT = "T"; break;
 							case ConvT.Swap:
-								output = ToSTULRSelection(ClipStr,true); break;
+								output = ToSTULRSelection(ClipStr,true); cT = "S"; break;
 							case ConvT.Upper:
-								output = ToSTULRSelection(ClipStr); break;
+								output = ToSTULRSelection(ClipStr); cT = "U"; break;
 							case ConvT.Lower:
-								output = ToSTULRSelection(ClipStr,false,false,true); break;
+								output = ToSTULRSelection(ClipStr,false,false,true); cT = "L"; break;
 						}
 						if (MahouUI.UsePaste) {
 							Logging.Log("Pasting ["+output+"] as "+ tn);
@@ -2136,7 +2137,7 @@ namespace Mahou {
 								}
 							}
 							KInputs.MakeInput(KInputs.AddString(output));
-							ReSelect(output.Length);
+							ReSelect(output.Length, cT);
 						}
 					}
 					NativeClipboard.Clear();
@@ -2309,8 +2310,10 @@ namespace Mahou {
 			}
 			return output;
 		}
-		static void ReSelect(int count) {
+		static void ReSelect(int count, string cT="") {
 			if (MahouUI.ReSelect) {
+				if (!MMain.MyConfs.Read("Hidden", "ReSelectCustoms").Contains(cT))
+					return;
 				//reselects text
 				Logging.Log("Reselecting text.");
 				KInputs.MakeInput(KInputs.AddPress(Keys.Left, count), (int)WinAPI.MOD_SHIFT);
