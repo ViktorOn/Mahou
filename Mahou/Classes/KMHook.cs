@@ -2486,21 +2486,25 @@ namespace Mahou {
 					KeybdEvent(Keys.LShiftKey, 0);
 					swas = true;
 					shiftRP = false;
+					skip_kbd_events++;
 				}
 				if (altRP) {
 					KeybdEvent(Keys.LMenu, 0);
 					awas = true;
 					altRP = false;
+					skip_kbd_events++;
 				}
 				if (ctrlRP) {
 					KeybdEvent(Keys.LControlKey, 0);
 					cwas = true;
 					ctrlRP = false;
+					skip_kbd_events++;
 				}
 				if (winRP) {
 					KeybdEvent(Keys.LWin, 0);
 					wwas = true;
 					winRP = false;
+					skip_kbd_events++;
 				}
 			       });
 		}
