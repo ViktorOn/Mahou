@@ -2041,8 +2041,12 @@ namespace Mahou {
 							cs_layout_last = l2;
 							Logging.Log("[CS] > Conversion of string [" + ClipStr + "] from locale [" + l1 + "] into locale [" + l2 + "] became [" + result + "].");
 							//Inputs converted text
-							Logging.Log("[CS] > Making input of [" + result + "] as string");
-							KInputs.MakeInput(KInputs.AddString(result));
+							if (MahouUI.UsePaste) {
+						      PasteText(result, "Selection");
+							} else {
+							  Logging.Log("[CS] > Making input of [" + result + "] as string");
+							  KInputs.MakeInput(KInputs.AddString(result));
+							}
 							items = result.Length;
 						}
 						ReSelect(items, "N");
@@ -2091,27 +2095,7 @@ namespace Mahou {
 								output = ToSTULRSelection(ClipStr,false,false,true); cT = "L"; break;
 						}
 						if (MahouUI.UsePaste) {
-							Logging.Log("Pasting ["+output+"] as "+ tn);
-							RestoreClipBoard(output);
-							List<WinAPI.INPUT> a = new List<WinAPI.INPUT>();
-							a.Add(KInputs.AddKey(Keys.LControlKey, true));
-							var v = MahouUI.LibreCtrlAltShiftV && Locales.ActiveWindowProcess().ProcessName.ToLower().Contains("soffice.");
-							if (v) {
-								Logging.Log("Using Libre paste fix.");
-								a.Add(KInputs.AddKey(Keys.LShiftKey, true));
-								a.Add(KInputs.AddKey(Keys.LMenu, true));
-							}
-							a.Add(KInputs.AddKey(Keys.V, true));
-							KInputs.MakeInput(a.ToArray());
-							Thread.Sleep(50);
-							a.Clear();
-							a.Add(KInputs.AddKey(Keys.LControlKey, false));
-							if (v) {
-								a.Add(KInputs.AddKey(Keys.LShiftKey, false));
-								a.Add(KInputs.AddKey(Keys.LMenu, false));
-							}
-							a.Add(KInputs.AddKey(Keys.V, false));
-							KInputs.MakeInput(a.ToArray());
+							PasteText(output, tn);
 						} else {
 							Logging.Log("Inputting ["+output+"] as "+tn);
 							if (output[output.Length-1] == '\n') {
@@ -2147,6 +2131,29 @@ namespace Mahou {
 					Logging.Log("["+tn+"] > Selection encountered error, details:\r\n" +e.Message+"\r\n"+e.StackTrace, 1);
 				}
 			Memory.Flush();
+		}
+		public static void PasteText(string text, string info="") {
+			Logging.Log("Pasting ["+text+"]  as "+info);
+			RestoreClipBoard(text);
+			List<WinAPI.INPUT> a = new List<WinAPI.INPUT>();
+			a.Add(KInputs.AddKey(Keys.LControlKey, true));
+			var v = MahouUI.LibreCtrlAltShiftV && Locales.ActiveWindowProcess().ProcessName.ToLower().Contains("soffice.");
+			if (v) {
+				Logging.Log("Using Libre paste fix.");
+				a.Add(KInputs.AddKey(Keys.LShiftKey, true));
+				a.Add(KInputs.AddKey(Keys.LMenu, true));
+			}
+			a.Add(KInputs.AddKey(Keys.V, true));
+			KInputs.MakeInput(a.ToArray());
+			Thread.Sleep(50);
+			a.Clear();
+			a.Add(KInputs.AddKey(Keys.LControlKey, false));
+			if (v) {
+				a.Add(KInputs.AddKey(Keys.LShiftKey, false));
+				a.Add(KInputs.AddKey(Keys.LMenu, false));
+			}
+			a.Add(KInputs.AddKey(Keys.V, false));
+			KInputs.MakeInput(a.ToArray());
 		}
 		public static bool LooksLikeRegex(string regex) {
 			if (regex.Length > 3) {
