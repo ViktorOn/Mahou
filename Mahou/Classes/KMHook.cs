@@ -384,7 +384,7 @@ namespace Mahou {
 			}
 			#endregion
 			if ((ctrl||win||alt||ctrl_r||win_r||alt_r) && Key == Keys.Tab) {
-				ClearWord(true, true, true, "Any modifier + Tab");
+				ClearWord(true, true, true, "Any modifier + Tab", true);
 				MahouUI.CCReset("mod+tab");
 			}
 			#region Other, when KeyDown
@@ -427,7 +427,7 @@ namespace Mahou {
 							Key != Keys.LControlKey &&
 							Key != Keys.RControlKey ))) { 
 					MahouUI.CCReset("cc/noShift.Hkey");
-					ClearWord(true, true, true, "Pressed combination of key and modifiers(not shift) or key that changes caret position.");
+					ClearWord(true, true, true, "Pressed combination of key and modifiers(not shift) or key that changes caret position.", true);
 				}
 				if (Key == Keys.Space) {
 					Logging.Log("[FUN] > Adding one new empty word to words, and adding to it [Space] key.");
@@ -452,7 +452,7 @@ namespace Mahou {
 						MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Keys.Enter });
 						afterEOL = true;
 					} else {
-						ClearWord(true, true, true, "Pressed enter");
+						ClearWord(true, true, true, "Pressed enter", true);
 						afterEOL = false;
 					}
 					as_lword_layout = 0;
@@ -536,7 +536,7 @@ namespace Mahou {
 					clickAfterALT = true;
 				if (!MahouUI.UseJKL || KMHook.JKLERR)
 					MahouUI.currentLayout = 0;
-				ClearWord(true, true, true, "Mouse click");
+				ClearWord(true, true, true, "Mouse click", true);
 			}
 			#region Double click show translate
 			if (MahouUI.TrEnabled)
@@ -1800,8 +1800,9 @@ namespace Mahou {
 			LLHook.ClearModifiers();
 			SendModsUp((int)(WinAPI.MOD_ALT + WinAPI.MOD_CONTROL + WinAPI.MOD_SHIFT + WinAPI.MOD_WIN));
 		}
-		static void ClearWord(bool LastWord = false, bool LastLine = false, bool Snippet = false, string ClearReason = "") {
+		static void ClearWord(bool LastWord = false, bool LastLine = false, bool Snippet = false, string ClearReason = "", bool lastSnippet = false) {
 			string ReasonEnding = ".";
+			Debug.WriteLine("CLEAR: " + ClearReason);
 			if (MahouUI.LoggingEnabled && !String.IsNullOrEmpty(ClearReason))
 				ReasonEnding = ", reason: [" + ClearReason + "].";
 			if (LastWord) {
@@ -1823,8 +1824,13 @@ namespace Mahou {
 				if (c_snip.Count > 0) {
 					if (MahouUI.SnippetsEnabled) {
 						c_snip.Clear();
-					Logging.Log("[CLWORD] > Cleared current snippet" + ReasonEnding);
+						Logging.Log("[CLWORD] > Cleared current snippet" + ReasonEnding);
+					}
 				}
+				if (lastSnippet) {
+					last_snip = "";
+					Debug.WriteLine("CL LASTSNIP");
+					Logging.Log("[CLWORD] > Cleared last snippet" + ReasonEnding);
 				}
 			}
 			MahouUI.RefreshFLAG();
