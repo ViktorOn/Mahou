@@ -22,7 +22,7 @@ namespace Mahou {
 			_selis, _mselis, snipselshiftpressed, snipselwassel;
 		public static System.Windows.Forms.Timer click_reset = new System.Windows.Forms.Timer();
 		public static System.Windows.Forms.Timer JKLERRT = new System.Windows.Forms.Timer();
-		public static int skip_mouse_events, skip_spec_keys, cursormove = -1, guess_tries, skip_kbd_events;
+		public static int skip_mouse_events, skip_spec_keys, cursormove = -1, guess_tries, skip_kbd_events, lsnip_noset;
 		static uint as_lword_layout = 0;
 		static uint cs_layout_last = 0;
 		static string lastClipText = "", busy_on = "", lastLWClearReason = "";
@@ -305,7 +305,10 @@ namespace Mahou {
 						c_snip.Clear();
 					}
 					if (Key == seKey && !asls) {
-						last_snip = snip;
+						if (lsnip_noset <= 0) 
+							last_snip = snip;
+						else
+							lsnip_noset--;
 					}
 				}
 			}
@@ -1150,7 +1153,7 @@ namespace Mahou {
               });
 		}
 		#region in Snippets expressions  
-		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert", "__setlayout", "__selection" };
+		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert", "__setlayout", "__selection", "__clearlsnip" };
 		static void ExpandSnippetWithExpressions(string expand) {
 			string ex = "", args = "", raw = "", err = "";
 			bool args_getting = false, is_expr = false, escaped = false;
@@ -1378,6 +1381,11 @@ namespace Mahou {
 				case "__selection":
 					if (!string.IsNullOrEmpty(snip_selection))
 						KInputs.MakeInput(KInputs.AddString(snip_selection));
+					break;
+				case "__clearlsnip":
+					last_snip = "";
+					lsnip_noset++;
+					Logging.Log("[__clearlsnip] Cleared last snippet.");
 					break;
 			}
 		}
