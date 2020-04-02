@@ -215,6 +215,7 @@ namespace Mahou {
 			CheckBool("Hidden", "CycleCaseReset", "false");
 			CheckBool("Hidden", "__selection", "false");
 			CheckString("Hidden", "onlySnippetsExcluded", "");
+			CheckBool("Hidden", "__setlayout_FORCED", "false");
 			#endregion
         	#region Sync
 			CheckString("Sync", "BBools", "0|1|0|0|0");

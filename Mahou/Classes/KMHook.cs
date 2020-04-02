@@ -125,7 +125,7 @@ namespace Mahou {
 				IsHotkey = true;
 			} else
 				IsHotkey = false;
-			Logging.Log("Pressed hotkey?: "+IsHotkey+" => ["+Key+"+"+mods+"] .");
+			Console.WriteLine("Pressed hotkey?: "+IsHotkey+" => ["+Key+"+"+mods+"] .");
 			if ((Key >= Keys.D0 || Key <= Keys.D9) && waitfornum)
 				IsHotkey = true;
 			if (MahouUI.OnceSpecific && !down) {
@@ -1120,9 +1120,21 @@ namespace Mahou {
 				try {
 		       		Debug.WriteLine("Snippet: " +snip);
 					if (switchLayout) {
-						var guess = WordGuessLayout(expand);
-						Logging.Log("[SNI] > Changing to guess layout [" + guess.Item2 + "] after snippet ["+ guess.Item1 + "].");
-						ChangeToLayout(Locales.ActiveWindow(), guess.Item2);
+		       			bool skp = false;
+		       			if (MMain.MyConfs.ReadBool("Hidden", "__setlayout_FORCED")) 
+		       				if (expand.Contains("__setlayout")) {
+		       				var i = expand.IndexOf("__setlayout", StringComparison.InvariantCulture);
+		       				if (expand[i-1] != '\\') {
+		       					skp = true;
+		       				}
+		       			}
+		       			if (!skp) {
+						    var guess = WordGuessLayout(expand);
+						    Logging.Log("[SNI] > Changing to guess layout [" + guess.Item2 + "] after snippet ["+ guess.Item1 + "].");
+							ChangeToLayout(Locales.ActiveWindow(), guess.Item2);
+		       			} else {
+		       				Logging.Log("[SNI] > Switch layout skip due to __setlayout_FORCED");
+		       			}
 					}
 					if (!ignoreExpand) {
 		       			var backs = snip.Length+1;
@@ -1601,6 +1613,7 @@ namespace Mahou {
 			return false;
 		}
 		static void SpecificKey(Keys Key, uint MSG, int vkCode = 0) {
+			Logging.Log("[SPKEY] > Check on key: ["+Key+"]"+" MSG: " +MSG.ToString());
 //			Debug.WriteLine("SPK:" + skip_spec_keys);
 			if (skip_spec_keys > 0) {
 				skip_spec_keys--;
