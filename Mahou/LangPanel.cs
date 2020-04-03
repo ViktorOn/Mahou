@@ -6,10 +6,21 @@ using System.Windows.Forms;
 namespace Mahou {
 	/// <summary> Language panel with display of flag, name, id of current layout. </summary>
 	public partial class LangPanel : Form {
+		int l = 4;
 		public LangPanel() {
 			InitializeComponent();
 			Height = 24;
 			AeroCheck();
+			MahouUI.DPISCALE(this);
+			l = Convert.ToInt32(MahouUI.xr*l);
+			outsidefix(pct_Flag);
+			outsidefix(pct_Upper);
+		}
+		void outsidefix(PictureBox p) {
+			var outside = p.Height;
+			if (outside >= this.Height) {
+				p.Height -= outside-this.Height+1+p.Location.Y;
+			}
 		}
 		#region Screen-Snap
 		const int SnapDist = 15;
@@ -18,13 +29,13 @@ namespace Mahou {
 		public void ChangeLayout(Bitmap flag, string layoutName) {
 			lbl_LayoutName.Text = layoutName;
 			pct_Flag.BackgroundImage = flag;
-			Width = lbl_LayoutName.Left + lbl_LayoutName.Width + 4;
+			Width = lbl_LayoutName.Left + lbl_LayoutName.Width + l;
 			ReSnap();
 		}
 		public void DisplayUpper(bool Upper) {
 			pct_Upper.Visible = Upper;
-			var side = Upper ? 4+16+16 : 4+16;
-			Width = side + lbl_LayoutName.Width + 4;
+			var side = Upper ? l+pct_Flag.Width+pct_Upper.Width : l+pct_Flag.Width;
+			Width = side + lbl_LayoutName.Width + l;
 			lbl_LayoutName.Left = side;
 			ReSnap();
         }

@@ -283,7 +283,53 @@ namespace Mahou {
 				showUpdWnd.Interval = 1000;
 				showUpdWnd.Start();
 			} else { showUpdWnd.Dispose(); }
+			DPISCALE(this);
 			Memory.Flush();
+		}
+		public static double xr = 1, yr = 1;
+		public static void DPISCALE_CONTROL(Control c) {
+			int ww = Convert.ToInt32(Convert.ToDouble(c.Width)*xr);
+			int hh = Convert.ToInt32(Convert.ToDouble(c.Height)*yr);
+			c.Width = ww;
+			c.Height = hh;
+//			Debug.WriteLine(ww + " x " + hh);
+		}
+		public static void DPIPOS_CONTROL(Control c) {
+			int xx = Convert.ToInt32(Convert.ToDouble(c.Location.X)*xr);
+			int yy = Convert.ToInt32(Convert.ToDouble(c.Location.Y)*yr);
+			c.Location = new Point(xx, yy);
+//			Debug.WriteLine(xx + " p " + yy);
+		}
+		public static Control[] ALLCONTROLS(Control c) {
+			if (c == null) {return new Control[]{};}
+			List<Control> ctrls = new List<Control>();
+			foreach (Control con in c.Controls) {
+				ctrls.Add(con);
+				ctrls.AddRange(ALLCONTROLS(con));
+			}
+			return ctrls.ToArray();
+		}
+		public static void DPISCALE(Control cxx, bool nox = false) {
+			float dx, dy;
+			Graphics g = cxx.CreateGraphics();
+			try { dx = g.DpiX; dy = g.DpiY; }
+			finally { g.Dispose(); }
+			var es = Convert.ToSingle(96);
+			if (dx.Equals(es) && dy.Equals(es)) { return; }
+			xr = dx/96;
+			yr = dx/96;
+			Control[] Cons = new Control[]{cxx /*, _TranslatePanel, _langPanel, caretLangDisplay, mouseLangDisplay*/};
+			foreach(Control x in Cons) {
+				var cs = ALLCONTROLS(x);
+				if (!nox) {
+					DPIPOS_CONTROL(x);
+					DPISCALE_CONTROL(x);
+				}
+				foreach (var c in cs) {
+					DPIPOS_CONTROL(c);
+					DPISCALE_CONTROL(c);
+				}
+			}
 		}
 		#region WndProc(Hotkeys) & Functions
 		protected override void WndProc(ref Message m) {
