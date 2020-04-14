@@ -80,7 +80,8 @@ namespace Mahou {
 					ChangeLayoutInExcluded, SnippetSpaceAfter, SnippetsSwitchToGuessLayout,
 					AutoSwitchSpaceAfter, AutoSwitchSwitchToGuessLayout, GuessKeyCodeFix, Dowload_ASD_InZip, 
 					LDForCaret, LDForMouse, LDUseWindowsMessages, RemapCapslockAsF18, Add1NL, PersistentLayoutOnWindowChange, PersistentLayoutOnlyOnce,
-					PersistentLayoutForLayout1, PersistentLayoutForLayout2, UseDelayAfterBackspaces;
+					PersistentLayoutForLayout1, PersistentLayoutForLayout2, UseDelayAfterBackspaces,
+					ConvertSWLinExcl;
 		/// <summary> Temporary modifiers of hotkeys. </summary>
 		string Mainhk_tempMods, ExitHk_tempMods, HKCLast_tempMods, HKCSelection_tempMods, 
 			    HKCLine_tempMods, HKSymIgn_tempMods, HKConMorWor_tempMods, HKTitleCase_tempMods,
@@ -420,21 +421,12 @@ namespace Mahou {
 					}
 				}
 				#endregion
-				if (!KMHook.ExcludedProgram() && !specific) {
+				if ((!KMHook.ExcludedProgram() || ConvertSWLinExcl) && !specific) {
 					if (Hotkey.GetMods(HKCSelection_tempMods) == Hotkey.GetMods(HKCLast_tempMods) &&
 					    HKCSelection_tempKey == HKCLast_tempKey)
 						Hotkey.CallHotkey(HKCLast, id, ref hksOK, KMHook.ConvertSelection); // Use HKCLast id for cs if hotkeys are the same
 					else 
 						Hotkey.CallHotkey(HKCSelection, id, ref hksOK, KMHook.ConvertSelection);
-					Hotkey.CallHotkey(HKCycleCase, id, ref hkccOK, CycleCase);
-					Hotkey.CallHotkey(HKTitleCase, id, ref hksTTCOK, ()=>KMHook.SelectionConversion(KMHook.ConvT.Title));
-					Hotkey.CallHotkey(HKSwapCase, id, ref hksTSCOK, ()=>KMHook.SelectionConversion(KMHook.ConvT.Swap));
-					Hotkey.CallHotkey(HKUpperCase, id, ref hkUcOK, ()=>KMHook.SelectionConversion(KMHook.ConvT.Upper));
-					Hotkey.CallHotkey(HKLowerCase, id, ref hklcOK, ()=>KMHook.SelectionConversion(KMHook.ConvT.Lower));
-					Hotkey.CallHotkey(HKRandomCase, id, ref hksTRCOK, ()=>KMHook.SelectionConversion(KMHook.ConvT.Random));
-					Hotkey.CallHotkey(HKConMorWor, id, ref hkcwdsOK, PrepareConvertMoreWords);
-					Hotkey.CallHotkey(HKTransliteration, id, ref hksTrslOK, ()=>KMHook.SelectionConversion(KMHook.ConvT.Transliteration));
-					Hotkey.CallHotkey(HKSelCustConv, id, ref hkSCCok, ()=>KMHook.SelectionConversion(KMHook.ConvT.Custom));
 					var clcl = false; // Convert Line + Convert Last
 					var conv = false;
 					if (Hotkey.GetMods(HKCLine_tempMods) == Hotkey.GetMods(HKCLast_tempMods) &&
@@ -478,6 +470,17 @@ namespace Mahou {
 						}
 						KMHook.ConvertLast(line);
 					});
+				}
+				if (!KMHook.ExcludedProgram() && !specific) {
+					Hotkey.CallHotkey(HKCycleCase, id, ref hkccOK, CycleCase);
+					Hotkey.CallHotkey(HKTitleCase, id, ref hksTTCOK, ()=>KMHook.SelectionConversion(KMHook.ConvT.Title));
+					Hotkey.CallHotkey(HKSwapCase, id, ref hksTSCOK, ()=>KMHook.SelectionConversion(KMHook.ConvT.Swap));
+					Hotkey.CallHotkey(HKUpperCase, id, ref hkUcOK, ()=>KMHook.SelectionConversion(KMHook.ConvT.Upper));
+					Hotkey.CallHotkey(HKLowerCase, id, ref hklcOK, ()=>KMHook.SelectionConversion(KMHook.ConvT.Lower));
+					Hotkey.CallHotkey(HKRandomCase, id, ref hksTRCOK, ()=>KMHook.SelectionConversion(KMHook.ConvT.Random));
+					Hotkey.CallHotkey(HKConMorWor, id, ref hkcwdsOK, PrepareConvertMoreWords);
+					Hotkey.CallHotkey(HKTransliteration, id, ref hksTrslOK, ()=>KMHook.SelectionConversion(KMHook.ConvT.Transliteration));
+					Hotkey.CallHotkey(HKSelCustConv, id, ref hkSCCok, ()=>KMHook.SelectionConversion(KMHook.ConvT.Custom));
 					ShiftInHotkey = Hotkey.ContainsModifier(((int)m.LParam & 0xFFFF), (int)WinAPI.MOD_SHIFT) ? true : false;
 					AltInHotkey = Hotkey.ContainsModifier(((int)m.LParam & 0xFFFF), (int)WinAPI.MOD_ALT) ? true : false;
 					CtrlInHotkey = Hotkey.ContainsModifier(((int)m.LParam & 0xFFFF), (int)WinAPI.MOD_CONTROL) ? true : false;
@@ -1015,6 +1018,7 @@ namespace Mahou {
 				#region Excluded
 				MMain.MyConfs.Write("Timings", "ExcludedPrograms", txt_ExcludedPrograms.Text.Replace(Environment.NewLine, "^cr^lf"));
 				MMain.MyConfs.Write("Timings", "ChangeLayoutInExcluded", chk_Change1KeyL.Checked.ToString());
+				MMain.MyConfs.Write("Timings", "ConvertSWLinExcl", chk_ConvSWL.Checked.ToString());
 				#endregion
 				#endregion
 				#region Snippets
@@ -1328,6 +1332,7 @@ namespace Mahou {
 			KMHook.EXCLUDED_HWNDs.Clear();
 			KMHook.NOT_EXCLUDED_HWNDs.Clear();
 			ChangeLayoutInExcluded = chk_Change1KeyL.Checked = MMain.MyConfs.ReadBool("Timings", "ChangeLayoutInExcluded");
+			ConvertSWLinExcl = chk_ConvSWL.Checked = MMain.MyConfs.ReadBool("Timings", "ConvertSWLinExcl");
 			#endregion
 			SelectedTextGetMoreTriesCount = (int)nud_SelectedTextGetTriesCount.Value;
 			#endregion
@@ -3817,6 +3822,7 @@ DEL ""ExtractASD.cmd""";
 			#region Excluded
 			lbl_ExcludedPrograms.Text =  MMain.Lang[Languages.Element.ExcludedPrograms];
 			chk_Change1KeyL.Text =  MMain.Lang[Languages.Element.Change1KeyLayoutInExcluded];
+			chk_ConvSWL.Text =  MMain.Lang[Languages.Element.AllowConvertSWL];
 			#endregion
 			#region Snippets
 			chk_Snippets.Text = MMain.Lang[Languages.Element.SnippetsEnabled];
@@ -3974,6 +3980,7 @@ DEL ""ExtractASD.cmd""";
 			HelpMeUnderstand.SetToolTip(chk_OneLayout, MMain.Lang[Languages.Element.TT_OneLayout]);
 			HelpMeUnderstand.SetToolTip(chk_qwertz, MMain.Lang[Languages.Element.TT_QWERTZ]);
 			HelpMeUnderstand.SetToolTip(chk_Change1KeyL, MMain.Lang[Languages.Element.TT_Change1KeyLayoutInExcluded]);
+			HelpMeUnderstand.SetToolTip(chk_ConvSWL, MMain.Lang[Languages.Element.TT_AllowConvertSWL]);
 			HelpMeUnderstand.SetToolTip(chk_SnippetsSwitchToGuessLayout, MMain.Lang[Languages.Element.TT_SnippetsSwitchToGuessLayout]);
 			HelpMeUnderstand.SetToolTip(lbl_SnippetsCount, MMain.Lang[Languages.Element.TT_SnippetsCount]);
 			HelpMeUnderstand.SetToolTip(lbl_AutoSwitchWordsCount, MMain.Lang[Languages.Element.TT_SnippetsCount]);

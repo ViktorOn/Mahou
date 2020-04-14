@@ -280,6 +280,7 @@ namespace Mahou
 		private System.Windows.Forms.Label lbl_TrMethod;
 		private System.Windows.Forms.CheckBox chk_CSUsePaste;
 		private System.Windows.Forms.LinkLabel lnk_SnipOpen;
+		private System.Windows.Forms.CheckBox chk_ConvSWL;
 		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
@@ -436,6 +437,7 @@ namespace Mahou
 			this.txt_ExcludedPrograms = new Mahou.MahouUI.TextBoxCA();
 			this.lbl_ExcludedPrograms = new System.Windows.Forms.Label();
 			this.chk_Change1KeyL = new System.Windows.Forms.CheckBox();
+			this.chk_ConvSWL = new System.Windows.Forms.CheckBox();
 			this.tab_snippets = new System.Windows.Forms.TabPage();
 			this.lnk_SnipOpen = new System.Windows.Forms.LinkLabel();
 			this.cbb_SnippetExpandKeys = new System.Windows.Forms.ComboBox();
@@ -1417,7 +1419,7 @@ namespace Mahou
 			this.chk_qwertz.AutoSize = true;
 			this.chk_qwertz.Location = new System.Drawing.Point(8, 74);
 			this.chk_qwertz.Name = "chk_qwertz";
-			this.chk_qwertz.Size = new System.Drawing.Size(140, 19);
+			this.chk_qwertz.Size = new System.Drawing.Size(139, 19);
 			this.chk_qwertz.TabIndex = 18;
 			this.chk_qwertz.Text = "QWERTZ keyboard fix";
 			this.chk_qwertz.UseVisualStyleBackColor = true;
@@ -1673,7 +1675,7 @@ namespace Mahou
 			this.lbl_LangTTText.AutoSize = true;
 			this.lbl_LangTTText.Location = new System.Drawing.Point(210, 82);
 			this.lbl_LangTTText.Name = "lbl_LangTTText";
-			this.lbl_LangTTText.Size = new System.Drawing.Size(74, 15);
+			this.lbl_LangTTText.Size = new System.Drawing.Size(73, 15);
 			this.lbl_LangTTText.TabIndex = 9;
 			this.lbl_LangTTText.Text = "Tootltip text:";
 			// 
@@ -1804,7 +1806,7 @@ namespace Mahou
 			this.chk_LangTTTransparentColor.AutoSize = true;
 			this.chk_LangTTTransparentColor.Location = new System.Drawing.Point(406, 52);
 			this.chk_LangTTTransparentColor.Name = "chk_LangTTTransparentColor";
-			this.chk_LangTTTransparentColor.Size = new System.Drawing.Size(119, 19);
+			this.chk_LangTTTransparentColor.Size = new System.Drawing.Size(118, 19);
 			this.chk_LangTTTransparentColor.TabIndex = 3;
 			this.chk_LangTTTransparentColor.Text = "Transparent color";
 			this.chk_LangTTTransparentColor.UseVisualStyleBackColor = true;
@@ -2198,6 +2200,7 @@ namespace Mahou
 			this.tab_excluded.Controls.Add(this.txt_ExcludedPrograms);
 			this.tab_excluded.Controls.Add(this.lbl_ExcludedPrograms);
 			this.tab_excluded.Controls.Add(this.chk_Change1KeyL);
+			this.tab_excluded.Controls.Add(this.chk_ConvSWL);
 			this.tab_excluded.Location = new System.Drawing.Point(4, 44);
 			this.tab_excluded.Name = "tab_excluded";
 			this.tab_excluded.Padding = new System.Windows.Forms.Padding(3);
@@ -2208,11 +2211,11 @@ namespace Mahou
 			// 
 			// txt_ExcludedPrograms
 			// 
-			this.txt_ExcludedPrograms.Location = new System.Drawing.Point(8, 18);
+			this.txt_ExcludedPrograms.Location = new System.Drawing.Point(8, 38);
 			this.txt_ExcludedPrograms.Multiline = true;
 			this.txt_ExcludedPrograms.Name = "txt_ExcludedPrograms";
 			this.txt_ExcludedPrograms.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.txt_ExcludedPrograms.Size = new System.Drawing.Size(541, 244);
+			this.txt_ExcludedPrograms.Size = new System.Drawing.Size(541, 224);
 			this.txt_ExcludedPrograms.TabIndex = 24;
 			this.txt_ExcludedPrograms.Text = "LA.exe SomeProgram.exe";
 			// 
@@ -2234,6 +2237,16 @@ namespace Mahou
 			this.chk_Change1KeyL.TabIndex = 26;
 			this.chk_Change1KeyL.Text = "Change layout by 1 key even in excluded.";
 			this.chk_Change1KeyL.UseVisualStyleBackColor = true;
+			// 
+			// chk_ConvSWL
+			// 
+			this.chk_ConvSWL.AutoSize = true;
+			this.chk_ConvSWL.Location = new System.Drawing.Point(185, 18);
+			this.chk_ConvSWL.Name = "chk_ConvSWL";
+			this.chk_ConvSWL.Size = new System.Drawing.Size(269, 19);
+			this.chk_ConvSWL.TabIndex = 27;
+			this.chk_ConvSWL.Text = "Allow convert selection/word/line conversion.";
+			this.chk_ConvSWL.UseVisualStyleBackColor = true;
 			// 
 			// tab_snippets
 			// 
@@ -2911,7 +2924,7 @@ namespace Mahou
 			this.lbl_LPTrasparency.AutoSize = true;
 			this.lbl_LPTrasparency.Location = new System.Drawing.Point(17, 58);
 			this.lbl_LPTrasparency.Name = "lbl_LPTrasparency";
-			this.lbl_LPTrasparency.Size = new System.Drawing.Size(81, 15);
+			this.lbl_LPTrasparency.Size = new System.Drawing.Size(80, 15);
 			this.lbl_LPTrasparency.TabIndex = 26;
 			this.lbl_LPTrasparency.Text = "Transparency:";
 			// 
@@ -3097,7 +3110,7 @@ namespace Mahou
 			this.lbl_TrLanguages.AutoSize = true;
 			this.lbl_TrLanguages.Location = new System.Drawing.Point(6, 98);
 			this.lbl_TrLanguages.Name = "lbl_TrLanguages";
-			this.lbl_TrLanguages.Size = new System.Drawing.Size(115, 15);
+			this.lbl_TrLanguages.Size = new System.Drawing.Size(114, 15);
 			this.lbl_TrLanguages.TabIndex = 46;
 			this.lbl_TrLanguages.Text = "Translate languages:";
 			// 
@@ -3222,7 +3235,7 @@ namespace Mahou
 			this.lbl_TrTransparency.AutoSize = true;
 			this.lbl_TrTransparency.Location = new System.Drawing.Point(8, 48);
 			this.lbl_TrTransparency.Name = "lbl_TrTransparency";
-			this.lbl_TrTransparency.Size = new System.Drawing.Size(81, 15);
+			this.lbl_TrTransparency.Size = new System.Drawing.Size(80, 15);
 			this.lbl_TrTransparency.TabIndex = 28;
 			this.lbl_TrTransparency.Text = "Transparency:";
 			// 

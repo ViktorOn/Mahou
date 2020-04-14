@@ -385,6 +385,7 @@ namespace Mahou {
 			#region Timings section
 			CheckInt("Timings", "LangTooltipForMouseSkipMessages", "5");
 			#region Excluded
+            CheckBool("Timings", "ConvertSWLinExcl", "false");
             CheckBool("Timings", "ChangeLayoutInExcluded", "true");
             CheckBool("Timings", "ExcludeCaretLD", "false");
             CheckBool("Timings", "UsePasteInCS", "false");

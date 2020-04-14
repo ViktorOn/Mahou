@@ -108,6 +108,7 @@ public class Languages
 		#region Excluded
 		ExcludedPrograms,
 		Change1KeyLayoutInExcluded,
+		AllowConvertSWL,
 		#endregion
 		#region Snippets
 		SnippetsEnabled,
@@ -275,6 +276,7 @@ public class Languages
 		TT_OneLayout,
 		TT_QWERTZ,
 		TT_Change1KeyLayoutInExcluded,
+		TT_AllowConvertSWL,
 		TT_SnippetsSwitchToGuessLayout,
 		TT_SnippetsCount,
 		TT_GuessKeyCodeFix,
@@ -402,6 +404,7 @@ public class Languages
 		#region Excluded
 		{ Element.ExcludedPrograms, "Excluded programs:" }, 
 		{ Element.Change1KeyLayoutInExcluded, "Change layout by 1 key even in excluded." }, 
+		{ Element.AllowConvertSWL, "Allow convert selection/word/line conversion." }, 
 		#endregion
 		#region Snippets
 		{ Element.SnippetsEnabled, "Enable snippets." }, 
@@ -587,6 +590,7 @@ public class Languages
 		{ Element.TT_OneLayout, "Allows to store global layout in Mahou, insted of layout per window/program.\r\n(if You have Windows 8 or greater this feature is built in Windows, so you don't need to use enable it in Mahou)"},
 		{ Element.TT_QWERTZ, "Makes right substitutes in QWERTZ keyboards for chars: ß, ä, ö, ü, Ä, Ö, Ü, Y, Z in Convert Selection\r\n(!! but convert selection layout switching(or +) not supported)." },
 		{ Element.TT_Change1KeyLayoutInExcluded, "Function is in Layouts tab -> [Change to specific layout by keys]." },
+		{ Element.TT_AllowConvertSWL, "Hotkeys affected: -> \r\n[Convert Selection]\r\n[Convert Last Word]\r\n[Convert Last Line]." },
 		{ Element.TT_SnippetsSwitchToGuessLayout, "Switches to *guessed* layout after snippet expanded.\r\nGuess works like in whole \"One Layout for whole word in Convert Selection\" function."},
 		{ Element.TT_SnippetsCount,	"If ORANGE snippets are OK.\r\nIf RED snippets has errors, maybe its unfinished etc.\r\nIn brackets are displayed count of commented lines(they are ignored by Mahou),\r\nvalid comment characters: # and // and only at start of line." },
 		{ Element.TT_GuessKeyCodeFix, "Enabling this will make snippets, convert selection, auto-switch to send real virtual key codes instead of unicode chars,\r\nbut that will cause that all characters will be in your current layout.\r\nUseful in programs virtual machines.(BlueStacks, VirtualBox etc.)" },
@@ -717,6 +721,7 @@ public class Languages
 		#region Excluded
 		{ Element.ExcludedPrograms, "Программы исключения:" }, 
 		{ Element.Change1KeyLayoutInExcluded, "Менять раскладку 1 клавишей даже в исключениях." }, 
+		{ Element.AllowConvertSWL, "Разрешить конвертацию выделения/слова/линии." }, 
 		#endregion
 		#region Snippets
 		{ Element.SnippetsEnabled, "Включить сниппеты." }, 
@@ -900,6 +905,7 @@ public class Languages
 		{ Element.TT_OneLayout, "Позволяет хранить раскладку в Mahou, вместо раскладки для каждого окна/программы.\r\n(если у Вас Windows 8 и выше, то там уже стоит данная функция по умолчанию, нет необходимости включать ее в Mahou)"},
 		{ Element.TT_QWERTZ, "Делает правильные замены в клавиатурах QWERTZ для букв: ß, ä, ö, ü, Ä, Ö, Ü, Y, Z в Конверт выделения\r\n(!! но не совместимо со сменой раскладки в конверт выделения (или +))." },
 		{ Element.TT_Change1KeyLayoutInExcluded, "Функция находится во вкладке раскладки -> [Переключать раскладки по клавишам]." },
+		{ Element.TT_AllowConvertSWL, "Влияет на горячие клавиши: -> \r\n[Конвертация выделенного текста]\r\n[Конвертация последнего слова]\r\n[Конвертация последней линии]." },
 		{ Element.TT_SnippetsSwitchToGuessLayout, "Меняет раскладку в *угаданную* после того как сниипет конвертировался.\r\nУгадывание работает так же как в функции \"Одна раскладка для целого слова в Конверт Выделения\"."},
 		{ Element.TT_SnippetsCount,	"Если ОРАНЖЕВЫЙ то со сниппетами все OK.\r\nЕсли КРАСНЫЙ то в сниппетах есть ошибка, может незавершен сниппет и т.д.\r\nВ скобках отображается количество закоментированых линий(они игнорируются Mahou),\r\nдоступные символы для комментирования линий: # или // и только вначале линии." },
 		{ Element.TT_GuessKeyCodeFix, "Включая это сниппеты, конвертация выделения, автозамена будут отправлять реальные коды клавиш вместо юникод символов,\r\nно это сделает так что все символы будут в вашей текущей раскладке.\r\nПолезно в приложениях виртуальных машинах(BlueStacks, VirtualBox, etc)." },
