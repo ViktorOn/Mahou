@@ -3406,8 +3406,10 @@ if not exist ""%MAHOUDIR%%Mahou%"" goto continue
 goto loop
 :continue
 echo %i%
-ECHO With CreateObject(""Shell.Application"") > ""%TEMP%\unzip.vbs""
-ECHO    .NameSpace(WScript.Arguments(1)).CopyHere .NameSpace(WScript.Arguments(0)).items, 20 >> ""%TEMP%\unzip.vbs""
+ECHO x0 = replace(Wscript.Arguments(0), ""\\"", ""\"") > ""%TEMP%\unzip.vbs""
+ECHO x1 = replace(Wscript.Arguments(1), ""\\"", ""\"") >> ""%TEMP%\unzip.vbs""
+ECHO With CreateObject(""Shell.Application"") >> ""%TEMP%\unzip.vbs""
+ECHO    .NameSpace(x1).CopyHere .NameSpace(x0).items, 20 >> ""%TEMP%\unzip.vbs""
 ECHO End With >> ""%TEMP%\unzip.vbs""
 
 CSCRIPT ""%TEMP%\unzip.vbs"" ""%TEMP%\" + arch + @""" ""%MAHOUDIR%""
