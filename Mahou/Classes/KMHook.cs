@@ -1386,8 +1386,12 @@ namespace Mahou {
 					if (l2)
 						l = MahouUI.MAIN_LAYOUT2;
 					if (l > 2) {
-						Logging.Log("[SELAE] Changing to " +l);
-						ChangeToLayout(Locales.ActiveWindow(), l);
+						var xx = MMain.MyConfs.ReadBool("Hidden", "__setlayout_ONLYWM");
+						Logging.Log("[SELAE] Changing to " +l + " ONLYWM: "+xx);
+						if (xx)
+							NormalChangeToLayout(Locales.ActiveWindow(), l);
+						else 
+							ChangeToLayout(Locales.ActiveWindow(), l);
 					}
 					break;
 				case "__selection":

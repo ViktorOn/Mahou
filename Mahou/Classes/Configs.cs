@@ -216,6 +216,7 @@ namespace Mahou {
 			CheckBool("Hidden", "__selection", "false");
 			CheckString("Hidden", "onlySnippetsExcluded", "");
 			CheckBool("Hidden", "__setlayout_FORCED", "false");
+			CheckBool("Hidden", "__setlayout_ONLYWM", "false");
 			#endregion
         	#region Sync
 			CheckString("Sync", "BBools", "0|1|0|0|0");
