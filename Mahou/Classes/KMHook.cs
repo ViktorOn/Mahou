@@ -978,7 +978,8 @@ namespace Mahou {
 			}
 		}
 		static char getSym(int vkCode, bool ignore = false) {
-			if (ctrl&&alt&&shift) { return '\0'; } // Fix for AltGr+Shift+<some-umlaut> #271
+			// Fix for AltGr+Shift+<some-umlaut> #271
+			if ((ctrl|ctrl_r)&&(alt||alt_r)&&(shift||shift_r)) { return '\0'; }
 			// e.g. return nothing when ctrl+alt+shift+something is pressed
 			// or else the umlaut input will be *eaten*
 			var stb = new StringBuilder(10);
