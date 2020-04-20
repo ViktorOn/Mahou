@@ -126,6 +126,7 @@ namespace Mahou {
 			} else
 				IsHotkey = false;
 			Console.WriteLine("Pressed hotkey?: "+IsHotkey+" => ["+Key+"+"+mods+"] .");
+			char sym = '\0';
 			if ((Key >= Keys.D0 || Key <= Keys.D9) && waitfornum)
 				IsHotkey = true;
 			if (MahouUI.OnceSpecific && !down) {
@@ -215,8 +216,10 @@ namespace Mahou {
 			#region
 			var upper = false;
 			if (MahouUI.LangPanelDisplay || MahouUI.MouseLangTooltipEnabled || MahouUI.CaretLangTooltipEnabled)
-				if (MahouUI.LangPanelUpperArrow || MahouUI.mouseLTUpperArrow || MahouUI.caretLTUpperArrow)
-					upper = IsUpperInput(!Char.IsLetterOrDigit(getSym(vkCode, true)));
+				if (MahouUI.LangPanelUpperArrow || MahouUI.mouseLTUpperArrow || MahouUI.caretLTUpperArrow) {
+					sym = getSym(vkCode, true);
+					upper = IsUpperInput(!Char.IsLetterOrDigit(sym));
+			}
 			if (MahouUI.LangPanelDisplay)
 				if (MahouUI.LangPanelUpperArrow)
 					MMain.mahou._langPanel.DisplayUpper(upper);
@@ -228,10 +231,10 @@ namespace Mahou {
 					MMain.mahou.caretLangDisplay.DisplayUpper(upper);
 			#endregion
 			#region InputHistory
-			char sym = '\0';
 			if (MahouUI.WriteInputHistory) {
 				if ((printable || Key == Keys.Enter || Key == Keys.Space) && printable_mod && down) {
-					sym = getSym(vkCode);
+					if (sym == '\0')
+						sym = getSym(vkCode);
 					WriteToHistory(sym);
 				}
 				if (Key == Keys.Back && printable_mod && down) {
@@ -471,7 +474,8 @@ namespace Mahou {
 						ClearWord(true, false, false, "Clear last word after 1 enter");
 						afterEOL = false;
 					}
-					var upr = IsUpperInput(!Char.IsLetterOrDigit(getSym(vkCode, true)));
+					if (sym == '\0') { sym = getSym(vkCode, true); }
+					var upr = IsUpperInput(!Char.IsLetterOrDigit(sym));
 					MMain.c_word.Add(new YuKey() { key = Key, upper = upr });
 					MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Key, upper = upr });
 					Logging.Log("[WORD] > Added [" + Key + "]^"+upr);
