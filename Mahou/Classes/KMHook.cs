@@ -214,8 +214,9 @@ namespace Mahou {
 			#endregion
 			#region
 			var upper = false;
-			if (MahouUI.LangPanelUpperArrow || MahouUI.mouseLTUpperArrow || MahouUI.caretLTUpperArrow)
-				upper = IsUpperInput(!Char.IsLetterOrDigit(getSym(vkCode, true)));
+			if (MahouUI.LangPanelDisplay || MahouUI.MouseLangTooltipEnabled || MahouUI.CaretLangTooltipEnabled)
+				if (MahouUI.LangPanelUpperArrow || MahouUI.mouseLTUpperArrow || MahouUI.caretLTUpperArrow)
+					upper = IsUpperInput(!Char.IsLetterOrDigit(getSym(vkCode, true)));
 			if (MahouUI.LangPanelDisplay)
 				if (MahouUI.LangPanelUpperArrow)
 					MMain.mahou._langPanel.DisplayUpper(upper);
@@ -979,7 +980,7 @@ namespace Mahou {
 		}
 		static char getSym(int vkCode, bool ignore = false) {
 			// Fix for AltGr+Shift+<some-umlaut> #271
-			if ((ctrl|ctrl_r)&&(alt||alt_r)&&(shift||shift_r)) { return '\0'; }
+			if (((ctrl||ctrl_r)&&(alt||alt_r)&&(shift||shift_r)) || (alt_r&&(shift||shift_r))) { return '\0'; }
 			// e.g. return nothing when ctrl+alt+shift+something is pressed
 			// or else the umlaut input will be *eaten*
 			var stb = new StringBuilder(10);
