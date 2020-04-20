@@ -999,7 +999,9 @@ namespace Mahou {
 						layout = MahouUI.currentLayout & 0xffff;
 				}
 			}
-			WinAPI.ToUnicodeEx((uint)vkCode, (uint)vkCode, byt, stb, stb.Capacity, 0, (IntPtr)layout);
+			//                                                                     0=alt, 1=noalt
+			// it eats umlaut characters with 0, so:
+			WinAPI.ToUnicodeEx((uint)vkCode, (uint)vkCode, byt, stb, stb.Capacity, 1, (IntPtr)layout);
 			if (stb.Length > 0) {
 				var c = stb.ToString()[0];
 				return c;	
