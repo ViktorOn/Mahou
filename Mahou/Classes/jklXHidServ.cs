@@ -165,11 +165,13 @@ namespace Mahou {
 					}
 				}
 				if (start_cyclEmuSwitch) {
+					Debug.WriteLine("Cycling out from: "+ layout + " to " + cycleEmuDesiredLayout +"...");
 					if (layout != cycleEmuDesiredLayout && laysho != cycleEmuDesiredLayout)
 						KMHook.CycleEmulateLayoutSwitch();
 					else
 						start_cyclEmuSwitch = false;
-				} else if (!self_change) {
+				}
+				if (!self_change && !start_cyclEmuSwitch) {
 					MahouUI.RefreshFLAG();
 					MMain.mahou.RefreshAllIcons();
 					MMain.mahou.UpdateLDs();
