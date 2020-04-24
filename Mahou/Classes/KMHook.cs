@@ -23,6 +23,7 @@ namespace Mahou {
 		public static System.Windows.Forms.Timer click_reset = new System.Windows.Forms.Timer();
 		public static System.Windows.Forms.Timer JKLERRT = new System.Windows.Forms.Timer();
 		public static int skip_mouse_events, skip_spec_keys, cursormove = -1, guess_tries, skip_kbd_events, lsnip_noset;
+		static char sym = '\0'; static bool sym_upr = false;
 		static uint as_lword_layout = 0;
 		static uint cs_layout_last = 0;
 		static string lastClipText = "", busy_on = "", lastLWClearReason = "";
@@ -126,7 +127,6 @@ namespace Mahou {
 			} else
 				IsHotkey = false;
 			Console.WriteLine("Pressed hotkey?: "+IsHotkey+" => ["+Key+"+"+mods+"] .");
-			char sym = '\0';
 			if ((Key >= Keys.D0 || Key <= Keys.D9) && waitfornum)
 				IsHotkey = true;
 			if (MahouUI.OnceSpecific && !down) {
@@ -214,27 +214,24 @@ namespace Mahou {
 			}
 			#endregion
 			#region
-			var upper = false;
 			if (MahouUI.LangPanelDisplay || MahouUI.MouseLangTooltipEnabled || MahouUI.CaretLangTooltipEnabled)
 				if (MahouUI.LangPanelUpperArrow || MahouUI.mouseLTUpperArrow || MahouUI.caretLTUpperArrow) {
-					sym = getSym(vkCode, true);
-					upper = IsUpperInput(!Char.IsLetterOrDigit(sym));
+					sym = getSym(vkCode);
 			}
 			if (MahouUI.LangPanelDisplay)
 				if (MahouUI.LangPanelUpperArrow)
-					MMain.mahou._langPanel.DisplayUpper(upper);
+					MMain.mahou._langPanel.DisplayUpper(sym_upr);
 			if (MahouUI.MouseLangTooltipEnabled)
 				if (MahouUI.mouseLTUpperArrow)
-					MMain.mahou.mouseLangDisplay.DisplayUpper(upper);
+					MMain.mahou.mouseLangDisplay.DisplayUpper(sym_upr);
 			if (MahouUI.CaretLangTooltipEnabled)
 				if (MahouUI.caretLTUpperArrow)
-					MMain.mahou.caretLangDisplay.DisplayUpper(upper);
+					MMain.mahou.caretLangDisplay.DisplayUpper(sym_upr);
 			#endregion
 			#region InputHistory
 			if (MahouUI.WriteInputHistory) {
 				if ((printable || Key == Keys.Enter || Key == Keys.Space) && printable_mod && down) {
-					if (sym == '\0')
-						sym = getSym(vkCode);
+					if (sym == '\0') sym = getSym(vkCode);
 					WriteToHistory(sym);
 				}
 				if (Key == Keys.Back && printable_mod && down) {
@@ -248,8 +245,7 @@ namespace Mahou {
 			#region Snippets
 			if (MahouUI.SnippetsEnabled && !ExcludedProgram(true)) {
 				if (printable && printable_mod && down) {
-					if (sym == '\0')
-						sym = getSym(vkCode);
+					if (sym == '\0') sym = getSym(vkCode);
 					c_snip.Add(sym);
 					Logging.Log("[SNI] > Added ["+ sym + "] to current snippet.");
 					//Debug.WriteLine("added " + sym);
@@ -474,11 +470,10 @@ namespace Mahou {
 						ClearWord(true, false, false, "Clear last word after 1 enter");
 						afterEOL = false;
 					}
-					if (sym == '\0') { sym = getSym(vkCode, true); }
-					var upr = IsUpperInput(!Char.IsLetterOrDigit(sym));
-					MMain.c_word.Add(new YuKey() { key = Key, upper = upr });
-					MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Key, upper = upr });
-					Logging.Log("[WORD] > Added [" + Key + "]^"+upr);
+					if (sym == '\0') { sym = getSym(vkCode); }
+					MMain.c_word.Add(new YuKey() { key = Key, upper = sym_upr });
+					MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Key, upper = sym_upr });
+					Logging.Log("[WORD] > Added [" + Key + "]^"+sym_upr);
 					MahouUI.CCReset("key:"+Key);
 				}
 			}
@@ -517,6 +512,8 @@ namespace Mahou {
 			#region Update LD
 			MMain.mahou.UpdateLDs();
 			#endregion
+			sym = '\0';
+			sym_upr = false;
 		}
 		public static void ListenMouse(ushort MSG) {
 			if (MahouUI.__selection) {
@@ -989,9 +986,14 @@ namespace Mahou {
 			// or else the umlaut input will be *eaten*
 			var stb = new StringBuilder(10);
 			var byt = new byte[256];
-			if (!ignore)
-				if (IsUpperInput(!Char.IsLetterOrDigit(getSym(vkCode, true))))
+			if (!ignore) {
+				if (sym == '\0')
+					sym = getSym(vkCode, true);
+				if (IsUpperInput(!Char.IsLetterOrDigit(sym))) {
+					sym_upr = true;
 					byt[(int)Keys.ShiftKey] = 0xFF;
+				} else { sym_upr = false; }
+			}
 			uint layout = Locales.GetCurrentLocale() & 0xffff;
 			if (MahouUI.UseJKL && !KMHook.JKLERR) {
 				if (layout != (MahouUI.currentLayout & 0xffff)) {
@@ -1004,6 +1006,7 @@ namespace Mahou {
 			WinAPI.ToUnicodeEx((uint)vkCode, (uint)vkCode, byt, stb, stb.Capacity, 1, (IntPtr)layout);
 			if (stb.Length > 0) {
 				var c = stb.ToString()[0];
+				Logging.Log("[GETSYM] > "+(ignore?"fake;":"true;")+" ToUnEx() => ["+stb+"].");
 				return c;	
 			}
 			return '\0';
