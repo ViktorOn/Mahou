@@ -176,6 +176,7 @@ namespace Mahou {
 					MMain.mahou.RefreshAllIcons();
 					MMain.mahou.UpdateLDs();
 				}
+				KMHook.was_ls = true;
 			}
 	        return WinAPI.DefWindowProcW(hWnd, msg, wParam, lParam);
 	    }

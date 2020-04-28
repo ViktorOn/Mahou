@@ -19,7 +19,8 @@ namespace Mahou {
 			hotkeywithmodsfired, csdoing, incapt, waitfornum, 
 			IsHotkey, ff_chr_wheeled, preSnip, LMB_down, RMB_down, MMB_down,
 			dbl_click, click, selfie, aftsingleAS, JKLERR, JKLERRchecking, last_snipANY,
-			_selis, _mselis, snipselshiftpressed, snipselwassel;
+			_selis, _mselis, snipselshiftpressed, snipselwassel, 
+			AS_IGN_BACK, AS_IGN_DEL, AS_IGN_LS, was_back, was_del, was_ls;
 		public static System.Windows.Forms.Timer click_reset = new System.Windows.Forms.Timer();
 		public static System.Windows.Forms.Timer JKLERRT = new System.Windows.Forms.Timer();
 		public static int skip_mouse_events, skip_spec_keys, cursormove = -1, guess_tries, skip_kbd_events, lsnip_noset;
@@ -273,7 +274,10 @@ namespace Mahou {
 						if (MahouUI.__selection)
 							snip_selection = "";
 					}
-					if (MahouUI.AutoSwitchEnabled && !matched && as_wrongs != null && Key == Keys.Space) {
+					var IGN = ((AS_IGN_BACK && was_back) || (AS_IGN_DEL && was_del) || (AS_IGN_LS && was_ls));
+					if (IGN) { Logging.Log("[AS] > Ignore AutoSwitch by: B/D/LS: " + was_back + "/"+was_del+"/"+was_ls); }
+					Debug.WriteLine("IGN:"+IGN+"EVT"+MSG);
+					if (MahouUI.AutoSwitchEnabled && !matched && as_wrongs != null && Key == Keys.Space && !IGN) { 
 						var CW = c_word_backup;
 						var CLW = c_word_backup_last;
 						if (MahouUI.AddOneSpace) {
@@ -310,6 +314,9 @@ namespace Mahou {
 						else
 							lsnip_noset--;
 					}
+					if (Key == Keys.Back) { was_back = true; }
+					if (Key == Keys.Delete) { was_del = true; }
+					if (Key == Keys.Space) { was_back = was_del = was_ls = false; }
 				}
 			}
 			#endregion
@@ -387,7 +394,7 @@ namespace Mahou {
 			}
 			#endregion
 			if ((ctrl||win||alt||ctrl_r||win_r||alt_r) && Key == Keys.Tab) {
-				ClearWord(true, true, true, "Any modifier + Tab", true);
+				ClearWord(true, true, true, "Any modifier + Tab", true, true);
 				MahouUI.CCReset("mod+tab");
 			}
 			#region Other, when KeyDown
@@ -430,7 +437,7 @@ namespace Mahou {
 							Key != Keys.LControlKey &&
 							Key != Keys.RControlKey ))) { 
 					MahouUI.CCReset("cc/noShift.Hkey");
-					ClearWord(true, true, true, "Pressed combination of key and modifiers(not shift) or key that changes caret position.", true);
+					ClearWord(true, true, true, "Pressed combination of key and modifiers(not shift) or key that changes caret position.", true, true);
 				}
 				if (Key == Keys.Space) {
 					Logging.Log("[FUN] > Adding one new empty word to words, and adding to it [Space] key.");
@@ -455,7 +462,7 @@ namespace Mahou {
 						MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Keys.Enter });
 						afterEOL = true;
 					} else {
-						ClearWord(true, true, true, "Pressed enter", true);
+						ClearWord(true, true, true, "Pressed enter", true, true);
 						afterEOL = false;
 					}
 					as_lword_layout = 0;
@@ -541,7 +548,7 @@ namespace Mahou {
 					clickAfterALT = true;
 				if (!MahouUI.UseJKL || KMHook.JKLERR)
 					MahouUI.currentLayout = 0;
-				ClearWord(true, true, true, "Mouse click", true);
+				ClearWord(true, true, true, "Mouse click", true, true);
 			}
 			#region Double click show translate
 			if (MahouUI.TrEnabled)
@@ -1673,6 +1680,7 @@ namespace Mahou {
 							if (specificKey == 12 && Key == Keys.Tab && !ctrl && !ctrl_r && !shift_r && !shift && !win && !win_r && !alt && !alt_r) {
 								Logging.Log("[SPKEY] > Changing layout by Tab key.");
 								ChangeLayout();
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 11 && (
@@ -1680,6 +1688,7 @@ namespace Mahou {
 								(Key == Keys.LControlKey && shift) || (Key == Keys.RControlKey && shift_r)) && !win && !win_r && !alt && !alt_r) {
 								Logging.Log("[SPKEY] > Changing layout by Ctrl+Shift key.");
 								ChangeLayout();
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 10 && (
@@ -1687,52 +1696,62 @@ namespace Mahou {
 								(Key == Keys.LMenu && shift) || (Key == Keys.RMenu && shift_r)) && !win && !win_r && !ctrl && !ctrl_r) {
 								Logging.Log("[SPKEY] > Changing layout by Alt+Shift key.");
 								ChangeLayout();
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 8 && (Key == Keys.CapsLock || F18 || GJIME) && (shift || shift_r) && !alt && !alt_r && !ctrl && !ctrl_r) {
 								Logging.Log("[SPKEY] > Changing layout by Shift+CapsLock"+(GJIME?"(KeyCode: 240, Google Japanese IME's Shift+CapsLock remap)":"")+(F18?"(F18)":"")+" key.");
 								ChangeLayout();
+								was_ls = true;
 						    	return;
 							} else 
 							if (!shift && !shift_r && !alt && !alt_r && !ctrl && !ctrl_r && !win && !win_r && specificKey == 1 && 
 								    (Key == Keys.CapsLock || F18)) {
 								ChangeLayout();
+								was_ls = true;
 								Logging.Log("[SPKEY] > Changing layout by CapsLock"+(F18?"(F18)":"")+" key.");
 						    	return;
 							}
 							if (specificKey == 2 && Key == Keys.LControlKey && !keyAfterCTRL && npre) {
 								Logging.Log("[SPKEY] > Changing layout by L-Ctrl key.");
 								ChangeLayout();
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 3 && Key == Keys.RControlKey && !keyAfterCTRL && npre) {
 								Logging.Log("[SPKEY] > Changing layout by R-Ctrl key.");
 								ChangeLayout();
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 4 && Key == Keys.LShiftKey && !keyAfterSHIFT && npre) {
 								Logging.Log("[SPKEY] > Changing layout by L-Shift key.");
 								ChangeLayout();
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 5 && Key == Keys.RShiftKey && !keyAfterSHIFT && npre) {
 								Logging.Log("[SPKEY] > Changing layout by R-Shift key.");
 								ChangeLayout();
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 6 && Key == Keys.LMenu && !keyAfterALT && npre) {
 								Logging.Log("[SPKEY] > Changing layout by L-Alt key.");
 								ChangeLayout();
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 7 && Key == Keys.RMenu && !keyAfterALT && npre) {
 								Logging.Log("[SPKEY] > Changing layout by R-Alt key.");
 								ChangeLayout();
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 9 && altgr && !keyAfterALTGR) {
 								Logging.Log("[SPKEY] > Changing layout by AltGr key.");
 								ChangeLayout();
+								was_ls = true;
 						    	return;
 							}
 //							if (catched) {
@@ -1749,6 +1768,7 @@ namespace Mahou {
 								Logging.Log("[SPKEY] > Switching to specific layout by Tab key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 10 && (
@@ -1757,48 +1777,56 @@ namespace Mahou {
 								Logging.Log("[SPKEY] > Switching to specific layout by Alt+Shift key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 8 && (Key == Keys.CapsLock || F18 || GJIME) && (shift || shift_r) && !alt && !alt_r && !ctrl && !ctrl_r) {
 								Logging.Log("[SPKEY] > Switching to specific layout by Shift+CapsLock"+(GJIME?"(KeyCode: 240, Google Japanese IME's Shift+CapsLock remap)":"")+(F18?"(F18)":"")+" key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
+								was_ls = true;
 						    	return;
 							} else
 							if (specificKey == 1 && (Key == Keys.CapsLock || F18)) {
 								Logging.Log("[SPKEY] > Switching to specific layout by Caps Lock"+(F18?"(F18)":"")+" key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 2 && Key == Keys.LControlKey && !keyAfterCTRL && npre) {
 								Logging.Log("[SPKEY] > Switching to specific layout by  L-Ctrl key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 3 && Key == Keys.RControlKey && !keyAfterCTRL && npre) {
 								Logging.Log("[SPKEY] > Switching to specific layout by R-Ctrl key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 4 && Key == Keys.LShiftKey && !keyAfterSHIFT && npre) {
 								Logging.Log("[SPKEY] > Switching to specific layout by L-Shift key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 5 && Key == Keys.RShiftKey && !keyAfterSHIFT && npre) {
 								Logging.Log("[SPKEY] > Switching to specific layout by R-Shift key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
+								was_ls = true;
 						    	return;
 							}
 							if (specificKey == 6 && Key == Keys.LMenu && !keyAfterALT && npre) {
 								Logging.Log("[SPKEY] > Switching to specific layout by L-Alt key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);	
 								matched = true;
+								was_ls = true;
 								DoSelf(()=>{ KeybdEvent(Keys.LMenu, 0); KeybdEvent(Keys.LMenu, 2); });
 						    	return;
 							}
@@ -1806,6 +1834,7 @@ namespace Mahou {
 								Logging.Log("[SPKEY] > Switching to specific layout by R-Alt key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
+								was_ls = true;
 								DoSelf(()=>{ KeybdEvent(Keys.RMenu, 0); KeybdEvent(Keys.RMenu, 2); });
 						    	return;
 							}
@@ -1813,6 +1842,7 @@ namespace Mahou {
 								Logging.Log("[SPKEY] > Switching to specific layout by AltGr key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
+								was_ls = true;
 								DoSelf(()=>{ KeybdEvent(Keys.RMenu, 0); KeybdEvent(Keys.RMenu, 2); });
 						    	return;
 							}
@@ -1839,7 +1869,7 @@ namespace Mahou {
 			LLHook.ClearModifiers();
 			SendModsUp((int)(WinAPI.MOD_ALT + WinAPI.MOD_CONTROL + WinAPI.MOD_SHIFT + WinAPI.MOD_WIN));
 		}
-		static void ClearWord(bool LastWord = false, bool LastLine = false, bool Snippet = false, string ClearReason = "", bool lastSnippet = false) {
+		static void ClearWord(bool LastWord = false, bool LastLine = false, bool Snippet = false, string ClearReason = "", bool lastSnippet = false, bool wass = false) {
 			string ReasonEnding = ".";
 			Debug.WriteLine("CLEAR: " + ClearReason);
 			if (MahouUI.LoggingEnabled && !String.IsNullOrEmpty(ClearReason))
@@ -1872,6 +1902,7 @@ namespace Mahou {
 					Logging.Log("[CLWORD] > Cleared last snippet" + ReasonEnding);
 				}
 			}
+			if (wass) { was_back = was_del = was_ls = false; }
 			MahouUI.RefreshFLAG();
 			MMain.mahou.RefreshAllIcons();
 			MMain.mahou.UpdateLDs();

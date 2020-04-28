@@ -1403,6 +1403,9 @@ namespace Mahou {
 					               }, 650);
 				}
 			}
+			KMHook.AS_IGN_BACK = MMain.MyConfs.ReadBool("Hidden", "AS_IngoreBack");
+			KMHook.AS_IGN_DEL = MMain.MyConfs.ReadBool("Hidden", "AS_IngoreDel");
+			KMHook.AS_IGN_LS = MMain.MyConfs.ReadBool("Hidden", "AS_IngoreLS");
 			#endregion
 			LoadTemps();
 			#region DICT reload
