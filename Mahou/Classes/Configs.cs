@@ -220,6 +220,8 @@ namespace Mahou {
 			CheckBool("Hidden", "AS_IngoreBack", "false");
 			CheckBool("Hidden", "AS_IngoreDel", "false");
 			CheckBool("Hidden", "AS_IngoreLS", "false");
+			CheckString("Hidden", "AS_IngoreRules", "SWMCLT");
+			CheckInt("Hidden", "AS_IngoreLSTimeout", "5000");
 			#endregion
         	#region Sync
 			CheckString("Sync", "BBools", "0|1|0|0|0");

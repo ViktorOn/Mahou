@@ -9,7 +9,8 @@ using System.Windows.Forms;
 
 namespace Mahou {
 	static class KMHook  { // Keyboard & Mouse Listeners & Event hook		#region Variables
-		public static string __ANY__ = "***ANY***", REGEXSNIP = "regex/", IGNLAYSNIP = "?~?", last_snip, snip_selection;
+		public static string __ANY__ = "***ANY***", REGEXSNIP = "regex/", IGNLAYSNIP = "?~?", last_snip, snip_selection,
+							AS_IGN_RULES;
 		public static bool win, alt, ctrl, shift,
 			win_r, alt_r, ctrl_r, shift_r,
 			shiftRP, ctrlRP, altRP, winRP, //RP = Re-Press
@@ -23,7 +24,7 @@ namespace Mahou {
 			AS_IGN_BACK, AS_IGN_DEL, AS_IGN_LS, was_back, was_del, was_ls;
 		public static System.Windows.Forms.Timer click_reset = new System.Windows.Forms.Timer();
 		public static System.Windows.Forms.Timer JKLERRT = new System.Windows.Forms.Timer();
-		public static int skip_mouse_events, skip_spec_keys, cursormove = -1, guess_tries, skip_kbd_events, lsnip_noset;
+		public static int skip_mouse_events, skip_spec_keys, cursormove = -1, guess_tries, skip_kbd_events, lsnip_noset, AS_IGN_TIMEOUT;
 		static char sym = '\0'; static bool sym_upr = false;
 		static uint as_lword_layout = 0;
 		static uint cs_layout_last = 0;
@@ -31,7 +32,7 @@ namespace Mahou {
 		static List<Keys> tempNumpads = new List<Keys>();
 		static Keys preKey = Keys.None;
 		public static List<char> c_snip = new List<char>();
-		public static System.Windows.Forms.Timer doublekey = new System.Windows.Forms.Timer();
+		public static System.Windows.Forms.Timer doublekey = new System.Windows.Forms.Timer(), AS_IGN_RESET = new System.Windows.Forms.Timer();
 		public static List<YuKey> c_word_backup = new List<YuKey>();
 		public static List<YuKey> c_word_backup_last = new List<YuKey>();
 		public static List<IntPtr> PLC_HWNDs = new List<IntPtr>();
@@ -276,6 +277,7 @@ namespace Mahou {
 					}
 					var IGN = ((AS_IGN_BACK && was_back) || (AS_IGN_DEL && was_del) || (AS_IGN_LS && was_ls));
 					if (IGN) { Logging.Log("[AS] > Ignore AutoSwitch by: B/D/LS: " + was_back + "/"+was_del+"/"+was_ls); }
+					Debug.WriteLine("Ignore AutoSwitch by: B/D/LS: " + was_back + "/"+was_del+"/"+was_ls);
 					Debug.WriteLine("IGN:"+IGN+"EVT"+MSG);
 					if (MahouUI.AutoSwitchEnabled && !matched && as_wrongs != null && Key == Keys.Space && !IGN) { 
 						var CW = c_word_backup;
@@ -316,7 +318,10 @@ namespace Mahou {
 					}
 					if (Key == Keys.Back) { was_back = true; }
 					if (Key == Keys.Delete) { was_del = true; }
-					if (Key == Keys.Space) { was_back = was_del = was_ls = false; }
+					if (Key == Keys.Space && AS_IGN_RULES.Contains("S")) { 
+						was_back = was_del = false;
+						if (!AS_IGN_RULES.Contains("L")) { was_ls = false; }
+					}
 				}
 			}
 			#endregion
@@ -394,7 +399,7 @@ namespace Mahou {
 			}
 			#endregion
 			if ((ctrl||win||alt||ctrl_r||win_r||alt_r) && Key == Keys.Tab) {
-				ClearWord(true, true, true, "Any modifier + Tab", true, true);
+				ClearWord(true, true, true, "Any modifier + Tab", true, AS_IGN_RULES.Contains("W"));
 				MahouUI.CCReset("mod+tab");
 			}
 			#region Other, when KeyDown
@@ -437,7 +442,7 @@ namespace Mahou {
 							Key != Keys.LControlKey &&
 							Key != Keys.RControlKey ))) { 
 					MahouUI.CCReset("cc/noShift.Hkey");
-					ClearWord(true, true, true, "Pressed combination of key and modifiers(not shift) or key that changes caret position.", true, true);
+					ClearWord(true, true, true, "Pressed combination of key and modifiers(not shift) or key that changes caret position.", true, AS_IGN_RULES.Contains("C"));
 				}
 				if (Key == Keys.Space) {
 					Logging.Log("[FUN] > Adding one new empty word to words, and adding to it [Space] key.");
@@ -462,7 +467,7 @@ namespace Mahou {
 						MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Keys.Enter });
 						afterEOL = true;
 					} else {
-						ClearWord(true, true, true, "Pressed enter", true, true);
+						ClearWord(true, true, true, "Pressed enter", true, AS_IGN_RULES.Contains("C"));
 						afterEOL = false;
 					}
 					as_lword_layout = 0;
@@ -548,7 +553,7 @@ namespace Mahou {
 					clickAfterALT = true;
 				if (!MahouUI.UseJKL || KMHook.JKLERR)
 					MahouUI.currentLayout = 0;
-				ClearWord(true, true, true, "Mouse click", true, true);
+				ClearWord(true, true, true, "Mouse click", true, AS_IGN_RULES.Contains("M"));
 			}
 			#region Double click show translate
 			if (MahouUI.TrEnabled)
@@ -756,9 +761,9 @@ namespace Mahou {
 										var was = Locales.GetCurrentLocale();
 	        							jklXHidServ.ActionOnLayout = () => {
 											if (!MahouUI.AddOneSpace)
-												KInputs.MakeInput(KInputs.AddPress(Keys.Back));
+												DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)));
 											else if (!MahouUI.AutoSwitchSpaceAfter) {
-												KInputs.MakeInput(KInputs.AddPress(Keys.Back));
+												DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)));
 												word.RemoveAt(word.Count-1);
 											}
 											word = QWERTZ_wordFIX(word);
@@ -772,9 +777,9 @@ namespace Mahou {
 	        					} else ofk = true;
 	        					if (ofk) {
 									if (!MahouUI.AddOneSpace)
-										KInputs.MakeInput(KInputs.AddPress(Keys.Back));
+										DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)));
 									else if (!MahouUI.AutoSwitchSpaceAfter) {
-										KInputs.MakeInput(KInputs.AddPress(Keys.Back));
+										DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)));
 										word.RemoveAt(word.Count-1);
 									}
 									word = QWERTZ_wordFIX(word);

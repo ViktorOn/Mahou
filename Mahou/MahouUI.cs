@@ -1406,6 +1406,8 @@ namespace Mahou {
 			KMHook.AS_IGN_BACK = MMain.MyConfs.ReadBool("Hidden", "AS_IngoreBack");
 			KMHook.AS_IGN_DEL = MMain.MyConfs.ReadBool("Hidden", "AS_IngoreDel");
 			KMHook.AS_IGN_LS = MMain.MyConfs.ReadBool("Hidden", "AS_IngoreLS");
+			KMHook.AS_IGN_RULES = MMain.MyConfs.Read("Hidden", "AS_IngoreRules").ToUpper();
+			KMHook.AS_IGN_TIMEOUT = MMain.MyConfs.ReadInt("Hidden", "AS_IngoreLSTimeout");
 			#endregion
 			LoadTemps();
 			#region DICT reload

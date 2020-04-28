@@ -175,8 +175,33 @@ namespace Mahou {
 					MahouUI.RefreshFLAG();
 					MMain.mahou.RefreshAllIcons();
 					MMain.mahou.UpdateLDs();
+					if (anull && !KMHook.selfie && KMHook.AS_IGN_LS) {
+						if (KMHook.AS_IGN_RULES.Contains("L")) {
+							Debug.WriteLine("[HEY] > "+ KMHook.was_ls);
+							if (KMHook.was_ls) {
+								KMHook.was_ls = KMHook.was_back = KMHook.was_del = false;
+							} else {
+								KMHook.was_ls = true;
+								if(KMHook.AS_IGN_RULES.Contains("T")) {
+									if (KMHook.AS_IGN_RESET != null) {
+										KMHook.AS_IGN_RESET.Stop();
+										KMHook.AS_IGN_RESET.Dispose();
+									}
+									KMHook.AS_IGN_RESET = new System.Windows.Forms.Timer();
+									KMHook.AS_IGN_RESET.Interval = KMHook.AS_IGN_TIMEOUT;
+									KMHook.AS_IGN_RESET.Tick += (_,__) => {
+										Debug.WriteLine("TIMER_AS_RESET");
+										KMHook.was_ls = KMHook.was_back = KMHook.was_del = false; 
+										KMHook.AS_IGN_RESET.Stop();
+										KMHook.AS_IGN_RESET.Dispose();
+									};
+									KMHook.AS_IGN_RESET.Start();
+								}
+							}
+						} else 
+							KMHook.was_ls = true;
+					}
 				}
-				KMHook.was_ls = true;
 			}
 	        return WinAPI.DefWindowProcW(hWnd, msg, wParam, lParam);
 	    }
