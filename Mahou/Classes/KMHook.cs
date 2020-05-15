@@ -805,7 +805,7 @@ namespace Mahou {
 		}
 		static bool CheckSnippet(string snip, bool xx2 = false) {
 			var matched = false;
-			var x2 = xx2 && aftsingleAS && !MahouUI.AutoSwitchSpaceAfter;
+			var x2 = xx2; //&& aftsingleAS && !MahouUI.AutoSwitchSpaceAfter;
 			Logging.Log("[SNI] > Current snippet is [" + snip + "].");
 			for (int i = 0; i < snipps.Length; i++) {
 				if (snipps[i] == null) break;
