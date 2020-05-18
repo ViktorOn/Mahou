@@ -1165,7 +1165,7 @@ namespace Mahou {
 					if (!ignoreExpand) {
 		       			var backs = snip.Length+1;
 		       			Debug.WriteLine("X2" + x2);
-		       			if (x2||MMain.mahou.SnippetsExpandType == "Tab") backs--;
+		       			if ( /*x2||*/ MMain.mahou.SnippetsExpandType == "Tab") backs--;
 		       			KInputs.MakeInput(KInputs.AddPress(Keys.Back, backs));
 						Logging.Log("[SNI] > Expanding snippet [" + snip + "] to [" + expand + "].");
 		       			ExpandSnippetWithExpressions(expand);
