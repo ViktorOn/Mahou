@@ -3081,6 +3081,14 @@ namespace Mahou {
 			altRP = Hotkey.ContainsModifier(mods, (int)WinAPI.MOD_ALT);
 			winRP = Hotkey.ContainsModifier(mods, (int)WinAPI.MOD_WIN);
 		}
+		public static void WaitKey2Breleased(Keys key) {
+			int k = 1;
+			while (k>0) {
+				k = WinAPI.GetAsyncKeyState(key) & 0x8000;
+				Thread.Sleep(15);
+				Debug.WriteLine("k"+k);
+			}
+		}
 		/// <summary>
 		/// Sends modifiers up by modstoup array. 
 		/// </summary>
@@ -3091,8 +3099,10 @@ namespace Mahou {
 			Debug.WriteLine(">> SMU: " + Hotkey.GetMods(modstoup));
 			DoSelf(() => {
 				if (Hotkey.ContainsModifier(modstoup, (int)WinAPI.MOD_WIN)) {
-					KMHook.KeybdEvent(Keys.LWin, 2); // Right Win Up
-					KMHook.KeybdEvent(Keys.RWin, 2); // Left Win Up
+//					KMHook.KeybdEvent(Keys.LWin, 2); // Right Win Up
+//					KMHook.KeybdEvent(Keys.RWin, 2); // Left Win Up
+					WaitKey2Breleased(Keys.LWin);
+					WaitKey2Breleased(Keys.RWin);
 					win = win_r = false;
 					LLHook.SetModifier(WinAPI.MOD_WIN, false);
 				}

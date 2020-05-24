@@ -312,6 +312,8 @@ public static class WinAPI {
     public static extern int MapVirtualKey(uint uCode, uint uMapType);
     #endregion
     #region KMHook requires
+    [DllImport("user32.dll")]
+	public static extern short GetAsyncKeyState(System.Windows.Forms.Keys vKey); 
 	[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
 	public static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int extraInfo);
 	[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
