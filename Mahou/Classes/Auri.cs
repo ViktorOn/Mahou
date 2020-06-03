@@ -23,7 +23,7 @@ public class Auri {
 			if (z > mx) mx = z;
 			if (mx == x && closed) break;
 		}
-		return new []{lo, lc};
+		return new int[]{lo, lc};
 	}	
 	public string this[params string[] s] {
 		get {
@@ -32,10 +32,14 @@ public class Auri {
 	}
 	public string Get(params string[] block) {
 		return __GET(block);
-	}	
+	}
+	void setmax(ref int max, int test) {
+		if (max<test) max = test;
+	}
 	string __GET(string[] block, string RAW = "") {
 		string rawr = raw;
 		if (RAW != "") rawr = RAW;
+		if (string.IsNullOrEmpty(rawr)) return rawr;
 		for (int p = 0; p != block.Length; p++) {
 			var blox = block[p];
 			Console.WriteLine("Block Move: "+blox);
@@ -68,13 +72,14 @@ public class Auri {
 				throw new Exception("Bad array, block ending not found: }");
 			}
 			string bln = "";
+			int max_v = 0;
 			if (f[0] != -1 || noblock) {
 				bool inb = false, inq = false, inqq = false, nextv = false, inbs = false, inbc = false, inbo = false, vals = false;
 				int z = 0, q = 0, qx = 0, zx = 0, v = 0, vx = 0, vl = -1, sq = -1;
 				for (int i = 0; i <= en; i++) {
 					var k = rawr[i];
 					if (!inq) {
-						if (k == '\n' || k == '\r' || k == ' ') {
+						if (k == '\n' || k == '\r' || k == ' ' || k == '\t') {
 //							Console.WriteLine("You lose: <"+k+">");
 							continue;
 						}
@@ -83,8 +88,8 @@ public class Auri {
 					if (k == '{' && /*!inbs &&*/ !inq) { inb = true; z++; }
 					if (k == '}' && /*!inbs &&*/ !inq) { inb = false; z--; }
 					if (k == '[' && /*!inb &&*/ !inq) { inbs = true; q++; inbo = true; /*if (indblock) continue;*/ } else { inbo = false; }
-					if (k == ']' && /*!inb &&*/ !inq) { v=0; inbs = false; q--; inbc = true; } else { inbc = false; }
-					if (k == ',' && z==0&&q==1 && !inq) { vals = true; v++; } else vals = false;
+					if (k == ']' && /*!inb &&*/ !inq) { if (q == 1) { v=0; } inbs = false; q--; inbc = true; } else { inbc = false; }
+					if (k == ',' && z==0&&q==1 && !inq) { vals = true; v++; setmax(ref max_v, v); } else vals = false;
 					if (z > zx) zx = z;
 					if (v > vx) vx = v;
 					if (q > qx) qx = q;
@@ -127,7 +132,7 @@ public class Auri {
 								if (!inq && k != ',')
 								bln += k;
 								break;
-						}
+							}
 							bln += k;
 						} else {
 							if (inq) bln += k; else bln = "";
@@ -138,6 +143,7 @@ public class Auri {
 			} else {
 				throw new Exception("There are no block in that array.");
 			}
+			if (indblock && max_v < ind) throw new Exception("Out of index, max: " +max_v+", requested: "+ind);
 			rawr = bln;
 		}
 		return rawr;

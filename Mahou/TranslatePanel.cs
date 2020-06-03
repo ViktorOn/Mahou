@@ -128,10 +128,24 @@ namespace Mahou {
 					} else {
 						Debug.WriteLine("NA MODE :)");
 						var auri = new Auri(raw_array);
-						var s = auri["sentences", "^0", "orig"];
+						var au_se = new Auri(auri["sentences"]);
+						var s = au_se["^0", "orig"];
 						src = s.Substring(1, s.Length-2);
-						s = auri["sentences", "^0", "trans"];
-						tr = s.Substring(1, s.Length-2);
+						var x = 0;
+						string a = "", xtr = "";
+						do {
+							try {
+								a = au_se["^"+x, "trans"];
+								Debug.WriteLine("X:" +x +" A: " + a);
+								if (a.Length >0)
+									xtr += a.Substring(1,a.Length-2);
+							} catch {break;}
+							x++;
+							if (x>100) break; // probably overkill, but...
+						} while (!String.IsNullOrEmpty(a));
+						tr = xtr;
+//						s = au_se["^0", "trans"];
+//						tr = s.Substring(1, s.Length-2);
 					    det_l = auri["ld_result", "srclangs", "^0"];;
 					}
 					gtresp.source = src;
