@@ -235,8 +235,8 @@ namespace Mahou {
 				Debug.WriteLine("Pan height: " + pan.Height);
 				pan.Name = "PN_LINE_"+gtr.src_lang+".to."+gtr.targ_lang;
 				pan.Location = new Point(1, pan_Translations.Height+1);
-				var slt = new TextBox();
-				var txt = new TextBox();
+				var slt = new MahouUI.TextBoxCA();
+				var txt = new MahouUI.TextBoxCA();
 				slt.ReadOnly = txt.ReadOnly = true;
 				slt.TabStop = txt.TabStop = false;
 				slt.Name = "SL_TXT"+gtr.targ_lang;
