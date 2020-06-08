@@ -218,6 +218,13 @@ namespace Mahou {
 			bool exist = false;
 			if (GTRs.Count == 0)
 				pan_Translations.Height = 0;
+			if (!String.IsNullOrEmpty(MahouUI.AutoCopyTranslation)) {
+				if (MahouUI.AutoCopyTranslation == gtr.targ_lang) {
+					Debug.WriteLine("AutoCopyTranslation: " +gtr.targ_lang);
+					KMHook.RestoreClipBoard(gtr.translation);
+					MahouUI.ACT_Match++;
+				}
+			}
 			foreach (Control ct in pan_Translations.Controls) {
 				if (ct.Name == "PN_LINE_"+gtr.src_lang+".to."+gtr.targ_lang) {
 					exist = true;

@@ -209,6 +209,7 @@ namespace Mahou {
         	CreateConfigsFile();
         	ReadFromDisk();
         	#region Hidden
+        	CheckString("Hidden", "AutoCopyTranslation", "");
         	CheckString("Hidden", "ReSelectCustoms", "tTRSULCN");
         	CheckBool("Hidden", "LibreCtrlAltShiftV", "false");
 			CheckString("Hidden", "CycleCaseOrder", "TULSR");

@@ -30,6 +30,8 @@ namespace Mahou {
 					hkSCCok;
 		public static string nPath = AppDomain.CurrentDomain.BaseDirectory, CustomSound, CustomSound2;
 		public static string onlySnippetsExcluded = "";
+		public static string AutoCopyTranslation = "";
+		public static int ACT_Match = 0;
 		public static bool LoggingEnabled, dummy, CapsLockDisablerTimer, LangPanelUpperArrow, mouseLTUpperArrow, caretLTUpperArrow,
 						   ShiftInHotkey, AltInHotkey, CtrlInHotkey, WinInHotkey, AutoStartAsAdmin, UseJKL, AutoSwitchEnabled, ReadOnlyNA,
 						   SoundEnabled, UseCustomSound, SoundOnAutoSwitch, SoundOnConvLast, SoundOnSnippets, SoundOnLayoutSwitch,
@@ -589,7 +591,10 @@ namespace Mahou {
 				if (!TranslatePanel.running)
 					MMain.mahou._TranslatePanel.ShowTranslation(str, pos);
 			}
-			KMHook.RestoreClipBoard();
+			if (ACT_Match < 1) 
+				KMHook.RestoreClipBoard();
+			else
+				ACT_Match--;
 			if (!mouse) last_CR = pos;
 		}
 		/// <summary>
@@ -1348,6 +1353,7 @@ namespace Mahou {
 			LangPanelUpperArrow = chk_LPUpperArrow.Checked = MMain.MyConfs.ReadBool("LangPanel", "UpperArrow");
 			#endregion
 			#region Translate Panel
+			AutoCopyTranslation = MMain.MyConfs.Read("Hidden", "AutoCopyTranslation");
 			TrEnabled = chk_TrEnable.Checked = MMain.MyConfs.ReadBool("TranslatePanel", "Enabled");
 			TranslatePanel.useGS = MMain.MyConfs.ReadBool("TranslatePanel", "UseGS");
 			TranslatePanel.useNA = MMain.MyConfs.ReadBool("TranslatePanel", "UseNA");
