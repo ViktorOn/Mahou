@@ -219,7 +219,7 @@ namespace Mahou {
 			if (GTRs.Count == 0)
 				pan_Translations.Height = 0;
 			if (!String.IsNullOrEmpty(MahouUI.AutoCopyTranslation)) {
-				if (MahouUI.AutoCopyTranslation == gtr.targ_lang) {
+				if (MahouUI.AutoCopyTranslation.ToLower() == gtr.targ_lang.ToLower()) {
 					Debug.WriteLine("AutoCopyTranslation: " +gtr.targ_lang);
 					KMHook.RestoreClipBoard(gtr.translation);
 					MahouUI.ACT_Match++;
