@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Collections.Generic;
 using System.Drawing;
@@ -212,6 +213,13 @@ namespace Mahou {
 			running = false;
 			SpecialShow();
 		}
+		static Regex rx = new Regex(@"\\u([a-fA-f0-9]{4})", RegexOptions.Compiled);
+		string UnescapeUnicode(string x) {
+		    var rep = rx.Replace(x, a => ((char)int.Parse(a.Groups[1].Value, System.Globalization.NumberStyles.HexNumber)).ToString()
+		    );
+//			Debug.WriteLine("REP:X: " + rep);
+			return rep;
+		}
 		public void AddTranslation(GTResp gtr) {
 			txt_Source.Text = gtr.source;
 			pan_Translations.Width = Width-2;
@@ -255,7 +263,7 @@ namespace Mahou {
 				g.Dispose();
 				slt.Width = (int)size.Width;
 				txt.Name = "TR_TXT"+gtr.targ_lang;
-				txt.Text = gtr.translation;
+				txt.Text = UnescapeUnicode(gtr.translation);
 				var btn = new ButtonLabel();
 				btn.Text = "♫";
 				btn.gtr = gtr;
