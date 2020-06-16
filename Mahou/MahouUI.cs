@@ -3579,6 +3579,14 @@ DEL ""ExtractASD.cmd""";
 				tmr.Start();
 			}
 		}
+		static Regex rx = new Regex(@"\\u([a-fA-f0-9]{4})", RegexOptions.Compiled);
+		public static string UnescapeUnicode(string x) {
+			if (!x.Contains("\\u")) return x;
+		    var rep = rx.Replace(x, a => ((char)int.Parse(a.Groups[1].Value, System.Globalization.NumberStyles.HexNumber)).ToString()
+		    );
+//			Debug.WriteLine("REP:X: " + rep);
+			return rep;
+		}
 		/// <summary>
 		/// Gets update info, and sets it to static [UpdInfo] string.
 		/// </summary>
@@ -3616,7 +3624,7 @@ DEL ""ExtractASD.cmd""";
 //				Debug.WriteLine(Title);
 //				Debug.WriteLine(Description);
 				Info[0] = Title;
-				Info[1] = Regex.Replace(Description, "\n", "\r\n"); // Regex needed to properly display new lines.
+				Info[1] = UnescapeUnicode(Regex.Replace(Description, "\n", "\r\n")); // Regex needed to properly display new lines.
 				Info[2] = Version;
 				Info[3] = Link;
 				if (!String.IsNullOrEmpty(Commit))
