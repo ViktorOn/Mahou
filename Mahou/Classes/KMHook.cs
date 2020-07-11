@@ -1913,6 +1913,7 @@ namespace Mahou {
 			MMain.mahou.UpdateLDs();
 		}
 		public static string[] SplitWords(string LINE) {
+			if (string.IsNullOrEmpty(LINE)) { return new string[] { "" }; }
 			var LIST = new List<string>();
 			string left = LINE;
 			int ind = left.IndexOf(' ');
