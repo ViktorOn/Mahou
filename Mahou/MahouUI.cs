@@ -3704,16 +3704,16 @@ DEL ""ExtractASD.cmd""";
 		/// </summary>
 		void SetUInfo() {
 			if (MMain.mahou == null) return;
-			this.grb_MahouReleaseTitle.Invoke((MethodInvoker)delegate {
-			    this.grb_MahouReleaseTitle.Text = UpdInfo[0];
-			});
-			this.txt_UpdateDetails.Invoke((MethodInvoker)delegate {
-			    txt_UpdateDetails.Text = UpdInfo[1];
-			});
-			this.btn_DownloadUpdate.Invoke((MethodInvoker)delegate {
-               	btn_DownloadUpdate.Text = MMain.Lang[Languages.Element.DownloadUpdate]; // Restore download button text
-			    btn_DownloadUpdate.Text = Regex.Replace(btn_DownloadUpdate.Text, @"\<.+?\>", UpdInfo[2]);
-			});
+//			this.grb_MahouReleaseTitle.Invoke((MethodInvoker)delegate {
+			    MMain.mahou.grb_MahouReleaseTitle.Text = UpdInfo[0];
+//			});
+//			this.txt_UpdateDetails.Invoke((MethodInvoker)delegate {
+			    MMain.mahou.txt_UpdateDetails.Text = UpdInfo[1];
+//			});
+//			this.btn_DownloadUpdate.Invoke((MethodInvoker)delegate {
+               	MMain.mahou.btn_DownloadUpdate.Text = MMain.Lang[Languages.Element.DownloadUpdate]; // Restore download button text
+			    MMain.mahou.btn_DownloadUpdate.Text = Regex.Replace(MMain.mahou.btn_DownloadUpdate.Text, @"\<.+?\>", UpdInfo[2]);
+//			});
 		}
 		void UpdateSnippetCountLabel(string snippets, Label target, bool isSnip = true) {
 			var snipc = GetSnippetsCount(snippets);
