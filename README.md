@@ -765,8 +765,6 @@ Even selected text switches just between **selected** layouts, though if you lik
 
 #### ❗️ Updates from lesser than Mahou-v2.5.7.6 won't work, because GitHub has updated, and method to update used in there won't work anymore.
 
-!! Even though release date is "12 Aug 2017", this release is auto-compiled and updated every commit. If unsure download the Release_x86_x64.zip.
-
 ###### How to use:
 1. To convert selection hit <kbd>Scroll</kbd> when select text.
 2. To convert input hit <kbd>Pause</kbd> when typing.
@@ -790,6 +788,8 @@ Even selected text switches just between **selected** layouts, though if you lik
 ### [Download or view release notes.](https://github.com/BladeMight/Mahou/releases) (:exclamation: recommended to use: latest-commit ↓)
 
 ### Beta or "version with latest changes "(aka latest-commit) [here](https://github.com/BladeMight/Mahou/releases/tag/latest-commit)
+
+!! Even though release date is "12 Aug 2017", this release is auto-compiled and updated every commit. If unsure download the Release_x86_x64.zip.
 
 ### Using Chocolatey? type `cinst Mahou` to install.
 
