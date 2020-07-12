@@ -40,7 +40,7 @@ Mahou работает так как **Вы** хотите, настраивай
 - <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>Win</kbd>+<kbd>F12</kbd> - Завершить Mahou.
 - Остальные гор. клавиши выключены по умолчанию или имеют описание в Mahou.
 
-### [Скачать или посмотреть заметки о выпусках.](https://github.com/BladeMight/Mahou/releases)
+### [Скачать или посмотреть заметки о выпусках.](https://github.com/BladeMight/Mahou/releases) (:exclamation: рекоммендуестя использовать: latest-commit ↓)
 
 ### Beta или "версия с последними изменениями"(aka latest-commit) [здесь](https://github.com/BladeMight/Mahou/releases/tag/latest-commit)
 
@@ -783,7 +783,7 @@ Even selected text switches just between **selected** layouts, though if you lik
 - <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>Win</kbd>+<kbd>F12</kbd> - To exit Mahou.
 - Other hotkeys disabled by default or have description in Mahou.
 
-### [Download or view release notes.](https://github.com/BladeMight/Mahou/releases)
+### [Download or view release notes.](https://github.com/BladeMight/Mahou/releases) (:exclamation: recommended to use: latest-commit ↓)
 
 ### Beta or "version with latest changes "(aka latest-commit) [here](https://github.com/BladeMight/Mahou/releases/tag/latest-commit)
 
