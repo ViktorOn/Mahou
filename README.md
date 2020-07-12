@@ -44,6 +44,8 @@ Mahou работает так как **Вы** хотите, настраивай
 
 ### Beta или "версия с последними изменениями"(aka latest-commit) [здесь](https://github.com/BladeMight/Mahou/releases/tag/latest-commit)
 
+!! Хоть дата релиза и стоит "12 Aug 2017", этот релиз авто-собирается и обновляется каждый коммит. Скачивать Release_x86_x64.zip.
+
 ### Используете Chocolatey? `cinst Mahou` для установки.
 
 ### Wiki
@@ -786,6 +788,8 @@ Even selected text switches just between **selected** layouts, though if you lik
 ### [Download or view release notes.](https://github.com/BladeMight/Mahou/releases) (:exclamation: recommended to use: latest-commit ↓)
 
 ### Beta or "version with latest changes "(aka latest-commit) [here](https://github.com/BladeMight/Mahou/releases/tag/latest-commit)
+
+!! Even though release date is "12 Aug 2017", this release is auto-compiled and updated every commit. If unsure download the Release_x86_x64.zip.
 
 ### Using Chocolatey? type `cinst Mahou` to install.
 
