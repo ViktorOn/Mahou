@@ -4,10 +4,10 @@ using System.Windows.Forms;
 namespace Mahou {
     public class TrayIcon {
         public event EventHandler<EventArgs> Exit, EnaDisable,
-        	ShowHide, Restart, ConvertClip, TransliClip;
+       		ShowHide, Restart, ConvertClip, TransliClip, ChangeLt;
         public NotifyIcon trIcon;
         ContextMenu cMenu;
-        MenuItem Exi, ShHi, EnDis, Resta;
+        MenuItem Exi, ShHi, EnDis, Resta, ChLa;
         /// <summary> Clipboard menu item. </summary>
 		MenuItem Clip, CConvert, CTransli, CLast;
         /// <summary>Initializes new tray icon.</summary>
@@ -25,10 +25,12 @@ namespace Mahou {
             ShHi = new MenuItem("Show", ShowHideHandler);
             EnDis = new MenuItem("Enable", EnaDisableHandler);
             Resta = new MenuItem("Restart", RestartHandler);
+            ChLa = new MenuItem("Change layout", ChangeLayout);
             EnDis.Checked = true;
             cMenu.MenuItems.Add(ShHi);
             cMenu.MenuItems.Add(Clip);
             cMenu.MenuItems.Add(EnDis);
+            cMenu.MenuItems.Add(ChLa);
             cMenu.MenuItems.Add(Resta);
             cMenu.MenuItems.Add(Exi);
             trIcon.Text = "Mahou (魔法)\nA magical layout switcher.";
@@ -52,6 +54,10 @@ namespace Mahou {
         /// <summary>Toggle Mahou, enable/disable event handler..</summary>
         void EnaDisableHandler(object sender, EventArgs e) {
             if (EnaDisable != null) EnaDisable(this, null);
+        }
+        /// <summary>Restart event handler..</summary>
+        void ChangeLayout(object sender, EventArgs e) {
+            if (ChangeLt != null) ChangeLt(this, null);
         }
         /// <summary>Restart event handler..</summary>
         void RestartHandler(object sender, EventArgs e) {
@@ -79,7 +85,7 @@ namespace Mahou {
         }
         /// <summary>Refreshes tray icon various text.</summary>
         public void RefreshText(string TrText, string ShHiText, string ExiText, string EnaDisText,
-                                string RestartText, string ConvClipText, string TransliClipText, string ClipbText, string LatestText) {
+                                string RestartText, string ConvClipText, string TransliClipText, string ClipbText, string LatestText, string ChLaText) {
             trIcon.Text = TrText;
             if (!String.IsNullOrEmpty(ShHiText))
             	ShHi.Text = ShHiText;
@@ -87,6 +93,8 @@ namespace Mahou {
             	Exi.Text = ExiText;
             if (!String.IsNullOrEmpty(EnaDisText))
             	EnDis.Text = EnaDisText;
+            if (!String.IsNullOrEmpty(ChLaText))
+            	ChLa.Text = ChLaText;
             if (!String.IsNullOrEmpty(RestartText))
             	Resta.Text = RestartText;
             if (!String.IsNullOrEmpty(ConvClipText))

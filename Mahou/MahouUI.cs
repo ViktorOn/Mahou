@@ -2096,6 +2096,11 @@ DEL "+restartMahouPath;
 			icon.ShowHide += (_, __) => ToggleVisibility();
 			icon.EnaDisable += (_, __) => ToggleMahou();
 			icon.Restart += (_, __) => Restart();
+			icon.ChangeLt += (_, __) => { 
+				KInputs.MakeInput(new [] { KInputs.AddKey(Keys.LMenu, true), KInputs.AddKey(Keys.Tab, true),
+				                          KInputs.AddKey(Keys.Tab, false), KInputs.AddKey(Keys.LMenu, false) });
+               	KMHook.ChangeLayout();
+			};
 			icon.ConvertClip += (_, __) => {
 				var t = KMHook.ConvertText(KMHook.GetClipboard(2));
 				KMHook.RestoreClipBoard(t);
@@ -3951,7 +3956,7 @@ DEL ""ExtractASD.cmd""";
 			                 MMain.Lang[Languages.Element.ExitMahou], MMain.Lang[Languages.Element.Enable],
 			                 MMain.Lang[Languages.Element.RestartMahou], MMain.Lang[Languages.Element.Convert],
 			                 MMain.Lang[Languages.Element.Transliterate], MMain.Lang[Languages.Element.Clipboard],
-			                 MMain.Lang[Languages.Element.Latest]);
+			                 MMain.Lang[Languages.Element.Latest], MMain.Lang[Languages.Element.ChangeLayout]);
 			#endregion
 			Logging.Log("Language changed.");
 			SetTooltips();
