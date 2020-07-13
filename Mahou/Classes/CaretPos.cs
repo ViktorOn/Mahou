@@ -97,6 +97,7 @@ namespace Mahou {
 						return LuckyNone;
 					Logging.Log("CaretPos = x["+_pntCR.X+"], y["+_pntCR.Y+"].");	
 					var _clsNM = _clsNMb.ToString().ToLower();
+					System.Diagnostics.Debug.WriteLine(_clsNM);
 					// Do not display caret for these classes:
 					if (_clsNM.Contains("listbox") || _clsNM.Contains("button") || 
 						_clsNM.Contains("checkbox") || _clsNM.Contains("combobox") || 
@@ -115,6 +116,7 @@ namespace Mahou {
 					if (_clsNM.Contains("sharpdevelop.exe")) {
 						_pntCR.Y += 28; _pntCR.X += 3;
 					}
+					if (_clsNM.Contains("mintty")) { _pntCR.Y += 31; _pntCR.X += 4; }
 					Logging.Log("Get caret position finished successfully.", 0);
 					caretOnlyPos = _pntCR;
 					return new Point(_fwFCS_Re.Left + _pntCR.X, _fwFCS_Re.Top + _pntCR.Y);
