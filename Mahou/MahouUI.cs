@@ -2104,6 +2104,10 @@ DEL "+restartMahouPath;
 		/// Initializes tray icon.
 		/// </summary>
 		void InitializeTrayIcon() {
+			if (icon != null) {
+				icon.Hide();
+				icon.trIcon.Dispose();
+			}
 			icon = new TrayIcon(MMain.MyConfs.ReadBool("Functions", "TrayIconVisible"));
 			icon.Exit += (_, __) => ExitProgram();
 			if (MMain.MyConfs.ReadBool("Hidden", "ChangeLayoutOnTrayLMB"))
