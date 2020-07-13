@@ -4,7 +4,7 @@ using System.Windows.Forms;
 namespace Mahou {
     public class TrayIcon {
         public event EventHandler<EventArgs> Exit, EnaDisable,
-       		ShowHide, Restart, ConvertClip, TransliClip, ChangeLt;
+       		ShowHide, Restart, ConvertClip, TransliClip, ChangeLt, MLBAct;
         public NotifyIcon trIcon;
         ContextMenu cMenu;
         MenuItem Exi, ShHi, EnDis, Resta, ChLa;
@@ -35,7 +35,7 @@ namespace Mahou {
             cMenu.MenuItems.Add(Exi);
             trIcon.Text = "Mahou (魔法)\nA magical layout switcher.";
             trIcon.ContextMenu = cMenu;
-            trIcon.MouseClick += (_,__) => { if (__.Button == MouseButtons.Left) ShowHideHandler(_,__); };
+            trIcon.MouseClick += (_,__) => { if (__.Button == MouseButtons.Left) MLBAction(_,__); };
         }
         public void CheckShHi(bool shhi) {
         	ShHi.Checked = shhi;
@@ -70,6 +70,10 @@ namespace Mahou {
         /// <summary>ShowHide event handler..</summary>
         void ShowHideHandler(object sender, EventArgs e) {
             if (ShowHide != null) ShowHide(this, null);
+        }
+        /// <summary>ShowHide event handler..</summary>
+        void MLBAction(object sender, EventArgs e) {
+            if (MLBAct != null) MLBAct(this, null);
         }
         /// <summary>Hides tray icon.</summary>
         public void Hide() {

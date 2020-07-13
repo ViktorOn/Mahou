@@ -204,7 +204,6 @@ namespace Mahou {
 			txt_Snippets.Text = "-><"+KMHook.__ANY__+">====><"+KMHook.__ANY__+">__cursorhere()</"+KMHook.__ANY__+"><====\r\n->mahou\r\n====>Mahou (魔法) - Magical layout switcher.<====\r\n->eml\r\n====>BladeMight@" +
 	"gmail.com<====\r\n->nowtime====>__date(HH:mm:ss)<====\r\n->nowdate====>__date(dd/MM/yyyy)<====\r\n->datepretty====>__date(dd, ddd MMM)<===="+
 	"\r\n->mahouver====>__version()<====\r\n->mahoutitle====>__title()<====\r\n->env_system====>__system()<====\r\n->date_esc====>\\__date(HH:mm:ss)<====";
-			InitializeTrayIcon();
 			// Switch to more secure connection.
 			ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
            	LoadConfigs();
@@ -1203,6 +1202,7 @@ namespace Mahou {
 			TrSetsValues = new Dictionary<string, string>();
 			chk_AppDataConfigs.Checked = (bool)DoInMainConfigs(() => MMain.MyConfs.ReadBool("Functions", "AppDataConfigs"));
 			UpdateSaveLoadPaths(chk_AppDataConfigs.Checked);
+			InitializeTrayIcon();
 			InitLanguage();
 			RefreshLanguage();
 			#region Functions
@@ -2087,28 +2087,33 @@ DEL "+restartMahouPath;
 				caretLangDisplay.AddOwnedForm(mouseLangDisplay); //Prevents flickering when tooltips are one on another 
 			}
 		}
+		void lastAltTabChangeLayout() {
+			KInputs.MakeInput(new [] { KInputs.AddKey(Keys.LMenu, true), KInputs.AddKey(Keys.Tab, true) });
+			System.Threading.Thread.Sleep(1);
+			KInputs.MakeInput(new [] { KInputs.AddKey(Keys.LMenu, false), KInputs.AddKey(Keys.Tab, false) });
+			var t = new Timer();
+			t.Tick += (x, xx) => {
+				KMHook.ChangeLayout(true);
+				t.Stop();
+				t.Dispose();
+			};
+			t.Interval = 300;
+			t.Start();
+		}
 		/// <summary>
 		/// Initializes tray icon.
 		/// </summary>
 		void InitializeTrayIcon() {
 			icon = new TrayIcon(MMain.MyConfs.ReadBool("Functions", "TrayIconVisible"));
 			icon.Exit += (_, __) => ExitProgram();
+			if (MMain.MyConfs.ReadBool("Hidden", "ChangeLayoutOnTrayLMB"))
+				icon.MLBAct += (_, __) => lastAltTabChangeLayout();
+			else
+				icon.MLBAct += (_, __) => ToggleVisibility();
 			icon.ShowHide += (_, __) => ToggleVisibility();
 			icon.EnaDisable += (_, __) => ToggleMahou();
 			icon.Restart += (_, __) => Restart();
-			icon.ChangeLt += (_, __) => { 
-				KInputs.MakeInput(new [] { KInputs.AddKey(Keys.LMenu, true), KInputs.AddKey(Keys.Tab, true) });
-				System.Threading.Thread.Sleep(1);
-				KInputs.MakeInput(new [] { KInputs.AddKey(Keys.LMenu, false), KInputs.AddKey(Keys.Tab, false) });
-				var t = new Timer();
-				t.Tick += (x, xx) => {
-					KMHook.ChangeLayout(true);
-					t.Stop();
-					t.Dispose();
-				};
-				t.Interval = 300;
-				t.Start();
-			};
+			icon.ChangeLt += (_, __) => lastAltTabChangeLayout();
 			icon.ConvertClip += (_, __) => {
 				var t = KMHook.ConvertText(KMHook.GetClipboard(2));
 				KMHook.RestoreClipBoard(t);
