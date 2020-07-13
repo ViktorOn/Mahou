@@ -2601,14 +2601,16 @@ namespace Mahou {
 				self_action();
 			} else {
 				Debug.WriteLine(">> DS" + self_action.Method.Name);
-				MMain.mahou.Invoke((MethodInvoker)delegate {
-                   	if (MahouUI.RemapCapslockAsF18) { LLHook.UnSet(); } MMain.mahou.UnregisterHotkeys(); });
+//				MMain.mahou.Invoke((MethodInvoker)delegate {
+                   	if (MahouUI.RemapCapslockAsF18) { LLHook.UnSet(); } MMain.mahou.UnregisterHotkeys();
+//			});
 				MMain.rif.RegisterRawInputDevices(IntPtr.Zero, WinAPI.RawInputDeviceFlags.Remove);
 				selfie = true;
 				busy_on = self_action.Method.Name;
 				self_action();
-				MMain.mahou.Invoke((MethodInvoker)delegate {
-                   	if (MahouUI.RemapCapslockAsF18) { LLHook.Set(); } MMain.mahou.RegisterHotkeys(); });
+//				MMain.mahou.Invoke((MethodInvoker)delegate {
+                   	if (MahouUI.RemapCapslockAsF18) { LLHook.Set(); } MMain.mahou.RegisterHotkeys();
+//				                   });
 				MMain.rif.RegisterRawInputDevices(MMain.rif.Handle);
 				selfie = false;
 				Debug.WriteLine(">> ES" + self_action.Method.Name);
