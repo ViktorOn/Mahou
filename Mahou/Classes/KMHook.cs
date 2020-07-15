@@ -2949,7 +2949,7 @@ namespace Mahou {
 						break;
 					}
 					CycleEmulateLayoutSwitch();
-					Thread.Sleep(30);
+					Thread.Sleep(1);
 				}
 				last = loc;
 				lash = locsh;
@@ -2980,7 +2980,7 @@ namespace Mahou {
 				Logging.Log("Changing layout using cycle mode by simulating key press [Win+Space].");
 				//Emulate Win+Space
 				KInputs.MakeInput(KInputs.AddPress(Keys.Space), (int)WinAPI.MOD_WIN);
-				Thread.Sleep(20); //Important!
+				Thread.Sleep(5); //Important!
 			}
 			if (!MahouUI.UseJKL || KMHook.JKLERR)
 				DoLater(() => { MahouUI.currentLayout = MahouUI.GlobalLayout = Locales.GetCurrentLocale(); }, 10);
