@@ -206,6 +206,10 @@ namespace Mahou {
 	"\r\n->mahouver====>__version()<====\r\n->mahoutitle====>__title()<====\r\n->env_system====>__system()<====\r\n->date_esc====>\\__date(HH:mm:ss)<====";
 			// Switch to more secure connection.
 			ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+			var mm = Path.Combine(nPath, "Mahou.mm");
+			if (File.Exists(mm)) {
+				makemenu(File.ReadAllText(mm));
+			}
            	LoadConfigs();
 			InitializeListBoxes();
 			// Set minnimum values because they're ALWAYS restores to 0 after Form Editor is used.
@@ -4065,7 +4069,7 @@ DEL ""ExtractASD.cmd""";
 		}
 		#endregion
 		#region Links
-		void __lopen(string file, string type, bool dir = false) {
+		static void __lopen(string file, string type, bool dir = false) {
 			string fORd = dir ? Path.GetDirectoryName(file) : file;
 			try {
 				Process.Start(fORd);
@@ -4104,6 +4108,94 @@ DEL ""ExtractASD.cmd""";
 		void Lnk_SnipOpenLinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
 			__lopen(snipfile, "txt");
 			reload_snip = true;
+		}
+		#endregion
+		#region Custom Context Menu
+		static string getargtype(string arg) {
+			arg = arg.ToLower();
+			if (arg.StartsWith("http"))
+				return "http";
+			if (arg.StartsWith("mailto"))
+				return "mailto";
+			if (File.Exists(arg)) {
+				var m = Regex.Match(arg, @".*\.(.*)");
+				if (m.Groups.Count >0) {
+					return m.Groups[1].Value;
+				}
+			}
+			return "unknown";
+		}
+		static string replaceenv(string arg, string env, Func<string> getvalue) {
+			if (arg.Contains(env))
+				arg = arg.Replace(env, getvalue());
+			return arg;
+		}
+		static string expandmenuarg(string arg) {
+			arg = replaceenv(arg, "%clipboard%", () => KMHook.GetClipboard());
+			arg = replaceenv(arg, "%clipboard_url%", () => HttpUtility.UrlEncode(KMHook.GetClipboard()));
+			arg = replaceenv(arg, "%ini%", () => Configs.filePath);
+			arg = replaceenv(arg, "%mahou_dir%", () => nPath);
+			return arg;
+		}
+		static void menuhandle(string act, string arg) {
+			act = act.ToLower();
+			arg = expandmenuarg(arg);
+			if (act == "url") {
+				var type = getargtype(arg);
+				__lopen(arg, type);
+			} else {
+				MessageBox.Show("Unknown action: " + act, "No such action",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+			}
+		}
+		static void makemenu(string mahoumenu) {
+			var mm = Regex.Replace(mahoumenu, "\r?\n", "\n");
+			var mmls = mm.Split('\n');
+			var title = "Mahou Custom Menu";
+			var mms = new MenuItem();
+			mms.Text = title;
+			foreach (var me in mmls) {
+				if (me.StartsWith("||||")) { continue; }
+				var mct = Regex.Match(me, "^##(.*)##$", RegexOptions.Multiline);
+				if (mct.Groups.Count > 1) {
+					mms.Text = mct.Groups[1].Value;
+					continue;
+				}
+				var lc = '\0';
+				var type = 0;
+				string buf, text, act, arg;
+				buf = text = act = arg = "";
+				for (int i = 0; i != me.Length; i++) {
+					var c = me[i];
+					if ((lc != '\\' && c == '|') || i == me.Length-1) {
+						if (type == 0) text = buf;
+						if (type == 1) act = buf;
+						if (type == 2) { arg = buf+c; }
+						type++;
+						buf = "";
+						lc = c;
+						continue;
+					}
+					buf += c;
+					lc = c;
+				}
+				mms.MenuItems.Add(new MenuItem(text, (_,__) => menuhandle(act, arg)));
+			}
+			var wfm = new Timer();
+			wfm.Interval = 1000;
+			wfm.Tick += (x,xx) => {
+				if (MMain.mahou != null) {
+					List<MenuItem> lastitems = new List<MenuItem>();
+					for(var i = 0; i != MMain.mahou.icon.trIcon.ContextMenu.MenuItems.Count; i++) {
+						lastitems.Add(MMain.mahou.icon.trIcon.ContextMenu.MenuItems[i]);
+					}
+					MMain.mahou.icon.trIcon.ContextMenu.MenuItems.Clear();
+					MMain.mahou.icon.trIcon.ContextMenu.MenuItems.Add(mms);
+					MMain.mahou.icon.trIcon.ContextMenu.MenuItems.AddRange(lastitems.ToArray());
+					wfm.Stop();
+					wfm.Dispose();
+				}
+			};
+			wfm.Start();
 		}
 		#endregion
 		#region Mahou UI controls events
