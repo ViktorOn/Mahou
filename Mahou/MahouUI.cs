@@ -4162,7 +4162,7 @@ DEL ""ExtractASD.cmd""";
 				try {
 					Process.Start(prog, args);
 				} catch(Exception e) {
-					MessageBox.Show(e.Message+"\n"+arg, MMain.Lang[Languages.Element.Error], MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					MessageBox.Show(e.Message+"\n"+arg, "Mahou.mm => " + MMain.Lang[Languages.Element.Error], MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				}
 			} else {
 				MessageBox.Show("Unknown action: " + act, "No such action",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -4173,9 +4173,8 @@ DEL ""ExtractASD.cmd""";
 			tray_hotkeys.Clear();
 			var mm = Regex.Replace(mahoumenu, "\r?\n", "\n");
 			var mmls = mm.Split('\n');
-			var title = "Mahou Custom Menu";
 			var mms = new MenuItem();
-			mms.Text = title;
+			mms.Text = "Mahou Custom Menu";
 			foreach (var me in mmls) {
 				if (me.StartsWith("||||")) { continue; }
 				var mct = Regex.Match(me, "^##(.*)##$", RegexOptions.Multiline);
