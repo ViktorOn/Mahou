@@ -4151,11 +4151,17 @@ DEL ""ExtractASD.cmd""";
 					var prog = m[0]; var args = m[1];
 					if (arg[0] == '"') {
 						var quot = arg.Substring(1,arg.Length-1).IndexOf('"');
-						prog = arg.Substring(1, quot);
-						args = arg.Substring(quot+2, arg.Length-2-quot);
-						Debug.WriteLine("Quoted program: "+prog+" args: " + args);
+						if (quot != -1) {
+							prog = arg.Substring(1, quot);
+							args = arg.Substring(quot+2, arg.Length-2-quot);
+							Debug.WriteLine("Quoted program: "+prog+" args: " + args);
+						}
 					}
-					Process.Start(prog, args);
+					try {
+						Process.Start(prog, args);
+					} catch(Exception e) {
+						MessageBox.Show(e.Message+"\n"+arg, MMain.Lang[Languages.Element.Error], MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					}
 				} else {
 					__lopen(arg, type);
 				}
