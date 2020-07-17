@@ -4146,7 +4146,19 @@ DEL ""ExtractASD.cmd""";
 			arg = expandmenuarg(arg);
 			if (act == "url") {
 				var type = getargtype(arg);
-				__lopen(arg, type);
+				if (arg.Contains(" ")) {
+					var m = arg.Split(new[]{' '},2);
+					var prog = m[0]; var args = m[1];
+					if (arg[0] == '"') {
+						var quot = arg.Substring(1,arg.Length-1).IndexOf('"');
+						prog = arg.Substring(1, quot);
+						args = arg.Substring(quot+2, arg.Length-2-quot);
+						Debug.WriteLine("Quoted program: "+prog+" args: " + args);
+					}
+					Process.Start(prog, args);
+				} else {
+					__lopen(arg, type);
+				}
 			} else {
 				MessageBox.Show("Unknown action: " + act, "No such action",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
