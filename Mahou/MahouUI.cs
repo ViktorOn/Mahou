@@ -4146,9 +4146,10 @@ DEL ""ExtractASD.cmd""";
 			arg = expandmenuarg(arg);
 			if (act == "url") {
 				var type = getargtype(arg);
+				string args ="", prog =arg;
 				if (arg.Contains(" ")) {
 					var m = arg.Split(new[]{' '},2);
-					var prog = m[0]; var args = m[1];
+					prog = m[0]; args = m[1];
 					if (arg[0] == '"') {
 						var quot = arg.Substring(1,arg.Length-1).IndexOf('"');
 						if (quot != -1) {
@@ -4157,13 +4158,11 @@ DEL ""ExtractASD.cmd""";
 							Debug.WriteLine("Quoted program: "+prog+" args: " + args);
 						}
 					}
-					try {
-						Process.Start(prog, args);
-					} catch(Exception e) {
-						MessageBox.Show(e.Message+"\n"+arg, MMain.Lang[Languages.Element.Error], MessageBoxButtons.OK, MessageBoxIcon.Warning);
-					}
-				} else {
-					__lopen(arg, type);
+				}
+				try {
+					Process.Start(prog, args);
+				} catch(Exception e) {
+					MessageBox.Show(e.Message+"\n"+arg, MMain.Lang[Languages.Element.Error], MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				}
 			} else {
 				MessageBox.Show("Unknown action: " + act, "No such action",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
