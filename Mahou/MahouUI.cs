@@ -3553,6 +3553,10 @@ DEL /Q /F /A ""%TEMP%\UpdateMahou.cmd""";
 			if (Dowload_ASD_InZip) {
 				var zip = Path.Combine(Path.GetTempPath(), "AS_dict.zip");
 					using (var wc = new WebClient()) {
+						// For proxy
+						if (!String.IsNullOrEmpty(txt_ProxyServerPort.Text)) {
+							wc.Proxy = MakeProxy();
+						}
 						wc.DownloadFile(new Uri("https://github.com/BladeMight/Mahou/releases/download/latest-commit/AS_dict.zip"), zip);
 						var ExtractASD = @"@ECHO OFF
 chcp 65001
