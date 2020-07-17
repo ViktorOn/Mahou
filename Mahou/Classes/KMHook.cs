@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Diagnostics;
 using System.Threading;
@@ -48,7 +49,7 @@ namespace Mahou {
 		};
 		public static string[] as_wrongs;
 		public static string[] as_corrects;
-		static DICT<string> DefaultTransliterationDict = new DICT<string>( new Dictionary<string,string>() {
+		static DICT<string,string> DefaultTransliterationDict = new DICT<string, string>( new Dictionary<string,string>() {
 				{"Щ", "SCH"}, {"щ", "sch"}, {"Ч", "CH"}, {"Ш", "SH"}, {"Ё", "JO"}, {"ВВ", "W"},
 				{"Є", "EH"}, {"ю", "yu"}, {"я", "ya"}, {"є", "eh"}, {"Ж", "ZH"},
 				{"ч", "ch"}, {"ш", "sh"}, {"Й", "JJ"}, {"ж", "zh"},
@@ -65,7 +66,7 @@ namespace Mahou {
 				{"у", "u"}, {"ф", "f"}, {"х", "h"}, {"ц", "c"}, {"ъ", ":"},
 				{"Ы", "Y"}, {"Ь", "J"}, {"е", "e"}, {"т", "t"}, {"ы", "y"}
         });
-		static DICT<string> LayReplDict = new DICT<string>(new Dictionary<string, string>() {
+		static DICT<string,string> LayReplDict = new DICT<string, string>(new Dictionary<string, string>() {
 			{"ä", "э"},{"э", "ä"},{"ö", "ж"},{"ж", "ö"},
 			{"ü", "х"},{"х", "ü"},{"Ä", "Э"},{"Э", "Ä"},
 			{"Ö", "Ж"},{"Ж", "Ö"},{"Ü", "Х"},{"Х", "Ü"},
@@ -73,13 +74,13 @@ namespace Mahou {
 			{"я", "y"},{"y", "я"},{"н", "z"},{"z", "н"},
 			{"-", "ß"}
         });
-		static DICT<string> ASsymDiffDICT = new DICT<string>(new Dictionary<string, string>() {
+		static DICT<string, string> ASsymDiffDICT = new DICT<string, string>(new Dictionary<string, string>() {
      	    {"z", "y"}, { "Z", "Y" }
 		});
-		static DICT<string> CustomConversionDICT = new DICT<string>(new Dictionary<string, string>() {
+		static DICT<string, string> CustomConversionDICT = new DICT<string, string>(new Dictionary<string, string>() {
         	{"abc", "xyz"}, { "s/^hold/bold/", "" } 
 		});
-		static DICT<string> transliterationDict = DefaultTransliterationDict;
+		static DICT<string, string> transliterationDict = DefaultTransliterationDict;
 		#endregion
 		#region Keyboard, Mouse & Event hooks callbacks
 		public static void ListenKeyboard(int vkCode, uint MSG, short Flags = 0) {
@@ -1023,8 +1024,8 @@ namespace Mahou {
 			}
 			return '\0';
 		}
-		public static DICT<string> ParseDictionary(string[] raw_dict, bool tsdict = false) {
-			var dict = new DICT<string>();
+		public static DICT<string,string> ParseDictionary(string[] raw_dict, bool tsdict = false) {
+			var dict = new DICT<string, string>();
 			for (int i = 0; i != raw_dict.Length; i++) {
 				var line = raw_dict[i];
 				if (line.Contains("|")) {
@@ -1058,15 +1059,15 @@ namespace Mahou {
 			}
 			return dict;
 		} 
-		public static string DictToRaw(DICT<string> dict) {
+		public static string DictToRaw(DICT<string, string> dict) {
 			var raw = "";
 			for(int i = 0; i != dict.len; i++) {
 				raw += dict[i].k+"|"+dict[i].v+Environment.NewLine;
 			}
 			return raw;
 		}
-		public static void __RELOADDict(string PATH, ref DICT<string> OUTD, string type, bool tsdict = false, bool writedef = false, DICT<string> def = null) {
-			DICT<string> __dict = null;
+		public static void __RELOADDict(string PATH, ref DICT<string, string> OUTD, string type, bool tsdict = false, bool writedef = false, DICT<string, string> def = null) {
+			DICT<string, string> __dict = null;
 			var load = false;
 			if (System.IO.File.Exists(PATH)) {
 				var lines = System.IO.File.ReadAllLines(PATH);
@@ -1456,6 +1457,69 @@ namespace Mahou {
 				Logging.Log("[EXPR] > Execute error: " + e.Message);
 			}
 		}
+		public static List<Keys> strparsekey(string key, int times = 1) {
+			List<Keys> keys = new List<Keys>();
+			foreach (Keys k in Enum.GetValues(typeof(Keys))) {
+				var _n = k.ToString().ToLower()
+					.Replace("menu", "alt").Replace("control", "ctrl")
+					.Replace("d0", "0").Replace("d1", "1")
+					.Replace("d2", "2").Replace("d3", "3")
+					.Replace("d4", "4").Replace("d5", "5")
+					.Replace("d6", "6").Replace("d7", "7")
+					.Replace("d8", "9").Replace("d9", "9")
+					.Replace("return", "enter").Replace("numpa", "numpad");
+				if (_n == key+"key") { // controlkey, shiftkey
+					Logging.Log("Added the " + _n);
+					for (int x = 0; x != times; x++) {
+						keys.Add(k);
+					}
+					break;
+				}
+				if (key.Length>1) {
+					if (key[0] == '[' && key[key.Length-1] == ']') {
+						var scode = key.Substring(1,key.Length-2).ToLower();
+						int code = -1;
+						bool ok = false;
+						if (scode.Contains("x")) {
+							scode = scode.Replace("x", "");
+							ok = Int32.TryParse(scode, System.Globalization.NumberStyles.HexNumber, null, out code);
+						} else {
+							ok = Int32.TryParse(scode, out code);
+						}
+						if (ok)
+							if (code == (int)k) { 
+								Logging.Log("[EXPR] > Added the key by code: " + code + ", key: " + k);
+								for (int x = 0; x != times; x++) {
+									keys.Add(k);
+								}
+								break;
+							}
+					}
+				}
+				if (key == "esc") {
+					Logging.Log("[EXPR] > Added the short escape: " + key);
+					for (int x = 0; x != times; x++) {
+						keys.Add(k);
+					}
+					break;
+				}
+				if (key == "win") {
+					Logging.Log("[EXPR] > Added the lwin as base of: " + _n);
+					for (int x = 0; x != times; x++) {
+						keys.Add(k);
+					}
+					break;
+				}
+				if (_n == key) {
+					Logging.Log("[EXPR] > Added the " + _n);
+					for (int x = 0; x != times; x++) {
+						keys.Add(k);
+					}
+					break;
+				}
+			}
+			return keys;
+		}
 		static void SimKeyboard(string args) {
 			string[] multi_args;
 			var all_keys = new List<List<Keys>>();
@@ -1487,65 +1551,7 @@ namespace Mahou {
 						Int32.TryParse(rma[0].Groups[2].Value, out times);
 					}
 					Debug.WriteLine("SimKey: "+key + " " + times +" times");
-					foreach (Keys k in Enum.GetValues(typeof(Keys))) {
-						var _n = k.ToString().ToLower()
-							.Replace("menu", "alt").Replace("control", "ctrl")
-							.Replace("d0", "0").Replace("d1", "1")
-							.Replace("d2", "2").Replace("d3", "3")
-							.Replace("d4", "4").Replace("d5", "5")
-							.Replace("d6", "6").Replace("d7", "7")
-							.Replace("d8", "9").Replace("d9", "9")
-							.Replace("return", "enter").Replace("numpa", "numpad");
-						if (_n == key+"key") { // controlkey, shiftkey
-							Logging.Log("Added the " + _n);
-							for (int x = 0; x != times; x++) {
-								keys.Add(k);
-							}
-							break;
-						}
-						if (key.Length>1) {
-							if (key[0] == '[' && key[key.Length-1] == ']') {
-								var scode = key.Substring(1,key.Length-2).ToLower();
-								int code = -1;
-								bool ok = false;
-								if (scode.Contains("x")) {
-									scode = scode.Replace("x", "");
-									ok = Int32.TryParse(scode, System.Globalization.NumberStyles.HexNumber, null, out code);
-								} else {
-									ok = Int32.TryParse(scode, out code);
-								}
-								if (ok)
-									if (code == (int)k) { 
-										Logging.Log("[EXPR] > Added the key by code: " + code + ", key: " + k);
-										for (int x = 0; x != times; x++) {
-											keys.Add(k);
-										}
-										break;
-									}
-							}
-						}
-						if (key == "esc") {
-							Logging.Log("[EXPR] > Added the short escape: " + key);
-							for (int x = 0; x != times; x++) {
-								keys.Add(k);
-							}
-							break;
-						}
-						if (key == "win") {
-							Logging.Log("[EXPR] > Added the lwin as base of: " + _n);
-							for (int x = 0; x != times; x++) {
-								keys.Add(k);
-							}
-							break;
-						}
-						if (_n == key) {
-							Logging.Log("[EXPR] > Added the " + _n);
-							for (int x = 0; x != times; x++) {
-								keys.Add(k);
-							}
-							break;
-						}
-					}
+					keys.AddRange(strparsekey(key, times));
 				}
 				all_keys.Add(keys);
 			}
@@ -2273,7 +2279,7 @@ namespace Mahou {
 			}
 			return true;
 		}
-		public static string __dictReplace(DICT<string> d, string input, ref bool only_regex, bool reverse = false) {
+		public static string __dictReplace(DICT<string, string> d, string input, ref bool only_regex, bool reverse = false) {
 			var ir = input.Replace("\r","");
 			var lines = ir.Split('\n');
 			var result = "";
@@ -3108,24 +3114,28 @@ namespace Mahou {
 					WaitKey2Breleased(Keys.RWin);
 					win = win_r = false;
 					LLHook.SetModifier(WinAPI.MOD_WIN, false);
+					LLHook.SetModifier(WinAPI.MOD_WIN, false, false);
 				}
 				if (Hotkey.ContainsModifier(modstoup, (int)WinAPI.MOD_SHIFT)) {
 					KMHook.KeybdEvent(Keys.RShiftKey, 2); // Right Shift Up
 					KMHook.KeybdEvent(Keys.LShiftKey, 2); // Left Shift Up
 					shift = shift_r = false;
 					LLHook.SetModifier(WinAPI.MOD_SHIFT, false);
+					LLHook.SetModifier(WinAPI.MOD_SHIFT, false, false);
 				}
 				if (Hotkey.ContainsModifier(modstoup, (int)WinAPI.MOD_CONTROL)) {
 					KMHook.KeybdEvent(Keys.RControlKey, 2); // Right Control Up
 					KMHook.KeybdEvent(Keys.LControlKey, 2); // Left Control Up
 					ctrl = ctrl_r = false;
 					LLHook.SetModifier(WinAPI.MOD_CONTROL, false);
+					LLHook.SetModifier(WinAPI.MOD_CONTROL, false, false);
 				}
 				if (Hotkey.ContainsModifier(modstoup, (int)WinAPI.MOD_ALT)) {
 					KMHook.KeybdEvent(Keys.RMenu, 2); // Right Alt Up
 					KMHook.KeybdEvent(Keys.LMenu, 2); // Left Alt Up
 					alt = alt_r = false;
 					LLHook.SetModifier(WinAPI.MOD_ALT, false);
+					LLHook.SetModifier(WinAPI.MOD_ALT, false, false);
 				}
 				Logging.Log("Modifiers ["+modstoup+ "] sent up.");
               });

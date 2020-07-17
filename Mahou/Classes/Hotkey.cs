@@ -166,6 +166,53 @@ namespace Mahou {
 				}
 			}
 		}
-		
+		/// <summary>
+		/// values: 
+		/// [LAlt],[RAlt],[LShift],[RShift],[LCtrl],[RCtrl],[LWin],[RWin],[Key_Code]
+		/// </summary>
+		/// <param name="trhk"> raw hotkey from tray menu Mahou.mm</param>
+		/// <returns></returns>
+		public static Tuple<bool, bool, bool, bool, bool, bool, bool, Tuple<bool, int>> tray_hk_parse(string trhk) {
+		bool la,ra,ls,rs,lc,rc,lw,rw; int kc = 0;
+		la=ra=ls=rs=lc=rc=lw=rw=false;
+		var p = trhk.ToLower().Substring(2,trhk.Length-2).Split('+');
+		foreach (var x in p) {
+			switch (x) {
+				case "lalt": la = true; break;
+				case "ralt": ra = true; break;
+				case "lshift": ls = true; break;
+				case "rshift": rs = true; break;
+				case "lctrl": lc = true; break;
+				case "rctrl": rc = true; break;
+				case "lwin": ls = true; break;
+				case "rwin": rs = true; break;
+				default:
+//				System.Diagnostics.Debug.WriteLine("x = " +x);
+				if (!string.IsNullOrEmpty(x)) {
+					var l = KMHook.strparsekey(x);
+					if (l.Count > 0) 
+						kc = (int)l[0];
+				}
+				break;
+			}
+			}
+			return new Tuple<bool, bool, bool, bool, bool, bool, bool, Tuple<bool, int>>(la,ra,ls,rs,lc,rc,lw, new Tuple<bool, int>(rw,kc));
+		}
+		/// <summary>
+		/// returns true if a and b equal
+		/// </summary>
+		/// <param name="a">hotkey data 1</param>
+		/// <param name="b">hotkey data 2</param>
+		public static bool cmp_hotkey(Tuple<bool, bool, bool, bool, bool, bool, bool, Tuple<bool, int>> a, Tuple<bool, bool, bool, bool, bool, bool, bool, Tuple<bool, int>> b) {
+			return (a.Item1 == b.Item1 && 
+			        a.Item2 == b.Item2 &&
+			        a.Item3 == b.Item3 && 
+			        a.Item4 == b.Item4 &&
+			        a.Item5 == b.Item5 &&
+			        a.Item6 == b.Item6 && 
+			        a.Item7 == b.Item7 &&
+			        a.Rest.Item1 == b.Rest.Item1 && 
+			        a.Rest.Item2 == b.Rest.Item2);
+		}
 	}
 }

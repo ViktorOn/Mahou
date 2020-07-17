@@ -4151,7 +4151,9 @@ DEL ""ExtractASD.cmd""";
 				MessageBox.Show("Unknown action: " + act, "No such action",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
 		}
+		public static DICT<string,Action> tray_hotkeys = new DICT<string, Action>();
 		static void makemenu(string mahoumenu) {
+			tray_hotkeys.Clear();
 			var mm = Regex.Replace(mahoumenu, "\r?\n", "\n");
 			var mmls = mm.Split('\n');
 			var title = "Mahou Custom Menu";
@@ -4166,14 +4168,24 @@ DEL ""ExtractASD.cmd""";
 				}
 				var lc = '\0';
 				var type = 0;
-				string buf, text, act, arg;
-				buf = text = act = arg = "";
+				string buf, text, act, arg, hotk;
+				buf = text = act = arg = hotk = "";
+				int last = 2;
 				for (int i = 0; i != me.Length; i++) {
 					var c = me[i];
 					if ((lc != '\\' && c == '|') || i == me.Length-1) {
 						if (type == 0) text = buf;
-						if (type == 1) act = buf;
-						if (type == 2) { arg = buf+c; }
+						if (type == 2 && (!string.IsNullOrEmpty(hotk) || string.IsNullOrEmpty(act))) {
+					    	act = buf;
+					    	last++;
+					    }
+						if (type == 1) {
+							if (buf.StartsWith("^^"))
+								hotk = buf;
+							else 
+								act = buf;							
+						}
+						if (type == last) { arg = buf+c; }
 						type++;
 						buf = "";
 						lc = c;
@@ -4181,6 +4193,10 @@ DEL ""ExtractASD.cmd""";
 					}
 					buf += c;
 					lc = c;
+				}
+				if (!string.IsNullOrEmpty(hotk)) {
+					tray_hotkeys.Add(hotk, () => menuhandle(act, arg));
+					text += "    [" + Regex.Replace(hotk.Replace("^^", ""), "(^[lr].)", m => m.ToString().ToUpper()) + "]";
 				}
 				mms.MenuItems.Add(new MenuItem(text, (_,__) => menuhandle(act, arg)));
 			}
