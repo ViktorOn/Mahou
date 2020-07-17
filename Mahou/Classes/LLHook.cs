@@ -49,7 +49,7 @@ namespace Mahou {
 				for (int i = 0; i != MahouUI.tray_hotkeys.len; i++) {
 					var x = new Tuple<bool, bool, bool, bool, bool, bool, bool, Tuple<bool, int>>(alt, alt_r, shift, shift_r, ctrl, ctrl_r, win, new Tuple<bool, int>(win_r, vk));
 					if (Hotkey.cmp_hotkey(Hotkey.tray_hk_parse(MahouUI.tray_hotkeys[i].k), x)) {
-						Debug.WriteLine("[TR_HK] > Executing action of hotkey: " + MahouUI.tray_hotkeys[i].k );
+						Logging.Log("[TR_HK] > Executing action of hotkey: " + MahouUI.tray_hotkeys[i].k );
 						KMHook.DoSelf(MahouUI.tray_hotkeys[i].v);
 						KMHook.SendModsUp(15); // less overkill when whole hotkey is being hold
 						return(IntPtr)1;

@@ -206,10 +206,6 @@ namespace Mahou {
 	"\r\n->mahouver====>__version()<====\r\n->mahoutitle====>__title()<====\r\n->env_system====>__system()<====\r\n->date_esc====>\\__date(HH:mm:ss)<====";
 			// Switch to more secure connection.
 			ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
-			var mm = Path.Combine(nPath, "Mahou.mm");
-			if (File.Exists(mm)) {
-				makemenu(File.ReadAllText(mm));
-			}
            	LoadConfigs();
 			InitializeListBoxes();
 			// Set minnimum values because they're ALWAYS restores to 0 after Form Editor is used.
@@ -2130,6 +2126,10 @@ DEL "+restartMahouPath;
 				var t = KMHook.TransliterateText(KMHook.GetClipboard(2));
 				KMHook.RestoreClipBoard(t);
 			};
+			var mm = Path.Combine(nPath, "Mahou.mm");
+			if (File.Exists(mm)) {
+				makemenu(File.ReadAllText(mm));
+			}
 		}
 		/// <summary>
 		/// Initializes list boxes.
