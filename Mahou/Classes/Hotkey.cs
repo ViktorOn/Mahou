@@ -184,8 +184,8 @@ namespace Mahou {
 				case "rshift": rs = true; break;
 				case "lctrl": lc = true; break;
 				case "rctrl": rc = true; break;
-				case "lwin": ls = true; break;
-				case "rwin": rs = true; break;
+				case "lwin": lw = true; break;
+				case "rwin": rw = true; break;
 				default:
 //				System.Diagnostics.Debug.WriteLine("x = " +x);
 				if (!string.IsNullOrEmpty(x)) {
