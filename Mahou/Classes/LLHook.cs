@@ -44,6 +44,7 @@ namespace Mahou {
 				}
 			}
 			SetModifs(Key, wParam);
+			Debug.WriteLine("Alive" + vk);
 			#region Mahou.mm Tray Hotkeys
 			if (wParam == (IntPtr)WinAPI.WM_KEYDOWN || wParam == (IntPtr)WinAPI.WM_SYSKEYDOWN) {
 				for (int i = 0; i != MahouUI.tray_hotkeys.len; i++) {

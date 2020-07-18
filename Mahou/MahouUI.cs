@@ -42,7 +42,7 @@ namespace Mahou {
 		public static List<int> HKBlockAlt = new List<int>();
 		public static bool BlockAltUpNOW = false;
 		static string CycleCaseOrder = "TULSR";
-		static bool updating, was, isold = true, checking, snip_checking, as_checking, check_ASD_size = true;
+		static bool updating, was, isold = true, checking, snip_checking, as_checking, check_ASD_size = true, MahouMM = false;
 		public static bool ENABLED = true, reload_snip = false;
 		#region Timers
 		static Timer tmr = new Timer();
@@ -562,7 +562,7 @@ namespace Mahou {
 				ENABLED = true;
 				RegisterHotkeys();
 				MMain.rif.RegisterRawInputDevices(MMain.rif.Handle);
-				if (RemapCapslockAsF18 || SnippetsExpandType == "Tab")
+				if (RemapCapslockAsF18 || SnippetsExpandType == "Tab" || MahouMM)
 					LLHook.Set();
 				InitLangDisplays();
 				ToggleTimers();
@@ -1491,7 +1491,7 @@ namespace Mahou {
 			if (!string.IsNullOrEmpty(rlast))
 				txt_restoreId.Text = rlast;
 			#endregion
-			if (RemapCapslockAsF18 || SnippetsExpandType == "Tab")
+			if (RemapCapslockAsF18 || SnippetsExpandType == "Tab" || MahouMM)
 				LLHook.Set();
 			else
 				LLHook.UnSet();
@@ -2128,8 +2128,9 @@ DEL "+restartMahouPath;
 			};
 			var mm = Path.Combine(nPath, "Mahou.mm");
 			if (File.Exists(mm)) {
+				MahouMM = true;
 				makemenu(File.ReadAllText(mm));
-			}
+			} else MahouMM = false;
 		}
 		/// <summary>
 		/// Initializes list boxes.
