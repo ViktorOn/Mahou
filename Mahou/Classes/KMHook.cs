@@ -2027,8 +2027,9 @@ namespace Mahou {
 						if (MahouUI.ConvertSelectionLS && !MahouUI.OneLayoutWholeWord) {
 							Logging.Log("[CS] > Using CS-Switch mode.");
 							var wasLocale = Locales.GetCurrentLocale() & 0xffff;
+							if (MahouUI.UseJKL && !KMHook.JKLERR)
+								wasLocale = MahouUI.currentLayout & 0xffff;
 							var wawasLocale = wasLocale & 0xffff;
-							ChangeLayout(true);
 							uint nowLocale = 0;
 							if(MahouUI.SwitchBetweenLayouts) {
 								nowLocale = wasLocale == (MahouUI.MAIN_LAYOUT1 & 0xffff)
@@ -2043,6 +2044,7 @@ namespace Mahou {
 							} else {
 								Thread.Sleep(10); nowLocale = GetNextLayout().uId & 0xffff;
 							}
+							ChangeLayout(true);
 							var index = 0;
 							var q = new List<WinAPI.INPUT>();
 							foreach (char c in ClipStr) {
@@ -2066,7 +2068,7 @@ namespace Mahou {
 									WinAPI.ToUnicodeEx((uint)scan, (uint)scan, bytes, s, s.Capacity, 0, (IntPtr)wasLocale);
 									Logging.Log("[CS] > Char 1 is [" + s + "] in locale +[" + wasLocale + "].");
 									if (ClipStr[index].ToString() == s.ToString()) {
-										if (!SymbolIgnoreRules((Keys)(scan & 0xff), state == 1, wasLocale)) {
+										if (!SymbolIgnoreRules((Keys)(scan & 0xff), state == 1, wasLocale, ref q)) {
 											Logging.Log("Making input of [" + scan + "] in locale +[" + nowLocale + "].");
 											q.Add(KInputs.AddString(InAnother(c, wasLocale, nowLocale))[0]);
 										}
@@ -2099,10 +2101,10 @@ namespace Mahou {
 								if (yk.key == Keys.None) { // retype unrecognized as unicode
 									var unrecognized = ClipStr[items - 1].ToString();
 									WinAPI.INPUT unr = KInputs.AddString(unrecognized)[0];
-									Logging.Log("[CS] > Key of char [" + c + "] = not exist, using input as string.");
+									Debug.WriteLine("[CS] > Key of char [" + c + "] = not exist, using input as string.");
 									q.Add(unr);
 								} else {
-									if (!SymbolIgnoreRules(yk.key, yk.upper, wasLocale)) {
+									if (!SymbolIgnoreRules(yk.key, yk.upper, wasLocale, ref q)) {
 										Logging.Log("[CS] > Making input of [" + yk.key + "] key with upper = [" + yk.upper + "].");
 										if (yk.upper)
 											q.Add(KInputs.AddKey(Keys.LShiftKey, true));
@@ -2662,7 +2664,7 @@ namespace Mahou {
 						var upp = u && !Control.IsKeyLocked(Keys.CapsLock);
 						if (upp)
 							q.Add(KInputs.AddKey(Keys.LShiftKey, true));
-						if (!SymbolIgnoreRules(k, u, wasLocale))
+						if (!SymbolIgnoreRules(k, u, wasLocale, ref q))
 							q.AddRange(KInputs.AddPress(k));
 						if (upp)
 							q.Add(KInputs.AddKey(Keys.LShiftKey, false));
@@ -2760,7 +2762,7 @@ namespace Mahou {
 		/// <param name="upper">State of key to be checked.</param>
 		/// <param name="wasLocale">Last layout id.</param>
 		/// <returns></returns>
-		static bool SymbolIgnoreRules(Keys key, bool upper, uint wasLocale) {
+		static bool SymbolIgnoreRules(Keys key, bool upper, uint wasLocale, ref List<WinAPI.INPUT> q) {
 			Logging.Log("Passing Key = ["+key+"]+["+(upper ? "UPPER" : "lower") + "] with WasLayoutID = ["+wasLocale+"] through symbol ignore rules.");
 			if (MMain.mahou.HKSymIgn.Enabled &&
 			    MahouUI.SymIgnEnabled &&
@@ -2776,44 +2778,44 @@ namespace Mahou {
 			        key == Keys.OemPeriod ||
 			        key == Keys.OemQuestion)) {
 				if (upper && key == Keys.OemOpenBrackets)
-					KInputs.MakeInput(KInputs.AddString("{"));
+					q.AddRange(KInputs.AddString("{"));
 				if (!upper && key == Keys.OemOpenBrackets)
-					KInputs.MakeInput(KInputs.AddString("["));
+					q.AddRange(KInputs.AddString("["));
 
 				if (upper && key == Keys.Oem5)
-					KInputs.MakeInput(KInputs.AddString("|"));
+					q.AddRange(KInputs.AddString("|"));
 				if (!upper && key == Keys.Oem5)
-					KInputs.MakeInput(KInputs.AddString("\\"));
+					q.AddRange(KInputs.AddString("\\"));
 
 				if (upper && key == Keys.Oem6)
-					KInputs.MakeInput(KInputs.AddString("}"));
+					q.AddRange(KInputs.AddString("}"));
 				if (!upper && key == Keys.Oem6)
-					KInputs.MakeInput(KInputs.AddString("]"));
+					q.AddRange(KInputs.AddString("]"));
 
 				if (upper && key == Keys.Oem1)
-					KInputs.MakeInput(KInputs.AddString(":"));
+					q.AddRange(KInputs.AddString(":"));
 				if (!upper && key == Keys.Oem1)
-					KInputs.MakeInput(KInputs.AddString(";"));
+					q.AddRange(KInputs.AddString(";"));
 
 				if (upper && key == Keys.Oem7)
-					KInputs.MakeInput(KInputs.AddString("\""));
+					q.AddRange(KInputs.AddString("\""));
 				if (!upper && key == Keys.Oem7)
-					KInputs.MakeInput(KInputs.AddString("'"));
+					q.AddRange(KInputs.AddString("'"));
 
 				if (upper && key == Keys.Oemcomma)
-					KInputs.MakeInput(KInputs.AddString("<"));
+					q.AddRange(KInputs.AddString("<"));
 				if (!upper && key == Keys.Oemcomma)
-					KInputs.MakeInput(KInputs.AddString(","));
+					q.AddRange(KInputs.AddString(","));
 
 				if (upper && key == Keys.OemPeriod)
-					KInputs.MakeInput(KInputs.AddString(">"));
+					q.AddRange(KInputs.AddString(">"));
 				if (!upper && key == Keys.OemPeriod)
-					KInputs.MakeInput(KInputs.AddString("."));
+					q.AddRange(KInputs.AddString("."));
 
 				if (upper && key == Keys.OemQuestion)
-					KInputs.MakeInput(KInputs.AddString("?"));
+					q.AddRange(KInputs.AddString("?"));
 				if (!upper && key == Keys.OemQuestion)
-					KInputs.MakeInput(KInputs.AddString("/"));
+					q.AddRange(KInputs.AddString("/"));
 				Memory.Flush();
 				return true;
 			} else
