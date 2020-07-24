@@ -3004,7 +3004,7 @@ namespace Mahou {
 			if (before != 0)
 				cur = before;
 			Debug.WriteLine("Current: " +cur);
-			for (int i=MMain.locales.Length; i!=0; i--) {
+			for (int i=0; i!=MMain.locales.Length; i--) {
 				if (last != 0 && cur != last)
 					break;
 				var br = false;
@@ -3031,11 +3031,11 @@ namespace Mahou {
 					Logging.Log("LIDC = "+g +" curid = "+curind + " Lidle = " +(MMain.locales.Length - 1));
 					if (l.Lang.Contains("Microsoft Office IME")) // fake layout
 						continue;
-					if (g > curind)
+					if (g >= curind)
 						if (l.uId != cur) {
 							Logging.Log("Locales +1 Next BREAK on " + l.uId);
 							loc = l;
-							if (last !=0) // ensure its checked at least twice
+//							if (last !=0) // ensure its checked at least twice
 								br = true;
 							break;
 					}
