@@ -1192,7 +1192,7 @@ namespace Mahou {
               }, "expand_snippet");
 		}
 		#region in Snippets expressions  
-		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert", "__setlayout", "__selection", "__clearlsnip" };
+		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert", "__setlayout", "__selection", "__clearlsnip", "__replace" };
 		static void ExpandSnippetWithExpressions(string expand) {
 			string ex = "", args = "", raw = "", err = "";
 			bool args_getting = false, is_expr = false, escaped = false;
@@ -1346,6 +1346,16 @@ namespace Mahou {
 					break;
 				case "__keyboard":
 					SimKeyboard(args);
+					break;
+				case "__replace":
+					var argv = args.Split(',');
+					var replace = argv[0];
+					for (int i = 1; i < argv.Length-1; i+=2) {
+						Debug.WriteLine("Replacing: " +argv[i] +" => ", argv[i+1]);
+						replace = replace.Replace(argv[i], argv[i+1]);
+					}
+					Debug.WriteLine("===REPLACED INPUT: " +replace);
+					KInputs.MakeInput(KInputs.AddString(replace));
 					break;
 				case "__execute":
 					Execute(args);
