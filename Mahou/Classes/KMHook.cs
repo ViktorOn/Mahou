@@ -348,7 +348,7 @@ namespace Mahou {
 					wwas = false;
 					mods += WinAPI.MOD_WIN;
 				}
-				SendModsUp((int)mods);
+				SendModsUp((int)mods, false);
 			}
 			#endregion
 			#region One key layout switch
@@ -1888,7 +1888,7 @@ namespace Mahou {
 		public static void ClearModifiers() {
 			win = alt = ctrl = shift = win_r = alt_r = ctrl_r = shift_r = false;
 			LLHook.ClearModifiers();
-			SendModsUp((int)(WinAPI.MOD_ALT + WinAPI.MOD_CONTROL + WinAPI.MOD_SHIFT + WinAPI.MOD_WIN));
+			SendModsUp((int)(WinAPI.MOD_ALT + WinAPI.MOD_CONTROL + WinAPI.MOD_SHIFT + WinAPI.MOD_WIN), false);
 		}
 		static void ClearWord(bool LastWord = false, bool LastLine = false, bool Snippet = false, string ClearReason = "", bool lastSnippet = false, bool wass = false) {
 			string ReasonEnding = ".";
@@ -3008,7 +3008,7 @@ namespace Mahou {
 				Logging.Log("Changing layout using cycle mode by simulating key press [Win+Space].");
 				//Emulate Win+Space
 				KInputs.MakeInput(KInputs.AddPress(Keys.Space), (int)WinAPI.MOD_WIN);
-				Thread.Sleep(5); //Important!
+				Thread.Sleep(50); //Important!
 			}
 			if (!MahouUI.UseJKL || KMHook.JKLERR)
 				DoLater(() => { MahouUI.currentLayout = MahouUI.GlobalLayout = Locales.GetCurrentLocale(); }, 10);
@@ -3037,7 +3037,7 @@ namespace Mahou {
 						loc.uId = MahouUI.MAIN_LAYOUT1;
 					break;
 				}
-				Thread.Sleep(5);
+				Thread.Sleep(15);
 				var curind = MMain.locales.ToList().FindIndex(lid => lid.uId == cur);
 				for (int g=0; g != MMain.locales.Length; g++) {
 					var l = MMain.locales[g];
@@ -3124,16 +3124,19 @@ namespace Mahou {
 		/// Sends modifiers up by modstoup array. 
 		/// </summary>
 		/// <param name="modstoup">Array of modifiers which will be send up. 0 = ctrl, 1 = shift, 2 = alt.</param>
-		public static void SendModsUp(int modstoup)  { //			//These three below are needed to release all modifiers, so even if you will still hold any of it
+		public static void SendModsUp(int modstoup, bool waitwin = true)  { //			//These three below are needed to release all modifiers, so even if you will still hold any of it
 			//it will skip them and do as it must.
 			if (modstoup <= 0) return;
 			Debug.WriteLine(">> SMU: " + Hotkey.GetMods(modstoup));
 			DoSelf(() => {
 				if (Hotkey.ContainsModifier(modstoup, (int)WinAPI.MOD_WIN)) {
-//					KMHook.KeybdEvent(Keys.LWin, 2); // Right Win Up
-//					KMHook.KeybdEvent(Keys.RWin, 2); // Left Win Up
-					WaitKey2Breleased(Keys.LWin);
-					WaitKey2Breleased(Keys.RWin);
+		       		if (waitwin){
+						WaitKey2Breleased(Keys.LWin);
+						WaitKey2Breleased(Keys.RWin);
+		       		} else {
+						KMHook.KeybdEvent(Keys.LWin, 2); // Right Win Up
+						KMHook.KeybdEvent(Keys.RWin, 2); // Left Win Up
+		       		}
 					win = win_r = false;
 					LLHook.SetModifier(WinAPI.MOD_WIN, false);
 					LLHook.SetModifier(WinAPI.MOD_WIN, false, false);
@@ -3188,7 +3191,7 @@ namespace Mahou {
 					break;
 			}
 			if (mods > 0)
-				SendModsUp((int)mods);
+				SendModsUp((int)mods, false);
 		}
 		public static Tuple<string, uint> WordGuessLayout(string word, uint _target = 0, bool glfix = true) {
 			uint layout = 0;

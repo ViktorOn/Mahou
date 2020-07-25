@@ -53,7 +53,7 @@ namespace Mahou {
 					if (Hotkey.cmp_hotkey(Hotkey.tray_hk_parse(MahouUI.tray_hotkeys[i].k), x)) {
 						Logging.Log("[TR_HK] > Executing action of hotkey: " + MahouUI.tray_hotkeys[i].k );
 						KMHook.DoSelf(MahouUI.tray_hotkeys[i].v, "tray_hotkeys");
-						KMHook.SendModsUp(15); // less overkill when whole hotkey is being hold
+						KMHook.SendModsUp(15, false); // less overkill when whole hotkey is being hold
 						return(IntPtr)1;
 				    }
 				}
