@@ -114,7 +114,7 @@ namespace Mahou {
 				DoSelf(() => {
 					KeybdEvent(Keys.Scroll, 0);
 					KeybdEvent(Keys.Scroll, 2);
-	              });
+	              }, "scroll_tip_fix");
 			}
 			uint mods = 0;
 			if (alt || alt_r)
@@ -762,9 +762,9 @@ namespace Mahou {
 										var was = Locales.GetCurrentLocale();
 	        							jklXHidServ.ActionOnLayout = () => {
 											if (!MahouUI.AddOneSpace)
-												DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)));
+												DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)), "jkl_autoswitch_back");
 											else if (!MahouUI.AutoSwitchSpaceAfter) {
-												DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)));
+												DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)), "jkl_autoswitch_back");
 												word.RemoveAt(word.Count-1);
 											}
 											word = QWERTZ_wordFIX(word);
@@ -778,9 +778,9 @@ namespace Mahou {
 	        					} else ofk = true;
 	        					if (ofk) {
 									if (!MahouUI.AddOneSpace)
-										DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)));
+										DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)), "autoswitch_back");
 									else if (!MahouUI.AutoSwitchSpaceAfter) {
-										DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)));
+										DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)), "autoswitch_back");
 										word.RemoveAt(word.Count-1);
 									}
 									word = QWERTZ_wordFIX(word);
@@ -1189,7 +1189,7 @@ namespace Mahou {
 					tsk.Start();
 					KInputs.MakeInput(KInputs.AddString(snip));
 				}
-              });
+              }, "expand_snippet");
 		}
 		#region in Snippets expressions  
 		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert", "__setlayout", "__selection", "__clearlsnip" };
@@ -1681,7 +1681,7 @@ namespace Mahou {
 						if ((Key == Keys.CapsLock && !shift && !shift_r && !alt && !alt_r && !ctrl && !ctrl_r && !win && !win_r && specificKey == 1) ||
 						    (Key == Keys.CapsLock && (shift || shift_r) && !alt && !alt_r && !ctrl && !ctrl_r && !win && !win_r && specificKey == 8) )
 							if (Control.IsKeyLocked(Keys.CapsLock))
-								DoSelf(() => { KeybdEvent(Keys.CapsLock, 0); KeybdEvent(Keys.CapsLock, 2); });
+								DoSelf(() => { KeybdEvent(Keys.CapsLock, 0); KeybdEvent(Keys.CapsLock, 2); }, "mod_and_caps_onoff");
 						var speclayout = (string)typeof(MahouUI).GetField("Layout"+i).GetValue(MMain.mahou);
 						if (String.IsNullOrEmpty(speclayout)) {
 						    Logging.Log("[SPKEY] > No layout for Layout"+i + " variable.");
@@ -1838,7 +1838,7 @@ namespace Mahou {
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);	
 								matched = true;
 								was_ls = true;
-								DoSelf(()=>{ KeybdEvent(Keys.LMenu, 0); KeybdEvent(Keys.LMenu, 2); });
+								DoSelf(()=>{ KeybdEvent(Keys.LMenu, 0); KeybdEvent(Keys.LMenu, 2); }, "lmenu_spkey");
 						    	return;
 							}
 							if (specificKey == 7 && Key == Keys.RMenu && !keyAfterALT && npre) {
@@ -1846,7 +1846,7 @@ namespace Mahou {
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
 								was_ls = true;
-								DoSelf(()=>{ KeybdEvent(Keys.RMenu, 0); KeybdEvent(Keys.RMenu, 2); });
+								DoSelf(()=>{ KeybdEvent(Keys.RMenu, 0); KeybdEvent(Keys.RMenu, 2); }, "rmenu_spkey");
 						    	return;
 							}
 							if (specificKey == 9 && altgr && !keyAfterALTGR) {
@@ -1854,7 +1854,7 @@ namespace Mahou {
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
 								was_ls = true;
-								DoSelf(()=>{ KeybdEvent(Keys.RMenu, 0); KeybdEvent(Keys.RMenu, 2); });
+								DoSelf(()=>{ KeybdEvent(Keys.RMenu, 0); KeybdEvent(Keys.RMenu, 2); }, "altgr_spkey");
 						    	return;
 							}
 							try {
@@ -2143,7 +2143,7 @@ namespace Mahou {
 					}
 					NativeClipboard.Clear();
 					RestoreClipBoard();
-				});
+				}, "convert_selection");
 			} catch(Exception e) {
 				Logging.Log("[CS] > Convert Selection encountered error, details:\r\n" +e.Message+"\r\n"+e.StackTrace, 1);
 			}
@@ -2216,7 +2216,7 @@ namespace Mahou {
 					}
 					NativeClipboard.Clear();
 					RestoreClipBoard();
-	            });
+	            }, "selection_convert");
 				} catch(Exception e) {
 					Logging.Log("["+tn+"] > Selection encountered error, details:\r\n" +e.Message+"\r\n"+e.StackTrace, 1);
 				}
@@ -2596,26 +2596,32 @@ namespace Mahou {
 					winRP = false;
 					skip_kbd_events++;
 				}
-			       });
+			       }, "repress");
 		}
 		/// <summary>
 		/// Do action without RawInput listeners(e.g. not catch).
 		/// Useful with SendInput or keybd_event functions.
 		/// </summary>
 		/// <param name="self_action">Action that will be done without RawInput listeners, Hotkeys and low-level hook.</param>
-		public static void DoSelf(Action self_action) {
+		public static void DoSelf(Action self_action, string caller="unknown") {
+			var pt = ">> DoSelf() ";
+			if (self_action == null) { Logging.Log(pt+"null() action: from +" + caller); return; }
+			var mn = "?()"; 
+			if (self_action.Method != null)
+					mn = self_action.Method.Name;
+			mn += "+"+caller;
 			if (selfie) {
-				Logging.Log("Inside "+busy_on+"called: "+self_action.Method.Name);
+				Logging.Log(pt+"Inside "+busy_on+"called: "+mn);
 				self_action();
 			} else {
-				Debug.WriteLine(">> DS" + self_action.Method.Name);
+				Debug.WriteLine(pt+ mn);
 //				MMain.mahou.Invoke((MethodInvoker)delegate {
 				if (MahouUI.RemapCapslockAsF18) { LLHook.UnSet(); } if (MMain.mahou != null) { MMain.mahou.UnregisterHotkeys(); }
 //			});
 				if (MMain.rif != null)
 					MMain.rif.RegisterRawInputDevices(IntPtr.Zero, WinAPI.RawInputDeviceFlags.Remove);
 				selfie = true;
-				busy_on = self_action.Method.Name;
+				busy_on = mn;
 				self_action();
 //				MMain.mahou.Invoke((MethodInvoker)delegate {
 				if (MahouUI.RemapCapslockAsF18) { LLHook.Set(); } if (MMain.mahou != null) { MMain.mahou.RegisterHotkeys(); }
@@ -2623,7 +2629,7 @@ namespace Mahou {
 				if (MMain.rif != null)
 					MMain.rif.RegisterRawInputDevices(MMain.rif.Handle);
 				selfie = false;
-				Debug.WriteLine(">> ES" + self_action.Method.Name);
+				Debug.WriteLine(pt+ "end " + mn);
 			}
 		}
 		public static void StartConvertWord(YuKey[] YuKeys, uint wasLocale, bool skipsnip = false) {
@@ -2684,7 +2690,7 @@ namespace Mahou {
 				}
 				KInputs.MakeInput(q.ToArray());
 				Debug.WriteLine("XX CLW_END");
-			});
+			}, "st_conv_word");
 		}
 		/// <summary>
 		/// Converts last word/line/words.
@@ -2879,7 +2885,7 @@ namespace Mahou {
 						}
 					}
 				}
-			});
+			}, "change_layout");
 			return desired;
 		}
 		/// <summary>
@@ -3142,7 +3148,7 @@ namespace Mahou {
 					LLHook.SetModifier(WinAPI.MOD_ALT, false, false);
 				}
 				Logging.Log("Modifiers ["+modstoup+ "] sent up.");
-              });
+              }, "sendmodsup");
 		}
 		/// <summary>
 		/// Checks if key is modifier, and calls SendModsUp() if it is.

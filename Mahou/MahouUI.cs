@@ -413,7 +413,7 @@ namespace Mahou {
 										KMHook.KeybdEvent(Keys.CapsLock, 0);
 										KMHook.KeybdEvent(Keys.CapsLock, 2);
 								    }
-				                });
+				                }, "specific_keys_capslock");
 							}
 						} catch (Exception e) {
 							Logging.Log("Possibly layout switch type was not selected for " + OemReadable((SpecKeySetsValues["txt_key"+si+"_mods"].Replace(",", " +") + " + " +
@@ -2300,7 +2300,7 @@ DEL "+restartMahouPath;
 								KMHook.KeybdEvent(Keys.Scroll, 2);
 							}
 						}
-	                });
+	                }, "scroll_check_timer");
 				}
 			};
 			capsCheck.Tick += (_, __) => KMHook.DoSelf(() => {
@@ -2308,7 +2308,7 @@ DEL "+restartMahouPath;
 					KMHook.KeybdEvent(Keys.CapsLock, 0);
 					KMHook.KeybdEvent(Keys.CapsLock, 2);
 				}
-			});
+			}, "caps_check_timer");
 			capsCheck.Interval = MMain.MyConfs.ReadInt("Timings", "CapsLockDisableRefreshRate");
 			KMHook.doublekey.Tick += (_, __) => {
 				if (hklOK)
@@ -3718,11 +3718,14 @@ DEL ""ExtractASD.cmd""";
 					if (silent)
 						AtUpdateShow = 1;
 					else {
-						if (UpdInfo[0] != MMain.Lang[Languages.Element.Error])
+						if (UpdInfo[0] != MMain.Lang[Languages.Element.Error]) {
 							if (MessageBox.Show(new Form() { TopMost = false, Visible = false }, UpdInfo[1].Substring(0, ((UpdInfo[1].Length > 640) ? 640 : UpdInfo[1].Length)) +"...\n"+UpdInfo[3], UpdInfo[0],
 								     MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.OK) {
-							AtUpdateShow = 1;
-						} else { AtUpdateShow = 2; }
+								AtUpdateShow = 1;
+							} else { AtUpdateShow = 2; }
+						} else {
+							AtUpdateShow = 3;
+						}
 					}
 				} else
 					AtUpdateShow = 2; // No Updates
