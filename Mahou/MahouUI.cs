@@ -37,12 +37,12 @@ namespace Mahou {
 						   SoundEnabled, UseCustomSound, SoundOnAutoSwitch, SoundOnConvLast, SoundOnSnippets, SoundOnLayoutSwitch,
 						   UseCustomSound2, SoundOnAutoSwitch2, SoundOnConvLast2, SoundOnSnippets2, SoundOnLayoutSwitch2, TrOnDoubleClick,
 						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory, ExcludeCaretLD, UsePaste, LibreCtrlAltShiftV,
-						   CycleCaseReset, __selection, WriteInputHistoryByDate, WriteInputHistoryHourly, nomemoryflush;
+						   CycleCaseReset, __selection, WriteInputHistoryByDate, WriteInputHistoryHourly, MahouMM = false, nomemoryflush;
 		static string[] UpdInfo;
 		public static List<int> HKBlockAlt = new List<int>();
 		public static bool BlockAltUpNOW = false;
 		static string CycleCaseOrder = "TULSR";
-		static bool updating, was, isold = true, checking, snip_checking, as_checking, check_ASD_size = true, MahouMM = false;
+		static bool updating, was, isold = true, checking, snip_checking, as_checking, check_ASD_size = true;
 		public static bool ENABLED = true, reload_snip = false;
 		#region Timers
 		static Timer tmr = new Timer();
@@ -562,8 +562,9 @@ namespace Mahou {
 				ENABLED = true;
 				RegisterHotkeys();
 				MMain.rif.RegisterRawInputDevices(MMain.rif.Handle);
-				if (RemapCapslockAsF18 || SnippetsExpandType == "Tab" || MahouMM)
+				if (LLHook._ACTIVE) {
 					LLHook.Set();
+				}
 				InitLangDisplays();
 				ToggleTimers();
 				if (UseJKL)
@@ -1492,7 +1493,8 @@ namespace Mahou {
 			if (!string.IsNullOrEmpty(rlast))
 				txt_restoreId.Text = rlast;
 			#endregion
-			if (RemapCapslockAsF18 || SnippetsExpandType == "Tab" || MahouMM)
+			LLHook._ACTIVE = (RemapCapslockAsF18 || SnippetsExpandType == "Tab" || MahouMM);
+			if (LLHook._ACTIVE)
 				LLHook.Set();
 			else
 				LLHook.UnSet();

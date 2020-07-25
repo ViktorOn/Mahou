@@ -8,6 +8,7 @@ namespace Mahou {
 	/// Low level hook.
 	/// </summary>
 	public static class LLHook {
+		public static bool _ACTIVE = false;
 		public static IntPtr _LLHook_ID = IntPtr.Zero;
 		public static WinAPI.LowLevelProc _LLHook_proc = LLHook.Callback;
 		static bool alt, alt_r, shift, shift_r, ctrl, ctrl_r, win, win_r;
