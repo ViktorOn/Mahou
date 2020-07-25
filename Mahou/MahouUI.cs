@@ -3718,8 +3718,9 @@ DEL ""ExtractASD.cmd""";
 					if (silent)
 						AtUpdateShow = 1;
 					else {
-						if (MessageBox.Show(new Form() { TopMost = false, Visible = false }, UpdInfo[1].Substring(0, ((UpdInfo[1].Length > 640) ? 640 : UpdInfo[1].Length)) +"...\n"+UpdInfo[3], UpdInfo[0],
-							     MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.OK) {
+						if (UpdInfo[0] != MMain.Lang[Languages.Element.Error])
+							if (MessageBox.Show(new Form() { TopMost = false, Visible = false }, UpdInfo[1].Substring(0, ((UpdInfo[1].Length > 640) ? 640 : UpdInfo[1].Length)) +"...\n"+UpdInfo[3], UpdInfo[0],
+								     MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.OK) {
 							AtUpdateShow = 1;
 						} else { AtUpdateShow = 2; }
 					}
