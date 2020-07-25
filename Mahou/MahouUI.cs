@@ -37,7 +37,7 @@ namespace Mahou {
 						   SoundEnabled, UseCustomSound, SoundOnAutoSwitch, SoundOnConvLast, SoundOnSnippets, SoundOnLayoutSwitch,
 						   UseCustomSound2, SoundOnAutoSwitch2, SoundOnConvLast2, SoundOnSnippets2, SoundOnLayoutSwitch2, TrOnDoubleClick,
 						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory, ExcludeCaretLD, UsePaste, LibreCtrlAltShiftV,
-						   CycleCaseReset, __selection, WriteInputHistoryByDate, WriteInputHistoryHourly;
+						   CycleCaseReset, __selection, WriteInputHistoryByDate, WriteInputHistoryHourly, nomemoryflush;
 		static string[] UpdInfo;
 		public static List<int> HKBlockAlt = new List<int>();
 		public static bool BlockAltUpNOW = false;
@@ -1198,6 +1198,7 @@ namespace Mahou {
 		/// Refresh all controls state from configs.
 		/// </summary>
 		void LoadConfigs() {
+			nomemoryflush = MMain.MyConfs.ReadBool("Hidden", "DisableMemoryFlush");
 			decim = (string)Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\International", "sDecimal", null);
 			TrSetsValues = new Dictionary<string, string>();
 			chk_AppDataConfigs.Checked = (bool)DoInMainConfigs(() => MMain.MyConfs.ReadBool("Functions", "AppDataConfigs"));
