@@ -754,7 +754,7 @@ public class Languages
 		{ Element.SelectedToSwapCase, "Выделенные слова в оБРАТНЫЙ регистр" }, 
 		{ Element.SelectedToUpperCase, "Выделенные слова в ВЕРХНИЙ РЕГИСТР" }, 
 		{ Element.SelectedToLowerCase, "Выделенные слова в нижний регистр" }, 
-		{ Element.SelectedTransliteration, "Транслитерация выледенного текста" }, 
+		{ Element.SelectedTransliteration, "Транслитерация выделенного текста" }, 
 		{ Element.ExitMahou, "Выход" }, 
 		{ Element.RestartMahou, "Перезапустить" }, 
 		{ Element.Enabled, "Включена" }, 
