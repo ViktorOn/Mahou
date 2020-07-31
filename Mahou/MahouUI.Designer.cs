@@ -281,6 +281,8 @@ namespace Mahou
 		private System.Windows.Forms.CheckBox chk_CSUsePaste;
 		private System.Windows.Forms.LinkLabel lnk_SnipOpen;
 		private System.Windows.Forms.CheckBox chk_ConvSWL;
+		private System.Windows.Forms.CheckBox chk_rMmm;
+		private System.Windows.Forms.CheckBox chk_Mmm;
 		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
@@ -527,6 +529,7 @@ namespace Mahou
 			this.lbl_TrTransparency = new System.Windows.Forms.Label();
 			this.tab_sync = new System.Windows.Forms.TabPage();
 			this.grb_restore = new System.Windows.Forms.GroupBox();
+			this.chk_rMmm = new System.Windows.Forms.CheckBox();
 			this.chk_andPROXY2 = new System.Windows.Forms.CheckBox();
 			this.pctResPaste = new System.Windows.Forms.PictureBox();
 			this.txt_restoreStatus = new System.Windows.Forms.TextBox();
@@ -538,6 +541,7 @@ namespace Mahou
 			this.txt_restoreId = new System.Windows.Forms.TextBox();
 			this.lbl_restoreId = new System.Windows.Forms.Label();
 			this.grb_backup = new System.Windows.Forms.GroupBox();
+			this.chk_Mmm = new System.Windows.Forms.CheckBox();
 			this.chk_andPROXY = new System.Windows.Forms.CheckBox();
 			this.pctBkpCopy = new System.Windows.Forms.PictureBox();
 			this.txt_backupStatus = new System.Windows.Forms.TextBox();
@@ -3253,6 +3257,7 @@ namespace Mahou
 			// 
 			// grb_restore
 			// 
+			this.grb_restore.Controls.Add(this.chk_rMmm);
 			this.grb_restore.Controls.Add(this.chk_andPROXY2);
 			this.grb_restore.Controls.Add(this.pctResPaste);
 			this.grb_restore.Controls.Add(this.txt_restoreStatus);
@@ -3269,6 +3274,16 @@ namespace Mahou
 			this.grb_restore.TabIndex = 1;
 			this.grb_restore.TabStop = false;
 			this.grb_restore.Text = "Restore";
+			// 
+			// chk_rMmm
+			// 
+			this.chk_rMmm.AutoSize = true;
+			this.chk_rMmm.Location = new System.Drawing.Point(434, 22);
+			this.chk_rMmm.Name = "chk_rMmm";
+			this.chk_rMmm.Size = new System.Drawing.Size(89, 19);
+			this.chk_rMmm.TabIndex = 12;
+			this.chk_rMmm.Text = "Mahou.mm";
+			this.chk_rMmm.UseVisualStyleBackColor = true;
 			// 
 			// chk_andPROXY2
 			// 
@@ -3382,6 +3397,7 @@ namespace Mahou
 			// 
 			// grb_backup
 			// 
+			this.grb_backup.Controls.Add(this.chk_Mmm);
 			this.grb_backup.Controls.Add(this.chk_andPROXY);
 			this.grb_backup.Controls.Add(this.pctBkpCopy);
 			this.grb_backup.Controls.Add(this.txt_backupStatus);
@@ -3398,6 +3414,16 @@ namespace Mahou
 			this.grb_backup.TabIndex = 0;
 			this.grb_backup.TabStop = false;
 			this.grb_backup.Text = "Backup";
+			// 
+			// chk_Mmm
+			// 
+			this.chk_Mmm.AutoSize = true;
+			this.chk_Mmm.Location = new System.Drawing.Point(434, 22);
+			this.chk_Mmm.Name = "chk_Mmm";
+			this.chk_Mmm.Size = new System.Drawing.Size(89, 19);
+			this.chk_Mmm.TabIndex = 11;
+			this.chk_Mmm.Text = "Mahou.mm";
+			this.chk_Mmm.UseVisualStyleBackColor = true;
 			// 
 			// chk_andPROXY
 			// 

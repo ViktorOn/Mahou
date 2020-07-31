@@ -177,8 +177,8 @@ namespace Mahou {
 		static string latestSwitch = "null";
 		const string SYNC_HOST = "https://hastebin.com";
 		const string SYNC_SEP = "#------>";
-		readonly string[] SYNC_NAMES = { "Mahou.ini", "snippets.txt", "history.txt", "TSDict.txt" };
-		readonly string[] SYNC_TYPES = { "ini", "sni", "his", "tdi" };
+		readonly string[] SYNC_NAMES = { "Mahou.ini", "snippets.txt", "history.txt", "TSDict.txt", "Mahou.mm" };
+		readonly string[] SYNC_TYPES = { "ini", "sni", "his", "tdi", "mm" };
 		// From more configs
 		ColorDialog clrd = new ColorDialog();
 		FontDialog fntd = new FontDialog();
@@ -1071,8 +1071,8 @@ namespace Mahou {
 				SaveTrSets();
 				#endregion
 				#region Sync
-				MMain.MyConfs.Write("Sync", "BBools", string.Join("|", bin(chk_Mini.Checked), bin(chk_Stxt.Checked), bin(chk_Htxt.Checked), bin(chk_Ttxt.Checked), bin(chk_andPROXY.Checked)));
-				MMain.MyConfs.Write("Sync", "RBools", string.Join("|", bin(chk_rMini.Checked), bin(chk_rStxt.Checked), bin(chk_rHtxt.Checked), bin(chk_rTtxt.Checked), bin(chk_andPROXY2.Checked)));
+				MMain.MyConfs.Write("Sync", "BBools", string.Join("|", bin(chk_Mini.Checked), bin(chk_Stxt.Checked), bin(chk_Htxt.Checked), bin(chk_Ttxt.Checked), bin(chk_andPROXY.Checked), bin(chk_Mmm.Checked)));
+				MMain.MyConfs.Write("Sync", "RBools", string.Join("|", bin(chk_rMini.Checked), bin(chk_rStxt.Checked), bin(chk_rHtxt.Checked), bin(chk_rTtxt.Checked), bin(chk_andPROXY2.Checked), bin(chk_rMmm.Checked)));
 				MMain.MyConfs.Write("Sync", "BLast", txt_backupId.Text);
 				MMain.MyConfs.Write("Sync", "RLast", txt_restoreId.Text);
 				#endregion
@@ -1470,20 +1470,22 @@ namespace Mahou {
 			#endregion
 			#region Sync
 			var bbools = MMain.MyConfs.Read("Sync", "BBools");
-			bool m, s, h, t, p;
-			SetBools(bbools, '|', out m, out s, out h, out t, out p);
+			bool m, s, h, t, p, mm;
+			SetBools(bbools, '|', out m, out s, out h, out t, out p, out mm);
 			chk_Mini.Checked = m;
 			chk_Stxt.Checked = s;
 			chk_Htxt.Checked = h;
 			chk_Ttxt.Checked = t;
 			chk_andPROXY.Checked = p;
+			chk_Mmm.Checked = mm;
 			var rbools = MMain.MyConfs.Read("Sync", "RBools");
-			SetBools(rbools, '|', out m, out s, out h, out t, out p);
+			SetBools(rbools, '|', out m, out s, out h, out t, out p, out mm);
 			chk_rMini.Checked = m;
 			chk_rStxt.Checked = s;
 			chk_rHtxt.Checked = h;
 			chk_rTtxt.Checked = t;
 			chk_andPROXY2.Checked = p;
+			chk_rMmm.Checked = mm;
 			var blast = MMain.MyConfs.Read("Sync", "BLast");
 			if (!string.IsNullOrEmpty(blast)) {
 				txt_backupId.Text = blast;
@@ -4220,7 +4222,7 @@ DEL ""ExtractASD.cmd""";
 				}
 				if (!string.IsNullOrEmpty(hotk)) {
 					tray_hotkeys.Add(hotk, () => menuhandle(act, arg));
-					text += "    [" + Regex.Replace(hotk.Replace("^^", ""), "(^[lr].)", m => m.ToString().ToUpper()) + "]";
+					text += "    [" + Regex.Replace(hotk.Replace("^^", ""), "((^|\\+)[lr]?.)", m => m.ToString().ToUpper()) + "]";
 				}
 				mms.MenuItems.Add(new MenuItem(text, (_,__) => menuhandle(act, arg)));
 			}
@@ -4781,11 +4783,11 @@ DEL ""ExtractASD.cmd""";
 			}
 			return new []{r, stat};
 		}
-		string WriteRestoreFiles(string raw, bool mini, bool stxt, bool htxt, bool ttxt, bool proxyg = true) {
+		string WriteRestoreFiles(string raw, bool mini, bool stxt, bool htxt, bool ttxt, bool proxyg = true, bool mm = false) {
 			var stat = "";
 			var t = raw.Replace("\r", "");
 			var ll = t.Split('\n');
-			var bb = new [] { mini, stxt, htxt, ttxt };
+			var bb = new [] { mini, stxt, htxt, ttxt, mm };
 			var tn="dummy";
 			var st = false;
 			var d = new Dictionary<string, string>();
@@ -4856,7 +4858,7 @@ DEL ""ExtractASD.cmd""";
 		void SyncBackup() {
 			string id = "";
 			var rawtext = "";
-			var bb = new [] { chk_Mini.Checked, chk_Stxt.Checked, chk_Htxt.Checked, chk_Ttxt.Checked };
+			var bb = new [] { chk_Mini.Checked, chk_Stxt.Checked, chk_Htxt.Checked, chk_Ttxt.Checked, chk_Mmm.Checked };
 			var stat = "OK";
 			for (int i = 0; i!= SYNC_NAMES.Length; i++) {
 				var r = ReadToBackup(SYNC_TYPES[i], SYNC_NAMES[i], bb[i], chk_andPROXY.Checked);
@@ -4921,7 +4923,7 @@ DEL ""ExtractASD.cmd""";
 				}
 				Debug.WriteLine(d);
 				if (!string.IsNullOrEmpty(d)) {
-					stat += WriteRestoreFiles(d, chk_rMini.Checked, chk_rStxt.Checked, chk_rHtxt.Checked, chk_rTtxt.Checked);				MMain.MyConfs.Write("Sync", "BLast", txt_backupId.Text);
+					stat += WriteRestoreFiles(d, chk_rMini.Checked, chk_rStxt.Checked, chk_rHtxt.Checked, chk_rTtxt.Checked, chk_andPROXY2.Checked, chk_rMmm.Checked);				MMain.MyConfs.Write("Sync", "BLast", txt_backupId.Text);
 					MMain.MyConfs.Write("Sync", "RLast", txt_restoreId.Text);
 				}
 				LoadConfigs();
@@ -4931,7 +4933,7 @@ DEL ""ExtractASD.cmd""";
 			txt_restoreStatus.Text = stat;
 			txt_restoreStatus.Visible = true;
 		}
-		void SetBools(string bools, char sep, out bool mini, out bool stxt, out bool htxt, out bool ttxt, out bool ptxt) {
+		void SetBools(string bools, char sep, out bool mini, out bool stxt, out bool htxt, out bool ttxt, out bool ptxt, out bool mmm) {
 			var s = bools.Split(sep);
 			mini = boo(s[0]);
 			stxt = boo(s[1]);
@@ -4941,6 +4943,11 @@ DEL ""ExtractASD.cmd""";
 				ptxt = boo(s[4]);
 			} catch {
 				ptxt = false;
+			}
+			try {
+				mmm = boo(s[5]);
+			} catch {
+				mmm = false;
 			}
 		}
 		bool boo(string s) {
