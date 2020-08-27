@@ -1934,8 +1934,9 @@ DEL "+restartMahouPath;
 				var flagname = "jp";
 				var clangname = new CultureInfo(lcid);
 				flagname = clangname.ThreeLetterISOLanguageName.Substring(0, 2).ToLower();
+				
 				var flagpth = Path.Combine(MahouUI.nPath, "Flags\\" + flagname + ".png");
-				Debug.WriteLine("UpDATe?"+(flagname != latestSwitch || (TrayText && ITEXT == null) || (TrayFlags && FLAG == null)));
+				Debug.WriteLine("UpDATe?"+flagname+", "+(flagname != latestSwitch || (TrayText && ITEXT == null) || (TrayFlags && FLAG == null)));
 				if (flagname != latestSwitch || (TrayText && ITEXT == null) || (TrayFlags && FLAG == null)) {
 					Logging.Log("Changed flag to " + flagname + " lcid " + lcid);
 					Debug.WriteLine("Changed flag to " + flagname + " lcid " + lcid);
@@ -1990,6 +1991,9 @@ DEL "+restartMahouPath;
 								break;
 							case "hy":
 								FLAG = Properties.Resources.hy;
+								break;
+							case "ka":
+								FLAG = Properties.Resources.ka;
 								break;
 							default:
 								FLAG = Properties.Resources.MahouTrayHD.ToBitmap();
