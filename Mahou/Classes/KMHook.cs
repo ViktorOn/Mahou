@@ -17,6 +17,7 @@ namespace Mahou {
 			shiftRP, ctrlRP, altRP, winRP, //RP = Re-Press
 			awas, swas, cwas, wwas, afterEOS, afterEOL, //*was = alt/shift/ctrl was
 			keyAfterCTRL, keyAfterALT, keyAfterALTGR, keyAfterSHIFT,
+			keyAfterCTRLSHIFT, keyAfterALTSHIFT,
 			clickAfterCTRL, clickAfterALT, clickAfterSHIFT,
 			hotkeywithmodsfired, csdoing, incapt, waitfornum, 
 			IsHotkey, ff_chr_wheeled, preSnip, LMB_down, RMB_down, MMB_down,
@@ -371,6 +372,18 @@ namespace Mahou {
 					keyAfterCTRL = true;
 				else 
 					keyAfterCTRL = false;
+				if ((ctrl || ctrl_r) && (shift || shift_r) && 
+				    (Key != Keys.LControlKey && Key != Keys.RControlKey && Key != Keys.ControlKey)
+				    && (Key != Keys.LShiftKey && Key != Keys.RShiftKey && Key != Keys.Shift))
+					keyAfterCTRLSHIFT = true;
+				else 
+					keyAfterCTRLSHIFT = false;
+				if ((alt || alt_r) && (shift || shift_r) && 
+				    (Key != Keys.LMenu && Key != Keys.RMenu && Key != Keys.Menu)
+				    && (Key != Keys.LShiftKey && Key != Keys.RShiftKey && Key != Keys.Shift))
+					keyAfterALTSHIFT = true;
+				else 
+					keyAfterALTSHIFT = false;
 				if ((alt || alt_r) && (Key != Keys.LMenu && Key != Keys.RMenu && Key != Keys.Menu || clickAfterALT))
 					keyAfterALT = true;
 				else 
@@ -1705,8 +1718,8 @@ namespace Mahou {
 						    	return;
 							}
 							if (specificKey == 11 && (
-								(Key == Keys.LShiftKey && ctrl) || (Key == Keys.RShiftKey && ctrl_r) ||
-								(Key == Keys.LControlKey && shift) || (Key == Keys.RControlKey && shift_r)) && !win && !win_r && !alt && !alt_r) {
+								(Key == Keys.LShiftKey && ctrl) || (Key == Keys.RShiftKey && ctrl_r) || 
+								(Key == Keys.LControlKey && shift) || (Key == Keys.RControlKey && shift_r)) && !keyAfterCTRLSHIFT && !win && !win_r && !alt && !alt_r) {
 								Logging.Log("[SPKEY] > Changing layout by Ctrl+Shift key.");
 								ChangeLayout();
 								was_ls = true;
@@ -1714,7 +1727,7 @@ namespace Mahou {
 							}
 							if (specificKey == 10 && (
 								(Key == Keys.LShiftKey && alt) || (Key == Keys.RShiftKey && alt_r) ||
-								(Key == Keys.LMenu && shift) || (Key == Keys.RMenu && shift_r)) && !win && !win_r && !ctrl && !ctrl_r) {
+								(Key == Keys.LMenu && shift) || (Key == Keys.RMenu && shift_r)) && !keyAfterALTSHIFT && !win && !win_r && !ctrl && !ctrl_r) {
 								Logging.Log("[SPKEY] > Changing layout by Alt+Shift key.");
 								ChangeLayout();
 								was_ls = true;
@@ -1792,9 +1805,18 @@ namespace Mahou {
 								was_ls = true;
 						    	return;
 							}
+							if (specificKey == 11 && (
+								(Key == Keys.LShiftKey && ctrl) || (Key == Keys.RShiftKey && ctrl_r) || 
+								(Key == Keys.LControlKey && shift) || (Key == Keys.RControlKey && shift_r)) && !keyAfterCTRLSHIFT && !win && !win_r && !alt && !alt_r) {
+								Logging.Log("[SPKEY] > Switching to specific layout by Ctrl+Shift key.");
+								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
+								matched = true;
+								was_ls = true;
+						    	return;
+							}
 							if (specificKey == 10 && (
 								(Key == Keys.LShiftKey && alt) || (Key == Keys.RShiftKey && alt_r) ||
-								(Key == Keys.LMenu && shift) || (Key == Keys.RMenu && shift_r)) && !win && !win_r && !ctrl && !ctrl_r) {
+								(Key == Keys.LMenu && shift) || (Key == Keys.RMenu && shift_r)) && !keyAfterALTSHIFT && !win && !win_r && !ctrl && !ctrl_r) {
 								Logging.Log("[SPKEY] > Switching to specific layout by Alt+Shift key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
