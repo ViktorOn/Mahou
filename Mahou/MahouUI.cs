@@ -378,6 +378,15 @@ namespace Mahou {
 				if (m.WParam.ToInt32() == 774) {
 					AutoSwitchEnabled = !AutoSwitchEnabled;
 					ShowTooltip(MMain.Lang[Languages.Element.tab_AutoSwitch] + ": "+ (AutoSwitchEnabled?"ON":"OFF"), 1000);
+					if (AutoSwitchEnabled && (KMHook.as_corrects == null)) {
+						if (File.Exists(AS_dictfile)) {
+							AutoSwitchDictionaryRaw = File.ReadAllText(AS_dictfile);
+							ChangeAutoSwitchDictionaryTextBox();
+							UpdateSnippetCountLabel(AutoSwitchDictionaryRaw, lbl_AutoSwitchWordsCount, false);
+						}
+						KMHook.ReInitSnippets();
+						Debug.WriteLine("Reinit AutoSwitch Dictionary");
+					}
 					Debug.WriteLine("ToggleAutoSwitch..$" + AutoSwitchEnabled);
 				}
 				#region Convert multiple words 
