@@ -209,6 +209,7 @@ namespace Mahou {
         	CreateConfigsFile();
         	ReadFromDisk();
         	#region Hidden
+        	CheckString("Hidden", "ToggleAutoSwitchHK", "");
         	CheckBool("Hidden", "DisableMemoryFlush", "false");
         	CheckBool("Hidden", "ChangeLayoutOnTrayLMB", "false");
         	CheckString("Hidden", "AutoCopyTranslation", "");

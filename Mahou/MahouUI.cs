@@ -375,6 +375,11 @@ namespace Mahou {
 					                  	KInputs.AddKey(Keys.RMenu, false), 
 					                  	KInputs.AddKey(Keys.LMenu, true)});
 				}
+				if (m.WParam.ToInt32() == 774) {
+					AutoSwitchEnabled = !AutoSwitchEnabled;
+					ShowTooltip(MMain.Lang[Languages.Element.tab_AutoSwitch] + ": "+ (AutoSwitchEnabled?"ON":"OFF"), 1000);
+					Debug.WriteLine("ToggleAutoSwitch..$" + AutoSwitchEnabled);
+				}
 				#region Convert multiple words 
 				if (m.WParam.ToInt32() >= 100 && m.WParam.ToInt32() <= 109 && KMHook.waitfornum) {
 					int wordnum = m.WParam.ToInt32() - 100;
@@ -514,6 +519,35 @@ namespace Mahou {
 				KInputs.MakeInput(new []{KInputs.AddKey(Keys.LMenu, false)});
 			}
 			base.WndProc(ref m);
+		}
+		public static void ShowTooltip(string text, int time) {
+			var s = new Form();
+			s.FormBorderStyle = FormBorderStyle.None;
+			s.MinimumSize = new Size(2,2);
+			s.TopMost = true;
+			var i = new Label();
+			i.AutoSize = true;
+			i.Text = "Mahou: "+ text;
+			i.Size = TextRenderer.MeasureText(i.Text, i.Font);
+			i.Height = 24;
+			s.BackColor = i.BackColor = Color.Black;
+			i.ForeColor = Color.White;
+			i.TextAlign = ContentAlignment.MiddleCenter;
+			s.Size = new Size(i.Size.Width+1, i.Size.Height-6);
+			s.Controls.Add(i);
+			i.Location = new Point(0,0);
+			s.Show();
+			s.Activate();
+			s.Location = new Point(Cursor.Position.X, Cursor.Position.Y-20);
+			var t = new Timer();
+			t.Interval = time;
+			t.Tick += (_,__) => {
+				s.Close();
+				s.Dispose();
+				t.Stop();
+				t.Dispose();
+			};
+			t.Start();
 		}
 		public static void CCReset(string info = "") {
 			if (CycleCaseReset) {
@@ -2840,6 +2874,14 @@ DEL "+restartMahouPath;
 		}
 		public void RegisterHotkeys() {
 			if (ENABLED) {
+				var tas = MMain.MyConfs.Read("Hidden", "ToggleAutoSwitchHK");
+				if (!String.IsNullOrEmpty(tas)) {
+					var tasq = tas.Split('|');
+					var mods = Hotkey.GetMods(tasq[0]);
+					var kk = (int)KMHook.strparsekey(tasq[1])[0];
+					Debug.WriteLine("TT: Mod" + mods + " " + kk);
+					_regHK(Handle, 774, WinAPI.MOD_NO_REPEAT + mods, kk);
+				}
 				if (HKCLast_tempEnabled)
 					_regHK(Handle, (int)Hotkey.HKID.ConvertLastWord, 
 					                      WinAPI.MOD_NO_REPEAT + Hotkey.GetMods(HKCLast_tempMods), HKCLast_tempKey);

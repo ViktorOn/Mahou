@@ -48,7 +48,7 @@ namespace Mahou {
 			uint MOD = 0;
 			if (hkmods.Contains("Alt"))
 				MOD += WinAPI.MOD_ALT;
-			if (hkmods.Contains("Control"))
+			if (hkmods.Contains("Control") || hkmods.Contains("Ctrl"))
 				MOD += WinAPI.MOD_CONTROL;
 			if (hkmods.Contains("Shift"))
 				MOD += WinAPI.MOD_SHIFT;
