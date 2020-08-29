@@ -32,7 +32,7 @@ namespace Mahou {
 		static uint cs_layout_last = 0;
 		static string lastClipText = "", busy_on = "", lastLWClearReason = "";
 		static List<Keys> tempNumpads = new List<Keys>();
-		static Keys preKey = Keys.None;
+		static Keys preKey = Keys.None, seKeyDown = Keys.None;
 		public static List<char> c_snip = new List<char>();
 		public static System.Windows.Forms.Timer doublekey = new System.Windows.Forms.Timer(), AS_IGN_RESET = new System.Windows.Forms.Timer();
 		public static List<YuKey> c_word_backup = new List<YuKey>();
@@ -252,7 +252,7 @@ namespace Mahou {
 					if (sym == '\0') sym = getSym(vkCode);
 					c_snip.Add(sym);
 					Logging.Log("[SNI] > Added ["+ sym + "] to current snippet.");
-					//Debug.WriteLine("added " + sym);
+					Debug.WriteLine("added " + sym);
 				}
 				var seKey = Keys.Space;
 				var asls = false;
@@ -260,22 +260,28 @@ namespace Mahou {
 					seKey = Keys.F14;
 				if (Key == seKey || seKey == Keys.F14)
 					preSnip = true;
-				if (MSG == WinAPI.WM_KEYUP) {
+				if (MSG == WinAPI.WM_KEYUP && Key == seKeyDown) {
+					seKeyDown = Keys.None;
+				}
+				if (MSG == WinAPI.WM_KEYDOWN) {
 					var snip = "";
 					foreach (var ch in c_snip) {
 						snip += ch;
 //						Debug.WriteLine(ch);
 					}
 					var matched = false;
-					//Debug.WriteLine("Snip " + snip + ", last: " + last_snip);
+					Debug.WriteLine("Snip " + snip + ", last: " + last_snip);
 					if (Key == seKey) {
-		            	matched = CheckSnippet(snip);
-		            	if (!matched && !last_snipANY)
-		            		matched = CheckSnippet(last_snip+" "+snip, true);
+						if (seKeyDown == Keys.None) {
+			            	matched = CheckSnippet(snip);
+			            	if (!matched && !last_snipANY)
+			            		matched = CheckSnippet(last_snip+" "+snip, true);
+							if (MahouUI.__selection)
+								snip_selection = "";
+							seKeyDown = seKey;
+						}
 						if (matched || preSnip)
 							c_snip.Clear();
-						if (MahouUI.__selection)
-							snip_selection = "";
 					}
 					bool IGN = false;
 					if (MahouUI.AutoSwitchEnabled) {
