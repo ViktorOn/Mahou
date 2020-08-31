@@ -1234,10 +1234,16 @@ namespace Mahou {
 				KInputs.MakeInput(KInputs.AddString(expand));
 				return;
 			}
+			bool just_escaped = false;
 			for (int i = 0; i!=expand.Length; i++) {
 				var args_get = false;
 				var e = expand[i]; 
-//				Debug.WriteLine("i:"+i+", e:"+e);
+				if (i > 0 && e == '\\' && expand[i-1] == '\\' && !just_escaped) { 
+					Logging.Log("[EXPR] Escape \"\\\"."); 
+					just_escaped = true; 
+					continue;
+				}
+//				Debug.WriteLine("i:"+i+", e:"+e+ "just" + just_escaped);
 				if (!is_expr) {
 					if (ex == "__" && e == '_') { // Fix for multiple "_" repeats before __expr
 						raw += e;
@@ -1247,7 +1253,7 @@ namespace Mahou {
 				}
 				else err+=e;
 				if (is_expr && e == ')') { // Escape closing
-					if (expand[i-1] == '\\') {
+					if (expand[i-1] == '\\' && !just_escaped) {
 						Logging.Log("[EXPR] > Escaped \")\" at position: "+i);
 						if (args.Length >2)
 							args = args.Substring(0, args.Length-1);
@@ -1332,6 +1338,7 @@ namespace Mahou {
 					escaped = false;
 					args = ex = raw = "";
 				}
+				just_escaped = false;
 			}
 			if (cursormove != -1) {
 				KInputs.MakeInput(KInputs.AddPress(Keys.Left, cursormove));
