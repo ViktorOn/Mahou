@@ -1,4 +1,4 @@
-﻿# Dictionary that BladeMight write on its own.
+﻿# Dictionary that BladeMight write on its own. almost.
 ->tcnm
 ====>есть<====
 ->скщц
@@ -37,6 +37,8 @@
 ====>руками<====
 ->yjhvfkmyj
 ====>нормально<====
+->plhfdcndeqnt
+====>здравствуйте<====
 # rule for programmers
 #->ж
 #====>;<====
