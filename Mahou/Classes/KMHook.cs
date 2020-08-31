@@ -32,7 +32,7 @@ namespace Mahou {
 		static uint cs_layout_last = 0;
 		static string lastClipText = "", busy_on = "", lastLWClearReason = "";
 		static List<Keys> tempNumpads = new List<Keys>();
-		static Keys preKey = Keys.None, seKeyDown = Keys.None;
+		static Keys preKey = Keys.None, seKeyDown = Keys.None, aseKeyDown = Keys.None;
 		public static List<char> c_snip = new List<char>();
 		public static System.Windows.Forms.Timer doublekey = new System.Windows.Forms.Timer(), AS_IGN_RESET = new System.Windows.Forms.Timer();
 		public static List<YuKey> c_word_backup = new List<YuKey>();
@@ -246,96 +246,6 @@ namespace Mahou {
 				}
 			}
 			#endregion
-			#region Snippets
-			if (MahouUI.SnippetsEnabled && !ExcludedProgram(true)) {
-				if (printable && printable_mod && down) {
-					if (sym == '\0') sym = getSym(vkCode);
-					c_snip.Add(sym);
-					Logging.Log("[SNI] > Added ["+ sym + "] to current snippet.");
-					Debug.WriteLine("added " + sym);
-				}
-				var seKey = Keys.Space;
-				var asls = false;
-				if (MMain.mahou.SnippetsExpandType == "Tab")
-					seKey = Keys.F14;
-				if (Key == seKey || seKey == Keys.F14)
-					preSnip = true;
-				if (MSG == WinAPI.WM_KEYUP && Key == seKeyDown) {
-					seKeyDown = Keys.None;
-				}
-				if (MSG == WinAPI.WM_KEYDOWN) {
-					var snip = "";
-					foreach (var ch in c_snip) {
-						snip += ch;
-//						Debug.WriteLine(ch);
-					}
-					var matched = false;
-					Debug.WriteLine("Snip " + snip + ", last: " + last_snip);
-					if (Key == seKey) {
-						if (seKeyDown == Keys.None) {
-			            	matched = CheckSnippet(snip);
-			            	if (!matched && !last_snipANY)
-			            		matched = CheckSnippet(last_snip+" "+snip, true);
-							if (MahouUI.__selection)
-								snip_selection = "";
-							seKeyDown = seKey;
-						}
-						if (matched || preSnip)
-							c_snip.Clear();
-					}
-					bool IGN = false;
-					if (MahouUI.AutoSwitchEnabled) {
-						IGN = ((AS_IGN_BACK && was_back) || (AS_IGN_DEL && was_del) || (AS_IGN_LS && was_ls));
-						if (IGN) { Logging.Log("[AS] > Ignore AutoSwitch by: B/D/LS: " + was_back + "/"+was_del+"/"+was_ls); }
-						Debug.WriteLine("Ignore AutoSwitch by: B/D/LS: " + was_back + "/"+was_del+"/"+was_ls);
-						Debug.WriteLine("IGN:"+IGN+"EVT"+MSG);
-						if (!matched && as_wrongs != null && Key == Keys.Space && !IGN) { 
-							var CW = c_word_backup;
-							var CLW = c_word_backup_last;
-							if (MahouUI.AddOneSpace) {
-								CW = MMain.c_word;
-								CLW = c_word_backup;
-							}
-							if (MahouUI.QWERTZ_fix) {
-								var ASsymDR = ASsymDiffReplace(snip);
-								Debug.WriteLine("[ASsymDiff] > ["+snip+"] => ["+ASsymDR+"].");
-								snip = ASsymDR;
-							}
-			            	asls = matched = CheckAutoSwitch(snip, CW);
-			            	if (!matched) {
-			            		var snip2x = last_snip+" "+snip;
-			            		//Debug.WriteLine("SNIp2x! " + snip2x);
-			            		var SPace = new List<YuKey>(){ new YuKey() { key = Keys.Space, altnum = false, upper = false } };
-			            		var dash = new List<YuKey>(){ new YuKey() { key = Keys.OemMinus, altnum = false, upper = false } };
-			            		var last2words = CLW.Concat(dash).Concat(CW).ToList();
-			            		asls = matched = CheckAutoSwitch(snip2x, last2words);
-			            		if (!matched) {
-				            		last2words = CLW.Concat(MahouUI.AddOneSpace ? new List<YuKey>() : SPace).Concat(CW).ToList();
-				            		asls = matched = CheckAutoSwitch(snip2x, last2words);
-			            		}
-			            	}
-	    					var snl = WordGuessLayout(snip).Item2;
-	    					if (!matched) 
-	    						as_lword_layout = snl;
-	    					Logging.Log("[AS] > Last AS word layout: " +snl );
-							c_snip.Clear();
-						}
-					}
-					if (Key == seKey && !asls) {
-						if (lsnip_noset <= 0) 
-							last_snip = snip;
-						else
-							lsnip_noset--;
-					}
-					if (Key == Keys.Back) { was_back = true; }
-					if (Key == Keys.Delete) { was_del = true; }
-					if (Key == Keys.Space && AS_IGN_RULES.Contains("S")) { 
-						was_back = was_del = false;
-						if (!AS_IGN_RULES.Contains("L")) { was_ls = false; }
-					}
-				}
-			}
-			#endregion
 			#region Release Re-Pressed keys
 			if (hotkeywithmodsfired && !down &&
 			   ((Key == Keys.LShiftKey || Key == Keys.LMenu || Key == Keys.LControlKey || Key == Keys.LWin) ||
@@ -510,6 +420,100 @@ namespace Mahou {
 					MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Key, upper = sym_upr });
 					Logging.Log("[WORD] > Added [" + Key + "]^"+sym_upr);
 					MahouUI.CCReset("key:"+Key);
+				}
+			}
+			#endregion
+			#region Snippets
+			if (MahouUI.SnippetsEnabled && !ExcludedProgram(true)) {
+				if (printable && printable_mod && down) {
+					if (sym == '\0') sym = getSym(vkCode);
+					c_snip.Add(sym);
+					Logging.Log("[SNI] > Added ["+ sym + "] to current snippet.");
+					Debug.WriteLine("added " + sym);
+				}
+				var seKey = Keys.Space;
+				var asls = false;
+				if (MMain.mahou.SnippetsExpandType == "Tab")
+					seKey = Keys.F14;
+				if (Key == seKey || seKey == Keys.F14)
+					preSnip = true;
+				if (MSG == WinAPI.WM_KEYUP) {
+					if (Key == seKeyDown)
+						seKeyDown = Keys.None;
+					if (Key == Keys.Space)
+						aseKeyDown = Keys.None;
+				}
+				if (MSG == WinAPI.WM_KEYDOWN) {
+					var snip = "";
+					foreach (var ch in c_snip) {
+						snip += ch;
+//						Debug.WriteLine(ch);
+					}
+					var matched = false;
+					Debug.WriteLine("Snip " + snip + ", last: " + last_snip);
+					if (Key == seKey) {
+						if (seKeyDown == Keys.None) {
+			            	matched = CheckSnippet(snip);
+			            	if (!matched && !last_snipANY)
+			            		matched = CheckSnippet(last_snip+" "+snip, true);
+							if (MahouUI.__selection)
+								snip_selection = "";
+							seKeyDown = seKey;
+						}
+						if (matched || preSnip)
+							c_snip.Clear();
+					}
+					bool IGN = false;
+					if (MahouUI.AutoSwitchEnabled) {
+						IGN = ((AS_IGN_BACK && was_back) || (AS_IGN_DEL && was_del) || (AS_IGN_LS && was_ls));
+						if (IGN) { Logging.Log("[AS] > Ignore AutoSwitch by: B/D/LS: " + was_back + "/"+was_del+"/"+was_ls); }
+						Debug.WriteLine("Ignore AutoSwitch by: B/D/LS: " + was_back + "/"+was_del+"/"+was_ls);
+						Debug.WriteLine("IGN:"+IGN+"EVT"+MSG);
+						if (!matched && as_wrongs != null && Key == Keys.Space && !IGN && aseKeyDown == Keys.None) { 
+							var CW = c_word_backup;
+							var CLW = c_word_backup_last;
+							if (MahouUI.AddOneSpace) {
+								CW = MMain.c_word;
+								CLW = c_word_backup;
+							}
+							if (MahouUI.QWERTZ_fix) {
+								var ASsymDR = ASsymDiffReplace(snip);
+								Debug.WriteLine("[ASsymDiff] > ["+snip+"] => ["+ASsymDR+"].");
+								snip = ASsymDR;
+							}
+			            	asls = matched = CheckAutoSwitch(snip, CW);
+			            	if (!matched) {
+			            		var snip2x = last_snip+" "+snip;
+			            		//Debug.WriteLine("SNIp2x! " + snip2x);
+			            		var SPace = new List<YuKey>(){ new YuKey() { key = Keys.Space, altnum = false, upper = false } };
+			            		var dash = new List<YuKey>(){ new YuKey() { key = Keys.OemMinus, altnum = false, upper = false } };
+			            		var last2words = CLW.Concat(dash).Concat(CW).ToList();
+			            		asls = matched = CheckAutoSwitch(snip2x, last2words);
+			            		if (!matched) {
+				            		last2words = CLW.Concat(MahouUI.AddOneSpace ? new List<YuKey>() : SPace).Concat(CW).ToList();
+				            		asls = matched = CheckAutoSwitch(snip2x, last2words);
+			            		}
+			            	}
+	    					var snl = WordGuessLayout(snip).Item2;
+	    					if (!matched) 
+	    						as_lword_layout = snl;
+	    					Logging.Log("[AS] > Last AS word layout: " +snl );
+							c_snip.Clear();
+							aseKeyDown = Key;
+						}
+					}
+					if (Key == seKey && !asls) {
+						if (lsnip_noset <= 0) 
+							last_snip = snip;
+						else
+							lsnip_noset--;
+					}
+					if (Key == Keys.Back) { was_back = true; }
+					if (Key == Keys.Delete) { was_del = true; }
+					if (Key == Keys.Space && AS_IGN_RULES.Contains("S")) { 
+						was_back = was_del = false;
+						if (!AS_IGN_RULES.Contains("L")) { was_ls = false; }
+					}
 				}
 			}
 			#endregion
@@ -786,7 +790,7 @@ namespace Mahou {
 											if (!MahouUI.AddOneSpace)
 												DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)), "jkl_autoswitch_back");
 											else if (!MahouUI.AutoSwitchSpaceAfter) {
-												DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)), "jkl_autoswitch_back");
+												DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)), "jkl_autoswitch_back2");
 												word.RemoveAt(word.Count-1);
 											}
 											word = QWERTZ_wordFIX(word);
@@ -802,7 +806,7 @@ namespace Mahou {
 									if (!MahouUI.AddOneSpace)
 										DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)), "autoswitch_back");
 									else if (!MahouUI.AutoSwitchSpaceAfter) {
-										DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)), "autoswitch_back");
+										DoSelf(() => KInputs.MakeInput(KInputs.AddPress(Keys.Back)), "autoswitch_back2");
 										word.RemoveAt(word.Count-1);
 									}
 									word = QWERTZ_wordFIX(word);
