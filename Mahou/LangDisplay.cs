@@ -169,10 +169,14 @@ namespace Mahou
 		/// </summary>
 		public void ShowInactiveTopmost() {
 			if (Visible) return;
-			WinAPI.ShowWindow(Handle, WinAPI.SW_SHOWNOACTIVATE);
-			WinAPI.SetWindowPos(Handle.ToInt32(), WinAPI.HWND_TOPMOST,
-				Left, Top, Width, Height,
-				WinAPI.SWP_NOACTIVATE);
+			try {
+				WinAPI.ShowWindow(Handle, WinAPI.SW_SHOWNOACTIVATE);
+				WinAPI.SetWindowPos(Handle.ToInt32(), WinAPI.HWND_TOPMOST,
+					Left, Top, Width, Height,
+					WinAPI.SWP_NOACTIVATE);
+			} catch (System.Exception e) {
+				Logging.Log(">> LD - Show error" + e.Message + e.StackTrace, 1);
+			}
 		}
 		/// <summary>
 		/// Hide lang display window.
