@@ -218,6 +218,7 @@ namespace Mahou {
 			CheckString("Hidden", "CycleCaseOrder", "TULSR");
 			CheckBool("Hidden", "CycleCaseReset", "false");
 			CheckBool("Hidden", "__selection", "false");
+			CheckBool("Hidden", "__selection_nomouse", "false");
 			CheckString("Hidden", "onlySnippetsExcluded", "");
 			CheckBool("Hidden", "__setlayout_FORCED", "false");
 			CheckBool("Hidden", "__setlayout_ONLYWM", "false");

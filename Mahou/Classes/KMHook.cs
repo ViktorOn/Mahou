@@ -556,8 +556,9 @@ namespace Mahou {
 		}
 		public static void ListenMouse(ushort MSG) {
 			if (MahouUI.__selection) {
-				if (MSG == (ushort)WinAPI.RawMouseButtons.LeftUp && ICheckings.IsICursor()) {
+				if (MSG == (ushort)WinAPI.RawMouseButtons.LeftUp && ICheckings.IsICursor() && !MahouUI.__selection_nomouse) {
 					snipsel();
+					
 				}
 			}
 			if ((MSG == (ushort)WinAPI.RawMouseButtons.MouseWheel)) {

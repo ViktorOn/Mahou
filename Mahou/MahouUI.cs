@@ -37,7 +37,7 @@ namespace Mahou {
 						   SoundEnabled, UseCustomSound, SoundOnAutoSwitch, SoundOnConvLast, SoundOnSnippets, SoundOnLayoutSwitch,
 						   UseCustomSound2, SoundOnAutoSwitch2, SoundOnConvLast2, SoundOnSnippets2, SoundOnLayoutSwitch2, TrOnDoubleClick,
 						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory, ExcludeCaretLD, UsePaste, LibreCtrlAltShiftV,
-						   CycleCaseReset, __selection, WriteInputHistoryByDate, WriteInputHistoryHourly, MahouMM = false, nomemoryflush;
+						   CycleCaseReset, __selection, __selection_nomouse, WriteInputHistoryByDate, WriteInputHistoryHourly, MahouMM = false, nomemoryflush;
 		static string[] UpdInfo;
 		public static List<int> HKBlockAlt = new List<int>();
 		public static bool BlockAltUpNOW = false;
@@ -1349,6 +1349,7 @@ namespace Mahou {
 			CycleCaseOrder = MMain.MyConfs.Read("Hidden", "CycleCaseOrder");
 			CycleCaseReset = MMain.MyConfs.ReadBool("Hidden", "CycleCaseReset");
 			__selection = MMain.MyConfs.ReadBool("Hidden", "__selection");
+			__selection_nomouse = MMain.MyConfs.ReadBool("Hidden", "__selection_nomouse");
 			onlySnippetsExcluded = MMain.MyConfs.Read("Hidden", "onlySnippetsExcluded");
 			#endregion
 			#region Timings
