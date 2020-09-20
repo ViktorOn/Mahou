@@ -3107,7 +3107,7 @@ namespace Mahou {
 				if (br)
 					break;
 			}
-			Debug.WriteLine("Next layout: " + loc.uId);
+			Logging.Log("[GNL] > Get Next layout return: " + loc.uId + ", layout before: " + cur);
 			return loc;
 		}
 		/// <summary>
