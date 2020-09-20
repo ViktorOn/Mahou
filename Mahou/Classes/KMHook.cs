@@ -494,10 +494,11 @@ namespace Mahou {
 				            		asls = matched = CheckAutoSwitch(snip2x, last2words);
 			            		}
 			            	}
-	    					var snl = WordGuessLayout(snip).Item2;
-	    					if (!matched) 
+			            	if (!matched) {
+		    					var snl = WordGuessLayout(snip).Item2;
 	    						as_lword_layout = snl;
-	    					Logging.Log("[AS] > Last AS word layout: " +snl );
+		    					Logging.Log("[AS] > Last AS word layout: " +snl );
+			            	}
 							c_snip.Clear();
 							aseKeyDown = Key;
 						}
@@ -770,8 +771,11 @@ namespace Mahou {
 	        					if (MahouUI.SoundOnAutoSwitch2)
 	        						MahouUI.Sound2Play();
 	        					corr = as_corrects[i];
+	        					Debug.WriteLine("--- snil guess ---");
 	        					var snl = WordGuessLayout(snil,0,false).Item2;
+	        					Debug.WriteLine("--- asl guess ---");
 	        					var asl = WordGuessLayout(as_corrects[i],0,false).Item2;
+	        					Debug.WriteLine("--- end guesses ---");
 	        					if (_hasKey(as_wrongs, as_corrects[i])) {
 	        						Logging.Log("[AS] > Double-layout autoswitch rule: " +as_wrongs[i] +"<=>" +as_corrects[i]);
 	        						if (snl == as_lword_layout) {
@@ -797,7 +801,7 @@ namespace Mahou {
 											word = QWERTZ_wordFIX(word);
 				        					StartConvertWord(word.ToArray(), was, true);
 											ExpandSnippet(snip, as_corrects[i], !MahouUI.AddOneSpace && MahouUI.AutoSwitchSpaceAfter,
-											MahouUI.AutoSwitchSwitchToGuessLayout, true);
+				        						MahouUI.AutoSwitchSwitchToGuessLayout, true, false, asl);
 										};
 	        						} else ofk = true;
         							ChangeToLayout(Locales.ActiveWindow(), asl);
@@ -813,7 +817,7 @@ namespace Mahou {
 									word = QWERTZ_wordFIX(word);
 									StartConvertWord(word.ToArray(), Locales.GetCurrentLocale(), true);
 									ExpandSnippet(snip, as_corrects[i], !MahouUI.AddOneSpace && MahouUI.AutoSwitchSpaceAfter,
-		        					              MahouUI.AutoSwitchSwitchToGuessLayout, true);
+		        					              MahouUI.AutoSwitchSwitchToGuessLayout, true, false, asl);
 	        					}
 								matched = true;
 								break;
@@ -931,21 +935,23 @@ namespace Mahou {
 					}
 //		    		Debug.WriteLine("ANY " + yay);
 			    }
-				if (snip == snipps[i]) {
-					last_snipANY = false;
-					if (exps.Length > i) {
-    					if (MahouUI.SoundOnSnippets)
-    						MahouUI.SoundPlay();
-    					if (MahouUI.SoundOnSnippets2)
-    						MahouUI.Sound2Play();
-						Logging.Log("[SNI] > Current snippet [" + snip + "] matched existing snippet [" + exps[i] + "].");
-						ExpandSnippet(snip, exps[i], MahouUI.SnippetSpaceAfter, MahouUI.SnippetsSwitchToGuessLayout, false, x2);
-						matched = true;
-					} else {
-						Logging.Log("[SNI] > Snippet ["+snip+"] has no expansion, snippet is not finished or its expansion commented.", 1);
+				if (snip.Length == snipps[i].Length) {
+					if (snip == snipps[i]) {
+						last_snipANY = false;
+						if (exps.Length > i) {
+	    					if (MahouUI.SoundOnSnippets)
+	    						MahouUI.SoundPlay();
+	    					if (MahouUI.SoundOnSnippets2)
+	    						MahouUI.Sound2Play();
+							Logging.Log("[SNI] > Current snippet [" + snip + "] matched existing snippet [" + exps[i] + "].");
+							ExpandSnippet(snip, exps[i], MahouUI.SnippetSpaceAfter, MahouUI.SnippetsSwitchToGuessLayout, false, x2);
+							matched = true;
+						} else {
+							Logging.Log("[SNI] > Snippet ["+snip+"] has no expansion, snippet is not finished or its expansion commented.", 1);
+						}
+						aftsingleAS = false;
+						break;
 					}
-					aftsingleAS = false;
-					break;
 				}
 			}
 			return matched;
@@ -1169,7 +1175,7 @@ namespace Mahou {
 			} else { return ""; }
 			return input;
 		}
-		static void ExpandSnippet(string snip, string expand, bool spaceAft, bool switchLayout, bool ignoreExpand = false, bool x2 = false) {
+		static void ExpandSnippet(string snip, string expand, bool spaceAft, bool switchLayout, bool ignoreExpand = false, bool x2 = false, uint guessl = 0) {
 			DoSelf(() => {
 				try {
 		       		Debug.WriteLine("Snippet: " +snip);
@@ -1183,9 +1189,14 @@ namespace Mahou {
 		       				}
 		       			}
 		       			if (!skp) {
-						    var guess = WordGuessLayout(expand);
-						    Logging.Log("[SNI] > Changing to guess layout [" + guess.Item2 + "] after snippet ["+ guess.Item1 + "].");
-							ChangeToLayout(Locales.ActiveWindow(), guess.Item2);
+		       				var guess = guessl;
+		       				if (guess == 0) 
+						    	guess = WordGuessLayout(expand).Item2;
+		       				else 
+		       					Debug.WriteLine("Skip Guess for snippet expand, layout suplied: " +guessl);
+		       				var gn = MMain.locales.ToList().Find(l => l.uId == guess).Lang;
+						    Logging.Log("[SNI] > Changing to guess layout [" + guess + "] after snippet ["+ gn + "].");
+							ChangeToLayout(Locales.ActiveWindow(), guess);
 		       			} else {
 		       				Logging.Log("[SNI] > Switch layout skip due to __setlayout_FORCED");
 		       			}
@@ -2974,7 +2985,7 @@ namespace Mahou {
 				if (LayoutId == 0) {
 					Logging.Log("Layout change skipped, 0 is not layout.", 1);
 				} else 
-					WinAPI.SendMessage(hwnd, (int)WinAPI.WM_INPUTLANGCHANGEREQUEST, 0, LayoutId);
+					WinAPI.PostMessage(hwnd, (int)WinAPI.WM_INPUTLANGCHANGEREQUEST, 0, LayoutId);
 				Thread.Sleep(10);//Give some time to switch layout
 				tries++;
 				if (tries == MMain.locales.Length) {
@@ -3020,7 +3031,7 @@ namespace Mahou {
 						break;
 					}
 					CycleEmulateLayoutSwitch();
-					Thread.Sleep(1);
+					Thread.Sleep(10);
 				}
 				last = loc;
 				lash = locsh;
@@ -3054,7 +3065,7 @@ namespace Mahou {
 				Thread.Sleep(50); //Important!
 			}
 			if (!MahouUI.UseJKL || KMHook.JKLERR)
-				DoLater(() => { MahouUI.currentLayout = MahouUI.GlobalLayout = Locales.GetCurrentLocale(); }, 10);
+				DoLater(() => { MahouUI.currentLayout = MahouUI.GlobalLayout = Locales.GetCurrentLocale(); }, 25);
 		}
 		public static Locales.Locale GetNextLayout(uint before = 0) {
 			Debug.WriteLine(">> GNL");
@@ -3067,10 +3078,9 @@ namespace Mahou {
 			if (before != 0)
 				cur = before;
 			Debug.WriteLine("Current: " +cur);
-			for (int i=0; i!=MMain.locales.Length; i--) {
+			for (int i=0; i!=MMain.locales.Length; i++) {
 				if (last != 0 && cur != last)
 					break;
-				var br = false;
 				if (MahouUI.SwitchBetweenLayouts) {
 					if (cur == MahouUI.MAIN_LAYOUT1) 
 						loc.uId = MahouUI.MAIN_LAYOUT2;
@@ -3080,34 +3090,35 @@ namespace Mahou {
 						loc.uId = MahouUI.MAIN_LAYOUT1;
 					break;
 				}
-				Thread.Sleep(15);
+//				Thread.Sleep(15);
 				var curind = MMain.locales.ToList().FindIndex(lid => lid.uId == cur);
-				for (int g=0; g != MMain.locales.Length; g++) {
-					var l = MMain.locales[g];
-					Debug.WriteLine("Checking: " + l.Lang + ", with "+cur);
-					if (curind == MMain.locales.Length - 1) {
-						Logging.Log("Locales BREAK!");
-						loc = MMain.locales[0];
-						br = true;
-						break;
-					}
-					Logging.Log("LIDC = "+g +" curid = "+curind + " Lidle = " +(MMain.locales.Length - 1));
-					if (l.Lang.Contains("Microsoft Office IME")) // fake layout
-						continue;
-					if (g >= curind)
-						if (l.uId != cur) {
-							Logging.Log("Locales +1 Next BREAK on " + l.uId);
-							loc = l;
-//							if (last !=0) // ensure its checked at least twice
-								br = true;
-							break;
-					}
+				if (curind == MMain.locales.Length - 1) {
+					Logging.Log("[GNL] > Next layout: first: " + MMain.locales[0].Lang);
+					loc = MMain.locales[0];
+				} else {
+					loc = MMain.locales[curind+1];
+					if (loc.Lang.Contains("Microsoft Office IME")) // fake layout
+						if (curind+2 < MMain.locales.Length)
+							loc = MMain.locales[curind+2];
+						else
+							loc = MMain.locales[0];
+//					for (int g=curind+1; g != MMain.locales.Length; g++) {
+//						var l = MMain.locales[g];
+//						Debug.WriteLine("Checking: " + l.Lang + ", with "+cur);
+//						Logging.Log("LIDC = "+g +" curid = "+curind + " Lidle = " +(MMain.locales.Length - 1));
+////						if (g >= curind)
+//							if (l.uId != cur) {
+//								Logging.Log("Locales +1 Next BREAK on " + l.uId);
+//								loc = l;
+//	//							if (last !=0) // ensure its checked at least twice
+//									br = true;
+//								break;
+//						}
+//					}
 				}
 				last = cur;
-				if (br)
-					break;
 			}
-			Logging.Log("[GNL] > Get Next layout return: " + loc.uId + ", layout before: " + cur);
+			Debug.WriteLine("[GNL] > Get Next layout return: " + loc.uId + ", layout before: " + cur);
 			return loc;
 		}
 		/// <summary>
