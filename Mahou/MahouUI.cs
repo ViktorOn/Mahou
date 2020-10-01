@@ -290,7 +290,7 @@ namespace Mahou {
 			var arm = MMain.MyConfs.ReadInt("Hidden", "AutoRestartMins");
 			if (arm > 0) {
 				var armt = new System.Windows.Forms.Timer();
-				armt.Interval = 1000 * arm;
+				armt.Interval = 1000 * arm * 60;
 				armt.Tick += (_, __) => Restart();
 				armt.Start();
 			}
