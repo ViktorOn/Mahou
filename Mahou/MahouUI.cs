@@ -287,6 +287,13 @@ namespace Mahou {
 			} else { showUpdWnd.Dispose(); }
 			DPISCALE(this);
 			Memory.Flush();
+			var arm = MMain.MyConfs.ReadInt("Hidden", "AutoRestartMins");
+			if (arm > 0) {
+				var armt = new System.Windows.Forms.Timer();
+				armt.Interval = 1000 * arm;
+				armt.Tick += (_, __) => Restart();
+				armt.Start();
+			}
 		}
 		public static double xr = 1, yr = 1;
 		public static void DPISCALE_CONTROL(Control c) {
