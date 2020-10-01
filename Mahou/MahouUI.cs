@@ -444,8 +444,9 @@ namespace Mahou {
 				}
 				#endregion
 				if ((!KMHook.ExcludedProgram() || ConvertSWLinExcl) && !specific) {
-					if (Hotkey.GetMods(HKCSelection_tempMods) == Hotkey.GetMods(HKCLast_tempMods) &&
-					    HKCSelection_tempKey == HKCLast_tempKey)
+					var clcs = Hotkey.GetMods(HKCSelection_tempMods) == Hotkey.GetMods(HKCLast_tempMods) &&
+								HKCSelection_tempKey == HKCLast_tempKey;
+					if (clcs && HKCSelection_tempDouble == HKCLast_tempDouble)
 						Hotkey.CallHotkey(HKCLast, id, ref hksOK, KMHook.ConvertSelection); // Use HKCLast id for cs if hotkeys are the same
 					else 
 						Hotkey.CallHotkey(HKCSelection, id, ref hksOK, KMHook.ConvertSelection);
@@ -480,8 +481,26 @@ namespace Mahou {
 							stimer.Start();
 						}
 					}
-					if (!clcl)
-						Hotkey.CallHotkey(HKCLast, id, ref hklOK, () => KMHook.ConvertLast(MMain.c_word));
+					if (!clcl) {
+						if (clcs && HKCSelection_tempDouble && !HKCLast_tempDouble) {
+							if (!hklOK) {
+								hklOK = true;
+//								Debug.WriteLine("hklOK NOT");
+								KMHook.doublekey.Interval = MMain.mahou.DoubleHKInterval;
+								KMHook.doublekey.Start();
+								var clcst = new Timer();
+								clcst.Interval = MMain.mahou.DoubleHKInterval+25;
+								clcst.Tick += (_, __) => { 
+									if (!hklOK) {
+										Hotkey.CallHotkey(HKCLast, id, ref hklOK, () => KMHook.ConvertLast(MMain.c_word));
+									}
+									clcst.Stop(); clcst.Dispose(); };
+								clcst.Start();
+							} else
+								Hotkey.CallHotkey(HKCLast, id, ref hklOK, KMHook.ConvertSelection);
+						} else 
+							Hotkey.CallHotkey(HKCLast, id, ref hklOK, () => KMHook.ConvertLast(MMain.c_word));
+					}
 					Hotkey.CallHotkey(HKCLine, id, ref hklineOK, () => { 
 						var line = new List<KMHook.YuKey>();
 						foreach (var word in MMain.c_words) {
