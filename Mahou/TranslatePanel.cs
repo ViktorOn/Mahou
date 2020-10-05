@@ -28,6 +28,7 @@ namespace Mahou {
 		public static object _LOCK = new object();
 		public TranslatePanel() {
 			InitializeComponent();
+			this.FormClosing += (s, e) => { e.Cancel = true; this.Hide(); };
 			X.Width = 23;
 			X.Text = "X";
 			TITLE.AutoEllipsis = true;

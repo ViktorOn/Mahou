@@ -9,6 +9,7 @@ namespace Mahou {
 		int l = 4;
 		public LangPanel() {
 			InitializeComponent();
+			this.FormClosing += (s, e) => { e.Cancel = true; this.Hide(); };
 			Height = 24;
 			AeroCheck();
 			MahouUI.DPISCALE(this);

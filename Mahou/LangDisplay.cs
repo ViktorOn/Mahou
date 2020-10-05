@@ -12,6 +12,7 @@ namespace Mahou
 		Size lastsize = new Size(0,0);
 		public LangDisplay() {
 			InitializeComponent();
+			this.FormClosing += (s, e) => { e.Cancel = true; this.Hide(); };
 			SetVisInvis();
 			this.SetStyle(ControlStyles.DoubleBuffer, true);
 		}
