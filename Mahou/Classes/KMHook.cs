@@ -423,8 +423,21 @@ namespace Mahou {
 				}
 			}
 			#endregion
+			#region TranslatePanel HotKeys
+			IntPtr hwnd = IntPtr.Zero;
+			if (MMain.mahou._TranslatePanel != null) {
+				hwnd = WinAPI.GetForegroundWindow();
+				if (hwnd == MMain.mahou._TranslatePanel.Handle) {
+					if (MSG == WinAPI.WM_KEYUP) {
+						if (Key == Keys.Escape || Key == Keys.Enter || Key == Keys.Space) {
+							MMain.mahou._TranslatePanel.HideWnd();
+						}
+					}
+				}
+			}
+			#endregion
 			#region Snippets
-			if (MahouUI.SnippetsEnabled && !ExcludedProgram(true)) {
+			if (MahouUI.SnippetsEnabled && !ExcludedProgram(true, hwnd)) {
 				if (printable && printable_mod && down) {
 					if (sym == '\0') sym = getSym(vkCode);
 					c_snip.Add(sym);
@@ -1666,9 +1679,10 @@ namespace Mahou {
 				return false;
 			return false;
 		}
-		public static bool ExcludedProgram(bool onlysnip = false) {
+		public static bool ExcludedProgram(bool onlysnip = false, IntPtr hwnd = default(IntPtr)) {
 			if (MMain.mahou == null) return false;
-			var hwnd = WinAPI.GetForegroundWindow();
+			if (hwnd == IntPtr.Zero || hwnd == default(IntPtr))
+				hwnd = WinAPI.GetForegroundWindow();
 			if (NOT_EXCLUDED_HWNDs.Contains(hwnd)) {
 				Logging.Log("[EXCL] > This program was been checked already, it is not excluded hwnd: " + hwnd);
 				return false;
