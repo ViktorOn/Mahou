@@ -74,7 +74,7 @@ namespace Mahou
 		private System.Windows.Forms.CheckBox chk_LangTTDiffLayoutColors;
 		private System.Windows.Forms.CheckBox chk_LangTTCaretOnChange;
 		private System.Windows.Forms.CheckBox chk_LangTTMouseOnChange;
-		private MahouUI.TextBoxCA txt_Snippets;
+		private Mahou.MahouUI.TextBoxCA txt_Snippets;
 		private System.Windows.Forms.CheckBox chk_Snippets;
 		private System.Windows.Forms.GroupBox grb_Hotkey;
 		private System.Windows.Forms.CheckBox chk_DoubleHotkey;
@@ -93,14 +93,14 @@ namespace Mahou
 		private System.Windows.Forms.TextBox txt_ProxyServerPort;
 		private System.Windows.Forms.Label lbl_ProxyServerPort;
 		private System.Windows.Forms.GroupBox grb_MahouReleaseTitle;
-		private MahouUI.TextBoxCA txt_UpdateDetails;
+		private Mahou.MahouUI.TextBoxCA txt_UpdateDetails;
 		private System.Windows.Forms.Button btn_CheckForUpdates;
 		private System.Windows.Forms.LinkLabel lnk_Releases;
 		private System.Windows.Forms.LinkLabel lnk_Email;
 		private System.Windows.Forms.LinkLabel lnk_Wiki;
 		private System.Windows.Forms.LinkLabel lnk_Site;
 		private System.Windows.Forms.LinkLabel lnk_Repository;
-		private MahouUI.TextBoxCA txt_Help;
+		private Mahou.MahouUI.TextBoxCA txt_Help;
 		private System.Windows.Forms.Button btn_DebugInfo;
 		private System.Windows.Forms.CheckBox chk_BlockHKWithCtrl;
 		private System.Windows.Forms.NumericUpDown nud_SelectedTextGetTriesCount;
@@ -110,7 +110,7 @@ namespace Mahou
 		private System.Windows.Forms.ToolTip HelpMeUnderstand;
 		private System.Windows.Forms.Label lbl_HotkeyHelp;
 		private System.Windows.Forms.Label lbl_ExcludedPrograms;
-		private MahouUI.TextBoxCA txt_ExcludedPrograms;
+		private Mahou.MahouUI.TextBoxCA txt_ExcludedPrograms;
 		private System.Windows.Forms.LinkLabel lnk_plugin;
 		private System.Windows.Forms.CheckBox chk_MCDS_support;
 		private System.Windows.Forms.TextBox txt_LangTTText;
@@ -121,12 +121,12 @@ namespace Mahou
 		private System.Windows.Forms.NumericUpDown nud_PersistentLayout2Interval;
 		private System.Windows.Forms.Label lbl_PersistentLayout2Interval;
 		private System.Windows.Forms.CheckBox chk_PersistentLayout2Active;
-		private MahouUI.TextBoxCA txt_PersistentLayout2Processes;
+		private Mahou.MahouUI.TextBoxCA txt_PersistentLayout2Processes;
 		private System.Windows.Forms.GroupBox grb_PersistentLayout1;
 		private System.Windows.Forms.NumericUpDown nud_PersistentLayout1Interval;
 		private System.Windows.Forms.Label lbl_PersistentLayout1Interval;
 		private System.Windows.Forms.CheckBox chk_PersistentLayout1Active;
-		private MahouUI.TextBoxCA txt_PersistentLayout1Processes;
+		private Mahou.MahouUI.TextBoxCA txt_PersistentLayout1Processes;
 		private System.Windows.Forms.CheckBox chk_LangTTUseFlags;
 		private System.Windows.Forms.CheckBox chk_MouseTTAlways;
 		private System.Windows.Forms.CheckBox chk_OneLayout;
@@ -283,6 +283,7 @@ namespace Mahou
 		private System.Windows.Forms.CheckBox chk_ConvSWL;
 		private System.Windows.Forms.CheckBox chk_rMmm;
 		private System.Windows.Forms.CheckBox chk_Mmm;
+		private System.Windows.Forms.CheckBox chk_TrTranscription;
 		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
@@ -508,6 +509,7 @@ namespace Mahou
 			this.cbb_TrMethod = new System.Windows.Forms.ComboBox();
 			this.chk_TrEnable = new System.Windows.Forms.CheckBox();
 			this.grb_TrConfs = new System.Windows.Forms.GroupBox();
+			this.chk_TrTranscription = new System.Windows.Forms.CheckBox();
 			this.btn_TrTitleFont = new System.Windows.Forms.Button();
 			this.btn_TrTextFont = new System.Windows.Forms.Button();
 			this.lbl_TrTitleFont = new System.Windows.Forms.Label();
@@ -3027,6 +3029,7 @@ namespace Mahou
 			// 
 			// grb_TrConfs
 			// 
+			this.grb_TrConfs.Controls.Add(this.chk_TrTranscription);
 			this.grb_TrConfs.Controls.Add(this.btn_TrTitleFont);
 			this.grb_TrConfs.Controls.Add(this.btn_TrTextFont);
 			this.grb_TrConfs.Controls.Add(this.lbl_TrTitleFont);
@@ -3051,6 +3054,16 @@ namespace Mahou
 			this.grb_TrConfs.Size = new System.Drawing.Size(547, 242);
 			this.grb_TrConfs.TabIndex = 2;
 			this.grb_TrConfs.TabStop = false;
+			// 
+			// chk_TrTranscription
+			// 
+			this.chk_TrTranscription.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.chk_TrTranscription.Location = new System.Drawing.Point(6, 74);
+			this.chk_TrTranscription.Name = "chk_TrTranscription";
+			this.chk_TrTranscription.Size = new System.Drawing.Size(142, 19);
+			this.chk_TrTranscription.TabIndex = 51;
+			this.chk_TrTranscription.Text = "Transcription";
+			this.chk_TrTranscription.UseVisualStyleBackColor = true;
 			// 
 			// btn_TrTitleFont
 			// 

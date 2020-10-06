@@ -16,7 +16,9 @@ namespace Mahou {
 	/// </summary>
 	public partial class TranslatePanel : Form {
 		public static readonly string speech_dir = Path.Combine(Path.GetTempPath(), "MahouGTSpeech");
+		public static readonly string txtstrc = "txt_Source_Transcr";
 		public static List<GTResp> GTRs = new List<GTResp>();
+		public static bool TRANSCRIPTION = false;
 //		public static List<string> SPFs = new List<string>();
 //		public static List<string> SPUs = new List<string>();
 		public static bool running, multiline, useGS = true, useNA = false;
@@ -50,6 +52,8 @@ namespace Mahou {
 			public string src_lang;
 			public string speech_url;
 			public string targ_lang;
+			public string src_transcr;
+			public string targ_transcr;
 		}
 		public void GTRespError(string msg) {
 		  	txt_Source.Text = MMain.Lang[Languages.Element.Error]+ " " + msg;
@@ -99,6 +103,22 @@ namespace Mahou {
 			return multi;
  		}
 		#endregion
+		public static string dosen(int max, Auri au_se, string block) {
+			var x = 0;
+			string a = "", xtr = "";
+			while(true) {
+				try {
+					a = au_se["^"+x, block];
+//					Debug.WriteLine("X:" +x +" A: " + a);
+					if (a.Length >0) {
+						xtr += a.Substring(1,a.Length-2);
+					}
+				} catch {break;}
+				x++;
+				if (x>max) break; // probably overkill, but...
+			} //while (String.IsNullOrEmpty(a));
+			return xtr;
+		}
 		public static List<GTResp> GetGTResponceAll(string[] tls, string[] qs, string[] sls) {
 			var gtrlist = new List<GTResp>();
 			try {
@@ -115,7 +135,7 @@ namespace Mahou {
 					Debug.WriteLine("RAW:" +raw_array);
 					var det_l = "";
 					var gtresp = new GTResp();
-					string src = "", tr = "";
+					string src = "", tr = "", strc = "", trc = "";
 					if (!useNA) {
 						var aur = new Auri(raw_array);
 						var aur_dim_2 = new Auri(aur["^0"]);
@@ -131,27 +151,23 @@ namespace Mahou {
 						Debug.WriteLine("NA MODE :)");
 						var auri = new Auri(raw_array);
 						var au_se = new Auri(auri["sentences"]);
-						var s = au_se["^0", "orig"];
-						src = s.Substring(1, s.Length-2);
-						var x = 0;
-						string a = "", xtr = "";
-						do {
-							try {
-								a = au_se["^"+x, "trans"];
-								Debug.WriteLine("X:" +x +" A: " + a);
-								if (a.Length >0)
-									xtr += a.Substring(1,a.Length-2);
-							} catch {break;}
-							x++;
-							if (x>100) break; // probably overkill, but...
-						} while (!String.IsNullOrEmpty(a));
-						tr = xtr;
+						src = dosen(100, au_se, "orig");
+//						src = s.Substring(1, s.Length-2);
+						tr = dosen(100, au_se, "trans");
+						if (TRANSCRIPTION) {
+							trc = dosen(100, au_se, "translit");
+							strc = dosen(100, au_se, "src_translit");
+						}
+//						Debug.WriteLine(au_se["^1", "src_translit"]);
 //						s = au_se["^0", "trans"];
 //						tr = s.Substring(1, s.Length-2);
 					    det_l = auri["ld_result", "srclangs", "^0"];;
 					}
 					gtresp.source = src;
 					gtresp.translation = tr;
+					gtresp.src_transcr = strc;
+					gtresp.targ_transcr = trc;
+//					Debug.WriteLine("trc " + trc + " strc " + strc);
 					det_l = det_l.Substring(1, det_l.Length-2);
 					gtresp.speech_url = GTSpeechLink+"&q="+HttpUtility.UrlEncode(tr)+"&sl="+det_l+"&tl="+tls[i];
 //					Debug.WriteLine(gtresp.speech_url);
@@ -216,6 +232,22 @@ namespace Mahou {
 		}
 		public void AddTranslation(GTResp gtr) {
 			txt_Source.Text = gtr.source;
+			if (TRANSCRIPTION) {
+				if (!string.IsNullOrEmpty(gtr.src_transcr)) {
+					var txt = new MahouUI.TextBoxCA();
+					txt.Name = txtstrc;
+					if (this.Controls.ContainsKey(txtstrc)) {
+						txt = (MahouUI.TextBoxCA)this.Controls[txtstrc];
+					} else {
+						this.Controls.Add(txt);
+					}
+					txt.Text = "["+MahouUI.UnescapeUnicode(gtr.src_transcr)+"]";
+				} else { 
+					if (this.Controls.ContainsKey(txtstrc)) {
+						this.Controls.Remove(this.Controls[txtstrc]);
+					}
+				}
+			}
 			pan_Translations.Width = Width-2;
 			bool exist = false;
 			if (GTRs.Count == 0)
@@ -254,7 +286,6 @@ namespace Mahou {
 				slt.Text = (gtr.auto_detect ? "" : gtr.src_lang+"/")+gtr.targ_lang+":";
 				var g = CreateGraphics();
 				var size = g.MeasureString(slt.Text, slt.Font);
-				g.Dispose();
 				slt.Width = (int)size.Width;
 				txt.Name = "TR_TXT"+gtr.targ_lang;
 				txt.Text = MahouUI.UnescapeUnicode(gtr.translation);
@@ -264,11 +295,28 @@ namespace Mahou {
 				btn.Name = "LBBT_SP"+gtr.targ_lang;
 				btn.Width = 14;
 				btn.Height = 14;
-				btn.Location = new Point(pan.Width-14-1, 1);
 				pan.Controls.Add(slt);
 				pan.Controls.Add(txt);
+				var trcw = 0;
+				if (TRANSCRIPTION) {
+					if (!String.IsNullOrEmpty(gtr.targ_transcr)) {
+						MahouUI.TextBoxCA txttrc = new MahouUI.TextBoxCA();
+						txttrc.ReadOnly = true;
+						txttrc.TabStop = false;
+						txttrc.BorderStyle = 0;
+						txttrc.Font = MahouUI.TrText;
+						txttrc.Name = "TRC_TXT"+gtr.targ_lang;
+						txttrc.Text = "["+MahouUI.UnescapeUnicode(gtr.targ_transcr)+"]";
+						var si = g.MeasureString(txttrc.Text, txttrc.Font);
+						trcw = txttrc.Width = (int)si.Width;
+						txttrc.Location = new Point(txt.Location.X+pan.Width-slt.Width-2-btn.Width-2-trcw, txt.Location.Y);
+						pan.Controls.Add(txttrc);
+					}
+				}
+				g.Dispose();
+				btn.Location = new Point(pan.Width-14-1, 1);
 				pan.Controls.Add(btn);
-				txt.Width = pan.Width-slt.Width-2-btn.Width-2;
+				txt.Width = pan.Width-slt.Width-2-btn.Width-2-trcw;
 				txt.Location = new Point(slt.Width+2, 1);
 				btn.BackColor = slt.BackColor = txt.BackColor = pan_Translations.BackColor;
 				btn.ForeColor = slt.ForeColor = txt.ForeColor = pan_Translations.ForeColor;
@@ -285,7 +333,8 @@ namespace Mahou {
 				var pan = pan_Translations.Controls["PN_LINE_"+gtr.src_lang+".to."+gtr.targ_lang];
 				var slt = pan.Controls[0];
 				var txt = pan.Controls[1];
-				var btn = pan.Controls[2] as ButtonLabel;
+				var ab = (pan.Controls[2] is ButtonLabel);
+				ButtonLabel btn = (ButtonLabel)(ab ? pan.Controls[2] : pan.Controls[3]);
 				btn.gtr = gtr;
 //				Debug.WriteLine("updating speech url to "+gtr.speech_url);
 				slt.Text = gtr.targ_lang+":";
@@ -300,7 +349,12 @@ namespace Mahou {
 	//			SPs.RemoveAt(i);
 	//			SPs.Insert(i, getSP());
 				txt.Text = gtr.translation;
-				txt.Width = pan.Width-slt.Width-2-btn.Width-2;
+				int abw = 0;
+				if (!ab) {
+					var txttrc = (MahouUI.TextBoxCA)pan.Controls[2];
+					abw = txttrc.Width;
+				}
+				txt.Width = pan.Width-slt.Width-2-btn.Width-2-abw;
 			}
 		}
 		public void RemoveTranslation(string sl) {
@@ -323,10 +377,19 @@ namespace Mahou {
 					var txt = ct.Controls[1] as TextBox;
 					ct.Controls[0].BackColor = back;
 					txt.BackColor = back;
-					(ct.Controls[2] as ButtonLabel).origin_bg = ct.Controls[2].BackColor = ControlPaint.Light(back, (float)0.4);
+					var ab = (ct.Controls[2] is ButtonLabel);
+					ButtonLabel bl = (ButtonLabel)(ab ? ct.Controls[2] : ct.Controls[3]);
+					if (!ab) {
+						var txttrc = (MahouUI.TextBoxCA)ct.Controls[2];
+						txttrc.ForeColor = fore;
+						txttrc.BackColor = back;
+						txttrc.Multiline = multiline;
+						txt.Font = MahouUI.TrText;
+					}
+					bl.origin_bg = bl.BackColor = ControlPaint.Light(back, (float)0.4);
 					ct.Controls[0].ForeColor = fore;
 					txt.ForeColor = fore;
-					(ct.Controls[2] as ButtonLabel).origin_fg = ct.Controls[2].ForeColor = fore;
+					bl.origin_fg = bl.ForeColor = fore;
 //					ct.Controls[0].Font = font;
 //					txt.Font = font;
 					ct.Controls[0].Font = txt.Font = MahouUI.TrText;
@@ -345,6 +408,16 @@ namespace Mahou {
 			TITLE.ForeColor = fore;
 			BackColor = back;
 			txt_Source.Font = new Font(txt_Source.Font, FontStyle.Underline | FontStyle.Bold);
+			if (this.Controls.ContainsKey(txtstrc)) {
+				var txt = (TextBox)this.Controls[txtstrc];
+				txt.Font = txt_Source.Font;
+				txt.BackColor = txt_Source.BackColor;
+				txt.ForeColor = txt_Source.ForeColor;
+				txt.TabStop = false;
+				txt.BorderStyle = BorderStyle.None;
+				txt.ReadOnly = true;
+				txt.BringToFront();
+			}
 			Opacity = (double)opacity / 100;
 			Invalidate();
 		}
@@ -366,24 +439,53 @@ namespace Mahou {
 			var g = CreateGraphics();
 			SetAboveTitleWidth();
 			var s = g.MeasureString(txt_Source.Text, txt_Source.Font);
-			if ((int)s.Width > Width)
-				Width = (int)s.Width;
-			if ((int)s.Width > Width)
+			var sw = Convert.ToInt32(s.Width);
+			txt_Source.Width = sw+4;
+			TextBox txtS = null;
+			if (TRANSCRIPTION) {
+				if (this.Controls.ContainsKey(txtstrc)) {
+					txtS = (TextBox)this.Controls[txtstrc];
+					var s2 = g.MeasureString(txtS.Text, txtS.Font);
+					var sw2 = Convert.ToInt32(s2.Width);
+					txtS.Width = sw2+10+txtS.Text.Length/2;
+					var lef = txt_Source.Location.X +txt_Source.Width+4;
+					sw = lef+ txtS.Width;
+					txtS.Location = new Point(lef, txt_Source.Location.Y);
+				}
+			}
+			if (sw > Width)
+				Width = sw+20+2;
+			if (sw > Width)
 				multiline = true;
 			else multiline = false;
 			if (Width != MaximumSize.Width)
 				multiline = false;
 			txt_Source.Multiline = multiline;
-			var mod = Math.Ceiling(s.Width / Width);
+			if (txtS != null) txtS.Multiline = multiline;
+			var mod = Math.Ceiling((float)sw / Width);
 //				Debug.WriteLine("Height[mod]x[H] " + mod +"x"+s.Height);
-			if (mod > 1)
+			if (mod > 1) {
 				txt_Source.Height = (int)(s.Height*mod);
-			else txt_Source.Height = (int)s.Height;
+				if (txtS != null) {
+					txtS.Height = (int)(s.Height*mod);
+					if (multiline) {
+						if (txtS.Width+txtS.Location.X+2 > Width) {
+							txtS.Width = Width - txtS.Location.X-2;
+						}
+					}
+				}
+			}
+			else {
+				txt_Source.Height = (int)s.Height;
+				if (txtS != null)
+					txtS.Height = (int)s.Height;
+			}
 			foreach (Control ct in pan_Translations.Controls) {
 				var pan = ct;
 				var slt = pan.Controls[0];
 				var txt = pan.Controls[1] as TextBox;
-				var btn = pan.Controls[2];
+				var ab = (pan.Controls[2] is ButtonLabel);
+				ButtonLabel btn = (ButtonLabel)(ab ? pan.Controls[2] : pan.Controls[3]);
 				var size = g.MeasureString(slt.Text, slt.Font);
 				var trsize = g.MeasureString(txt.Text, txt.Font);
 				slt.Width = (int)size.Width;
@@ -394,9 +496,29 @@ namespace Mahou {
 					Debug.WriteLine(txt.Text.Substring(0,5)+" Height[mod]x[H] " + mod +"x"+(int)(Math.Floor(trsize.Height)*mod));
 					txt.Height = (int)(Math.Floor(trsize.Height)*mod);
 				}
-				var longest = (slt.Width + txt.Width + btn.Width + 4);
-				if (longest > Width) {
+				int abw = 0;
+				if (!ab) {
+					var txttrc = (MahouUI.TextBoxCA)pan.Controls[2];
+					var strc = g.MeasureString(txttrc.Text, txttrc.Font);
+					abw = txttrc.Width = (int)strc.Width;
+					txttrc.Height = (int)strc.Height;
+					if (multiline) {
+						mod = Math.Ceiling(strc.Width / Width);
+						txttrc.Multiline = true;
+						txttrc.Height = (int)(Math.Floor(strc.Height)*mod);
+					}
+				}
+				var longest = (slt.Width + txt.Width + btn.Width + 4 + abw);
+				if (longest > Width)
 					Width = longest;
+				if (longest > Width)
+					multiline = true;
+				if (!ab) {
+					var txttrc = (MahouUI.TextBoxCA)pan.Controls[2];
+					txttrc.Multiline = multiline;
+					var txttrcsz = g.MeasureString(txttrc.Text, txttrc.Font);
+					txttrc.Width = Width - slt.Width-txt.Width-btn.Width-4-4;
+					txttrc.Height = (int)(Math.Ceiling(txttrcsz.Width/txttrc.Width)*txttrcsz.Height);
 				}
 			}
 			g.Dispose();
@@ -406,11 +528,19 @@ namespace Mahou {
 				var pan = ct;
 				var slt = pan.Controls[0];
 				var txt = pan.Controls[1];
-				var btn = pan.Controls[2];
+				var ab = (pan.Controls[2] is ButtonLabel);
+				ButtonLabel btn = (ButtonLabel)(ab ? pan.Controls[2] : pan.Controls[3]);
+				int abw = 0, abh = 0;
+				if (!ab) {
+					var txttrc = (MahouUI.TextBoxCA)pan.Controls[2];
+					txttrc.Location = new Point(txt.Location.X + txt.Width, txt.Location.Y);
+					abw = txttrc.Width;
+					abh = txttrc.Height;
+				}
 				pan.Width = pan_Translations.Width-2;
-				pan.Height = txt.Height+2;
+				pan.Height = ((abh > txt.Height) ? abh : txt.Height)+2;
 				btn.Location = new Point(pan.Width-14-1, 1);
-				txt.Width = pan.Width-slt.Width-2-btn.Width-2;
+//				txt.Width = pan.Width-slt.Width-2-btn.Width-2-abw;
 				txt.Location = new Point(slt.Width+2, 1);
 		  		Prepare();
 			}
@@ -507,8 +637,14 @@ namespace Mahou {
 			X.Location = new Point(Width - 24, 1);
 			TITLE.Width = Width - 1 - X.Width - 1;
 			txt_Source.Location = new Point(11, TITLE.Height+1);
-			txt_Source.TextAlign = HorizontalAlignment.Center;
-			txt_Source.Width = Width -20-2;
+//			txt_Source.TextAlign = HorizontalAlignment.Center;
+//			txt_Source.Width = Width -20-2;
+//			txt_Source.TextAlign = HorizontalAlignment.Left;
+//			if (this.Controls.ContainsKey(txtstrc)) {
+//				var txt = (TextBox)Controls[txtstrc];
+////				txt_Source.Width -= txt.Width;
+//				txt.Location = new Point(txt_Source.Location.X +txt_Source.Width, txt_Source.Location.Y);
+//			}
 			bull.Focus();
 			ResumeLayout(false);
 		}

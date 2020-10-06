@@ -248,6 +248,7 @@ namespace Mahou {
 			CheckString("TranslatePanel", "BorderC", "#F1F100");
 			CheckString("TranslatePanel", "BG", "#FFFFFF");
 			CheckString("TranslatePanel", "LanguageSets", "set_1/auto/ru|set_2/auto/en");
+			CheckBool("TranslatePanel", "Transcription", "false");
         	#endregion
             #region Sounds
             CheckBool("Sounds", "Enabled", "False");

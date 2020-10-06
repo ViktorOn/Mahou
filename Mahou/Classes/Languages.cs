@@ -157,6 +157,7 @@ public class Languages
 		BorderColor,
 		UseAeroColor,
 		DisplayUpperArrow,
+		Transcription,
 		#endregion
 		#region TranslatePanel
 		EnableTranslatePanel,
@@ -294,6 +295,8 @@ public class Languages
 		TT_LeftRightMB,
 		TT_CycleCase,
 		TT_CustomConversion,
+		TT_Transcription_1,
+		TT_Transcription_2,
 		#endregion
 		#region Messages
 		MSG_SnippetsError
@@ -454,6 +457,7 @@ public class Languages
 		{ Element.BorderColor, "Border color:" },
 		{ Element.UseAeroColor, "Use Aero/Accent color." },
 		{ Element.DisplayUpperArrow, "Display up arrow icon when input is upper case." },
+		{ Element.Transcription, "Transcription" },
 		#endregion
 		#region TranslatePanel
 		{ Element.EnableTranslatePanel, "Enable Translator." }, 
@@ -609,6 +613,8 @@ public class Languages
 		{ Element.TT_LeftRightMB, "Left button - open file.\nRight button - open directory." },
 		{ Element.TT_CycleCase, "Cycle the selected text words case by:\r\nTitle => UPPER => lower => RanDoM => sWAP => Title => ..." },
 		{ Element.TT_CustomConversion, "Converts selected text according to rules in CustomConversion.txt" },
+		{ Element.TT_Transcription_1, "Works only when [" },
+		{ Element.TT_Transcription_2, "] method is active. Not all languages have it." },
 		#endregion
 		#region Messages
 		{ Element.MSG_SnippetsError, "Snippets contains error in syntax, check if there are errors, details on snippets syntax you can find on Wiki." }
@@ -772,6 +778,7 @@ public class Languages
 		{ Element.BorderColor, "Цвет рамки:" },
 		{ Element.UseAeroColor, "Использовать Аэро/Главный цвет." },
 		{ Element.DisplayUpperArrow, "Отображать стрелку когда ввод верхнего регистра." },
+		{ Element.Transcription, "Транскрипция" },
 		#endregion
 		#region TranslatePanel
 		{ Element.EnableTranslatePanel, "Включить переводчик." }, 
@@ -925,6 +932,8 @@ public class Languages
 		{ Element.TT_LeftRightMB, "Левая кнопка - открыть файл.\nПравая кнопка - открыть папку." },
 		{ Element.TT_CycleCase, "По циклу переключает регистр выделенных слов, по:\r\nЗаглавный => ВЕРХНИЙ => нижний => слУчАЙный => оБРАТНЫЙ => Заглавный => ..." },
 		{ Element.TT_CustomConversion, "Меняет выделенный текст по заданным правилам в CustomConversion.txt" },
+		{ Element.TT_Transcription_1, "Работает только при [" },
+		{ Element.TT_Transcription_2, "] активном методе. Поддерживается не всеми языками." },
 		#endregion
 		#region Messages
 		{ Element.MSG_SnippetsError, "Сниппеты содержат ошибки в синтаксисе, проверьте ваши сниппеты, детали синтаксиса можете найти на Wiki." }

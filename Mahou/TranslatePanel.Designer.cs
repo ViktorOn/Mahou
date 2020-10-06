@@ -13,7 +13,7 @@ namespace Mahou
 		private JustUI.JUIButton X;
 		private JustUI.JUITitle TITLE;
 		private ColorPanel pan_Translations;
-		private System.Windows.Forms.TextBox txt_Source;
+		MahouUI.TextBoxCA txt_Source;
 		private System.Windows.Forms.Button bull;
 		
 		/// <summary>
@@ -40,7 +40,7 @@ namespace Mahou
 			this.X = new JustUI.JUIButton();
 			this.TITLE = new JustUI.JUITitle();
 			this.pan_Translations = new Mahou.TranslatePanel.ColorPanel();
-			this.txt_Source = new System.Windows.Forms.TextBox();
+			this.txt_Source = new Mahou.MahouUI.TextBoxCA();
 			this.bull = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
@@ -114,7 +114,7 @@ namespace Mahou
 			this.Controls.Add(this.X);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(600, 400);
+			this.MaximumSize = new System.Drawing.Size(800, 400);
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(40, 24);
 			this.Name = "TranslatePanel";

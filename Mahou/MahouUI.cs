@@ -1137,6 +1137,7 @@ namespace Mahou {
 				MMain.MyConfs.Write("TranslatePanel", "BorderAero", chk_TrUseAccent.Checked.ToString());
 				MMain.MyConfs.Write("TranslatePanel", "TextFont", fcv.ConvertToString(btn_TrTextFont.Font));
 				MMain.MyConfs.Write("TranslatePanel", "TitleFont", fcv.ConvertToString(btn_TrTitleFont.Font));
+				MMain.MyConfs.Write("TranslatePanel", "Transcription", chk_TrTranscription.Checked.ToString());
 				SaveTrSets();
 				#endregion
 				#region Sync
@@ -1441,6 +1442,7 @@ namespace Mahou {
 				if (_TranslatePanel == null)
 	               	_TranslatePanel = new TranslatePanel();
                _TranslatePanel.SetTitle(MMain.Lang[Languages.Element.Translation]);
+               chk_TrTranscription.Checked = TranslatePanel.TRANSCRIPTION = MMain.MyConfs.ReadBool("TranslatePanel", "Transcription");
 			} else {
 				if (_TranslatePanel != null)
 					_TranslatePanel.Dispose();
@@ -4030,6 +4032,7 @@ DEL ""ExtractASD.cmd""";
 			lbl_TrTextFont.Text = MMain.Lang[Languages.Element.TextFont];
 			lbl_TrTitleFont.Text = MMain.Lang[Languages.Element.TitleFont];
 			btn_TrTitleFont.Text = btn_TrTextFont.Text = MMain.Lang[Languages.Element.LDFont];
+			chk_TrTranscription.Text = MMain.Lang[Languages.Element.Transcription];
 			#endregion
 			#region Updtaes
 			btn_CheckForUpdates.Text = MMain.Lang[Languages.Element.CheckForUpdates];
@@ -4144,6 +4147,8 @@ DEL ""ExtractASD.cmd""";
 			HelpMeUnderstand.SetToolTip(lnk_OpenLogs, MMain.Lang[Languages.Element.TT_LeftRightMB]+"\n"+Logging.log);
 			HelpMeUnderstand.SetToolTip(lnk_OpenHistory, MMain.Lang[Languages.Element.TT_LeftRightMB]+"\n"+Path.Combine(nPath,"history.txt"));
 			HelpMeUnderstand.SetToolTip(lnk_OpenConfig, MMain.Lang[Languages.Element.TT_LeftRightMB]+"\n"+Configs.filePath);
+			HelpMeUnderstand.SetToolTip(chk_TrTranscription, MMain.Lang[Languages.Element.TT_Transcription_1]+
+			                            MMain.Lang[Languages.Element.DirectV2]+MMain.Lang[Languages.Element.TT_Transcription_2]);
 		}
 		void HelpMeUnderstandPopup(object sender, PopupEventArgs e) {
 			HelpMeUnderstand.ToolTipTitle = e.AssociatedControl.Text;
