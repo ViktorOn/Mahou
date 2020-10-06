@@ -1192,6 +1192,19 @@ namespace Mahou {
 			DoSelf(() => {
 				try {
 		       		Debug.WriteLine("Snippet: " +snip);
+		       		var exsni = expand;
+					if (!ignoreExpand) {
+		       			var backs = snip.Length+1;
+		       			Debug.WriteLine("X2" + x2);
+		       			if ( /*x2||*/ MMain.mahou.SnippetsExpandType == "Tab") backs--;
+		       			KInputs.MakeInput(KInputs.AddPress(Keys.Back, backs));
+						Logging.Log("[SNI] > Expanding snippet [" + snip + "] to [" + expand + "].");
+		       			exsni = ExpandSnippetWithExpressions(expand);
+						ClearWord(true, true, true, "Cleared due to snippet expansion");
+						Debug.WriteLine("OK");
+//						KInputs.MakeInput(KInputs.AddString(expand));
+					}
+		       		Debug.WriteLine("EXSNI: " + exsni);
 					if (switchLayout) {
 		       			bool skp = false;
 		       			if (MMain.MyConfs.ReadBool("Hidden", "__setlayout_FORCED")) 
@@ -1204,7 +1217,7 @@ namespace Mahou {
 		       			if (!skp) {
 		       				var guess = guessl;
 		       				if (guess == 0) 
-						    	guess = WordGuessLayout(expand).Item2;
+						    	guess = WordGuessLayout(exsni).Item2;
 		       				else 
 		       					Debug.WriteLine("Skip Guess for snippet expand, layout suplied: " +guessl);
 		       				var gn = MMain.locales.ToList().Find(l => l.uId == guess).Lang;
@@ -1213,17 +1226,6 @@ namespace Mahou {
 		       			} else {
 		       				Logging.Log("[SNI] > Switch layout skip due to __setlayout_FORCED");
 		       			}
-					}
-					if (!ignoreExpand) {
-		       			var backs = snip.Length+1;
-		       			Debug.WriteLine("X2" + x2);
-		       			if ( /*x2||*/ MMain.mahou.SnippetsExpandType == "Tab") backs--;
-		       			KInputs.MakeInput(KInputs.AddPress(Keys.Back, backs));
-						Logging.Log("[SNI] > Expanding snippet [" + snip + "] to [" + expand + "].");
-		       			ExpandSnippetWithExpressions(expand);
-						ClearWord(true, true, true, "Cleared due to snippet expansion");
-						Debug.WriteLine("OK");
-//						KInputs.MakeInput(KInputs.AddString(expand));
 					}
 		       		if (spaceAft && !expand.Contains("__cursorhere"))
 						KInputs.MakeInput(KInputs.AddString(" "));
@@ -1244,8 +1246,8 @@ namespace Mahou {
 		}
 		#region in Snippets expressions  
 		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert", "__setlayout", "__selection", "__clearlsnip", "__replace" };
-		static void ExpandSnippetWithExpressions(string expand) {
-			string ex = "", args = "", raw = "", err = "";
+		static string ExpandSnippetWithExpressions(string expand) {
+			string ex = "", args = "", raw = "", err = "", allraw = "";
 			bool args_getting = false, is_expr = false, escaped = false;
 			int expr_start = -1;
 			bool contains_expr = false;
@@ -1257,7 +1259,7 @@ namespace Mahou {
 			}
 			if (!contains_expr) {
 				KInputs.MakeInput(KInputs.AddString(expand));
-				return;
+				return expand;
 			}
 			bool just_escaped = false;
 			for (int i = 0; i!=expand.Length; i++) {
@@ -1352,6 +1354,7 @@ namespace Mahou {
 				if (!string.IsNullOrEmpty(raw)) {
 //					Debug.WriteLine("Inputting raw: ["+raw+"]");
 					KInputs.MakeInput(KInputs.AddString(raw));
+					allraw += raw;
 					raw = "";
 				}
 				if (escaped) {
@@ -1369,6 +1372,7 @@ namespace Mahou {
 				KInputs.MakeInput(KInputs.AddPress(Keys.Left, cursormove));
 			}
 			cursormove = -1;
+			return allraw;
 				
 		}
 		static void ExecExpression(string expr, string args, int curlefts = -1) {
