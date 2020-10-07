@@ -479,7 +479,7 @@ namespace Mahou {
 							c_snip.Clear();
 					}
 					bool IGN = false;
-					if (MahouUI.AutoSwitchEnabled) {
+					if (MahouUI.AutoSwitchEnabled && !ExcludedProgram(false, hwnd, true)) {
 						IGN = ((AS_IGN_BACK && was_back) || (AS_IGN_DEL && was_del) || (AS_IGN_LS && was_ls));
 						if (IGN) { Logging.Log("[AS] > Ignore AutoSwitch by: B/D/LS: " + was_back + "/"+was_del+"/"+was_ls); }
 						Debug.WriteLine("Ignore AutoSwitch by: B/D/LS: " + was_back + "/"+was_del+"/"+was_ls);
@@ -1685,11 +1685,11 @@ namespace Mahou {
 				return false;
 			return false;
 		}
-		public static bool ExcludedProgram(bool onlysnip = false, IntPtr hwnd = default(IntPtr)) {
+		public static bool ExcludedProgram(bool onlysnip = false, IntPtr hwnd = default(IntPtr), bool onlyas = false) {
 			if (MMain.mahou == null) return false;
 			if (hwnd == IntPtr.Zero || hwnd == default(IntPtr))
 				hwnd = WinAPI.GetForegroundWindow();
-			if (NOT_EXCLUDED_HWNDs.Contains(hwnd)) {
+			if (NOT_EXCLUDED_HWNDs.Contains(hwnd) && (!onlysnip && !onlyas)) {
 				Logging.Log("[EXCL] > This program was been checked already, it is not excluded hwnd: " + hwnd);
 				return false;
 			}
@@ -1709,8 +1709,14 @@ namespace Mahou {
 							Debug.WriteLine("ONLYSNIP EXCLUDE?: " +onlys);
 						}
 					}
+					if (onlyas) {
+						if (!String.IsNullOrEmpty(MahouUI.onlyAutoSwitchExcluded)) {
+							onlys = MahouUI.onlyAutoSwitchExcluded.Split('|').Contains(prc.ProcessName.ToLower()+".exe");
+							Debug.WriteLine("ONLYAS EXCLUDE?: " +onlys);
+						}
+					}
 					if (MahouUI.ExcludedPrograms.Replace(Environment.NewLine, " ").ToLower().Contains(prc.ProcessName.ToLower().Replace(" ", "_")) || onlys) {
-						Logging.Log(prc.ProcessName + "->excluded" + (onlys ? " ONLY SNIPPETS" : ""));
+						Logging.Log(prc.ProcessName + "->excluded" + (onlys ? " ONLY SNIPPETS or AS" : ""));
 						if (!onlys)
 							EXCLUDED_HWNDs.Add(hwnd);
 						return true;

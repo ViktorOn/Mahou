@@ -29,7 +29,7 @@ namespace Mahou {
 					hksOK, hklineOK, hkSIOK, hkExitOK, hkToglLPOK, hkShowTSOK, hkToggleMahouOK, hkUcOK, hklcOK, hkccOK,
 					hkSCCok;
 		public static string nPath = AppDomain.CurrentDomain.BaseDirectory, CustomSound, CustomSound2;
-		public static string onlySnippetsExcluded = "";
+		public static string onlySnippetsExcluded = "", onlyAutoSwitchExcluded = "";
 		public static string AutoCopyTranslation = "";
 		public static int ACT_Match = 0;
 		public static bool LoggingEnabled, dummy, CapsLockDisablerTimer, LangPanelUpperArrow, mouseLTUpperArrow, caretLTUpperArrow,
@@ -1378,6 +1378,7 @@ namespace Mahou {
 			__selection = MMain.MyConfs.ReadBool("Hidden", "__selection");
 			__selection_nomouse = MMain.MyConfs.ReadBool("Hidden", "__selection_nomouse");
 			onlySnippetsExcluded = MMain.MyConfs.Read("Hidden", "onlySnippetsExcluded");
+			onlyAutoSwitchExcluded = MMain.MyConfs.Read("Hidden", "onlyAutoSwitchExcluded");
 			#endregion
 			#region Timings
 			LD_MouseSkipMessagesCount = MMain.MyConfs.ReadInt("Timings", "LangTooltipForMouseSkipMessages");

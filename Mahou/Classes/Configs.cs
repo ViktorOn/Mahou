@@ -221,6 +221,7 @@ namespace Mahou {
 			CheckBool("Hidden", "__selection", "false");
 			CheckBool("Hidden", "__selection_nomouse", "false");
 			CheckString("Hidden", "onlySnippetsExcluded", "");
+			CheckString("Hidden", "onlyAutoSwitchExcluded", "");
 			CheckBool("Hidden", "__setlayout_FORCED", "false");
 			CheckBool("Hidden", "__setlayout_ONLYWM", "false");
 			CheckBool("Hidden", "AS_IngoreBack", "false");
