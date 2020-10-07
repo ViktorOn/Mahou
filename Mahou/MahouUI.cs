@@ -2911,6 +2911,9 @@ DEL "+restartMahouPath;
 			WinAPI.RegisterHotKey(h, id,mod, rk);
 		}
 		public void RegisterHotkeys() {
+			if (HKToggleMahou_tempEnabled)
+				WinAPI.RegisterHotKey(Handle, (int)Hotkey.HKID.ToggleMahou,
+				                      WinAPI.MOD_NO_REPEAT + Hotkey.GetMods(HKToggleMahou_tempMods), HKToggleMahou_tempKey);
 			if (ENABLED) {
 				var tas = MMain.MyConfs.Read("Hidden", "ToggleAutoSwitchHK");
 				if (!String.IsNullOrEmpty(tas)) {
@@ -2995,9 +2998,6 @@ DEL "+restartMahouPath;
 					}
 				}
 			}
-			if (HKToggleMahou_tempEnabled)
-				WinAPI.RegisterHotKey(Handle, (int)Hotkey.HKID.ToggleMahou,
-				                      WinAPI.MOD_NO_REPEAT + Hotkey.GetMods(HKToggleMahou_tempMods), HKToggleMahou_tempKey);
 		}
 		/// <summary>
 		/// Converts some special keys to readable string.
