@@ -2067,6 +2067,9 @@ DEL "+restartMahouPath;
 							case "ka":
 								FLAG = Properties.Resources.ka;
 								break;
+							case "el":
+								FLAG = Properties.Resources.el;
+								break;
 							default:
 								FLAG = Properties.Resources.MahouTrayHD.ToBitmap();
 								Logging.Log("Missing flag for language [" + flagname + " / " + lcid + "].", 2);
