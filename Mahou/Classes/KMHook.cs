@@ -425,12 +425,14 @@ namespace Mahou {
 			#endregion
 			#region TranslatePanel HotKeys
 			IntPtr hwnd = IntPtr.Zero;
-			if (MMain.mahou._TranslatePanel != null) {
-				hwnd = WinAPI.GetForegroundWindow();
-				if (hwnd == MMain.mahou._TranslatePanel.Handle) {
-					if (MSG == WinAPI.WM_KEYUP) {
-						if (Key == Keys.Escape || Key == Keys.Enter || Key == Keys.Space) {
-							MMain.mahou._TranslatePanel.HideWnd();
+			if (MahouUI.TrEnabled) {
+				if (MMain.mahou._TranslatePanel != null) {
+					hwnd = WinAPI.GetForegroundWindow();
+					if (hwnd == MMain.mahou._TranslatePanel.Handle) {
+						if (MSG == WinAPI.WM_KEYUP) {
+							if (Key == Keys.Escape || Key == Keys.Enter || Key == Keys.Space) {
+								MMain.mahou._TranslatePanel.HideWnd();
+							}
 						}
 					}
 				}
