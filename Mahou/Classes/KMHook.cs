@@ -1065,9 +1065,9 @@ namespace Mahou {
 						layout = MahouUI.currentLayout & 0xffff;
 				}
 			}
-			//                                                                     0=alt, 1=noalt
+			//                                                                     0=alt, 1=noalt, 1<<2=?
 			// it eats umlaut characters with 0, so:
-			WinAPI.ToUnicodeEx((uint)vkCode, (uint)vkCode, byt, stb, stb.Capacity, 1, (IntPtr)layout);
+			WinAPI.ToUnicodeEx((uint)vkCode, (uint)vkCode, byt, stb, stb.Capacity, 1<<2, (IntPtr)layout);
 			if (stb.Length > 0) {
 				var c = stb.ToString()[0];
 				Logging.Log("[GETSYM] > "+(ignore?"fake;":"true;")+" ToUnEx() => ["+stb+"].");
@@ -2189,7 +2189,7 @@ namespace Mahou {
 									bytes2[(int)Keys.ShiftKey] = 0xFF;
 								if (MahouUI.ConvertSelectionLSPlus) {
 									Logging.Log("[CS] > Using Experimental CS-Switch mode.");
-									WinAPI.ToUnicodeEx((uint)scan, (uint)scan, bytes, s, s.Capacity, 0, (IntPtr)wasLocale);
+									WinAPI.ToUnicodeEx((uint)scan, (uint)scan, bytes, s, s.Capacity, 1<<2, (IntPtr)wasLocale);
 									Logging.Log("[CS] > Char 1 is [" + s + "] in locale +[" + wasLocale + "].");
 									if (ClipStr[index].ToString() == s.ToString()) {
 										if (!SymbolIgnoreRules((Keys)(scan & 0xff), state == 1, wasLocale, ref q)) {
@@ -2199,7 +2199,7 @@ namespace Mahou {
 										index++;
 										continue;
 									}
-									WinAPI.ToUnicodeEx((uint)scan2, (uint)scan2, bytes2, sb, sb.Capacity, 0, (IntPtr)nowLocale);
+									WinAPI.ToUnicodeEx((uint)scan2, (uint)scan2, bytes2, sb, sb.Capacity, 1<<2, (IntPtr)nowLocale);
 									Logging.Log("[CS] > Char 2 is [" + sb + "] in locale +[" + nowLocale + "].");
 									if (ClipStr[index].ToString() == sb.ToString()) {
 										Logging.Log("[CS] > Char 1, 2 and original are equivalent.");
@@ -2809,7 +2809,7 @@ namespace Mahou {
 							var loc = (Locales.GetCurrentLocale() & 0xffff);
 							if (MahouUI.UseJKL && !KMHook.JKLERR)
 								loc = MahouUI.currentLayout & 0xffff;
-							WinAPI.ToUnicodeEx((uint)k, (uint)WinAPI.MapVirtualKey((uint)k, 0), byu, c, (int)5, (uint)0, (IntPtr)loc);
+							WinAPI.ToUnicodeEx((uint)k, (uint)WinAPI.MapVirtualKey((uint)k, 0), byu, c, (int)5, 1<<2, (IntPtr)loc);
 							c_snip.Add(c[0]);
 						}
 					}
@@ -3208,7 +3208,7 @@ namespace Mahou {
 				byt[(int)Keys.ShiftKey] = 0xFF;
 			}
 			//"Convert magic✩" is the string below
-			var ant = WinAPI.ToUnicodeEx((uint)chsc, (uint)chsc, byt, s, s.Capacity, 0, (IntPtr)uID2);
+			var ant = WinAPI.ToUnicodeEx((uint)chsc, (uint)chsc, byt, s, s.Capacity, 1<<2, (IntPtr)uID2);
 			return chsc != -1 ? s.ToString() : "";
 		}
 		/// <summary>
