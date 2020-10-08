@@ -24,8 +24,8 @@ namespace Mahou {
 			dbl_click, click, selfie, aftsingleAS, JKLERR, JKLERRchecking, last_snipANY,
 			_selis, _mselis, snipselshiftpressed, snipselwassel, 
 			AS_IGN_BACK, AS_IGN_DEL, AS_IGN_LS, was_back, was_del, was_ls;
-		public static System.Windows.Forms.Timer click_reset = new System.Windows.Forms.Timer();
-		public static System.Windows.Forms.Timer JKLERRT = new System.Windows.Forms.Timer();
+		public static System.Timers.Timer click_reset = new System.Timers.Timer();
+		public static System.Timers.Timer JKLERRT = new System.Timers.Timer();
 		public static int skip_mouse_events, skip_spec_keys, cursormove = -1, guess_tries, skip_kbd_events, lsnip_noset, AS_IGN_TIMEOUT;
 		static char sym = '\0'; static bool sym_upr = false;
 		static uint as_lword_layout = 0;
@@ -34,7 +34,8 @@ namespace Mahou {
 		static List<Keys> tempNumpads = new List<Keys>();
 		static Keys preKey = Keys.None, seKeyDown = Keys.None, aseKeyDown = Keys.None;
 		public static List<char> c_snip = new List<char>();
-		public static System.Windows.Forms.Timer doublekey = new System.Windows.Forms.Timer(), AS_IGN_RESET = new System.Windows.Forms.Timer();
+		public static System.Timers.Timer doublekey = new System.Timers.Timer();
+		public static System.Timers.Timer AS_IGN_RESET = null;
 		public static List<YuKey> c_word_backup = new List<YuKey>();
 		public static List<YuKey> c_word_backup_last = new List<YuKey>();
 		public static List<IntPtr> PLC_HWNDs = new List<IntPtr>();
@@ -213,7 +214,7 @@ namespace Mahou {
 						time = 50;
 					MahouUI.currentLayout = 0;
 					as_lword_layout = 0;
-					DoLater(() => { MahouUI.GlobalLayout = MahouUI.currentLayout = Locales.GetCurrentLocale(); }, time);
+					DoLater(() => { MahouUI.GlobalLayout = MahouUI.currentLayout = Locales.GetCurrentLocale(); AS_IGN_fun(); }, time);
 				}
 			}
 			#endregion
@@ -524,6 +525,8 @@ namespace Mahou {
 						else
 							lsnip_noset--;
 					}
+				}
+				if (MSG == WinAPI.WM_KEYUP) {
 					if (Key == Keys.Back) { was_back = true; }
 					if (Key == Keys.Delete) { was_del = true; }
 					if (Key == Keys.Space && AS_IGN_RULES.Contains("S")) { 
@@ -614,12 +617,12 @@ namespace Mahou {
 							pif.Start();
 							click = true;
 							click_reset.Interval = SystemInformation.DoubleClickTime;
-							click_reset.Tick += (_, __) => {
+							click_reset.Elapsed += (_, __) => {
 								click = false;
 								Debug.WriteLine("Slow second click!");
 								click_reset.Stop();
 								click_reset.Dispose();
-								click_reset = new System.Windows.Forms.Timer();
+								click_reset = new System.Timers.Timer();
 							};
 							click_reset.Start();
 							Debug.WriteLine("First click, reset after: " + SystemInformation.DoubleClickTime);
@@ -630,13 +633,13 @@ namespace Mahou {
 								Debug.WriteLine("Too fast ["+el+"ms], probably buggy...");
 								click_reset.Stop();
 								click_reset.Dispose();
-								click_reset = new System.Windows.Forms.Timer();
+								click_reset = new System.Timers.Timer();
 								click = false;
 							} else {
 								Debug.WriteLine("Second click, after: [" + el + "ms] + kill reset + waiting to Up button");
 								click_reset.Stop();
 								click_reset.Dispose();
-								click_reset = new System.Windows.Forms.Timer();
+								click_reset = new System.Timers.Timer();
 								dbl_click = true;
 								click = false;
 							}
@@ -1729,6 +1732,37 @@ namespace Mahou {
 			NOT_EXCLUDED_HWNDs.Add(hwnd);
 			return false;
 		}
+		public static void AS_IGN_fun() {
+			if (AS_IGN_LS) {
+				if (AS_IGN_RULES.Contains("L")) {
+					Debug.WriteLine("[HEY] > "+ was_ls);
+					if (was_ls) {
+						was_ls = was_back = was_del = false;
+					} else {
+						was_ls = true;
+						if(AS_IGN_RULES.Contains("T")) {
+							if (AS_IGN_RESET != null) {
+								return;
+								AS_IGN_RESET.Stop();
+								AS_IGN_RESET.Dispose();
+							}
+							AS_IGN_RESET = new System.Timers.Timer();
+							AS_IGN_RESET.Interval = AS_IGN_TIMEOUT;
+							AS_IGN_RESET.Elapsed += (_,__) => {
+								Debug.WriteLine("+++++++++++ TIMER STOP" + AS_IGN_TIMEOUT);
+								was_ls = was_back = was_del = false; 
+								AS_IGN_RESET.Stop();
+								AS_IGN_RESET.Dispose();
+								AS_IGN_RESET = null;
+							};
+							AS_IGN_RESET.Start();
+							Debug.WriteLine("+++++++++++ TIMER START" + AS_IGN_TIMEOUT);
+						}
+					}
+				} else 
+					was_ls = true;
+			}
+		}
 		static void SpecificKey(Keys Key, uint MSG, int vkCode = 0) {
 			Logging.Log("[SPKEY] > Check on key: ["+Key+"]"+" MSG: " +MSG.ToString());
 //			Debug.WriteLine("SPK:" + skip_spec_keys);
@@ -1772,7 +1806,7 @@ namespace Mahou {
 							if (specificKey == 12 && Key == Keys.Tab && !ctrl && !ctrl_r && !shift_r && !shift && !win && !win_r && !alt && !alt_r) {
 								Logging.Log("[SPKEY] > Changing layout by Tab key.");
 								ChangeLayout();
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 11 && (
@@ -1780,7 +1814,7 @@ namespace Mahou {
 								(Key == Keys.LControlKey && shift) || (Key == Keys.RControlKey && shift_r)) && !keyAfterCTRLSHIFT && !win && !win_r && !alt && !alt_r) {
 								Logging.Log("[SPKEY] > Changing layout by Ctrl+Shift key.");
 								ChangeLayout();
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 10 && (
@@ -1788,62 +1822,62 @@ namespace Mahou {
 								(Key == Keys.LMenu && shift) || (Key == Keys.RMenu && shift_r)) && !keyAfterALTSHIFT && !win && !win_r && !ctrl && !ctrl_r) {
 								Logging.Log("[SPKEY] > Changing layout by Alt+Shift key.");
 								ChangeLayout();
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 8 && (Key == Keys.CapsLock || F18 || GJIME) && (shift || shift_r) && !alt && !alt_r && !ctrl && !ctrl_r) {
 								Logging.Log("[SPKEY] > Changing layout by Shift+CapsLock"+(GJIME?"(KeyCode: 240, Google Japanese IME's Shift+CapsLock remap)":"")+(F18?"(F18)":"")+" key.");
 								ChangeLayout();
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							} else 
 							if (!shift && !shift_r && !alt && !alt_r && !ctrl && !ctrl_r && !win && !win_r && specificKey == 1 && 
 								    (Key == Keys.CapsLock || F18)) {
 								ChangeLayout();
-								was_ls = true;
+								AS_IGN_fun();
 								Logging.Log("[SPKEY] > Changing layout by CapsLock"+(F18?"(F18)":"")+" key.");
 						    	return;
 							}
 							if (specificKey == 2 && Key == Keys.LControlKey && !keyAfterCTRL && npre) {
 								Logging.Log("[SPKEY] > Changing layout by L-Ctrl key.");
 								ChangeLayout();
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 3 && Key == Keys.RControlKey && !keyAfterCTRL && npre) {
 								Logging.Log("[SPKEY] > Changing layout by R-Ctrl key.");
 								ChangeLayout();
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 4 && Key == Keys.LShiftKey && !keyAfterSHIFT && npre) {
 								Logging.Log("[SPKEY] > Changing layout by L-Shift key.");
 								ChangeLayout();
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 5 && Key == Keys.RShiftKey && !keyAfterSHIFT && npre) {
 								Logging.Log("[SPKEY] > Changing layout by R-Shift key.");
 								ChangeLayout();
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 6 && Key == Keys.LMenu && !keyAfterALT && npre) {
 								Logging.Log("[SPKEY] > Changing layout by L-Alt key.");
 								ChangeLayout();
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 7 && Key == Keys.RMenu && !keyAfterALT && npre) {
 								Logging.Log("[SPKEY] > Changing layout by R-Alt key.");
 								ChangeLayout();
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 9 && altgr && !keyAfterALTGR) {
 								Logging.Log("[SPKEY] > Changing layout by AltGr key.");
 								ChangeLayout();
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 //							if (catched) {
@@ -1860,7 +1894,7 @@ namespace Mahou {
 								Logging.Log("[SPKEY] > Switching to specific layout by Tab key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 11 && (
@@ -1869,7 +1903,7 @@ namespace Mahou {
 								Logging.Log("[SPKEY] > Switching to specific layout by Ctrl+Shift key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 10 && (
@@ -1878,56 +1912,56 @@ namespace Mahou {
 								Logging.Log("[SPKEY] > Switching to specific layout by Alt+Shift key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 8 && (Key == Keys.CapsLock || F18 || GJIME) && (shift || shift_r) && !alt && !alt_r && !ctrl && !ctrl_r) {
 								Logging.Log("[SPKEY] > Switching to specific layout by Shift+CapsLock"+(GJIME?"(KeyCode: 240, Google Japanese IME's Shift+CapsLock remap)":"")+(F18?"(F18)":"")+" key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							} else
 							if (specificKey == 1 && (Key == Keys.CapsLock || F18)) {
 								Logging.Log("[SPKEY] > Switching to specific layout by Caps Lock"+(F18?"(F18)":"")+" key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 2 && Key == Keys.LControlKey && !keyAfterCTRL && npre) {
 								Logging.Log("[SPKEY] > Switching to specific layout by  L-Ctrl key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 3 && Key == Keys.RControlKey && !keyAfterCTRL && npre) {
 								Logging.Log("[SPKEY] > Switching to specific layout by R-Ctrl key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 4 && Key == Keys.LShiftKey && !keyAfterSHIFT && npre) {
 								Logging.Log("[SPKEY] > Switching to specific layout by L-Shift key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 5 && Key == Keys.RShiftKey && !keyAfterSHIFT && npre) {
 								Logging.Log("[SPKEY] > Switching to specific layout by R-Shift key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
-								was_ls = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							if (specificKey == 6 && Key == Keys.LMenu && !keyAfterALT && npre) {
 								Logging.Log("[SPKEY] > Switching to specific layout by L-Alt key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);	
 								matched = true;
-								was_ls = true;
+								AS_IGN_fun();
 								DoSelf(()=>{ KeybdEvent(Keys.LMenu, 0); KeybdEvent(Keys.LMenu, 2); }, "lmenu_spkey");
 						    	return;
 							}
@@ -1935,7 +1969,7 @@ namespace Mahou {
 								Logging.Log("[SPKEY] > Switching to specific layout by R-Alt key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
-								was_ls = true;
+								AS_IGN_fun();
 								DoSelf(()=>{ KeybdEvent(Keys.RMenu, 0); KeybdEvent(Keys.RMenu, 2); }, "rmenu_spkey");
 						    	return;
 							}
@@ -1943,7 +1977,7 @@ namespace Mahou {
 								Logging.Log("[SPKEY] > Switching to specific layout by AltGr key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
-								was_ls = true;
+								AS_IGN_fun();
 								DoSelf(()=>{ KeybdEvent(Keys.RMenu, 0); KeybdEvent(Keys.RMenu, 2); }, "altgr_spkey");
 						    	return;
 							}
@@ -2817,7 +2851,7 @@ namespace Mahou {
 						JKLERRchecking = true;
 						var t = 0;
 						JKLERRT.Interval = 50;
-						JKLERRT.Tick += (_, __) => {
+						JKLERRT.Elapsed += (_, __) => {
 				        	if (!jklXHidServ.actionOnLayoutExecuted) {
 				        		Logging.Log("JKL convert word failed, JKL didn't monitor the layout or didn't send it, fallback to default...",1);
 				        		Logging.Log("JKL seems BAD.");
@@ -2826,14 +2860,14 @@ namespace Mahou {
 								JKLERRchecking = false;
 								JKLERRT.Stop();
 								JKLERRT.Dispose();
-								JKLERRT = new System.Windows.Forms.Timer();
+								JKLERRT = new System.Timers.Timer();
 							} else {
 								Logging.Log("JKL seems OK.");
 								Debug.WriteLine("JKL seems OK...");
 								JKLERRchecking = false;
 								JKLERRT.Stop();
 								JKLERRT.Dispose();
-								JKLERRT = new System.Windows.Forms.Timer();
+								JKLERRT = new System.Timers.Timer();
 							}
 							Debug.WriteLine("JKL CHECK...");
 							if (t > 50)

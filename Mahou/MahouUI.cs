@@ -45,21 +45,21 @@ namespace Mahou {
 		static bool updating, was, isold = true, checking, snip_checking, as_checking, check_ASD_size = true;
 		public static bool ENABLED = true, reload_snip = false;
 		#region Timers
-		static Timer tmr = new Timer();
-		static Timer old = new Timer();
-		static Timer stimer = new Timer();
-		static Timer animate = new Timer();
-		static Timer showUpdWnd = new Timer();
-		public Timer ICheck = new Timer();
-		public Timer ScrlCheck = new Timer();
-		public Timer crtCheck = new Timer();
-		public Timer capsCheck = new Timer();
-		public Timer flagsCheck = new Timer();
-		public Timer persistentLayout1Check = new Timer();
-		public Timer persistentLayout2Check = new Timer();
-		public Timer langPanelRefresh = new Timer();
-		public Timer res = new Timer();
-		public Timer resC = new Timer();
+		static System.Timers.Timer tmr = new System.Timers.Timer();
+		static System.Timers.Timer old = new System.Timers.Timer();
+		static System.Timers.Timer stimer = new System.Timers.Timer();
+		static System.Timers.Timer animate = new System.Timers.Timer();
+		static System.Timers.Timer showUpdWnd = new System.Timers.Timer();
+		public System.Timers.Timer ICheck = new System.Timers.Timer();
+		public System.Timers.Timer ScrlCheck = new System.Timers.Timer();
+		public System.Timers.Timer crtCheck = new System.Timers.Timer();
+		public System.Timers.Timer capsCheck = new System.Timers.Timer();
+		public System.Timers.Timer flagsCheck = new System.Timers.Timer();
+		public System.Timers.Timer persistentLayout1Check = new System.Timers.Timer();
+		public System.Timers.Timer persistentLayout2Check = new System.Timers.Timer();
+		public System.Timers.Timer langPanelRefresh = new System.Timers.Timer();
+		public System.Timers.Timer res = new System.Timers.Timer();
+		public System.Timers.Timer resC = new System.Timers.Timer();
 		#endregion
 		static uint lastTrayFlagLayout = 0;
 		public static Bitmap FLAG, ITEXT;
@@ -254,7 +254,7 @@ namespace Mahou {
 				uche = new System.Threading.Thread(StartupCheck);
 				uche.Name = "Startup Check";
 				uche.Start();
-				showUpdWnd.Tick += (_, __) => {
+				showUpdWnd.Elapsed += (_, __) => {
 					Logging.Log("Checking: " + AtUpdateShow);
 					if (AtUpdateShow == 1) {
 						if (MMain.MyConfs.ReadBool("Functions", "SilentUpdate")) {
@@ -289,9 +289,9 @@ namespace Mahou {
 			Memory.Flush();
 			var arm = MMain.MyConfs.ReadInt("Hidden", "AutoRestartMins");
 			if (arm > 0) {
-				var armt = new System.Windows.Forms.Timer();
+				var armt = new System.Timers.Timer();
 				armt.Interval = 1000 * arm * 60;
-				armt.Tick += (_, __) => Restart();
+				armt.Elapsed += (_, __) => Restart();
 				armt.Start();
 			}
 		}
@@ -467,9 +467,9 @@ namespace Mahou {
 							conv = true;
 						});
 						if (!lastcl && !conv) {
-							stimer = new Timer();
+							stimer = new System.Timers.Timer();
 							stimer.Interval = DoubleHKInterval + 50;
-							stimer.Tick += (_, __) => {
+							stimer.Elapsed += (_, __) => {
 								if (!hklineOK && !conv) // Even here !conv because of time delay!
 									Hotkey.CallHotkey(HKCLast, id, ref hklOK, () => KMHook.ConvertLast(MMain.c_word));
 								Debug.WriteLine("STOPING STIMER");
@@ -488,9 +488,9 @@ namespace Mahou {
 //								Debug.WriteLine("hklOK NOT");
 								KMHook.doublekey.Interval = MMain.mahou.DoubleHKInterval;
 								KMHook.doublekey.Start();
-								var clcst = new Timer();
+								var clcst = new System.Timers.Timer();
 								clcst.Interval = MMain.mahou.DoubleHKInterval+25;
-								clcst.Tick += (_, __) => { 
+								clcst.Elapsed += (_, __) => { 
 									if (!hklOK) {
 										Hotkey.CallHotkey(HKCLast, id, ref hklOK, () => KMHook.ConvertLast(MMain.c_word));
 									}
@@ -574,9 +574,9 @@ namespace Mahou {
 			s.Show();
 			s.Activate();
 			s.Location = new Point(Cursor.Position.X, Cursor.Position.Y-20);
-			var t = new Timer();
+			var t = new System.Timers.Timer();
 			t.Interval = time;
-			t.Tick += (_,__) => {
+			t.Elapsed += (_,__) => {
 				s.Close();
 				s.Dispose();
 				t.Stop();
@@ -2176,8 +2176,8 @@ DEL "+restartMahouPath;
 			KInputs.MakeInput(new [] { KInputs.AddKey(Keys.LMenu, true), KInputs.AddKey(Keys.Tab, true) });
 			System.Threading.Thread.Sleep(1);
 			KInputs.MakeInput(new [] { KInputs.AddKey(Keys.LMenu, false), KInputs.AddKey(Keys.Tab, false) });
-			var t = new Timer();
-			t.Tick += (x, xx) => {
+			var t = new System.Timers.Timer();
+			t.Elapsed += (x, xx) => {
 				KMHook.ChangeLayout(true);
 				t.Stop();
 				t.Dispose();
@@ -2334,33 +2334,33 @@ DEL "+restartMahouPath;
 			persistentLayout1Check.Stop();
 			persistentLayout2Check.Stop();
 			langPanelRefresh.Stop();
-			ICheck = new Timer();
-			crtCheck = new Timer();
-			ScrlCheck = new Timer();
-			res = new Timer();
-			resC = new Timer();
-			capsCheck = new Timer();
-			flagsCheck = new Timer();
-			persistentLayout1Check = new Timer();
-			persistentLayout2Check = new Timer();
-			langPanelRefresh = new Timer();
-			old = new Timer();
-			KMHook.doublekey = new Timer();
+			ICheck = new System.Timers.Timer();
+			crtCheck = new System.Timers.Timer();
+			ScrlCheck = new System.Timers.Timer();
+			res = new System.Timers.Timer();
+			resC = new System.Timers.Timer();
+			capsCheck = new System.Timers.Timer();
+			flagsCheck = new System.Timers.Timer();
+			persistentLayout1Check = new System.Timers.Timer();
+			persistentLayout2Check = new System.Timers.Timer();
+			langPanelRefresh = new System.Timers.Timer();
+			old = new System.Timers.Timer();
+			KMHook.doublekey = new System.Timers.Timer();
 			#endregion
 			crtCheck.Interval = MMain.MyConfs.ReadInt("Timings", "LangTooltipForCaretRefreshRate");
-			crtCheck.Tick += (_, __) => UpdateCaredLD();
+			crtCheck.Elapsed += (_, __) => UpdateCaredLD();
 			ICheck.Interval = MMain.MyConfs.ReadInt("Timings", "LangTooltipForMouseRefreshRate");
-			ICheck.Tick += (_, __) => UpdateMouseLD();
+			ICheck.Elapsed += (_, __) => UpdateMouseLD();
 			res.Interval = (ICheck.Interval + crtCheck.Interval) * 2;
 			resC.Interval = (ICheck.Interval + crtCheck.Interval) * 2;
-			res.Tick += (_, __) => {
+			res.Elapsed += (_, __) => {
 				onepass = true;
 				mouseLangDisplay.HideWnd();
 				if (LDUseWindowsMessages)
 					UpdateMouseLD();
 				res.Stop();
 			};
-			resC.Tick += (_, __) => {
+			resC.Elapsed += (_, __) => {
 				onepassC = true;
 				caretLangDisplay.HideWnd();
 				if (LDUseWindowsMessages)
@@ -2368,7 +2368,7 @@ DEL "+restartMahouPath;
 				resC.Stop();
 			};
 			ScrlCheck.Interval = MMain.MyConfs.ReadInt("Timings", "ScrollLockStateRefreshRate");
-			ScrlCheck.Tick += (_, __) => {
+			ScrlCheck.Elapsed += (_, __) => {
 				if (ScrollTip && !KMHook.alt) {
 					KMHook.DoSelf(() => {
 		              	var l = currentLayout;
@@ -2388,14 +2388,14 @@ DEL "+restartMahouPath;
 	                }, "scroll_check_timer");
 				}
 			};
-			capsCheck.Tick += (_, __) => KMHook.DoSelf(() => {
+			capsCheck.Elapsed += (_, __) => KMHook.DoSelf(() => {
 				if (Control.IsKeyLocked(Keys.CapsLock)) {
 					KMHook.KeybdEvent(Keys.CapsLock, 0);
 					KMHook.KeybdEvent(Keys.CapsLock, 2);
 				}
 			}, "caps_check_timer");
 			capsCheck.Interval = MMain.MyConfs.ReadInt("Timings", "CapsLockDisableRefreshRate");
-			KMHook.doublekey.Tick += (_, __) => {
+			KMHook.doublekey.Elapsed += (_, __) => {
 				if (hklOK)
 					hklOK = false;
 				if (hksOK)
@@ -2431,18 +2431,18 @@ DEL "+restartMahouPath;
 				KMHook.doublekey.Stop();
 			};
 			flagsCheck.Interval = MMain.MyConfs.ReadInt("Timings", "FlagsInTrayRefreshRate");
-			flagsCheck.Tick += (_,__) => RefreshAllIcons();			
+			flagsCheck.Elapsed += (_,__) => RefreshAllIcons();			
 			titlebar = RectangleToScreen(ClientRectangle).Top - Top;
 			animate.Interval = 2500;
 			tmr.Interval = 3000;
 			old.Interval = 7500;
-			old.Tick += (_, __) => { isold = !isold; };	
+			old.Elapsed += (_, __) => { isold = !isold; };	
 			persistentLayout1Check.Interval = MMain.MyConfs.ReadInt("PersistentLayout", "Layout1CheckInterval");
 			persistentLayout2Check.Interval = MMain.MyConfs.ReadInt("PersistentLayout", "Layout2CheckInterval");
-			persistentLayout1Check.Tick += (_, __) => PersistentLayoutCheck(PersistentLayout1Processes, MAIN_LAYOUT1);
-			persistentLayout2Check.Tick += (_, __) => PersistentLayoutCheck(PersistentLayout2Processes, MAIN_LAYOUT2);
+			persistentLayout1Check.Elapsed += (_, __) => PersistentLayoutCheck(PersistentLayout1Processes, MAIN_LAYOUT1);
+			persistentLayout2Check.Elapsed += (_, __) => PersistentLayoutCheck(PersistentLayout2Processes, MAIN_LAYOUT2);
 			langPanelRefresh.Interval = LangPanelRefreshRate;
-			langPanelRefresh.Tick += (_, __) => {
+			langPanelRefresh.Elapsed += (_, __) => {
 				uint loc = 0;
 				try {
 					if (!OneLayout)
@@ -3627,7 +3627,7 @@ DEL /Q /F /A ""%TEMP%\UpdateMahou.cmd""";
 				if (size == MMain.Lang[Languages.Element.Error]) {
 					btn_UpdateAutoSwitchDictionary.ForeColor = Color.OrangeRed;
 					btn_UpdateAutoSwitchDictionary.Text = MMain.Lang[Languages.Element.Error];
-					tmr.Tick += (o, oo) => { 
+					tmr.Elapsed += (o, oo) => { 
 						btn_UpdateAutoSwitchDictionary.Text = MMain.Lang[Languages.Element.AutoSwitchUpdateDictionary];
 						btn_UpdateAutoSwitchDictionary.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
 						tmr.Stop(); 
@@ -3678,7 +3678,7 @@ DEL ""ExtractASD.cmd""";
 			if (dict != null) {
 				btn_UpdateAutoSwitchDictionary.ForeColor = Color.BlueViolet;
 				btn_UpdateAutoSwitchDictionary.Text = "OK";
-				tmr.Tick += (o, oo) => { 
+				tmr.Elapsed += (o, oo) => { 
 					btn_UpdateAutoSwitchDictionary.Text = MMain.Lang[Languages.Element.AutoSwitchUpdateDictionary];
 					btn_UpdateAutoSwitchDictionary.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
 					tmr.Stop();
@@ -3694,7 +3694,7 @@ DEL ""ExtractASD.cmd""";
 			} else {
 				btn_UpdateAutoSwitchDictionary.ForeColor = Color.OrangeRed;
 				btn_UpdateAutoSwitchDictionary.Text = MMain.Lang[Languages.Element.Error];
-				tmr.Tick += (o, oo) => { 
+				tmr.Elapsed += (o, oo) => { 
 					btn_UpdateAutoSwitchDictionary.Text = MMain.Lang[Languages.Element.AutoSwitchUpdateDictionary];
 					btn_UpdateAutoSwitchDictionary.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
 					tmr.Stop(); 
@@ -3780,7 +3780,7 @@ DEL ""ExtractASD.cmd""";
 			} catch {
 //				grb_ProxyConfig.Text = MMain.UI[51];
 				tmr.Interval = 3000;
-				tmr.Tick += (___, ____) => {
+				tmr.Elapsed += (___, ____) => {
 					grb_ProxyConfig.Text = "Proxy configuration";
 					tmr.Stop();
 				};
@@ -4317,9 +4317,9 @@ DEL ""ExtractASD.cmd""";
 				}
 				mms.MenuItems.Add(new MenuItem(text, (_,__) => menuhandle(act, arg)));
 			}
-			var wfm = new Timer();
+			var wfm = new System.Timers.Timer();
 			wfm.Interval = 1000;
-			wfm.Tick += (x,xx) => {
+			wfm.Elapsed += (x,xx) => {
 				if (MMain.mahou != null) {
 					List<MenuItem> lastitems = new List<MenuItem>();
 					for(var i = 0; i != MMain.mahou.icon.trIcon.ContextMenu.MenuItems.Count; i++) {
@@ -4377,7 +4377,7 @@ DEL ""ExtractASD.cmd""";
 				Clipboard.SetText(debuginfo);
 				var btDgtTxtWas = btn_DebugInfo.Text;
 				btn_DebugInfo.Text = MMain.Lang[Languages.Element.DbgInf_Copied];
-				tmr.Tick += (_,__) => { 
+				tmr.Elapsed += (_,__) => { 
 					btn_DebugInfo.Text = btDgtTxtWas;
 					tmr.Stop();
 				};
@@ -4502,7 +4502,7 @@ DEL ""ExtractASD.cmd""";
 				btn_CheckForUpdates.Text = MMain.Lang[Languages.Element.Checking];
 				UpdInfo = null;
 				System.Threading.Tasks.Task.Factory.StartNew(GetUpdateInfo).Wait();
-				tmr.Tick += (_, __) => {;
+				tmr.Elapsed += (_, __) => {;
 					btn_CheckForUpdates.Text = btChkTextWas;
 					SetUInfo();
 					checking = false;
@@ -4561,10 +4561,10 @@ DEL ""ExtractASD.cmd""";
 					try {
 						wc.DownloadFileAsync(new Uri(UpdInfo[3]), Path.Combine(Path.GetTempPath(), fn));
 						btn_DownloadUpdate.Text = "Downloading " + fn;
-						animate.Tick += (_, __) => { btn_DownloadUpdate.Text += "."; };
+						animate.Elapsed += (_, __) => { btn_DownloadUpdate.Text += "."; };
 						animate.Start();
 						btn_DownloadUpdate.Enabled = false;
-						tmr.Tick += (_, __) => {
+						tmr.Elapsed += (_, __) => {
 							// Checks if progress changed?
 							if (progress == _progress) {
 								old.Stop();
@@ -4575,7 +4575,7 @@ DEL ""ExtractASD.cmd""";
 								wc.CancelAsync();
 								updating = false;
 								btn_DownloadUpdate.Text = "Error...";
-								tmr.Tick += (o, oo) => {
+								tmr.Elapsed += (o, oo) => {
 									btn_DownloadUpdate.Text = BDMText;
 									tmr.Stop();
 								};
@@ -4631,10 +4631,10 @@ DEL ""ExtractASD.cmd""";
 				AutoSwitchDictionaryRaw = txt_AutoSwitchDictionary.Text;
 			if(!as_checking) {
 				as_checking = true;
-				tmr.Tick += (_, __) => {
+				tmr.Elapsed += (_, __) => {
 					UpdateSnippetCountLabel(AutoSwitchDictionaryRaw, lbl_AutoSwitchWordsCount, false);
 					as_checking = false;
-					tmr.Dispose(); tmr = new Timer();
+					tmr.Dispose(); tmr = new System.Timers.Timer();
 				};
 				tmr.Interval = 1500;
 				tmr.Start();
@@ -4643,10 +4643,10 @@ DEL ""ExtractASD.cmd""";
 		void Txt_SnippetsTextChanged(object sender, EventArgs e) {
 			if(!snip_checking) {
 				snip_checking = true;
-				tmr.Tick += (_, __) => {
+				tmr.Elapsed += (_, __) => {
 					UpdateSnippetCountLabel(txt_Snippets.Text, lbl_SnippetsCount);
 					snip_checking = false;
-					tmr.Dispose(); tmr = new Timer();
+					tmr.Dispose(); tmr = new System.Timers.Timer();
 				};
 				tmr.Interval = 1000;
 				tmr.Start();
@@ -4807,8 +4807,8 @@ DEL ""ExtractASD.cmd""";
 		void PctBkpCopyClick(object sender, EventArgs e) {
 			if (!pctbkp) {
 				pctbkp = true;
-				var t = new Timer();
-				t.Tick += (_, ___) => {
+				var t = new System.Timers.Timer();
+				t.Elapsed += (_, ___) => {
 					pctBkpCopy.BackgroundImage = Properties.Resources.clip;
 					pctbkp = false;
 					t.Stop();
@@ -4828,8 +4828,8 @@ DEL ""ExtractASD.cmd""";
 		void PctResPasteClick(object sender, EventArgs e) {
 			if (!pctres) {
 				pctres = true;
-				var t = new Timer();
-				t.Tick += (_, ___) => {
+				var t = new System.Timers.Timer();
+				t.Elapsed += (_, ___) => {
 					pctResPaste.BackgroundImage = Properties.Resources.clip;
 					pctres = false;
 					t.Stop();
