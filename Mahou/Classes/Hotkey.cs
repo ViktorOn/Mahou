@@ -38,7 +38,8 @@ namespace Mahou {
 			ShowSelectionTranslation,
 			ToggleMahou,
 			CycleCase,
-			CustomConversion
+			CustomConversion,
+			ShowCMenuUnderMouse
 		}
 		/// <summary>
 		/// Gets all modifiers in hotkey.

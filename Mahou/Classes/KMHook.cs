@@ -34,7 +34,7 @@ namespace Mahou {
 		static List<Keys> tempNumpads = new List<Keys>();
 		static Keys preKey = Keys.None, seKeyDown = Keys.None, aseKeyDown = Keys.None;
 		public static List<char> c_snip = new List<char>();
-		public static System.Timers.Timer doublekey = new System.Timers.Timer();
+		public static System.Windows.Forms.Timer doublekey = new System.Windows.Forms.Timer();
 		public static System.Timers.Timer AS_IGN_RESET = null;
 		public static List<YuKey> c_word_backup = new List<YuKey>();
 		public static List<YuKey> c_word_backup_last = new List<YuKey>();
@@ -1535,6 +1535,7 @@ namespace Mahou {
 			}
 		}
 		public static List<Keys> strparsekey(string key, int times = 1) {
+			key = key.ToLower();
 			List<Keys> keys = new List<Keys>();
 			foreach (Keys k in Enum.GetValues(typeof(Keys))) {
 				var _n = k.ToString().ToLower()

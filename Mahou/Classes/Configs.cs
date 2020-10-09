@@ -289,6 +289,11 @@ namespace Mahou {
 			CheckBool("LangPanel", "Display", "false");
 			#endregion
 			#region Hotkeys section
+			CheckInt("Hotkeys", "ShowCMenuUnderMouse_Key", "0");
+			CheckString("Hotkeys", "ShowCMenuUnderMouse_Modifiers", "");
+			CheckBool("Hotkeys", "ShowCMenuUnderMouse_Double", "false");
+			CheckBool("Hotkeys", "ShowCMenuUnderMouse_Enabled", "false");
+			// Cycle Case
 			CheckInt("Hotkeys", "CycleCase_Key", "114");
 			CheckString("Hotkeys", "CycleCase_Modifiers", "Shift");
 			CheckBool("Hotkeys", "CycleCase_Double", "false");

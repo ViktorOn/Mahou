@@ -20,14 +20,14 @@ namespace Mahou {
 		public Hotkey Mainhk, ExitHk, HKCLast, HKCSelection, HKCLine, HKSymIgn, HKConMorWor,
 			  	      HKTitleCase, HKRandomCase, HKSwapCase, HKTransliteration, HKRestart, 
 			  	      HKToggleLP, HKShowST, HKToggleMahou, HKUpperCase, HKLowerCase, HKCycleCase,
-			  	      HKSelCustConv;
+			  	      HKSelCustConv, HKShCMenuUM;
 		public List<Hotkey> SpecificSwitchHotkeys = new List<Hotkey>();
 		/// <summary>
 		/// Hotkey OK to fire action bools.
 		/// </summary>
 		public bool hksTTCOK, hksTRCOK, hksTSCOK, hksTrslOK, hkShWndOK, hkcwdsOK, hklOK, 
 					hksOK, hklineOK, hkSIOK, hkExitOK, hkToglLPOK, hkShowTSOK, hkToggleMahouOK, hkUcOK, hklcOK, hkccOK,
-					hkSCCok;
+					hkSCCok, hkSCMUM;
 		public static string nPath = AppDomain.CurrentDomain.BaseDirectory, CustomSound, CustomSound2;
 		public static string onlySnippetsExcluded = "", onlyAutoSwitchExcluded = "";
 		public static string AutoCopyTranslation = "";
@@ -89,26 +89,26 @@ namespace Mahou {
 			    HKCLine_tempMods, HKSymIgn_tempMods, HKConMorWor_tempMods, HKTitleCase_tempMods,
  				HKRandomCase_tempMods, HKSwapCase_tempMods, HKTransliteration_tempMods, HKRestart_tempMods,
  				HKToggleLangPanel_tempMods, HKShowSelectionTranslate_tempMods, HKToggleMahou_tempMods, HKToUpper_tempMods,
- 				HKToLower_tempMods, HKCycleCase_tempMods, HKSelCustConv_tempMods;
+ 				HKToLower_tempMods, HKCycleCase_tempMods, HKSelCustConv_tempMods, HKShCMenuUM_tempMods;
 		/// <summary> Temporary key of hotkeys. </summary>
 		int Mainhk_tempKey, ExitHk_tempKey, HKCLast_tempKey, HKCSelection_tempKey,
 			    HKCLine_tempKey, HKSymIgn_tempKey, HKConMorWor_tempKey, HKTitleCase_tempKey,
  				HKRandomCase_tempKey, HKSwapCase_tempKey, HKTransliteration_tempKey, HKRestart_tempKey,
  				HKToggleLangPanel_tempKey, HKShowSelectionTranslate_tempKey, HKToggleMahou_tempKey, HKToUpper_tempKey,
- 				HKToLower_tempKey, HKCycleCase_tempKey, HKSelCustConv_tempKey;
+ 				HKToLower_tempKey, HKCycleCase_tempKey, HKSelCustConv_tempKey, HKShCMenuUM_tempKey;
 		/// <summary> Temporary Enabled of hotkeys. </summary>
 		bool Mainhk_tempEnabled, ExitHk_tempEnabled, HKCLast_tempEnabled, HKCSelection_tempEnabled,
 			    HKCLine_tempEnabled, HKSymIgn_tempEnabled, HKConMorWor_tempEnabled, HKTitleCase_tempEnabled,
  				HKRandomCase_tempEnabled, HKSwapCase_tempEnabled, HKTransliteration_tempEnabled, HKRestart_tempEnabled,
  				HKToggleLangPanel_tempEnabled, HKShowSelectionTranslate_tempEnabled, HKToggleMahou_tempEnabled,
- 				HKToUpper_tempEnabled, HKToLower_tempEnabled, HKCycleCase_tempEnabled;
+ 				HKToUpper_tempEnabled, HKToLower_tempEnabled, HKCycleCase_tempEnabled, HKShCMenuUM_tempEnabled;
 		public static bool HKSelCustConv_tempEnabled;
 		/// <summary> Temporary Double of hotkeys. </summary>
 		bool Mainhk_tempDouble, ExitHk_tempDouble, HKCLast_tempDouble, HKCSelection_tempDouble,
 			    HKCLine_tempDouble, HKSymIgn_tempDouble, HKConMorWor_tempDouble, HKTitleCase_tempDouble,
  				HKRandomCase_tempDouble, HKSwapCase_tempDouble, HKTransliteration_tempDouble,
  				HKToggleLangPanel_tempDouble, HKShowSelectionTranslate_tempDouble, HKToggleMahou_tempDouble,
- 				HKToUpper_tempDouble, HKToLower_tempDouble, HKCycleCase_tempDouble, HKSelCustConv_tempDouble;
+ 				HKToUpper_tempDouble, HKToLower_tempDouble, HKCycleCase_tempDouble, HKSelCustConv_tempDouble, HKShCMenuUM_tempDouble;
 		/// <summary> Temporary colors of LangDisplays appearece. </summary>
 		public static Color LDMouseFore_temp, LDCaretFore_temp, LDMouseBack_temp, LDCaretBack_temp, 
 		 	  Layout1Fore_temp, Layout2Fore_temp, Layout1Back_temp, Layout2Back_temp;
@@ -289,9 +289,9 @@ namespace Mahou {
 			Memory.Flush();
 			var arm = MMain.MyConfs.ReadInt("Hidden", "AutoRestartMins");
 			if (arm > 0) {
-				var armt = new System.Timers.Timer();
+				var armt = new Timer();
 				armt.Interval = 1000 * arm * 60;
-				armt.Elapsed += (_, __) => Restart();
+				armt.Tick += (_, __) => Restart();
 				armt.Start();
 			}
 		}
@@ -488,9 +488,9 @@ namespace Mahou {
 //								Debug.WriteLine("hklOK NOT");
 								KMHook.doublekey.Interval = MMain.mahou.DoubleHKInterval;
 								KMHook.doublekey.Start();
-								var clcst = new System.Timers.Timer();
+								var clcst = new Timer();
 								clcst.Interval = MMain.mahou.DoubleHKInterval+25;
-								clcst.Elapsed += (_, __) => { 
+								clcst.Tick += (_, __) => { 
 									if (!hklOK) {
 										Hotkey.CallHotkey(HKCLast, id, ref hklOK, () => KMHook.ConvertLast(MMain.c_word));
 									}
@@ -522,6 +522,7 @@ namespace Mahou {
 					Hotkey.CallHotkey(HKConMorWor, id, ref hkcwdsOK, PrepareConvertMoreWords);
 					Hotkey.CallHotkey(HKTransliteration, id, ref hksTrslOK, ()=>KMHook.SelectionConversion(KMHook.ConvT.Transliteration));
 					Hotkey.CallHotkey(HKSelCustConv, id, ref hkSCCok, ()=>KMHook.SelectionConversion(KMHook.ConvT.Custom));
+					Hotkey.CallHotkey(HKShCMenuUM, id, ref hkSCMUM, ShowContextMenuUnderMouse);
 					ShiftInHotkey = Hotkey.ContainsModifier(((int)m.LParam & 0xFFFF), (int)WinAPI.MOD_SHIFT) ? true : false;
 					AltInHotkey = Hotkey.ContainsModifier(((int)m.LParam & 0xFFFF), (int)WinAPI.MOD_ALT) ? true : false;
 					CtrlInHotkey = Hotkey.ContainsModifier(((int)m.LParam & 0xFFFF), (int)WinAPI.MOD_CONTROL) ? true : false;
@@ -574,9 +575,9 @@ namespace Mahou {
 			s.Show();
 			s.Activate();
 			s.Location = new Point(Cursor.Position.X, Cursor.Position.Y-20);
-			var t = new System.Timers.Timer();
+			var t = new Timer();
 			t.Interval = time;
-			t.Elapsed += (_,__) => {
+			t.Tick += (_,__) => {
 				s.Close();
 				s.Dispose();
 				t.Stop();
@@ -692,6 +693,7 @@ namespace Mahou {
 			HKToggleMahou_tempEnabled = MMain.MyConfs.ReadBool("Hotkeys", "ToggleMahou_Enabled");
 			HKCycleCase_tempEnabled = MMain.MyConfs.ReadBool("Hotkeys", "CycleCase_Enabled");
 			HKSelCustConv_tempEnabled = MMain.MyConfs.ReadBool("Hotkeys", "SelectedTextToCustomConv_Enabled");
+			HKShCMenuUM_tempEnabled = MMain.MyConfs.ReadBool("Hotkeys", "ShowCMenuUnderMouse_Enabled");
 			#endregion
 			#region Hotkey doubles
 			Mainhk_tempDouble = MMain.MyConfs.ReadBool("Hotkeys", "ToggleMainWindow_Double");
@@ -712,6 +714,7 @@ namespace Mahou {
 			HKToggleMahou_tempDouble = MMain.MyConfs.ReadBool("Hotkeys", "ToggleMahou_Double");
 			HKCycleCase_tempDouble = MMain.MyConfs.ReadBool("Hotkeys", "CycleCase_Double");
 			HKSelCustConv_tempDouble = MMain.MyConfs.ReadBool("Hotkeys", "SelectedTextToCustomConv_Double");
+			HKShCMenuUM_tempDouble = MMain.MyConfs.ReadBool("Hotkeys", "ShowCMenuUnderMouse_Double");
 			#endregion
 			#region Hotkey modifiers
 			Mainhk_tempMods = MMain.MyConfs.Read("Hotkeys", "ToggleMainWindow_Modifiers");
@@ -733,6 +736,7 @@ namespace Mahou {
 			HKToggleMahou_tempMods = MMain.MyConfs.Read("Hotkeys", "ToggleMahou_Modifiers");
 			HKCycleCase_tempMods = MMain.MyConfs.Read("Hotkeys", "CycleCase_Modifiers");
 			HKSelCustConv_tempMods = MMain.MyConfs.Read("Hotkeys", "SelectedTextToCustomConv_Mods");
+			HKShCMenuUM_tempMods = MMain.MyConfs.Read("Hotkeys", "ShowCMenuUnderMouse_Mods");
 			#endregion
 			#region Hotkey keys
 			Mainhk_tempKey = MMain.MyConfs.ReadInt("Hotkeys", "ToggleMainWindow_Key");
@@ -754,6 +758,7 @@ namespace Mahou {
 			HKToggleMahou_tempKey = MMain.MyConfs.ReadInt("Hotkeys", "ToggleMahou_Key");
 			HKCycleCase_tempKey = MMain.MyConfs.ReadInt("Hotkeys", "CycleCase_Key");
 			HKSelCustConv_tempKey = MMain.MyConfs.ReadInt("Hotkeys", "SelectedTextToCustomConv_Key");
+			HKShCMenuUM_tempKey = MMain.MyConfs.ReadInt("Hotkeys", "ShowCMenuUnderMouse_Key");
 			#endregion
 			#region Lang Display colors
 			LDMouseFore_temp = GetColor(MMain.MyConfs.Read("Appearence", "MouseLTForeColor")); 
@@ -827,6 +832,7 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hotkeys", "ToggleMahou_Enabled", HKToggleMahou_tempEnabled.ToString());
 			MMain.MyConfs.Write("Hotkeys", "CycleCase_Enabled", HKCycleCase_tempEnabled.ToString());
 			MMain.MyConfs.Write("Hotkeys", "SelectedTextToCustomConv_Enabled", HKSelCustConv_tempEnabled.ToString());
+			MMain.MyConfs.Write("Hotkeys", "ShowCMenuUnderMouse_Enabled", HKShCMenuUM_tempEnabled.ToString());
 			#endregion
 			#region Hotkey doubles
 			MMain.MyConfs.Write("Hotkeys", "ToggleMainWindow_Double", Mainhk_tempDouble.ToString());
@@ -847,6 +853,7 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hotkeys", "ToggleMahou_Double", HKToggleMahou_tempDouble.ToString());
 			MMain.MyConfs.Write("Hotkeys", "CycleCase_Double", HKCycleCase_tempDouble.ToString());
 			MMain.MyConfs.Write("Hotkeys", "SelectedTextToCustomConv_Double", HKSelCustConv_tempDouble.ToString());
+			MMain.MyConfs.Write("Hotkeys", "ShowCMenuUnderMouse_Double", HKShCMenuUM_tempDouble.ToString());
 			#endregion
 			#region Hotkey modifiers
 			MMain.MyConfs.Write("Hotkeys", "ToggleMainWindow_Modifiers", Mainhk_tempMods);
@@ -868,6 +875,7 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hotkeys", "ToggleMahou_Modifiers", HKToggleMahou_tempMods);
 			MMain.MyConfs.Write("Hotkeys", "CycleCase_Modifiers", HKCycleCase_tempMods);
 			MMain.MyConfs.Write("Hotkeys", "SelectedTextToCustomConv_Mods", HKSelCustConv_tempMods);
+			MMain.MyConfs.Write("Hotkeys", "ShowCMenuUnderMouse_Mods", HKShCMenuUM_tempMods);
 			#endregion
 			#region Hotkey keys
 			MMain.MyConfs.Write("Hotkeys", "ToggleMainWindow_Key", Mainhk_tempKey.ToString());
@@ -889,6 +897,7 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hotkeys", "ToggleMahou_Key", HKToggleMahou_tempKey.ToString());
 			MMain.MyConfs.Write("Hotkeys", "CycleCase_Key", HKCycleCase_tempKey.ToString());
 			MMain.MyConfs.Write("Hotkeys", "SelectedTextToCustomConv_Key", HKSelCustConv_tempKey.ToString());
+			MMain.MyConfs.Write("Hotkeys", "ShowCMenuUnderMouse_Key", HKShCMenuUM_tempKey.ToString());
 			#endregion
 			UpdateLangDisplayTemps();
 			#region Lang Display colors
@@ -2176,8 +2185,8 @@ DEL "+restartMahouPath;
 			KInputs.MakeInput(new [] { KInputs.AddKey(Keys.LMenu, true), KInputs.AddKey(Keys.Tab, true) });
 			System.Threading.Thread.Sleep(1);
 			KInputs.MakeInput(new [] { KInputs.AddKey(Keys.LMenu, false), KInputs.AddKey(Keys.Tab, false) });
-			var t = new System.Timers.Timer();
-			t.Elapsed += (x, xx) => {
+			var t = new Timer();
+			t.Tick += (x, xx) => {
 				KMHook.ChangeLayout(true);
 				t.Stop();
 				t.Dispose();
@@ -2285,6 +2294,8 @@ DEL "+restartMahouPath;
 			    Hotkey.GetMods(HKCycleCase_tempMods), (int)Hotkey.HKID.CycleCase, HKCycleCase_tempDouble);
 			HKSelCustConv = new Hotkey(HKSelCustConv_tempEnabled, (uint)HKSelCustConv_tempKey, 
 			    Hotkey.GetMods(HKSelCustConv_tempMods), (int)Hotkey.HKID.CustomConversion, HKSelCustConv_tempDouble);
+			HKShCMenuUM = new Hotkey(HKShCMenuUM_tempEnabled, (uint)HKShCMenuUM_tempKey, 
+			    Hotkey.GetMods(HKShCMenuUM_tempMods), (int)Hotkey.HKID.ShowCMenuUnderMouse, HKShCMenuUM_tempDouble);
 			Logging.Log("Hotkeys initialized.");
 		}
 		public bool HasHotkey(Hotkey thishk) {
@@ -2345,7 +2356,7 @@ DEL "+restartMahouPath;
 			persistentLayout2Check = new Timer();
 			langPanelRefresh = new Timer();
 			old = new Timer();
-			KMHook.doublekey = new System.Timers.Timer();
+			KMHook.doublekey = new Timer();
 			#endregion
 			crtCheck.Interval = MMain.MyConfs.ReadInt("Timings", "LangTooltipForCaretRefreshRate");
 			crtCheck.Tick += (_, __) => UpdateCaredLD();
@@ -2395,7 +2406,7 @@ DEL "+restartMahouPath;
 				}
 			}, "caps_check_timer");
 			capsCheck.Interval = MMain.MyConfs.ReadInt("Timings", "CapsLockDisableRefreshRate");
-			KMHook.doublekey.Elapsed += (_, __) => {
+			KMHook.doublekey.Tick += (_, __) => {
 				if (hklOK)
 					hklOK = false;
 				if (hksOK)
@@ -2981,6 +2992,9 @@ DEL "+restartMahouPath;
 				if (HKSelCustConv_tempEnabled)
 					_regHK(Handle, (int)Hotkey.HKID.CustomConversion,
 					                      WinAPI.MOD_NO_REPEAT + Hotkey.GetMods(HKSelCustConv_tempMods),HKSelCustConv_tempKey);
+				if (HKShCMenuUM_tempEnabled)
+					_regHK(Handle, (int)Hotkey.HKID.ShowCMenuUnderMouse,
+					                      WinAPI.MOD_NO_REPEAT + Hotkey.GetMods(HKShCMenuUM_tempMods),HKShCMenuUM_tempKey);
 				if (!ChangeLayouByKey) return;
 				for(int i = 1; i != SpecKeySetCount+1; i++) {
 					var key = 0;
@@ -3279,6 +3293,9 @@ DEL "+restartMahouPath;
 				case 18:
 					UpdateHotkeyControls(HKSelCustConv_tempEnabled, HKSelCustConv_tempDouble, HKSelCustConv_tempMods, HKSelCustConv_tempKey);
 					break;
+				case 19:
+					UpdateHotkeyControls(HKShCMenuUM_tempEnabled, HKShCMenuUM_tempDouble, HKShCMenuUM_tempMods, HKShCMenuUM_tempKey);
+					break;
 			}
 		}
 		/// <summary>
@@ -3413,6 +3430,12 @@ DEL "+restartMahouPath;
 					HKSelCustConv_tempMods = (chk_WinInHotKey.Checked ? "Win + " : "") + txt_Hotkey_tempModifiers;
 					HKSelCustConv_tempKey = txt_Hotkey_tempKey;
 					break;
+				case 19:
+					HKShCMenuUM_tempEnabled = chk_HotKeyEnabled.Checked;
+					HKShCMenuUM_tempDouble = chk_DoubleHotkey.Checked;
+					HKShCMenuUM_tempMods = (chk_WinInHotKey.Checked ? "Win + " : "") + txt_Hotkey_tempModifiers;
+					HKShCMenuUM_tempKey = txt_Hotkey_tempKey;
+					break;
 			}
 		}
 		/// <summary>
@@ -3502,6 +3525,10 @@ DEL "+restartMahouPath;
 				if (jklXHidServ.jklFEX[3])
 					DeleteOrMove(jkl+"x86.dll");
 			}
+		}
+		void ShowContextMenuUnderMouse() {
+			icon.trIcon.ContextMenuStrip.Show(Cursor.Position);
+			icon.trIcon.ContextMenuStrip.Focus();
 		}
 		#region Updates functions
 		void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e) {
@@ -4013,7 +4040,8 @@ DEL ""ExtractASD.cmd""";
 										MMain.Lang[Languages.Element.TranslateSelection],
 										MMain.Lang[Languages.Element.ToggleMahou],
 										MMain.Lang[Languages.Element.CycleCase],
-										MMain.Lang[Languages.Element.CustomConversion]
+										MMain.Lang[Languages.Element.CustomConversion],
+										MMain.Lang[Languages.Element.ShowCMenuUnderMouse]
 										});
 			#endregion
 			#region LangPanel/TranslatePanel
@@ -4274,7 +4302,7 @@ DEL ""ExtractASD.cmd""";
 			tray_hotkeys.Clear();
 			var mm = Regex.Replace(mahoumenu, "\r?\n", "\n");
 			var mmls = mm.Split('\n');
-			var mms = new MenuItem();
+			var mms = new ToolStripMenuItem();
 			mms.Text = "Mahou Custom Menu";
 			foreach (var me in mmls) {
 				if (me.StartsWith("||||")) { continue; }
@@ -4315,19 +4343,19 @@ DEL ""ExtractASD.cmd""";
 					tray_hotkeys.Add(hotk, () => menuhandle(act, arg));
 					text += "    [" + Regex.Replace(hotk.Replace("^^", ""), "((^|\\+)[lr]?.)", m => m.ToString().ToUpper()) + "]";
 				}
-				mms.MenuItems.Add(new MenuItem(text, (_,__) => menuhandle(act, arg)));
+				mms.DropDownItems.Add(new ToolStripMenuItem(text,null,(_,__) => menuhandle(act, arg)));
 			}
-			var wfm = new System.Timers.Timer();
+			var wfm = new Timer();
 			wfm.Interval = 1000;
-			wfm.Elapsed += (x,xx) => {
+			wfm.Tick += (x,xx) => {
 				if (MMain.mahou != null) {
-					List<MenuItem> lastitems = new List<MenuItem>();
-					for(var i = 0; i != MMain.mahou.icon.trIcon.ContextMenu.MenuItems.Count; i++) {
-						lastitems.Add(MMain.mahou.icon.trIcon.ContextMenu.MenuItems[i]);
+					List<ToolStripMenuItem> lastitems = new List<ToolStripMenuItem>();
+					for(var i = 0; i != MMain.mahou.icon.trIcon.ContextMenuStrip.Items.Count; i++) {
+						lastitems.Add((ToolStripMenuItem)MMain.mahou.icon.trIcon.ContextMenuStrip.Items[i]);
 					}
-					MMain.mahou.icon.trIcon.ContextMenu.MenuItems.Clear();
-					MMain.mahou.icon.trIcon.ContextMenu.MenuItems.Add(mms);
-					MMain.mahou.icon.trIcon.ContextMenu.MenuItems.AddRange(lastitems.ToArray());
+					MMain.mahou.icon.trIcon.ContextMenuStrip.Items.Clear();
+					MMain.mahou.icon.trIcon.ContextMenuStrip.Items.Add(mms);
+					MMain.mahou.icon.trIcon.ContextMenuStrip.Items.AddRange(lastitems.ToArray());
 					wfm.Stop();
 					wfm.Dispose();
 				}
@@ -4807,8 +4835,8 @@ DEL ""ExtractASD.cmd""";
 		void PctBkpCopyClick(object sender, EventArgs e) {
 			if (!pctbkp) {
 				pctbkp = true;
-				var t = new System.Timers.Timer();
-				t.Elapsed += (_, ___) => {
+				var t = new Timer();
+				t.Tick += (_, ___) => {
 					pctBkpCopy.BackgroundImage = Properties.Resources.clip;
 					pctbkp = false;
 					t.Stop();
@@ -4828,8 +4856,8 @@ DEL ""ExtractASD.cmd""";
 		void PctResPasteClick(object sender, EventArgs e) {
 			if (!pctres) {
 				pctres = true;
-				var t = new System.Timers.Timer();
-				t.Elapsed += (_, ___) => {
+				var t = new Timer();
+				t.Tick += (_, ___) => {
 					pctResPaste.BackgroundImage = Properties.Resources.clip;
 					pctres = false;
 					t.Stop();

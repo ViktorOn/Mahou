@@ -6,35 +6,37 @@ namespace Mahou {
         public event EventHandler<EventArgs> Exit, EnaDisable,
        		ShowHide, Restart, ConvertClip, TransliClip, ChangeLt, MLBAct;
         public NotifyIcon trIcon;
-        ContextMenu cMenu;
-        MenuItem Exi, ShHi, EnDis, Resta, ChLa;
+        ContextMenuStrip cMenu;
+        ToolStripMenuItem Exi, ShHi, EnDis, Resta, ChLa;
         /// <summary> Clipboard menu item. </summary>
-		MenuItem Clip, CConvert, CTransli, CLast;
+		ToolStripMenuItem Clip, CConvert, CTransli, CLast;
         /// <summary>Initializes new tray icon.</summary>
         /// <param name="visible">State of tray icon's visibility on initialize.</param>
         public TrayIcon(bool? visible = true) {
             trIcon = new NotifyIcon();
-            cMenu = new ContextMenu();
+            cMenu = new ContextMenuStrip();
             trIcon.Icon = Properties.Resources.MahouTrayHD;
             trIcon.Visible = visible == true;
-            CConvert = new MenuItem("Convert", ConvertClipHandler);
-            CTransli = new MenuItem("Transliterate", TransliClipHandler);
-            CLast = new MenuItem("Latest: (not implemented)"); // Dynamically add the last later
-            Clip = new MenuItem("Clipboard", new []{CConvert, CTransli, CLast});
-            Exi = new MenuItem("Exit", ExitHandler);
-            ShHi = new MenuItem("Show", ShowHideHandler);
-            EnDis = new MenuItem("Enable", EnaDisableHandler);
-            Resta = new MenuItem("Restart", RestartHandler);
-            ChLa = new MenuItem("Change layout", ChangeLayout);
+            CConvert = new ToolStripMenuItem("Convert",null,ConvertClipHandler);
+            CTransli = new ToolStripMenuItem("Transliterate",null,TransliClipHandler);
+            CLast = new ToolStripMenuItem("Latest: (not implemented)"); // Dynamically add the last later
+            Clip = new ToolStripMenuItem("Clipboard"); Clip.DropDownItems.AddRange(new []{CConvert, CTransli, CLast});
+            Exi = new ToolStripMenuItem("Exit",null,ExitHandler);
+            ShHi = new ToolStripMenuItem("Show",null,ShowHideHandler);
+            EnDis = new ToolStripMenuItem("Enable",null,EnaDisableHandler);
+            Resta = new ToolStripMenuItem("Restart",null,RestartHandler);
+            ChLa = new ToolStripMenuItem("Change layout",null,ChangeLayout);
             EnDis.Checked = true;
-            cMenu.MenuItems.Add(ShHi);
-            cMenu.MenuItems.Add(Clip);
-            cMenu.MenuItems.Add(EnDis);
-            cMenu.MenuItems.Add(ChLa);
-            cMenu.MenuItems.Add(Resta);
-            cMenu.MenuItems.Add(Exi);
+            cMenu.Items.Add(ShHi);
+            cMenu.Items.Add(Clip);
+            cMenu.Items.Add(EnDis);
+            cMenu.Items.Add(ChLa);
+            cMenu.Items.Add(Resta);
+            cMenu.Items.Add(Exi);
+            cMenu.BackColor = System.Drawing.SystemColors.Control;
+            cMenu.RenderMode = ToolStripRenderMode.System;
             trIcon.Text = "Mahou (魔法)\nA magical layout switcher.";
-            trIcon.ContextMenu = cMenu;
+            trIcon.ContextMenuStrip = cMenu;
             trIcon.MouseClick += (_,__) => { if (__.Button == MouseButtons.Left) MLBAction(_,__); };
         }
         public void CheckShHi(bool shhi) {

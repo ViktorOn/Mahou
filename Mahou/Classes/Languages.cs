@@ -149,6 +149,7 @@ public class Languages
 		ToggleMahou,
 		CycleCase,
 		CustomConversion,
+		ShowCMenuUnderMouse,
 		#endregion
 		#region LangPanel
 		DisplayLangPanel,
@@ -449,6 +450,7 @@ public class Languages
 		{ Element.ToggleMahou, "Toogle Pause Mahou" }, 
 		{ Element.CycleCase, "Cycle selected text case" }, 
 		{ Element.CustomConversion, "Custom text conversion" }, 
+		{ Element.ShowCMenuUnderMouse, "Show tray context menu under mouse" }, 
 		#endregion
 		#region LangPanel
 		{ Element.DisplayLangPanel, "Display language panel." },
@@ -770,6 +772,7 @@ public class Languages
 		{ Element.ToggleMahou, "Переключать паузу Mahou" }, 
 		{ Element.CycleCase, "Цикличное переключение регистра" }, 
 		{ Element.CustomConversion, "Особое изменение текста" }, 
+		{ Element.ShowCMenuUnderMouse, "Показать меню трея рядом с мышью" }, 
 		#endregion
 		#region LangPanel
 		{ Element.DisplayLangPanel, "Отображать языковую панель." },
