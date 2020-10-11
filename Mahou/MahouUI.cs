@@ -556,34 +556,45 @@ namespace Mahou {
 			}
 			base.WndProc(ref m);
 		}
+		static bool tooltip = true;
 		public static void ShowTooltip(string text, int time) {
-			var s = new Form();
-			s.FormBorderStyle = FormBorderStyle.None;
-			s.MinimumSize = new Size(2,2);
-			s.TopMost = true;
-			var i = new Label();
-			i.AutoSize = true;
-			i.Text = "Mahou: "+ text;
-			i.Size = TextRenderer.MeasureText(i.Text, i.Font);
-			i.Height = 24;
-			s.BackColor = i.BackColor = Color.Black;
-			i.ForeColor = Color.White;
-			i.TextAlign = ContentAlignment.MiddleCenter;
-			s.Size = new Size(i.Size.Width+1, i.Size.Height-6);
-			s.Controls.Add(i);
-			i.Location = new Point(0,0);
-			s.Show();
-			s.Activate();
-			s.Location = new Point(Cursor.Position.X, Cursor.Position.Y-20);
-			var t = new Timer();
-			t.Interval = time;
-			t.Tick += (_,__) => {
-				s.Close();
-				s.Dispose();
-				t.Stop();
-				t.Dispose();
-			};
-			t.Start();
+			if (tooltip) {
+				tooltip = false;
+				var s = new Form();
+				s.FormBorderStyle = FormBorderStyle.None;
+				s.MinimumSize = new Size(2,2);
+				s.TopMost = true;
+				var i = new TextBox();
+				i.ReadOnly = true;
+				i.TabStop = false;
+				i.Text = "Mahou: "+ text;
+				i.Size = TextRenderer.MeasureText(i.Text, i.Font);
+				if (text.Contains("\r\n")) {
+					i.Multiline = true;
+				}
+				i.AutoSize = true;
+				i.Height = i.Font.Height*(i.Multiline?2:1)+10;
+				i.BorderStyle = BorderStyle.None;
+				s.BackColor = i.BackColor = Color.Black;
+				i.ForeColor = Color.White;
+				i.TextAlign = HorizontalAlignment.Left;
+				s.Size = new Size(i.Size.Width+1, i.Size.Height-6);
+				s.Controls.Add(i);
+				i.Location = new Point(0,0);
+				s.Show();
+				s.Activate();
+				s.Location = new Point(Cursor.Position.X, Cursor.Position.Y-20);
+				var t = new Timer();
+				t.Interval = time;
+				t.Tick += (_,__) => {
+					tooltip = true;
+					s.Close();
+					s.Dispose();
+					t.Stop();
+					t.Dispose();
+				};
+				t.Start();
+			}
 		}
 		public static void CCReset(string info = "") {
 			if (CycleCaseReset) {
@@ -4202,7 +4213,12 @@ DEL ""ExtractASD.cmd""";
 		}
 		#endregion
 		#region Links
-		static void __lopen(string file, string type, bool dir = false) {
+		static void __lopen(string file, string type, bool dir = false, bool copy = false) {
+			if (copy) {
+				KMHook.RestoreClipBoard(file);
+				ShowTooltip(MMain.Lang[Languages.Element.DbgInf_Copied] + "\r\n" + file, 800);
+				return;
+			}
 			string fORd = dir ? Path.GetDirectoryName(file) : file;
 			try {
 				Process.Start(fORd);
@@ -4221,22 +4237,22 @@ DEL ""ExtractASD.cmd""";
 			__lopen(Logging.log, "txt", e.Button == MouseButtons.Right);
 		}
 		void Lnk_RepositoryLinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-			__lopen("http://github.com/BladeMight/Mahou", "http");
+			__lopen("http://github.com/BladeMight/Mahou", "http", false, e.Button == MouseButtons.Right);
 		}
 		void Lnk_SiteLinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-			__lopen("http://blademight.github.io/Mahou/", "http");
+			__lopen("http://blademight.github.io/Mahou/", "http", false, e.Button == MouseButtons.Right);
 		}
 		void Lnk_WikiLinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-			__lopen("http://github.com/BladeMight/Mahou/wiki", "http");
+			__lopen("http://github.com/BladeMight/Mahou/wiki", "http", false, e.Button == MouseButtons.Right);
 		}
 		void Lnk_ReleasesLinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-			__lopen("http://github.com/BladeMight/Mahou/releases", "http");
+			__lopen("http://github.com/BladeMight/Mahou/releases", "http", false, e.Button == MouseButtons.Right);
 		}
 		void Lnk_EmailLinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-			__lopen("mailto:BladeMight@gmail.com", "mailto");
+			__lopen("mailto:BladeMight@gmail.com", "mailto", false, e.Button == MouseButtons.Right);
 		}
 		void Lnk_pluginLinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-			__lopen("http://github.com/BladeMight/MahouCaretDisplayServer", "http");
+			__lopen("http://github.com/BladeMight/MahouCaretDisplayServer", "http", false, e.Button == MouseButtons.Right);
 		}
 		void Lnk_SnipOpenLinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
 			__lopen(snipfile, "txt");
