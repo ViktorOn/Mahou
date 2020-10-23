@@ -3227,10 +3227,13 @@ namespace Mahou {
 			altRP = Hotkey.ContainsModifier(mods, (int)WinAPI.MOD_ALT);
 			winRP = Hotkey.ContainsModifier(mods, (int)WinAPI.MOD_WIN);
 		}
+		public static bool IsKDown(Keys k) {
+			return (WinAPI.GetAsyncKeyState((int)k) & 0x8000) != 0;
+		}
 		public static void WaitKey2Breleased(Keys key) {
-			int k = 1;
-			while (k>0) {
-				k = WinAPI.GetAsyncKeyState(key) & 0x8000;
+			bool k = true;
+			while (k) {
+				k = IsKDown(key);
 				Thread.Sleep(15);
 				Debug.WriteLine("k"+k);
 			}
@@ -3244,40 +3247,73 @@ namespace Mahou {
 			if (modstoup <= 0) return;
 			Debug.WriteLine(">> SMU: " + Hotkey.GetMods(modstoup));
 			DoSelf(() => {
+		       	var modsUP = "";
 				if (Hotkey.ContainsModifier(modstoup, (int)WinAPI.MOD_WIN)) {
 		       		if (waitwin){
 						WaitKey2Breleased(Keys.LWin);
 						WaitKey2Breleased(Keys.RWin);
+						win = win_r = false;
+						LLHook.SetModifier(WinAPI.MOD_WIN, false);
+						LLHook.SetModifier(WinAPI.MOD_WIN, false, false);
+						modsUP += "LWin,RWin,";
 		       		} else {
-						KMHook.KeybdEvent(Keys.LWin, 2); // Right Win Up
-						KMHook.KeybdEvent(Keys.RWin, 2); // Left Win Up
+		       			if (IsKDown(Keys.LWin)) {
+							KMHook.KeybdEvent(Keys.LWin, 2); // Left Win Up
+							win = false;
+							LLHook.SetModifier(WinAPI.MOD_WIN, false);
+							modsUP += "LWin,";
+		       			}
+		       			if (IsKDown(Keys.RWin)) {
+							KMHook.KeybdEvent(Keys.RWin, 2); // Right Win Up
+							win_r = false;
+							LLHook.SetModifier(WinAPI.MOD_WIN, false, false);
+							modsUP += "RWin,";
+			       		}
 		       		}
-					win = win_r = false;
-					LLHook.SetModifier(WinAPI.MOD_WIN, false);
-					LLHook.SetModifier(WinAPI.MOD_WIN, false, false);
 				}
 				if (Hotkey.ContainsModifier(modstoup, (int)WinAPI.MOD_SHIFT)) {
-					KMHook.KeybdEvent(Keys.RShiftKey, 2); // Right Shift Up
-					KMHook.KeybdEvent(Keys.LShiftKey, 2); // Left Shift Up
-					shift = shift_r = false;
-					LLHook.SetModifier(WinAPI.MOD_SHIFT, false);
-					LLHook.SetModifier(WinAPI.MOD_SHIFT, false, false);
+	       			if (IsKDown(Keys.RShiftKey)) {
+						KMHook.KeybdEvent(Keys.RShiftKey, 2); // Right Shift Up
+						shift_r = false;
+						LLHook.SetModifier(WinAPI.MOD_SHIFT, false, false);
+						modsUP += "RShift,";
+		       		}
+	       			if (IsKDown(Keys.LShiftKey)) {
+						KMHook.KeybdEvent(Keys.LShiftKey, 2); // Left Shift Up
+						LLHook.SetModifier(WinAPI.MOD_SHIFT, false);
+						shift = false;
+						modsUP += "LShift,";
+					}
 				}
 				if (Hotkey.ContainsModifier(modstoup, (int)WinAPI.MOD_CONTROL)) {
-					KMHook.KeybdEvent(Keys.RControlKey, 2); // Right Control Up
-					KMHook.KeybdEvent(Keys.LControlKey, 2); // Left Control Up
-					ctrl = ctrl_r = false;
-					LLHook.SetModifier(WinAPI.MOD_CONTROL, false);
-					LLHook.SetModifier(WinAPI.MOD_CONTROL, false, false);
+	       			if (IsKDown(Keys.RControlKey)) {
+						KMHook.KeybdEvent(Keys.RControlKey, 2); // Right Control Up
+						ctrl_r = false;
+						LLHook.SetModifier(WinAPI.MOD_CONTROL, false);
+						modsUP += "RCtrl,";
+			       	}
+	       			if (IsKDown(Keys.LControlKey)) {
+						KMHook.KeybdEvent(Keys.LControlKey, 2); // Left Control Up
+						ctrl = false;
+						LLHook.SetModifier(WinAPI.MOD_CONTROL, false, false);
+						modsUP += "LCtrl,";
+		       		}
 				}
 				if (Hotkey.ContainsModifier(modstoup, (int)WinAPI.MOD_ALT)) {
-					KMHook.KeybdEvent(Keys.RMenu, 2); // Right Alt Up
-					KMHook.KeybdEvent(Keys.LMenu, 2); // Left Alt Up
-					alt = alt_r = false;
-					LLHook.SetModifier(WinAPI.MOD_ALT, false);
-					LLHook.SetModifier(WinAPI.MOD_ALT, false, false);
+	       			if (IsKDown(Keys.RMenu)) {
+						KMHook.KeybdEvent(Keys.RMenu, 2); // Right Alt Up
+						alt_r = false;
+						LLHook.SetModifier(WinAPI.MOD_ALT, false, false);
+						modsUP += "RAlt,";
+		       		}
+	       			if (IsKDown(Keys.LMenu)) {
+						KMHook.KeybdEvent(Keys.LMenu, 2); // Left Alt Up
+						alt = false;
+						LLHook.SetModifier(WinAPI.MOD_ALT, false);
+						modsUP += "LAlt,";
+		       		}
 				}
-				Logging.Log("Modifiers ["+modstoup+ "] sent up.");
+		       	Logging.Log("Modifiers ["+((modsUP.Length >2) ? modsUP.Substring(0,modsUP.Length-1) : "")+ "] sent up.");
               }, "sendmodsup");
 		}
 		/// <summary>
