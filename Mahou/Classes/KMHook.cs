@@ -1598,7 +1598,7 @@ namespace Mahou {
 			}
 			return keys;
 		}
-		static void SimKeyboard(string args) {
+		public static void SimKeyboard(string args) {
 			string[] multi_args;
 			var all_keys = new List<List<Keys>>();
 			var delay = 0;

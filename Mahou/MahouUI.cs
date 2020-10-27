@@ -457,11 +457,7 @@ namespace Mahou {
 						clcl = true;
 						var lastcl = hklineOK;
 						Hotkey.CallHotkey(HKCLine, Hotkey.HKID.ConvertLastLine, ref hklineOK, () => {
-						    var line = new List<KMHook.YuKey>();
-							foreach (var word in MMain.c_words) {
-								line.AddRange(word);
-							}
-							KMHook.ConvertLast(line);
+		                  	ConvertLastLine();
 							Debug.WriteLine("DISPOSING STIMER");
 							stimer.Dispose();
 							conv = true;
@@ -501,16 +497,7 @@ namespace Mahou {
 						} else 
 							Hotkey.CallHotkey(HKCLast, id, ref hklOK, () => KMHook.ConvertLast(MMain.c_word));
 					}
-					Hotkey.CallHotkey(HKCLine, id, ref hklineOK, () => { 
-						var line = new List<KMHook.YuKey>();
-						foreach (var word in MMain.c_words) {
-							line.AddRange(word);
-							foreach(var x in word) {
-								Debug.WriteLine("KK: " + x.key);
-							}
-						}
-						KMHook.ConvertLast(line);
-					});
+					Hotkey.CallHotkey(HKCLine, id, ref hklineOK, ConvertLastLine);
 				}
 				if (!KMHook.ExcludedProgram() && !specific) {
 					Hotkey.CallHotkey(HKCycleCase, id, ref hkccOK, CycleCase);
@@ -530,17 +517,7 @@ namespace Mahou {
 					KMHook.csdoing = false;
 				}
 				if (HKSymIgn.Enabled) {
-					Hotkey.CallHotkey(HKSymIgn, id, ref hkSIOK, () => { 
-						if (SymIgnEnabled) {
-							SymIgnEnabled = false;
-							MMain.MyConfs.WriteSave("Functions", "SymbolIgnoreModeEnabled", "false");
-							Icon = icon.trIcon.Icon = Properties.Resources.MahouTrayHD;
-						} else {
-							MMain.MyConfs.WriteSave("Functions", "SymbolIgnoreModeEnabled", "true");
-							SymIgnEnabled = true;
-							Icon = icon.trIcon.Icon = Properties.Resources.MahouSymbolIgnoreMode;
-						}
-	       		    });
+					Hotkey.CallHotkey(HKSymIgn, id, ref hkSIOK, ToggleSymIgn);
 				}
 				Hotkey.CallHotkey(HKRestart, id, ref dummy, Restart);
 				Hotkey.CallHotkey(Mainhk, id, ref hkShWndOK, ToggleVisibility);
@@ -555,6 +532,27 @@ namespace Mahou {
 				KInputs.MakeInput(new []{KInputs.AddKey(Keys.LMenu, false)});
 			}
 			base.WndProc(ref m);
+		}
+		static void ToggleSymIgn() { 
+			if (SymIgnEnabled) {
+				SymIgnEnabled = false;
+				MMain.MyConfs.WriteSave("Functions", "SymbolIgnoreModeEnabled", "false");
+				MMain.mahou.Icon = MMain.mahou.icon.trIcon.Icon = Properties.Resources.MahouTrayHD;
+			} else {
+				MMain.MyConfs.WriteSave("Functions", "SymbolIgnoreModeEnabled", "true");
+				SymIgnEnabled = true;
+				MMain.mahou.Icon = MMain.mahou.icon.trIcon.Icon = Properties.Resources.MahouSymbolIgnoreMode;
+			}
+	    }
+		static void ConvertLastLine() {
+			var line = new List<KMHook.YuKey>();
+			foreach (var word in MMain.c_words) {
+				line.AddRange(word);
+				foreach(var x in word) {
+					Debug.WriteLine("KK: " + x.key);
+				}
+			}
+			KMHook.ConvertLast(line);
 		}
 		static bool tooltip = true;
 		public static void ShowTooltip(string text, int time) {
@@ -4309,6 +4307,53 @@ DEL ""ExtractASD.cmd""";
 				} catch(Exception e) {
 					MessageBox.Show(e.Message+"\n"+arg, "Mahou.mm => " + MMain.Lang[Languages.Element.Error], MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				}
+			} else if (act == "multi") {
+				var s = arg.Split('|');
+//				var by2 = (s.Length-1)%2 == 0;
+//				if (by2) {
+				for (int i = 0; i < s.Length-1; i+=2) {
+					if (s[i].ToLower() == "multi") continue;
+//						MessageBox.Show("multi"+i+" " + s[i] + " => " +s[i+1]);
+					menuhandle(s[i], s[i+1]);
+				}
+//				}
+			} else if (act == "kbd") {
+//				MessageBox.Show("KBD: " + arg);
+				KMHook.SendModsUp(15);
+				KMHook.SimKeyboard(arg);
+			} else if (act == "hk") {
+				if (arg.Length > 1) {
+					arg = arg.ToLower();
+					int x = -1;
+					Int32.TryParse(arg[1].ToString(), out x);
+					if (x >= 0) {
+						if (arg[0]=='s') {
+							KMHook.SendModsUp(15);
+							if (x <= 6)
+								KMHook.SelectionConversion((KMHook.ConvT)x);
+							else {
+								if (x==7) KMHook.ConvertSelection();
+								if (x==8) MMain.mahou.CycleCase();
+								if (x==9) ShowSelectionTranslation();	
+							}
+						}
+						if (arg[0]=='c') {
+							KMHook.SendModsUp(15);
+							if(x==0)KMHook.ConvertLast(MMain.c_word);
+							if(x==1)ConvertLastLine();
+							if(x==2)MMain.mahou.PrepareConvertMoreWords();
+						}
+						if (arg[0]=='h') {
+							if(x==0)MMain.mahou.ToggleVisibility();
+							if(x==1)MMain.mahou.Restart();
+							if(x==2)MMain.mahou.ExitProgram();
+							if(x==3)ToggleSymIgn();
+							if(x==4)MMain.mahou.ToggleLangPanel();
+							if(x==5)MMain.mahou.ToggleMahou();
+							if(x==6)MMain.mahou.ShowContextMenuUnderMouse();
+						}
+					}
+				}
 			} else {
 				MessageBox.Show("Unknown action: " + act, "No such action",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
@@ -4343,10 +4388,14 @@ DEL ""ExtractASD.cmd""";
 						if (type == 1) {
 							if (buf.StartsWith("^^"))
 								hotk = buf;
-							else 
-								act = buf;							
+							else
+								act = buf;
 						}
 						if (type == last) { arg = buf+c; }
+						if (act.ToLower() == "multi") {
+							arg = me.Substring(i+1, me.Length-i-1);
+							break;
+						}
 						type++;
 						buf = "";
 						lc = c;
