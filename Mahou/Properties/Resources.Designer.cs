@@ -83,6 +83,26 @@ namespace Mahou.Properties {
 		/// <summary>
 		///   Looks up a localized resource of type System.Drawing.Bitmap.
 		/// </summary>
+		public static System.Drawing.Bitmap caps {
+			get {
+				object obj = ResourceManager.GetObject("caps", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		/// <summary>
+		///   Looks up a localized resource of type System.Drawing.Bitmap.
+		/// </summary>
+		public static System.Drawing.Bitmap caps_on {
+			get {
+				object obj = ResourceManager.GetObject("caps_on", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		/// <summary>
+		///   Looks up a localized resource of type System.Drawing.Bitmap.
+		/// </summary>
 		public static System.Drawing.Bitmap clip {
 			get {
 				object obj = ResourceManager.GetObject("clip", resourceCulture);
@@ -243,6 +263,26 @@ namespace Mahou.Properties {
 		/// <summary>
 		///   Looks up a localized resource of type System.Drawing.Bitmap.
 		/// </summary>
+		public static System.Drawing.Bitmap num {
+			get {
+				object obj = ResourceManager.GetObject("num", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		/// <summary>
+		///   Looks up a localized resource of type System.Drawing.Bitmap.
+		/// </summary>
+		public static System.Drawing.Bitmap num_on {
+			get {
+				object obj = ResourceManager.GetObject("num_on", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		/// <summary>
+		///   Looks up a localized resource of type System.Drawing.Bitmap.
+		/// </summary>
 		public static System.Drawing.Bitmap po {
 			get {
 				object obj = ResourceManager.GetObject("po", resourceCulture);
@@ -256,6 +296,26 @@ namespace Mahou.Properties {
 		public static System.Drawing.Bitmap ru {
 			get {
 				object obj = ResourceManager.GetObject("ru", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		/// <summary>
+		///   Looks up a localized resource of type System.Drawing.Bitmap.
+		/// </summary>
+		public static System.Drawing.Bitmap scr {
+			get {
+				object obj = ResourceManager.GetObject("scr", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		/// <summary>
+		///   Looks up a localized resource of type System.Drawing.Bitmap.
+		/// </summary>
+		public static System.Drawing.Bitmap scr_on {
+			get {
+				object obj = ResourceManager.GetObject("scr_on", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}

@@ -295,6 +295,68 @@ namespace Mahou {
 				armt.Start();
 			}
 		}
+		static NotifyIcon[] Ticons;
+		static Timer ttmr;
+		static bool[] nvisible;
+		public static void NCS_tray() {
+			var icons = new []{Properties.Resources.num, Properties.Resources.caps, Properties.Resources.scr};
+			var icons_on = new []{Properties.Resources.num_on, Properties.Resources.caps_on, Properties.Resources.scr_on};
+			if (Ticons == null)
+				Ticons = new NotifyIcon[3];
+			var ncs = MMain.MyConfs.Read("Hidden", "NCS").ToUpper();
+			nvisible = new []{ncs.Contains("N"), ncs.Contains("C"), ncs.Contains("S")};
+			var Tstates = new bool[3]{Control.IsKeyLocked(Keys.NumLock), Control.IsKeyLocked(Keys.CapsLock), Control.IsKeyLocked(Keys.Scroll)};
+			for (int v = 0; v < 3; v++) {
+				if (!nvisible[v])continue;
+				NotifyIcon t;
+				if (Ticons[v] == null) t = new NotifyIcon(); else t = Ticons[v];
+				if (Tstates[v])
+					t.Icon = Icon.FromHandle(icons_on[v].GetHicon());
+				else
+					t.Icon = Icon.FromHandle(icons[v].GetHicon());
+				Ticons[v] = t;
+			}
+			for(int v = 2; v >=0; v--) { 
+				if (!nvisible[v])continue;
+				Ticons[v].Visible = true; 
+			}
+			if (ttmr == null) {
+				ttmr = new Timer();
+				ttmr.Tick += (_, __) => {
+					var tTstates = new bool[3]{Control.IsKeyLocked(Keys.NumLock), Control.IsKeyLocked(Keys.CapsLock), Control.IsKeyLocked(Keys.Scroll)};
+					int diff = 0;
+					for (int v = 0; v < 3; v++) {
+						if (!nvisible[v])continue;
+						var t = Ticons[v];
+						if (Tstates[v] == tTstates[v])continue;
+						diff++;
+						if (tTstates[v])
+							t.Icon = Icon.FromHandle(icons_on[v].GetHicon());
+						else
+							t.Icon = Icon.FromHandle(icons[v].GetHicon());
+					}
+					if (diff >0) 
+						Tstates = tTstates;
+				};
+				ttmr.Interval = 50;
+				ttmr.Start();
+			}
+		}
+		public static void NCS_destroy() {
+			if (ttmr != null) {
+				ttmr.Stop();
+				ttmr.Dispose();
+				ttmr = null;
+			}
+			if (Ticons != null) {
+				for (int v = 0; v<3; v++) {
+					if (!nvisible[v]) continue;
+					if (Ticons[v].Visible) Ticons[v].Visible = false;
+					Ticons[v].Dispose();
+				}
+				Ticons = null;
+			}
+		}
 		public static double xr = 1, yr = 1;
 		public static void DPISCALE_CONTROL(Control c) {
 			int ww = Convert.ToInt32(Convert.ToDouble(c.Width)*xr);
@@ -1623,6 +1685,11 @@ namespace Mahou {
 			}
 			UnregisterHotkeys();
 			RegisterHotkeys();
+			if (MMain.MyConfs.ReadBool("Hidden", "NCS_tray")) {
+				NCS_tray();
+			} else {
+				NCS_destroy();
+			}
 			Memory.Flush();
 			Logging.Log("All configurations loaded.");
 		}
@@ -2874,6 +2941,7 @@ DEL "+restartMahouPath;
 			if (langPanelRefresh != null) { langPanelRefresh.Stop(); langPanelRefresh.Dispose(); }
 			if (persistentLayout1Check != null) { persistentLayout1Check.Stop(); persistentLayout1Check.Dispose(); }
 			if (persistentLayout2Check != null) { persistentLayout2Check.Stop(); persistentLayout2Check.Dispose(); }
+			NCS_destroy();
 		}
 		/// <summary>Exits Mahou.</summary>
 		public void ExitProgram() {
