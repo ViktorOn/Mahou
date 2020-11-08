@@ -223,15 +223,16 @@ namespace Mahou {
 				if (MahouUI.LangPanelUpperArrow || MahouUI.mouseLTUpperArrow || MahouUI.caretLTUpperArrow) {
 					sym = getSym(vkCode);
 			}
+			var ku = IsUpperInput();
 			if (MahouUI.LangPanelDisplay)
 				if (MahouUI.LangPanelUpperArrow)
-					MMain.mahou._langPanel.DisplayUpper(sym_upr);
+					MMain.mahou._langPanel.DisplayUpper(ku);
 			if (MahouUI.MouseLangTooltipEnabled)
 				if (MahouUI.mouseLTUpperArrow)
-					MMain.mahou.mouseLangDisplay.DisplayUpper(sym_upr);
+					MMain.mahou.mouseLangDisplay.DisplayUpper(ku);
 			if (MahouUI.CaretLangTooltipEnabled)
 				if (MahouUI.caretLTUpperArrow)
-					MMain.mahou.caretLangDisplay.DisplayUpper(sym_upr);
+					MMain.mahou.caretLangDisplay.DisplayUpper(ku);
 			#endregion
 			#region InputHistory
 			if (MahouUI.WriteInputHistory) {
