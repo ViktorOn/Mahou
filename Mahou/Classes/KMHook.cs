@@ -1890,6 +1890,13 @@ namespace Mahou {
 								AS_IGN_fun();
 						    	return;
 							}
+							if (specificKey == 13 && ((Key == Keys.RShiftKey && shift) || (Key == Keys.LShiftKey && shift_r)) &&
+							   !alt && !alt_r && !ctrl_r && !ctrl && !win && !win_r) {
+								Logging.Log("[SPKEY] > Changing layout by LShift+RShift key.");
+								ChangeLayout();
+								AS_IGN_fun();
+						    	return;
+							}
 //							if (catched) {
 //			       			    if (Key == Keys.LMenu)
 //									DoSelf(()=>{ Thread.Sleep(150); KeybdEvent(Keys.LMenu, 0); KeybdEvent(Keys.LMenu, 2); });
@@ -1989,6 +1996,14 @@ namespace Mahou {
 								matched = true;
 								AS_IGN_fun();
 								DoSelf(()=>{ KeybdEvent(Keys.RMenu, 0); KeybdEvent(Keys.RMenu, 2); }, "altgr_spkey");
+						    	return;
+							}
+							if (specificKey == 13 && ((Key == Keys.RShiftKey && shift) || (Key == Keys.LShiftKey && shift_r)) &&
+							   !alt && !alt_r && !ctrl_r && !ctrl && !win && !win_r) {
+								Logging.Log("[SPKEY] > Switching to specific layout by LShift+RShift key.");
+								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
+								matched = true;
+								AS_IGN_fun();
 						    	return;
 							}
 							try {
