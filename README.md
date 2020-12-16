@@ -64,7 +64,7 @@ Mahou находится под GPL v2+.
 
 Кошельки:
 
-- Яндекс.Деньги: 410015057363201 или http://yasobe.ru/na/mahou
+- Яндекс.Деньги: 410015057363201 или http://sobe.ru/na/mahou
 - MasterCard: 5168 7573 3941 2985
 - PayPal: [![](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4UHE4VSYVNUJW&source=url)
 
@@ -809,7 +809,7 @@ If you think that you want to help financially, I will be very grateful :)
 
 Wallets:
 
-- Yandex.Money: 410015057363201 or http://yasobe.ru/na/mahou
+- Yandex.Money: 410015057363201 or http://sobe.ru/na/mahou
 - MasterCard: 5168 7573 3941 2985
 - PayPal: [![](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4UHE4VSYVNUJW&source=url)
 
