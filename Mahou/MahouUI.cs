@@ -44,7 +44,10 @@ namespace Mahou {
 		static string CycleCaseOrder = "TULSR";
 		static bool updating, was, isold = true, checking, snip_checking, as_checking, check_ASD_size = true;
 		public static bool ENABLED = true, reload_snip = false;
+		static int OverlayExcludedInerval;
+		static string OverlayExcluded;
 		#region Timers
+		static Timer overlay_excluder;
 		static Timer tmr = new Timer();
 		static Timer old = new Timer();
 		static Timer stimer = new Timer();
@@ -695,7 +698,9 @@ namespace Mahou {
 				MMain.c_words.Clear();
 				KMHook.c_snip.Clear();
 				InitLangDisplays(true);
+				Text = Text.Replace(" ["+MMain.Lang[Languages.Element.Disabled]+"]", "");
 				Text += " ["+MMain.Lang[Languages.Element.Disabled]+"]";
+				icon.trIcon.Text = icon.trIcon.Text.Replace(" ["+MMain.Lang[Languages.Element.Disabled]+"]", "");
 				icon.trIcon.Text += " ["+MMain.Lang[Languages.Element.Disabled]+"]";
 				icon.trIcon.Icon = Properties.Resources.MahouTrayHD;
 				ENABLED = false;
@@ -1459,6 +1464,28 @@ namespace Mahou {
 			__selection_nomouse = MMain.MyConfs.ReadBool("Hidden", "__selection_nomouse");
 			onlySnippetsExcluded = MMain.MyConfs.Read("Hidden", "onlySnippetsExcluded");
 			onlyAutoSwitchExcluded = MMain.MyConfs.Read("Hidden", "onlyAutoSwitchExcluded");
+			OverlayExcluded = MMain.MyConfs.Read("Hidden", "OverlayExcluded");
+			OverlayExcludedInerval = MMain.MyConfs.ReadInt("Hidden", "OverlayExcludedInterval");
+			if (!String.IsNullOrEmpty(OverlayExcluded)) {
+				Debug.WriteLine("Starting overlay excluded");
+				if(overlay_excluder != null) {
+					overlay_excluder.Stop();
+					overlay_excluder.Dispose();
+				}
+				overlay_excluder = new Timer();
+				overlay_excluder.Interval = OverlayExcludedInerval;
+				overlay_excluder.Tick += (_,__) => {
+					ENABLED = KMHook.OverlayExcluded(OverlayExcluded);
+//					Debug.WriteLine("Toggle Mahou to " +(!ENABLED));
+					ToggleMahou();
+				};
+				overlay_excluder.Start();
+			} else {
+				if(overlay_excluder != null) {
+					overlay_excluder.Stop();
+					overlay_excluder.Dispose();
+				}
+			}
 			#endregion
 			#region Timings
 			LD_MouseSkipMessagesCount = MMain.MyConfs.ReadInt("Timings", "LangTooltipForMouseSkipMessages");

@@ -1698,6 +1698,22 @@ namespace Mahou {
 				return false;
 			return false;
 		}
+		public static bool OverlayExcluded(string excluded) {
+			var processes = Process.GetProcesses();
+			string _checked = "";
+			foreach (var p in processes) {
+				_checked += p.ProcessName;
+				var excl = excluded.ToLower().Split('|');
+				foreach (var e in excl) {
+					if (e.Replace(".exe","") == p.ProcessName.ToLower()) {
+						Debug.WriteLine("Checked processes" + _checked);
+						return true;
+					}
+				}
+			}
+			Debug.WriteLine("Checked processes" + _checked);
+			return false;
+		}
 		public static bool ExcludedProgram(bool onlysnip = false, IntPtr hwnd = default(IntPtr), bool onlyas = false) {
 			if (MMain.mahou == null) return false;
 			if (hwnd == IntPtr.Zero || hwnd == default(IntPtr))

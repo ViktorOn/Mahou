@@ -209,6 +209,8 @@ namespace Mahou {
         	CreateConfigsFile();
         	ReadFromDisk();
         	#region Hidden
+        	CheckInt("Hidden", "OverlayExcludedInterval", "2500");
+        	CheckString("Hidden", "OverlayExcluded", "");
         	CheckString("Hidden", "NCS", "NCS");
         	CheckBool("Hidden", "NCS_tray", "false");
         	CheckInt("Hidden", "AutoRestartMins", "0");
