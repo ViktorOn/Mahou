@@ -1553,7 +1553,7 @@ namespace Mahou {
 					.Replace("d2", "2").Replace("d3", "3")
 					.Replace("d4", "4").Replace("d5", "5")
 					.Replace("d6", "6").Replace("d7", "7")
-					.Replace("d8", "9").Replace("d9", "9")
+					.Replace("d8", "8").Replace("d9", "9")
 					.Replace("return", "enter").Replace("numpa", "numpad");
 				if (_n == key+"key") { // controlkey, shiftkey
 					Logging.Log("Added the " + _n);

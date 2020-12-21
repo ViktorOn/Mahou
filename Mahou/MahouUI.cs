@@ -4474,7 +4474,18 @@ DEL ""ExtractASD.cmd""";
 				}
 				if (!string.IsNullOrEmpty(hotk)) {
 					tray_hotkeys.Add(hotk, () => menuhandle(act, arg));
-					text += "    [" + Regex.Replace(hotk.Replace("^^", ""), "((^|\\+)[lr]?.)", m => m.ToString().ToUpper()) + "]";
+					var d = Hotkey.tray_hk_is_double(hotk);
+					Debug.WriteLine("hotk: " + hotk + d.Item1);
+					if(d.Item1) {
+						if (hotk.Contains("((")) {
+							hotk = hotk.Replace("((", "~")
+								.Replace("))", "ms [")
+								.Replace("&&", "] => ");
+					    } else {
+							hotk = hotk.Replace("&&", "] => ~250ms [");
+					    }
+					}
+					text += "    [" + Regex.Replace(hotk.Replace("^^", ""), "((^|\\+|\\[)[lr]?.)", m => m.ToString().ToUpper()) + "]";
 				}
 				mms.DropDownItems.Add(new ToolStripMenuItem(text,null,(_,__) => menuhandle(act, arg)));
 			}

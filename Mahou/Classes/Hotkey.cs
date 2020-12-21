@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 
 namespace Mahou {
 	public class Hotkey {
@@ -155,7 +156,7 @@ namespace Mahou {
 					   ) {
 						KMHook.SendModsUp(Convert.ToInt32(hotkey.Modifiers));
 					}
-					KMHook.IfKeyIsMod((System.Windows.Forms.Keys)hotkey.VirtualKeyCode);
+					KMHook.IfKeyIsMod((Keys)hotkey.VirtualKeyCode);
 					hkAction();
 					if (MahouUI.RePress)
 						KMHook.RePress();
@@ -167,6 +168,20 @@ namespace Mahou {
 				}
 			}
 		}
+// for debugging
+//		public static string tray_hk_to_string(Tuple<bool, bool, bool, bool, bool, bool, bool, Tuple<bool, int>> trhk) {
+//			var strhk = "";
+//			if(trhk.Item1) { strhk += "lalt+"; }
+//			if(trhk.Item2) { strhk += "ralt+"; }
+//			if(trhk.Item3) { strhk += "lshift+"; }
+//			if(trhk.Item4) { strhk += "rshift+"; }
+//			if(trhk.Item5) { strhk += "lctrl"; }
+//			if(trhk.Item6) { strhk += "rctrl+"; }
+//			if(trhk.Item7) { strhk += "lwin+"; }
+//			if(trhk.Rest.Item1) { strhk += "rwin+"; }
+//			strhk += ((Keys)trhk.Rest.Item2).ToString();
+//			return strhk;
+//		}
 		/// <summary>
 		/// values: 
 		/// [LAlt],[RAlt],[LShift],[RShift],[LCtrl],[RCtrl],[LWin],[RWin],[Key_Code]
@@ -174,28 +189,42 @@ namespace Mahou {
 		/// <param name="trhk"> raw hotkey from tray menu Mahou.mm</param>
 		/// <returns></returns>
 		public static Tuple<bool, bool, bool, bool, bool, bool, bool, Tuple<bool, int>> tray_hk_parse(string trhk) {
-		bool la,ra,ls,rs,lc,rc,lw,rw; int kc = 0;
-		la=ra=ls=rs=lc=rc=lw=rw=false;
-		var p = trhk.ToLower().Substring(2,trhk.Length-2).Split('+');
-		foreach (var x in p) {
-			switch (x) {
-				case "lalt": la = true; break;
-				case "ralt": ra = true; break;
-				case "lshift": ls = true; break;
-				case "rshift": rs = true; break;
-				case "lctrl": lc = true; break;
-				case "rctrl": rc = true; break;
-				case "lwin": lw = true; break;
-				case "rwin": rw = true; break;
-				default:
-//				System.Diagnostics.Debug.WriteLine("x = " +x);
-				if (!string.IsNullOrEmpty(x)) {
-					var l = KMHook.strparsekey(x);
-					if (l.Count > 0) 
-						kc = (int)l[0];
-				}
-				break;
+			bool la,ra,ls,rs,lc,rc,lw,rw; int kc = 0;
+			la=ra=ls=rs=lc=rc=lw=rw=false;
+			if (trhk.Contains("&&")) {
+				trhk = trhk.Split(new []{"&&"}, StringSplitOptions.None)[0];
 			}
+			var p = trhk.ToLower().Substring(2,trhk.Length-2).Split('+');
+			foreach (var x in p) {
+//				System.Diagnostics.Debug.WriteLine("X: " +x);
+				switch (x) {
+					case "lalt": la = true; break;
+					case "ralt": ra = true; break;
+					case "lshift": ls = true; break;
+					case "rshift": rs = true; break;
+					case "lctrl": lc = true; break;
+					case "rctrl": rc = true; break;
+					case "lwin": lw = true; break;
+					case "rwin": rw = true; break;
+					default:
+//					System.Diagnostics.Debug.WriteLine("x = " +x);
+					if (!string.IsNullOrEmpty(x)) {
+						if (x.ToLower() == "laltkey")
+							kc = (int)Keys.LMenu;
+						else if (x.ToLower() == "raltkey")
+							kc = (int)Keys.LMenu;
+						else if (x.ToLower() == "lwinkey")
+							kc = (int)Keys.LWin;
+						else if (x.ToLower() == "rwinkey")
+							kc = (int)Keys.RWin;
+						else {
+							var l = KMHook.strparsekey(x);
+							if (l.Count > 0) 
+								kc = (int)l[0];
+						}
+					}
+					break;
+				}
 			}
 			return new Tuple<bool, bool, bool, bool, bool, bool, bool, Tuple<bool, int>>(la,ra,ls,rs,lc,rc,lw, new Tuple<bool, int>(rw,kc));
 		}
@@ -214,6 +243,44 @@ namespace Mahou {
 			        a.Item7 == b.Item7 &&
 			        a.Rest.Item1 == b.Rest.Item1 && 
 			        a.Rest.Item2 == b.Rest.Item2);
+		}
+		public static Tuple<bool, int, string> tray_hk_is_double(string hk) {
+			var a = hk.Contains("&&"); 
+			var b = 250; // default 250 ms for "double hotkeys"
+			var c = "";
+			hk = hk.ToLower();
+			if (a) {
+				var x = hk.Split(new []{"&&"}, StringSplitOptions.None);
+//				MessageBox.Show(x[0]+"\n"+x[1]);
+				c = x[0];
+				if (x[1].StartsWith("((") && x[1].Contains("))")) {
+					var end = x[1].IndexOf("))");
+					var f = x[1].Substring(2, end-2);
+//					MessageBox.Show(f +  " => " +hk);
+					Int32.TryParse(f, out b);
+					var hk2 = x[1].Substring(end+2,x[1].Length-end-2);
+//					MessageBox.Show("hk2"+hk2+" b" + b);
+					if (!string.IsNullOrEmpty(hk2)) {
+						c = "^^"+hk2;
+					}
+				}
+			}
+			return new Tuple<bool, int, string>(a, b, c);
+		}
+		public static bool KeyIsModifier(Keys key) {
+			var r = false;
+			switch (key) {
+				case Keys.LMenu:
+				case Keys.RMenu:
+				case Keys.LShiftKey:
+				case Keys.RShiftKey:
+				case Keys.LControlKey:
+				case Keys.RControlKey:
+				case Keys.LWin:
+				case Keys.RWin:
+					r = true; break;
+			}
+			return r;
 		}
 	}
 }

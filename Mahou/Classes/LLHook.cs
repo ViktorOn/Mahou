@@ -12,6 +12,10 @@ namespace Mahou {
 		public static IntPtr _LLHook_ID = IntPtr.Zero;
 		public static WinAPI.LowLevelProc _LLHook_proc = LLHook.Callback;
 		static bool alt, alt_r, shift, shift_r, ctrl, ctrl_r, win, win_r;
+		static Action dhk_tray_act;
+		static string dhk_tray_hk, dhk_tray_hk_real;
+		static bool dhk_tray_wait;
+		static Timer dhk_timer;
 		public static void Set() {
 			if (!MahouUI.ENABLED) return;
 			if (_LLHook_ID != IntPtr.Zero)
@@ -45,17 +49,55 @@ namespace Mahou {
 				}
 			}
 			SetModifs(Key, wParam);
-			Debug.WriteLine("Alive" + vk);
+			Debug.WriteLine("Alive" + vk + " :: " +wParam);
 			#region Mahou.mm Tray Hotkeys
-			if (wParam == (IntPtr)WinAPI.WM_KEYDOWN || wParam == (IntPtr)WinAPI.WM_SYSKEYDOWN) {
-				for (int i = 0; i != MahouUI.tray_hotkeys.len; i++) {
-					var x = new Tuple<bool, bool, bool, bool, bool, bool, bool, Tuple<bool, int>>(alt, alt_r, shift, shift_r, ctrl, ctrl_r, win, new Tuple<bool, int>(win_r, vk));
-					if (Hotkey.cmp_hotkey(Hotkey.tray_hk_parse(MahouUI.tray_hotkeys[i].k), x)) {
-						Logging.Log("[TR_HK] > Executing action of hotkey: " + MahouUI.tray_hotkeys[i].k );
-						KMHook.DoSelf(MahouUI.tray_hotkeys[i].v, "tray_hotkeys");
+			var x = new Tuple<bool, bool, bool, bool, bool, bool, bool, Tuple<bool, int>>(alt, alt_r, shift, shift_r, ctrl, ctrl_r, win, new Tuple<bool, int>(win_r, vk));
+//				Debug.WriteLine("x_hk: " + Hotkey.tray_hk_to_string(x));
+//				Debug.WriteLine("dhk_wait: " +dhk_tray_wait);
+//				Debug.WriteLine("dhk_hk: " +dhk_tray_hk);
+			if (dhk_tray_wait) {
+				var hk = Hotkey.tray_hk_parse(dhk_tray_hk);
+				var UpOrDown = OnUpOrDown((Keys)hk.Rest.Item2, wParam);
+				if (UpOrDown) {
+					var eq = Hotkey.cmp_hotkey(hk, x);
+	//				Debug.WriteLine("dhk_eq: "+eq);
+					if (eq) {
+						Logging.Log("[TR_HK] > Executing action of (double)hotkey: " + dhk_tray_hk_real	+ " on second hotkey: " + dhk_tray_hk);
+						KMHook.DoSelf(dhk_tray_act, "tray_hotkeys_double");
+						dhk_unset();
 						KMHook.SendModsUp(15, false); // less overkill when whole hotkey is being hold
 						return(IntPtr)1;
-				    }
+					}
+				}
+			} else {
+				for (int i = 0; i != MahouUI.tray_hotkeys.len; i++) {
+					var hk = Hotkey.tray_hk_parse(MahouUI.tray_hotkeys[i].k);
+					var UpOrDown = OnUpOrDown((Keys)hk.Rest.Item2, wParam);
+					if (UpOrDown) {
+						if (Hotkey.cmp_hotkey(hk, x)) {
+							var d = Hotkey.tray_hk_is_double(MahouUI.tray_hotkeys[i].k);
+							if (d.Item1) {
+								dhk_tray_wait = true;
+								dhk_tray_hk = d.Item3;
+								dhk_tray_act = MahouUI.tray_hotkeys[i].v;
+								dhk_tray_hk_real = MahouUI.tray_hotkeys[i].k;
+								if (dhk_timer != null){
+									dhk_timer.Stop();
+									dhk_timer.Dispose();
+								}
+								dhk_timer = new Timer();
+								dhk_timer.Interval = d.Item2;
+								dhk_timer.Tick += (_, __) => { Debug.WriteLine("Unset timer dhk! "+dhk_timer.Interval+"ms"); dhk_unset(); dhk_timer.Stop(); dhk_timer.Dispose(); };
+								dhk_timer.Start();
+							} else {
+								Logging.Log("[TR_HK] > Executing action of hotkey: " + MahouUI.tray_hotkeys[i].k );
+								KMHook.DoSelf(MahouUI.tray_hotkeys[i].v, "tray_hotkeys");
+								KMHook.SendModsUp(15, false); // less overkill when whole hotkey is being hold
+								dhk_unset();
+								return(IntPtr)1;
+							}
+					    }
+					}
 				}
 			}
 			#endregion
@@ -165,6 +207,16 @@ namespace Mahou {
 					ctrl = down;
 				else
 					ctrl_r = down;
+		}
+		static bool OnUpOrDown(Keys k, IntPtr wParam) {
+			if (Hotkey.KeyIsModifier(k))
+				return (wParam == (IntPtr)WinAPI.WM_KEYUP || wParam == (IntPtr)WinAPI.WM_SYSKEYUP);
+			return (wParam == (IntPtr)WinAPI.WM_KEYDOWN || wParam == (IntPtr)WinAPI.WM_SYSKEYDOWN);
+		}
+		static void dhk_unset() {
+			dhk_tray_wait = false;
+			dhk_tray_hk = dhk_tray_hk_real = "";
+			dhk_tray_act = null;
 		}
 	}
 }
