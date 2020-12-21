@@ -4484,6 +4484,9 @@ DEL ""ExtractASD.cmd""";
 					    } else {
 							hotk = hotk.Replace("&&", "] => ~250ms [");
 					    }
+						if (hotk.EndsWith("[")) {
+							hotk += d.Item3;
+						}
 					}
 					text += "    [" + Regex.Replace(hotk.Replace("^^", ""), "((^|\\+|\\[)[lr]?.)", m => m.ToString().ToUpper()) + "]";
 				}
