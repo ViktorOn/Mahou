@@ -101,24 +101,24 @@ namespace Mahou {
 			if ((Key < Keys.D0 || Key > Keys.D9) && waitfornum && (uint)Key != MMain.mahou.HKConMorWor.VirtualKeyCode && down)
 				MMain.mahou.FlushConvertMoreWords();
 			#region Checks modifiers that are down
-//			switch (Key) {
-//				case Keys.LShiftKey:   shift = down; break;
-//				case Keys.LControlKey: ctrl = down; break;
-//				case Keys.LMenu:       alt = down; break;
-//				case Keys.LWin:        win = down; break;
-//				case Keys.RShiftKey:   shift_r = down; break;
-//				case Keys.RControlKey: ctrl_r = down; break;
-//				case Keys.RMenu:       alt_r = down; break;
-//				case Keys.RWin:        win_r = down; break;
-//			}
-			shift = IsKDown(Keys.LShiftKey);
-			shift_r = IsKDown(Keys.RShiftKey);
-			ctrl = IsKDown(Keys.LControlKey);
-			ctrl_r = IsKDown(Keys.RControlKey);
-			alt = IsKDown(Keys.LMenu);
-			alt_r = IsKDown(Keys.RMenu);
-			win = IsKDown(Keys.LWin);
-			win_r = IsKDown(Keys.RWin);
+			switch (Key) {
+				case Keys.LShiftKey:   shift = down; break;
+				case Keys.LControlKey: ctrl = down; break;
+				case Keys.LMenu:       alt = down; break;
+				case Keys.LWin:        win = down; break;
+				case Keys.RShiftKey:   shift_r = down; break;
+				case Keys.RControlKey: ctrl_r = down; break;
+				case Keys.RMenu:       alt_r = down; break;
+				case Keys.RWin:        win_r = down; break;
+			}
+//			shift = IsKDown(Keys.LShiftKey);
+//			shift_r = IsKDown(Keys.RShiftKey);
+//			ctrl = IsKDown(Keys.LControlKey);
+//			ctrl_r = IsKDown(Keys.RControlKey);
+//			alt = IsKDown(Keys.LMenu);
+//			alt_r = IsKDown(Keys.RMenu);
+//			win = IsKDown(Keys.LWin);
+//			win_r = IsKDown(Keys.RWin);
 			// Additional fix for scroll tip.
 			if (MahouUI.ScrollTip && Key == Keys.Scroll && down) {
 				DoSelf(() => {
