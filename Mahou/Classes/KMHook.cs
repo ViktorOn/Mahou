@@ -2305,6 +2305,7 @@ namespace Mahou {
 							items = result.Length;
 						}
 						ReSelect(items, "N");
+						MahouUI.hk_result = true;
 					}
 					NativeClipboard.Clear();
 					RestoreClipBoard();
@@ -2378,6 +2379,7 @@ namespace Mahou {
 							KInputs.MakeInput(KInputs.AddString(output));
 						}
 						ReSelect(output.Length, cT);
+						MahouUI.hk_result = true;
 					}
 					NativeClipboard.Clear();
 					RestoreClipBoard();
@@ -2856,6 +2858,7 @@ namespace Mahou {
 					}
 				}
 				KInputs.MakeInput(q.ToArray());
+				MahouUI.hk_result = true;
 				Debug.WriteLine("XX CLW_END");
 			}, "st_conv_word");
 		}

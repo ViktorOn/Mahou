@@ -37,7 +37,8 @@ namespace Mahou {
 						   SoundEnabled, UseCustomSound, SoundOnAutoSwitch, SoundOnConvLast, SoundOnSnippets, SoundOnLayoutSwitch,
 						   UseCustomSound2, SoundOnAutoSwitch2, SoundOnConvLast2, SoundOnSnippets2, SoundOnLayoutSwitch2, TrOnDoubleClick,
 						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory, ExcludeCaretLD, UsePaste, LibreCtrlAltShiftV,
-						   CycleCaseReset, __selection, __selection_nomouse, WriteInputHistoryByDate, WriteInputHistoryHourly, MahouMM = false, nomemoryflush;
+						   CycleCaseReset, __selection, __selection_nomouse, WriteInputHistoryByDate, WriteInputHistoryHourly, MahouMM = false, nomemoryflush,
+						   hk_result, multi_continue = true;
 		static string[] UpdInfo;
 		public static List<int> HKBlockAlt = new List<int>();
 		public static bool BlockAltUpNOW = false;
@@ -734,8 +735,10 @@ namespace Mahou {
 			var str = KMHook.GetClipStr().Replace('\n', ' ');
 			Debug.WriteLine(str);
 			if (!string.IsNullOrEmpty(str)) {
-				if (!TranslatePanel.running)
+				if (!TranslatePanel.running) {
 					MMain.mahou._TranslatePanel.ShowTranslation(str, pos);
+					MahouUI.hk_result = true;
+				}
 			}
 			if (ACT_Match < 1) 
 				KMHook.RestoreClipBoard();
@@ -4408,6 +4411,12 @@ DEL ""ExtractASD.cmd""";
 //				if (by2) {
 				for (int i = 0; i < s.Length-1; i+=2) {
 					if (s[i].ToLower() == "multi") continue;
+					if (!multi_continue) { 
+					Debug.WriteLine("Multi_continue break.");
+						multi_continue = true; 
+						hk_result = false;
+						break; 
+					}
 //						MessageBox.Show("multi"+i+" " + s[i] + " => " +s[i+1]);
 					menuhandle(s[i], s[i+1]);
 				}
@@ -4423,6 +4432,7 @@ DEL ""ExtractASD.cmd""";
 					Int32.TryParse(arg[1].ToString(), out x);
 					if (x >= 0) {
 						if (arg[0]=='s') {
+							MahouUI.hk_result = false;
 							KMHook.SendModsUp(15);
 							if (x <= 6)
 								KMHook.SelectionConversion((KMHook.ConvT)x);
@@ -4433,6 +4443,7 @@ DEL ""ExtractASD.cmd""";
 							}
 						}
 						if (arg[0]=='c') {
+							MahouUI.hk_result = false;
 							KMHook.SendModsUp(15);
 							if(x==0)KMHook.ConvertLast(MMain.c_word);
 							if(x==1)ConvertLastLine();
@@ -4449,6 +4460,14 @@ DEL ""ExtractASD.cmd""";
 						}
 					}
 				}
+			} else if (act == "ifhk") {
+				if (arg.ToLower().StartsWith("y")) {
+					multi_continue = hk_result;
+				} else {
+					Debug.WriteLine("Not IF!");
+					multi_continue = !hk_result;
+				}
+				Debug.WriteLine("Multi_continue set: "+multi_continue);
 			} else {
 				MessageBox.Show("Unknown action: " + act, "No such action",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
