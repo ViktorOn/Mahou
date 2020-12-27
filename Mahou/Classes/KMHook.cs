@@ -1611,10 +1611,13 @@ namespace Mahou {
 			string[] multi_args;
 			var all_keys = new List<List<Keys>>();
 			var delay = 0;
-			if (args.Contains("|")) {
-				var axy = args.Split(new[]{'|'}, 2);
+			var tt = args.Contains("!!");
+//			Debug.WriteLine("tt?"+tt+" " +args);
+			if (args.Contains("|") || tt) {
+				var axy = args.Split(new[]{tt?"!!":"|"},2, StringSplitOptions.None);
 				args = axy[0];
 				Int32.TryParse(axy[1], out delay);
+				Debug.WriteLine("SimKeyboard set delay:"+delay);
 			}
 			if (args.Contains(" "))
 				multi_args = args.Split(' ');
