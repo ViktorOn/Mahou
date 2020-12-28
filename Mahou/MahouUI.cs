@@ -1460,6 +1460,7 @@ namespace Mahou {
 			LDUseWindowsMessages = chk_LDMessages.Checked = MMain.MyConfs.ReadBool("Appearence", "WindowsMessages");
 			#endregion
 			#region Hidden
+			KMHook.symbolclear = MMain.MyConfs.Read("Hidden", "SymbolClear");
 			LibreCtrlAltShiftV = MMain.MyConfs.ReadBool("Hidden", "LibreCtrlAltShiftV");
 			CycleCaseOrder = MMain.MyConfs.Read("Hidden", "CycleCaseOrder");
 			CycleCaseReset = MMain.MyConfs.ReadBool("Hidden", "CycleCaseReset");

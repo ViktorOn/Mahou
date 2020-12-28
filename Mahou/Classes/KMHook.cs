@@ -31,6 +31,7 @@ namespace Mahou {
 		static uint as_lword_layout = 0;
 		static uint cs_layout_last = 0;
 		static string lastClipText = "", busy_on = "", lastLWClearReason = "";
+		public static string symbolclear;
 		static List<Keys> tempNumpads = new List<Keys>();
 		static Keys preKey = Keys.None, seKeyDown = Keys.None, aseKeyDown = Keys.None;
 		public static List<char> c_snip = new List<char>();
@@ -430,6 +431,14 @@ namespace Mahou {
 					MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Key, upper = sym_upr });
 					Logging.Log("[WORD] > Added [" + Key + "]^"+sym_upr);
 					MahouUI.CCReset("key:"+Key);
+					#region Symbol Clear Mode
+					if (!String.IsNullOrEmpty(symbolclear)) {
+						if (sym == '\0') { sym = getSym(vkCode); }
+						if (symbolclear.Contains(sym)) {
+							ClearWord(true, true, true, "SymbolClear", true);
+						}
+					}
+					#endregion
 				}
 			}
 			#endregion
