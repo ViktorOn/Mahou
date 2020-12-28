@@ -2122,20 +2122,27 @@ namespace Mahou {
 			var index = 0;
 			if (MahouUI.OneLayoutWholeWord) {
 				Logging.Log("[CT] > Using one layout whole word convert text mode.");
-				var allWords = SplitWords(ClipStr);
-				var word_index = 0;
-				foreach (var w in allWords) {
-					if (w == " ") {
-						result += w;
-					} else {
-						var wx = WordGuessLayout(w, l2).Item1;
-						if (!String.IsNullOrEmpty(wx))
-							result += wx;
-						else result += w;
+				var lines = Regex.Split(ClipStr, @"\r?\n");
+				int lcnt = 0;
+				foreach (var line in lines) {
+					var allWords = SplitWords(line);
+					var word_index = 0;
+					foreach (var w in allWords) {
+						if (w == " ") {
+							result += w;
+						} else {
+							var wx = WordGuessLayout(w, l2).Item1;
+							if (!String.IsNullOrEmpty(wx))
+								result += wx;
+							else result += w;
+						}
+						word_index +=1;
+//						Debug.WriteLine("(" + w + ") ["+ result +"]");
+						index++;
 					}
-					word_index +=1;
-//					Debug.WriteLine("(" + w + ") ["+ result +"]");
-					index++;
+					lcnt++;
+					if (lcnt != lines.Count())
+						result += '\n';
 				}
 			} else {
 				Logging.Log("[CT] > Using default convert text mode.");
