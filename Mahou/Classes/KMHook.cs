@@ -2943,6 +2943,10 @@ namespace Mahou {
 			MMain.mahou.UpdateLDs();
 			Memory.Flush();
 		}
+		static bool SymbolIgnoreRules(char c) {
+			var ign = "<,>./?'\";:[]{}\\|";
+			return ign.Contains(c);
+		}
 		/// <summary>
 		/// Rules to ignore symbols in ConvertLast() function.
 		/// </summary>
@@ -3426,6 +3430,8 @@ namespace Mahou {
 				uint lay = 0;
 				var wordL = "";
 				var wordL2 = "";
+				var mux1 = "";
+				var mux2 = "";
 				var result = "";
 				var nany = false;
 				Debug.WriteLine("Testing " +word+" against: " +l+" and "+l2);
@@ -3466,6 +3472,14 @@ namespace Mahou {
 							continue;
 						}
 					}
+					if (MahouUI.SymIgnEnabled) {
+						if (SymbolIgnoreRules(c)) {
+							wordL += c;
+							wordL2 += c;
+							Debug.WriteLine("Symbol Ignored: " + c);
+							continue;
+						}
+					}
 					if (c == '\n') {
 						wordL += "\n";
 						wordL2 += "\n";
@@ -3473,10 +3487,12 @@ namespace Mahou {
 					}
 					var T1 = InAnother(c, l & 0xffff, l2 & 0xffff);
 					wordL += T1;
-					if (T1 == "") wordLMinuses++;
+					mux1 += T1;
+					if (T1 == "") { wordLMinuses++; mux1 += c; }
 					var T2 = InAnother(c, l2 & 0xffff, l & 0xffff);
 					wordL2 += T2;
-					if (T2 == "") wordL2Minuses++;
+					mux2 += T2;
+					if (T2 == "") { wordL2Minuses++; mux2 += c; }
 					Debug.WriteLine("T1: "+ T1 + ", T2: "+ T2 + ", C: " +c);
 					if (T2 == "" && T1 == "") {
 						nany = true;
@@ -3489,13 +3505,21 @@ namespace Mahou {
 					thismin = wordL2Minuses;
 					lay = l2;
 					result = wordL2;
+					if(result.Length < word.Length) {
+						Debug.WriteLine("Mult-layout word Muxed 2!");
+						result = mux2;
+					}
 				}
 				else {
 					thismin = wordLMinuses;
 					lay = l;
 					result = wordL;
+					if(result.Length < word.Length) {
+						Debug.WriteLine("Mult-layout word Muxed 1!");
+						result = mux1;
+					}
 				}
-				Debug.WriteLine("End, " + lay + "|" +wordL + ", " + wordL2 + "|" +wordLMinuses + ", " +wordL2Minuses);
+				Debug.WriteLine("End, " + lay + "|" +wordL + ", " + wordL2 + "|" +wordLMinuses + ", " +wordL2Minuses + " mux1: " + mux1 + ", mux2: " + mux2);
 				if (wordLMinuses == wordL2Minuses) {
 					if (wordLMinuses == 0 && wordL2Minuses == 0) {
 						lay = l;

@@ -973,6 +973,7 @@ namespace Mahou
 			// chk_CSLayoutSwitchingPlus
 			// 
 			this.chk_CSLayoutSwitchingPlus.AutoSize = true;
+			this.chk_CSLayoutSwitchingPlus.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Strikeout, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.chk_CSLayoutSwitchingPlus.Location = new System.Drawing.Point(8, 87);
 			this.chk_CSLayoutSwitchingPlus.Name = "chk_CSLayoutSwitchingPlus";
 			this.chk_CSLayoutSwitchingPlus.Size = new System.Drawing.Size(216, 19);
