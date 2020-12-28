@@ -3483,6 +3483,8 @@ namespace Mahou {
 					if (c == '\n') {
 						wordL += "\n";
 						wordL2 += "\n";
+						mux1 += "\n";
+						mux2 += "\n";
 						continue;
 					}
 					var T1 = InAnother(c, l & 0xffff, l2 & 0xffff);
