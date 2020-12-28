@@ -2952,6 +2952,7 @@ namespace Mahou {
 		/// <returns></returns>
 		static bool SymbolIgnoreRules(Keys key, bool upper, uint wasLocale, ref List<WinAPI.INPUT> q) {
 			Logging.Log("Passing Key = ["+key+"]+["+(upper ? "UPPER" : "lower") + "] with WasLayoutID = ["+wasLocale+"] through symbol ignore rules.");
+			wasLocale &= 0xffff;
 			if (MMain.mahou.HKSymIgn.Enabled &&
 			    MahouUI.SymIgnEnabled &&
 			    (wasLocale == 1033 || wasLocale == 1041) &&
