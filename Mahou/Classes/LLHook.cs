@@ -112,9 +112,10 @@ namespace Mahou {
 				if (Key == Keys.CapsLock) {
 					for (int i = 1; i!=5; i++) {
 						var KeyIndex = (int)typeof(MahouUI).GetField("Key"+i).GetValue(MMain.mahou);
-						if (KeyIndex == 8) // Shift+CapsLock 
+						if (KeyIndex == 8) { // Shift+CapsLock
 							_shift = shift;
 							_shift_r = shift_r;
+						}
 					}
 				}
 				uint mods = 0;
