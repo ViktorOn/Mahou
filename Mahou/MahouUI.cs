@@ -4473,7 +4473,7 @@ DEL ""ExtractASD.cmd""";
 				MessageBox.Show("Unknown action: " + act, "No such action",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
 		}
-		public static DICT<string,Action> tray_hotkeys = new DICT<string, Action>();
+		public static DICT<string,Tuple<Action,string>> tray_hotkeys = new DICT<string,Tuple<Action,string>>();
 		static void makemenu(string mahoumenu) {
 			tray_hotkeys.Clear();
 			var mm = Regex.Replace(mahoumenu, "\r?\n", "\n");
@@ -4520,7 +4520,7 @@ DEL ""ExtractASD.cmd""";
 					lc = c;
 				}
 				if (!string.IsNullOrEmpty(hotk)) {
-					tray_hotkeys.Add(hotk, () => menuhandle(act, arg));
+					tray_hotkeys.Add(hotk, new Tuple<Action, string>(() => menuhandle(act, arg), act+"|"+arg));
 					var d = Hotkey.tray_hk_is_double(hotk);
 					Debug.WriteLine("hotk: " + hotk + d.Item1);
 					if(d.Item1) {

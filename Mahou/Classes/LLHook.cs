@@ -73,13 +73,14 @@ namespace Mahou {
 				for (int i = 0; i != MahouUI.tray_hotkeys.len; i++) {
 					var hk = Hotkey.tray_hk_parse(MahouUI.tray_hotkeys[i].k);
 					var UpOrDown = OnUpOrDown((Keys)hk.Rest.Item2, wParam);
+					Debug.WriteLine((UpOrDown ? "UP":"DOWN") + " key: " +Key);
 					if (UpOrDown) {
 						if (Hotkey.cmp_hotkey(hk, x)) {
 							var d = Hotkey.tray_hk_is_double(MahouUI.tray_hotkeys[i].k);
 							if (d.Item1) {
 								dhk_tray_wait = true;
 								dhk_tray_hk = d.Item3;
-								dhk_tray_act = MahouUI.tray_hotkeys[i].v;
+								dhk_tray_act = MahouUI.tray_hotkeys[i].v.Item1;
 								dhk_tray_hk_real = MahouUI.tray_hotkeys[i].k;
 								if (dhk_timer != null){
 									dhk_timer.Stop();
@@ -91,9 +92,39 @@ namespace Mahou {
 								dhk_timer.Start();
 							} else {
 								Logging.Log("[TR_HK] > Executing action of hotkey: " + MahouUI.tray_hotkeys[i].k );
-								KMHook.DoSelf(MahouUI.tray_hotkeys[i].v, "tray_hotkeys");
-								KMHook.SendModsUp(15, false); // less overkill when whole hotkey is being hold
 								dhk_unset();
+								if (MahouUI.tray_hotkeys[i].v.Item2.Contains("hk|c") || MahouUI.tray_hotkeys[i].v.Item2.Contains("hk|s")) {
+									KMHook.SendModsUp(15, false); // less overkill when whole hotkey is being hold
+									if (((hk.Item1 || hk.Rest.Item2 == (int)Keys.LMenu) && !hk.Item2 && // l alt not r alt
+									    !hk.Item3 && !hk.Item4 &&
+									    !hk.Item5 && !hk.Item6 &&
+									    !hk.Item7 && !hk.Rest.Item1)) {
+										KMHook.KeybdEvent(Keys.LMenu, 0);
+										KMHook.KeybdEvent(Keys.LMenu, 2);
+									}
+									if ((!hk.Item1 && (hk.Item2 || hk.Rest.Item2 == (int)Keys.RMenu) &&
+									    !hk.Item3 && !hk.Item4 &&
+									    !hk.Item5 && !hk.Item6 &&
+									    !hk.Item7 && !hk.Rest.Item1)) {
+										KMHook.KeybdEvent(Keys.RMenu, 0);
+										KMHook.KeybdEvent(Keys.RMenu, 2);
+									}
+									if ((!hk.Item1 && !hk.Item2 &&
+									    !hk.Item3 && !hk.Item4 &&
+									    !hk.Item5 && !hk.Item6 &&
+									    (hk.Item7 || hk.Rest.Item2 == (int)Keys.LWin) && !hk.Rest.Item1)) {
+										KMHook.KeybdEvent(Keys.LWin, 0);
+										KMHook.KeybdEvent(Keys.LWin, 2);
+									}
+									if ((!hk.Item1 && !hk.Item2 &&
+									    !hk.Item3 && !hk.Item4 &&
+									    !hk.Item5 && !hk.Item6 &&
+									    !hk.Item7 && (hk.Rest.Item1 || hk.Rest.Item2 == (int)Keys.RWin))) {
+										KMHook.KeybdEvent(Keys.RWin, 0);
+										KMHook.KeybdEvent(Keys.RWin, 2);
+									}
+								}
+								KMHook.DoSelf(MahouUI.tray_hotkeys[i].v.Item1, "tray_hotkeys");
 								return(IntPtr)1;
 							}
 					    }
