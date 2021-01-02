@@ -3022,9 +3022,7 @@ namespace Mahou {
 				return false;
 		}
 		public static bool IsConhost() {
-			var strb = new StringBuilder(256);
-			WinAPI.GetClassName(WinAPI.GetForegroundWindow(), strb, strb.Capacity);
-			return strb.ToString().Contains("ConsoleWindowClass");
+			return Locales.ActiveWindowClassName(100).Contains("ConsoleWindowClass");
 		}
 		/// <summary>
 		/// Changes current layout.

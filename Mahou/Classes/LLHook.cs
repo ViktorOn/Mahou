@@ -95,12 +95,14 @@ namespace Mahou {
 								dhk_unset();
 								if (MahouUI.tray_hotkeys[i].v.Item2.Contains("hk|c") || MahouUI.tray_hotkeys[i].v.Item2.Contains("hk|s")) {
 									KMHook.SendModsUp(15, false); // less overkill when whole hotkey is being hold
+									var altonly = false;
 									if (((hk.Item1 || hk.Rest.Item2 == (int)Keys.LMenu) && !hk.Item2 && // l alt not r alt
 									    !hk.Item3 && !hk.Item4 &&
 									    !hk.Item5 && !hk.Item6 &&
 									    !hk.Item7 && !hk.Rest.Item1)) {
 										KMHook.KeybdEvent(Keys.LMenu, 0);
 										KMHook.KeybdEvent(Keys.LMenu, 2);
+										altonly = true;
 									}
 									if ((!hk.Item1 && (hk.Item2 || hk.Rest.Item2 == (int)Keys.RMenu) &&
 									    !hk.Item3 && !hk.Item4 &&
@@ -108,6 +110,13 @@ namespace Mahou {
 									    !hk.Item7 && !hk.Rest.Item1)) {
 										KMHook.KeybdEvent(Keys.RMenu, 0);
 										KMHook.KeybdEvent(Keys.RMenu, 2);
+										altonly = true;
+									}
+									if (altonly) {
+										if (Locales.ActiveWindowClassName(40).Contains("Chrome_WidgetWin")) {
+											KMHook.KeybdEvent(Keys.Escape, 0);
+											KMHook.KeybdEvent(Keys.Escape, 2);
+										}
 									}
 									if ((!hk.Item1 && !hk.Item2 &&
 									    !hk.Item3 && !hk.Item4 &&

@@ -77,6 +77,13 @@ namespace Mahou
 			return prc;
 			
 		}
+		public static string ActiveWindowClassName(int len) {
+			var _fw = ActiveWindow();
+			var _clsNMb = new StringBuilder(len);
+			WinAPI.GetClassName(_fw, _clsNMb, _clsNMb.Capacity);
+			return _clsNMb.ToString();
+			
+		}
 		/// <summary>
 		/// Returns all installed in system layouts. 
 		/// </summary>

@@ -443,10 +443,18 @@ namespace Mahou {
 				var id = (Hotkey.HKID)m.WParam.ToInt32();
 				var mods = (int)m.LParam & 0xFFFF;
 				if (mods == WinAPI.MOD_ALT) { // Experimental fix for [only Alt] + something.
-					KInputs.MakeInput(new [] {
+					if (Locales.ActiveWindowClassName(40).Contains("Chrome_WidgetWin")) {
+						KInputs.MakeInput(new [] {
 					                  	KInputs.AddKey(Keys.LMenu, false),
-					                  	KInputs.AddKey(Keys.RMenu, false), 
+					                  	KInputs.AddKey(Keys.RMenu, false),
+					                  	KInputs.AddKey(Keys.Escape, true),
+					                  	KInputs.AddKey(Keys.Escape, false)});
+					} else
+						KInputs.MakeInput(new [] {
+					                  	KInputs.AddKey(Keys.LMenu, false),
+					                  	KInputs.AddKey(Keys.RMenu, false),
 					                  	KInputs.AddKey(Keys.LMenu, true)});
+					
 				}
 				if (m.WParam.ToInt32() == 774) {
 					AutoSwitchEnabled = !AutoSwitchEnabled;
