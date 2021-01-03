@@ -2829,6 +2829,11 @@ namespace Mahou {
 			DoSelf(() => {
 				Debug.WriteLine(">> ST CLW");
 				var backs = YuKeys.Length;
+				var clipr = GetClipboard(4,10);
+				if (!String.IsNullOrEmpty(GetClipStr())) {
+					backs++;
+				}
+				RestoreClipBoard(clipr);
 				// Fix for cmd exe pause hotkey leaving one char. 
 				var clsNM = new StringBuilder(256);
 				if (IfNW7() &&
