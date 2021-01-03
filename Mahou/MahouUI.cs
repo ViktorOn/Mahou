@@ -406,6 +406,23 @@ namespace Mahou {
 				}
 			}
 		}
+		public static void chrome_window_alt_fix() {
+			var last = Locales.ActiveWindow();
+			var f = new Form();
+			f.FormBorderStyle = FormBorderStyle.None;
+			f.MaximizeBox = f.MinimizeBox = false;
+			f.TopMost = true;
+			f.Width = f.Height = 1;
+			f.Location = new Point(0, 0);
+			f.Show();
+			WinAPI.SetForegroundWindow(f.Handle);
+			KInputs.MakeInput(new [] {
+		                  	KInputs.AddKey(Keys.LMenu, false),
+		                  	KInputs.AddKey(Keys.RMenu, false)});
+			System.Threading.Thread.Sleep(1);
+			f.Dispose();
+			WinAPI.SetForegroundWindow(last);
+		}
 		#region WndProc(Hotkeys) & Functions
 		protected override void WndProc(ref Message m) {
 			if (m.Msg == MMain.ao) { // ao = Already Opened
@@ -444,11 +461,7 @@ namespace Mahou {
 				var mods = (int)m.LParam & 0xFFFF;
 				if (mods == WinAPI.MOD_ALT) { // Experimental fix for [only Alt] + something.
 					if (Locales.ActiveWindowClassName(40).Contains("Chrome_WidgetWin")) {
-						KInputs.MakeInput(new [] {
-					                  	KInputs.AddKey(Keys.LMenu, false),
-					                  	KInputs.AddKey(Keys.RMenu, false),
-					                  	KInputs.AddKey(Keys.Escape, true),
-					                  	KInputs.AddKey(Keys.Escape, false)});
+						chrome_window_alt_fix();
 					} else
 						KInputs.MakeInput(new [] {
 					                  	KInputs.AddKey(Keys.LMenu, false),
