@@ -530,7 +530,8 @@ namespace Mahou {
 				#endregion
 				if ((!KMHook.ExcludedProgram() || ConvertSWLinExcl) && !specific) {
 					var clcs = Hotkey.GetMods(HKCSelection_tempMods) == Hotkey.GetMods(HKCLast_tempMods) &&
-								HKCSelection_tempKey == HKCLast_tempKey;
+								HKCSelection_tempKey == HKCLast_tempKey && 
+								HKCLast_tempEnabled && HKCSelection_tempEnabled;
 					if (clcs && HKCSelection_tempDouble == HKCLast_tempDouble)
 						Hotkey.CallHotkey(HKCLast, id, ref hksOK, KMHook.ConvertSelection); // Use HKCLast id for cs if hotkeys are the same
 					else 
