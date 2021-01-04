@@ -284,6 +284,46 @@ namespace Mahou
 		private System.Windows.Forms.CheckBox chk_rMmm;
 		private System.Windows.Forms.CheckBox chk_Mmm;
 		private System.Windows.Forms.CheckBox chk_TrTranscription;
+		private System.Windows.Forms.TabPage tab_Hidden;
+		private System.Windows.Forms.CheckBox Hchk___selection;
+		private System.Windows.Forms.CheckBox Hchk___selection_nomouse;
+		private System.Windows.Forms.Label Hlbl_NCS;
+		private System.Windows.Forms.TextBox Htxt_NCS;
+		private System.Windows.Forms.Label Hlbl_OverlayExcluded;
+		private System.Windows.Forms.CheckBox Hchk_NCStray;
+		private System.Windows.Forms.TextBox Htxt_OverlayExcluded;
+		private System.Windows.Forms.NumericUpDown Hnud_OverlayExcludedInterval;
+		private System.Windows.Forms.Label Hlbl_OverlayExcludedInterval;
+		private System.Windows.Forms.Label Hlbl_AutoRestartMins;
+		private System.Windows.Forms.NumericUpDown Hnud_AutoRestartMins;
+		private System.Windows.Forms.CheckBox Hchk_DisableMemFlush;
+		private System.Windows.Forms.CheckBox Hchk_LMBTrayLayoutChange;
+		private System.Windows.Forms.TextBox Htxt_AutoCopyTranslation;
+		private System.Windows.Forms.Label Hlbl_AutoCopyTranslation;
+		private System.Windows.Forms.CheckBox Hchk_LibrePasteFixCASV;
+		private System.Windows.Forms.TextBox Htxt_SymbolClear;
+		private System.Windows.Forms.Label Hlbl_SymbolClear;
+		private System.Windows.Forms.TextBox Htxt_AutoSwitchHotkeyStr;
+		private System.Windows.Forms.Label Hlbl_AutoSwitchHotkey;
+		private System.Windows.Forms.TextBox Htxt_OAutoSwitchExcluded;
+		private System.Windows.Forms.Label Hlbl_OnlyAutoSwitchExcluded;
+		private System.Windows.Forms.TextBox Htxt_OSnippetsExcluded;
+		private System.Windows.Forms.Label Hlbl_OnlySnippetsExcluded;
+		private System.Windows.Forms.TextBox Htxt_ReselectCustoms;
+		private System.Windows.Forms.Label Hlbl_ReselectCustoms;
+		private System.Windows.Forms.TextBox Htxt_CycleCaseOrder;
+		private System.Windows.Forms.Label Hlbl_CycleCaseOrder;
+		private System.Windows.Forms.CheckBox Hchk_CycleCaseReset;
+		private System.Windows.Forms.CheckBox Hchk___setlayoutForce;
+		private System.Windows.Forms.CheckBox Hchk___setlayoutOnlyWM;
+		private System.Windows.Forms.TextBox Htxt_AutoSwitchIngoreRules;
+		private System.Windows.Forms.Label Hlbl_AutoSwitchIngoreRules;
+		private System.Windows.Forms.CheckBox Hchk_ASIgnoreLS;
+		private System.Windows.Forms.CheckBox Hchk_ASIgnoreDel;
+		private System.Windows.Forms.CheckBox Hchk_ASIgnoreBack;
+		private System.Windows.Forms.Label Hlbl_ASIgnoreTimeout;
+		private System.Windows.Forms.NumericUpDown Hnud_ASIgnoreTimeout;
+		private System.Windows.Forms.Label Hlbl_scrollpastcontent;
 		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
@@ -578,6 +618,46 @@ namespace Mahou
 			this.lnk_Wiki = new System.Windows.Forms.LinkLabel();
 			this.lnk_Site = new System.Windows.Forms.LinkLabel();
 			this.lnk_Repository = new System.Windows.Forms.LinkLabel();
+			this.tab_Hidden = new System.Windows.Forms.TabPage();
+			this.Hlbl_scrollpastcontent = new System.Windows.Forms.Label();
+			this.Hlbl_ASIgnoreTimeout = new System.Windows.Forms.Label();
+			this.Hnud_ASIgnoreTimeout = new System.Windows.Forms.NumericUpDown();
+			this.Htxt_AutoSwitchIngoreRules = new System.Windows.Forms.TextBox();
+			this.Hlbl_AutoSwitchIngoreRules = new System.Windows.Forms.Label();
+			this.Hchk_ASIgnoreLS = new System.Windows.Forms.CheckBox();
+			this.Hchk_ASIgnoreDel = new System.Windows.Forms.CheckBox();
+			this.Hchk_ASIgnoreBack = new System.Windows.Forms.CheckBox();
+			this.Hchk___setlayoutOnlyWM = new System.Windows.Forms.CheckBox();
+			this.Hchk___setlayoutForce = new System.Windows.Forms.CheckBox();
+			this.Hchk_CycleCaseReset = new System.Windows.Forms.CheckBox();
+			this.Htxt_CycleCaseOrder = new System.Windows.Forms.TextBox();
+			this.Hlbl_CycleCaseOrder = new System.Windows.Forms.Label();
+			this.Htxt_ReselectCustoms = new System.Windows.Forms.TextBox();
+			this.Hlbl_ReselectCustoms = new System.Windows.Forms.Label();
+			this.Htxt_OAutoSwitchExcluded = new System.Windows.Forms.TextBox();
+			this.Hlbl_OnlyAutoSwitchExcluded = new System.Windows.Forms.Label();
+			this.Htxt_OSnippetsExcluded = new System.Windows.Forms.TextBox();
+			this.Hlbl_OnlySnippetsExcluded = new System.Windows.Forms.Label();
+			this.Htxt_AutoSwitchHotkeyStr = new System.Windows.Forms.TextBox();
+			this.Hlbl_AutoSwitchHotkey = new System.Windows.Forms.Label();
+			this.Htxt_SymbolClear = new System.Windows.Forms.TextBox();
+			this.Hlbl_SymbolClear = new System.Windows.Forms.Label();
+			this.Hchk_LibrePasteFixCASV = new System.Windows.Forms.CheckBox();
+			this.Htxt_AutoCopyTranslation = new System.Windows.Forms.TextBox();
+			this.Hlbl_AutoCopyTranslation = new System.Windows.Forms.Label();
+			this.Hchk_LMBTrayLayoutChange = new System.Windows.Forms.CheckBox();
+			this.Hchk_DisableMemFlush = new System.Windows.Forms.CheckBox();
+			this.Hlbl_AutoRestartMins = new System.Windows.Forms.Label();
+			this.Hnud_AutoRestartMins = new System.Windows.Forms.NumericUpDown();
+			this.Hlbl_OverlayExcludedInterval = new System.Windows.Forms.Label();
+			this.Hnud_OverlayExcludedInterval = new System.Windows.Forms.NumericUpDown();
+			this.Htxt_OverlayExcluded = new System.Windows.Forms.TextBox();
+			this.Hlbl_OverlayExcluded = new System.Windows.Forms.Label();
+			this.Hchk_NCStray = new System.Windows.Forms.CheckBox();
+			this.Hlbl_NCS = new System.Windows.Forms.Label();
+			this.Htxt_NCS = new System.Windows.Forms.TextBox();
+			this.Hchk___selection_nomouse = new System.Windows.Forms.CheckBox();
+			this.Hchk___selection = new System.Windows.Forms.CheckBox();
 			this.btn_OK = new System.Windows.Forms.Button();
 			this.btn_Cancel = new System.Windows.Forms.Button();
 			this.btn_Apply = new System.Windows.Forms.Button();
@@ -636,6 +716,10 @@ namespace Mahou
 			this.grb_ProxyConfig.SuspendLayout();
 			this.grb_MahouReleaseTitle.SuspendLayout();
 			this.tab_about.SuspendLayout();
+			this.tab_Hidden.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Hnud_ASIgnoreTimeout)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.Hnud_AutoRestartMins)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.Hnud_OverlayExcludedInterval)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tabs
@@ -655,6 +739,7 @@ namespace Mahou
 			this.tabs.Controls.Add(this.tab_sync);
 			this.tabs.Controls.Add(this.tab_updates);
 			this.tabs.Controls.Add(this.tab_about);
+			this.tabs.Controls.Add(this.tab_Hidden);
 			this.tabs.Location = new System.Drawing.Point(0, 0);
 			this.tabs.Multiline = true;
 			this.tabs.Name = "tabs";
@@ -3807,6 +3892,472 @@ namespace Mahou
 			this.lnk_Repository.Text = "Source code";
 			this.lnk_Repository.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Lnk_RepositoryLinkClicked);
 			// 
+			// tab_Hidden
+			// 
+			this.tab_Hidden.AutoScroll = true;
+			this.tab_Hidden.BackColor = System.Drawing.Color.DarkSlateGray;
+			this.tab_Hidden.Controls.Add(this.Hlbl_scrollpastcontent);
+			this.tab_Hidden.Controls.Add(this.Hlbl_ASIgnoreTimeout);
+			this.tab_Hidden.Controls.Add(this.Hnud_ASIgnoreTimeout);
+			this.tab_Hidden.Controls.Add(this.Htxt_AutoSwitchIngoreRules);
+			this.tab_Hidden.Controls.Add(this.Hlbl_AutoSwitchIngoreRules);
+			this.tab_Hidden.Controls.Add(this.Hchk_ASIgnoreLS);
+			this.tab_Hidden.Controls.Add(this.Hchk_ASIgnoreDel);
+			this.tab_Hidden.Controls.Add(this.Hchk_ASIgnoreBack);
+			this.tab_Hidden.Controls.Add(this.Hchk___setlayoutOnlyWM);
+			this.tab_Hidden.Controls.Add(this.Hchk___setlayoutForce);
+			this.tab_Hidden.Controls.Add(this.Hchk_CycleCaseReset);
+			this.tab_Hidden.Controls.Add(this.Htxt_CycleCaseOrder);
+			this.tab_Hidden.Controls.Add(this.Hlbl_CycleCaseOrder);
+			this.tab_Hidden.Controls.Add(this.Htxt_ReselectCustoms);
+			this.tab_Hidden.Controls.Add(this.Hlbl_ReselectCustoms);
+			this.tab_Hidden.Controls.Add(this.Htxt_OAutoSwitchExcluded);
+			this.tab_Hidden.Controls.Add(this.Hlbl_OnlyAutoSwitchExcluded);
+			this.tab_Hidden.Controls.Add(this.Htxt_OSnippetsExcluded);
+			this.tab_Hidden.Controls.Add(this.Hlbl_OnlySnippetsExcluded);
+			this.tab_Hidden.Controls.Add(this.Htxt_AutoSwitchHotkeyStr);
+			this.tab_Hidden.Controls.Add(this.Hlbl_AutoSwitchHotkey);
+			this.tab_Hidden.Controls.Add(this.Htxt_SymbolClear);
+			this.tab_Hidden.Controls.Add(this.Hlbl_SymbolClear);
+			this.tab_Hidden.Controls.Add(this.Hchk_LibrePasteFixCASV);
+			this.tab_Hidden.Controls.Add(this.Htxt_AutoCopyTranslation);
+			this.tab_Hidden.Controls.Add(this.Hlbl_AutoCopyTranslation);
+			this.tab_Hidden.Controls.Add(this.Hchk_LMBTrayLayoutChange);
+			this.tab_Hidden.Controls.Add(this.Hchk_DisableMemFlush);
+			this.tab_Hidden.Controls.Add(this.Hlbl_AutoRestartMins);
+			this.tab_Hidden.Controls.Add(this.Hnud_AutoRestartMins);
+			this.tab_Hidden.Controls.Add(this.Hlbl_OverlayExcludedInterval);
+			this.tab_Hidden.Controls.Add(this.Hnud_OverlayExcludedInterval);
+			this.tab_Hidden.Controls.Add(this.Htxt_OverlayExcluded);
+			this.tab_Hidden.Controls.Add(this.Hlbl_OverlayExcluded);
+			this.tab_Hidden.Controls.Add(this.Hchk_NCStray);
+			this.tab_Hidden.Controls.Add(this.Hlbl_NCS);
+			this.tab_Hidden.Controls.Add(this.Htxt_NCS);
+			this.tab_Hidden.Controls.Add(this.Hchk___selection_nomouse);
+			this.tab_Hidden.Controls.Add(this.Hchk___selection);
+			this.tab_Hidden.ForeColor = System.Drawing.Color.PapayaWhip;
+			this.tab_Hidden.Location = new System.Drawing.Point(4, 44);
+			this.tab_Hidden.Name = "tab_Hidden";
+			this.tab_Hidden.Padding = new System.Windows.Forms.Padding(3);
+			this.tab_Hidden.Size = new System.Drawing.Size(559, 268);
+			this.tab_Hidden.TabIndex = 15;
+			this.tab_Hidden.Text = "[Hidden]";
+			// 
+			// Hlbl_scrollpastcontent
+			// 
+			this.Hlbl_scrollpastcontent.Location = new System.Drawing.Point(238, 578);
+			this.Hlbl_scrollpastcontent.Name = "Hlbl_scrollpastcontent";
+			this.Hlbl_scrollpastcontent.Size = new System.Drawing.Size(100, 23);
+			this.Hlbl_scrollpastcontent.TabIndex = 40;
+			// 
+			// Hlbl_ASIgnoreTimeout
+			// 
+			this.Hlbl_ASIgnoreTimeout.AutoSize = true;
+			this.Hlbl_ASIgnoreTimeout.Location = new System.Drawing.Point(8, 565);
+			this.Hlbl_ASIgnoreTimeout.Name = "Hlbl_ASIgnoreTimeout";
+			this.Hlbl_ASIgnoreTimeout.Size = new System.Drawing.Size(180, 15);
+			this.Hlbl_ASIgnoreTimeout.TabIndex = 39;
+			this.Hlbl_ASIgnoreTimeout.Text = "Auto Switch ignore timeout(ms):";
+			// 
+			// Hnud_ASIgnoreTimeout
+			// 
+			this.Hnud_ASIgnoreTimeout.BackColor = System.Drawing.Color.Orange;
+			this.Hnud_ASIgnoreTimeout.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Hnud_ASIgnoreTimeout.ForeColor = System.Drawing.Color.LightCyan;
+			this.Hnud_ASIgnoreTimeout.Increment = new decimal(new int[] {
+			50,
+			0,
+			0,
+			0});
+			this.Hnud_ASIgnoreTimeout.Location = new System.Drawing.Point(362, 563);
+			this.Hnud_ASIgnoreTimeout.Maximum = new decimal(new int[] {
+			50000,
+			0,
+			0,
+			0});
+			this.Hnud_ASIgnoreTimeout.Name = "Hnud_ASIgnoreTimeout";
+			this.Hnud_ASIgnoreTimeout.Size = new System.Drawing.Size(83, 23);
+			this.Hnud_ASIgnoreTimeout.TabIndex = 38;
+			// 
+			// Htxt_AutoSwitchIngoreRules
+			// 
+			this.Htxt_AutoSwitchIngoreRules.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_AutoSwitchIngoreRules.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_AutoSwitchIngoreRules.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_AutoSwitchIngoreRules.Location = new System.Drawing.Point(428, 474);
+			this.Htxt_AutoSwitchIngoreRules.Name = "Htxt_AutoSwitchIngoreRules";
+			this.Htxt_AutoSwitchIngoreRules.Size = new System.Drawing.Size(107, 23);
+			this.Htxt_AutoSwitchIngoreRules.TabIndex = 37;
+			// 
+			// Hlbl_AutoSwitchIngoreRules
+			// 
+			this.Hlbl_AutoSwitchIngoreRules.AutoSize = true;
+			this.Hlbl_AutoSwitchIngoreRules.Location = new System.Drawing.Point(8, 476);
+			this.Hlbl_AutoSwitchIngoreRules.Name = "Hlbl_AutoSwitchIngoreRules";
+			this.Hlbl_AutoSwitchIngoreRules.Size = new System.Drawing.Size(416, 15);
+			this.Hlbl_AutoSwitchIngoreRules.TabIndex = 36;
+			this.Hlbl_AutoSwitchIngoreRules.Text = "AutoSwitch ignore rules ([S]pace [W]indow [M]ouse [C]aret [L]ayout [T]imer):";
+			// 
+			// Hchk_ASIgnoreLS
+			// 
+			this.Hchk_ASIgnoreLS.AutoSize = true;
+			this.Hchk_ASIgnoreLS.Location = new System.Drawing.Point(8, 540);
+			this.Hchk_ASIgnoreLS.Name = "Hchk_ASIgnoreLS";
+			this.Hchk_ASIgnoreLS.Size = new System.Drawing.Size(280, 19);
+			this.Hchk_ASIgnoreLS.TabIndex = 35;
+			this.Hchk_ASIgnoreLS.Text = "Auto Switch ignore: [Changed Layout Manually]";
+			this.Hchk_ASIgnoreLS.UseVisualStyleBackColor = true;
+			// 
+			// Hchk_ASIgnoreDel
+			// 
+			this.Hchk_ASIgnoreDel.AutoSize = true;
+			this.Hchk_ASIgnoreDel.Location = new System.Drawing.Point(8, 520);
+			this.Hchk_ASIgnoreDel.Name = "Hchk_ASIgnoreDel";
+			this.Hchk_ASIgnoreDel.Size = new System.Drawing.Size(217, 19);
+			this.Hchk_ASIgnoreDel.TabIndex = 34;
+			this.Hchk_ASIgnoreDel.Text = "Auto Switch ignore: [Pressed Delete]";
+			this.Hchk_ASIgnoreDel.UseVisualStyleBackColor = true;
+			// 
+			// Hchk_ASIgnoreBack
+			// 
+			this.Hchk_ASIgnoreBack.AutoSize = true;
+			this.Hchk_ASIgnoreBack.Location = new System.Drawing.Point(8, 500);
+			this.Hchk_ASIgnoreBack.Name = "Hchk_ASIgnoreBack";
+			this.Hchk_ASIgnoreBack.Size = new System.Drawing.Size(240, 19);
+			this.Hchk_ASIgnoreBack.TabIndex = 33;
+			this.Hchk_ASIgnoreBack.Text = "Auto Switch ignore: [Pressed BackSpace]";
+			this.Hchk_ASIgnoreBack.UseVisualStyleBackColor = true;
+			// 
+			// Hchk___setlayoutOnlyWM
+			// 
+			this.Hchk___setlayoutOnlyWM.AutoSize = true;
+			this.Hchk___setlayoutOnlyWM.Location = new System.Drawing.Point(8, 452);
+			this.Hchk___setlayoutOnlyWM.Name = "Hchk___setlayoutOnlyWM";
+			this.Hchk___setlayoutOnlyWM.Size = new System.Drawing.Size(501, 19);
+			this.Hchk___setlayoutOnlyWM.TabIndex = 32;
+			this.Hchk___setlayoutOnlyWM.Text = "Snippet __setlayout() will use only Window Messages ignoring \"emulate layout swit" +
+	"ching\".";
+			this.Hchk___setlayoutOnlyWM.UseVisualStyleBackColor = true;
+			// 
+			// Hchk___setlayoutForce
+			// 
+			this.Hchk___setlayoutForce.AutoSize = true;
+			this.Hchk___setlayoutForce.Location = new System.Drawing.Point(8, 432);
+			this.Hchk___setlayoutForce.Name = "Hchk___setlayoutForce";
+			this.Hchk___setlayoutForce.Size = new System.Drawing.Size(496, 19);
+			this.Hchk___setlayoutForce.TabIndex = 31;
+			this.Hchk___setlayoutForce.Text = "Snippet __setlayout() will force layout, ignoring the \"Switch to guess layout aft" +
+	"er snippet\".";
+			this.Hchk___setlayoutForce.UseVisualStyleBackColor = true;
+			// 
+			// Hchk_CycleCaseReset
+			// 
+			this.Hchk_CycleCaseReset.AutoSize = true;
+			this.Hchk_CycleCaseReset.Location = new System.Drawing.Point(8, 412);
+			this.Hchk_CycleCaseReset.Name = "Hchk_CycleCaseReset";
+			this.Hchk_CycleCaseReset.Size = new System.Drawing.Size(348, 19);
+			this.Hchk_CycleCaseReset.TabIndex = 30;
+			this.Hchk_CycleCaseReset.Text = "Reset Cycle Case Order after caret position/window changed.";
+			this.Hchk_CycleCaseReset.UseVisualStyleBackColor = true;
+			// 
+			// Htxt_CycleCaseOrder
+			// 
+			this.Htxt_CycleCaseOrder.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_CycleCaseOrder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_CycleCaseOrder.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_CycleCaseOrder.Location = new System.Drawing.Point(412, 388);
+			this.Htxt_CycleCaseOrder.Name = "Htxt_CycleCaseOrder";
+			this.Htxt_CycleCaseOrder.Size = new System.Drawing.Size(124, 23);
+			this.Htxt_CycleCaseOrder.TabIndex = 29;
+			// 
+			// Hlbl_CycleCaseOrder
+			// 
+			this.Hlbl_CycleCaseOrder.AutoSize = true;
+			this.Hlbl_CycleCaseOrder.Location = new System.Drawing.Point(10, 390);
+			this.Hlbl_CycleCaseOrder.Name = "Hlbl_CycleCaseOrder";
+			this.Hlbl_CycleCaseOrder.Size = new System.Drawing.Size(362, 15);
+			this.Hlbl_CycleCaseOrder.TabIndex = 28;
+			this.Hlbl_CycleCaseOrder.Text = "Cycle Case Hotkey order: ([T]itle [U]pper [L]ower [S]wap [R]andom)";
+			// 
+			// Htxt_ReselectCustoms
+			// 
+			this.Htxt_ReselectCustoms.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_ReselectCustoms.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_ReselectCustoms.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_ReselectCustoms.Location = new System.Drawing.Point(412, 359);
+			this.Htxt_ReselectCustoms.Name = "Htxt_ReselectCustoms";
+			this.Htxt_ReselectCustoms.Size = new System.Drawing.Size(124, 23);
+			this.Htxt_ReselectCustoms.TabIndex = 27;
+			// 
+			// Hlbl_ReselectCustoms
+			// 
+			this.Hlbl_ReselectCustoms.AutoSize = true;
+			this.Hlbl_ReselectCustoms.Location = new System.Drawing.Point(10, 361);
+			this.Hlbl_ReselectCustoms.Name = "Hlbl_ReselectCustoms";
+			this.Hlbl_ReselectCustoms.Size = new System.Drawing.Size(345, 15);
+			this.Hlbl_ReselectCustoms.TabIndex = 26;
+			this.Hlbl_ReselectCustoms.Text = "Use reselect only in these convert selection hotkeys: (tTRSULCN)";
+			// 
+			// Htxt_OAutoSwitchExcluded
+			// 
+			this.Htxt_OAutoSwitchExcluded.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_OAutoSwitchExcluded.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_OAutoSwitchExcluded.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_OAutoSwitchExcluded.Location = new System.Drawing.Point(270, 330);
+			this.Htxt_OAutoSwitchExcluded.Name = "Htxt_OAutoSwitchExcluded";
+			this.Htxt_OAutoSwitchExcluded.Size = new System.Drawing.Size(265, 23);
+			this.Htxt_OAutoSwitchExcluded.TabIndex = 25;
+			// 
+			// Hlbl_OnlyAutoSwitchExcluded
+			// 
+			this.Hlbl_OnlyAutoSwitchExcluded.AutoSize = true;
+			this.Hlbl_OnlyAutoSwitchExcluded.Location = new System.Drawing.Point(9, 332);
+			this.Hlbl_OnlyAutoSwitchExcluded.Name = "Hlbl_OnlyAutoSwitchExcluded";
+			this.Hlbl_OnlyAutoSwitchExcluded.Size = new System.Drawing.Size(251, 15);
+			this.Hlbl_OnlyAutoSwitchExcluded.TabIndex = 24;
+			this.Hlbl_OnlyAutoSwitchExcluded.Text = "Autoswitch excluded processes: ( | - separator)";
+			// 
+			// Htxt_OSnippetsExcluded
+			// 
+			this.Htxt_OSnippetsExcluded.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_OSnippetsExcluded.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_OSnippetsExcluded.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_OSnippetsExcluded.Location = new System.Drawing.Point(270, 301);
+			this.Htxt_OSnippetsExcluded.Name = "Htxt_OSnippetsExcluded";
+			this.Htxt_OSnippetsExcluded.Size = new System.Drawing.Size(265, 23);
+			this.Htxt_OSnippetsExcluded.TabIndex = 23;
+			// 
+			// Hlbl_OnlySnippetsExcluded
+			// 
+			this.Hlbl_OnlySnippetsExcluded.AutoSize = true;
+			this.Hlbl_OnlySnippetsExcluded.Location = new System.Drawing.Point(9, 303);
+			this.Hlbl_OnlySnippetsExcluded.Name = "Hlbl_OnlySnippetsExcluded";
+			this.Hlbl_OnlySnippetsExcluded.Size = new System.Drawing.Size(236, 15);
+			this.Hlbl_OnlySnippetsExcluded.TabIndex = 22;
+			this.Hlbl_OnlySnippetsExcluded.Text = "Snippets excluded processes: ( | - separator)";
+			// 
+			// Htxt_AutoSwitchHotkeyStr
+			// 
+			this.Htxt_AutoSwitchHotkeyStr.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_AutoSwitchHotkeyStr.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_AutoSwitchHotkeyStr.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_AutoSwitchHotkeyStr.Location = new System.Drawing.Point(412, 272);
+			this.Htxt_AutoSwitchHotkeyStr.Name = "Htxt_AutoSwitchHotkeyStr";
+			this.Htxt_AutoSwitchHotkeyStr.Size = new System.Drawing.Size(123, 23);
+			this.Htxt_AutoSwitchHotkeyStr.TabIndex = 21;
+			// 
+			// Hlbl_AutoSwitchHotkey
+			// 
+			this.Hlbl_AutoSwitchHotkey.AutoSize = true;
+			this.Hlbl_AutoSwitchHotkey.Location = new System.Drawing.Point(9, 274);
+			this.Hlbl_AutoSwitchHotkey.Name = "Hlbl_AutoSwitchHotkey";
+			this.Hlbl_AutoSwitchHotkey.Size = new System.Drawing.Size(376, 15);
+			this.Hlbl_AutoSwitchHotkey.TabIndex = 20;
+			this.Hlbl_AutoSwitchHotkey.Text = "Toggle AutoSwitch hotkey: (format: modifiers|key, example: alt+ctrl|k)";
+			// 
+			// Htxt_SymbolClear
+			// 
+			this.Htxt_SymbolClear.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_SymbolClear.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_SymbolClear.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_SymbolClear.Location = new System.Drawing.Point(270, 243);
+			this.Htxt_SymbolClear.Name = "Htxt_SymbolClear";
+			this.Htxt_SymbolClear.Size = new System.Drawing.Size(265, 23);
+			this.Htxt_SymbolClear.TabIndex = 19;
+			// 
+			// Hlbl_SymbolClear
+			// 
+			this.Hlbl_SymbolClear.AutoSize = true;
+			this.Hlbl_SymbolClear.Location = new System.Drawing.Point(8, 247);
+			this.Hlbl_SymbolClear.Name = "Hlbl_SymbolClear";
+			this.Hlbl_SymbolClear.Size = new System.Drawing.Size(201, 15);
+			this.Hlbl_SymbolClear.TabIndex = 18;
+			this.Hlbl_SymbolClear.Text = "Symbols which clear Last Word/Line:";
+			// 
+			// Hchk_LibrePasteFixCASV
+			// 
+			this.Hchk_LibrePasteFixCASV.AutoSize = true;
+			this.Hchk_LibrePasteFixCASV.Location = new System.Drawing.Point(8, 220);
+			this.Hchk_LibrePasteFixCASV.Name = "Hchk_LibrePasteFixCASV";
+			this.Hchk_LibrePasteFixCASV.Size = new System.Drawing.Size(260, 19);
+			this.Hchk_LibrePasteFixCASV.TabIndex = 15;
+			this.Hchk_LibrePasteFixCASV.Text = "Libre Office fix, paste using Ctrl+Alt+Shift+V";
+			this.Hchk_LibrePasteFixCASV.UseVisualStyleBackColor = true;
+			// 
+			// Htxt_AutoCopyTranslation
+			// 
+			this.Htxt_AutoCopyTranslation.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_AutoCopyTranslation.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_AutoCopyTranslation.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_AutoCopyTranslation.Location = new System.Drawing.Point(501, 195);
+			this.Htxt_AutoCopyTranslation.Name = "Htxt_AutoCopyTranslation";
+			this.Htxt_AutoCopyTranslation.Size = new System.Drawing.Size(34, 23);
+			this.Htxt_AutoCopyTranslation.TabIndex = 14;
+			// 
+			// Hlbl_AutoCopyTranslation
+			// 
+			this.Hlbl_AutoCopyTranslation.AutoSize = true;
+			this.Hlbl_AutoCopyTranslation.Location = new System.Drawing.Point(8, 197);
+			this.Hlbl_AutoCopyTranslation.Name = "Hlbl_AutoCopyTranslation";
+			this.Hlbl_AutoCopyTranslation.Size = new System.Drawing.Size(471, 15);
+			this.Hlbl_AutoCopyTranslation.TabIndex = 13;
+			this.Hlbl_AutoCopyTranslation.Text = "[Translator] Auto Copy to Clipboard translation (only one lang short code, e.g. j" +
+	"a/en/ru):";
+			// 
+			// Hchk_LMBTrayLayoutChange
+			// 
+			this.Hchk_LMBTrayLayoutChange.AutoSize = true;
+			this.Hchk_LMBTrayLayoutChange.Location = new System.Drawing.Point(8, 175);
+			this.Hchk_LMBTrayLayoutChange.Name = "Hchk_LMBTrayLayoutChange";
+			this.Hchk_LMBTrayLayoutChange.Size = new System.Drawing.Size(479, 19);
+			this.Hchk_LMBTrayLayoutChange.TabIndex = 12;
+			this.Hchk_LMBTrayLayoutChange.Text = "Left Click on Tray Icon changes layout (uses Alt+Tab to go back to your previous " +
+	"app).";
+			this.Hchk_LMBTrayLayoutChange.UseVisualStyleBackColor = true;
+			// 
+			// Hchk_DisableMemFlush
+			// 
+			this.Hchk_DisableMemFlush.AutoSize = true;
+			this.Hchk_DisableMemFlush.Location = new System.Drawing.Point(8, 150);
+			this.Hchk_DisableMemFlush.Name = "Hchk_DisableMemFlush";
+			this.Hchk_DisableMemFlush.Size = new System.Drawing.Size(289, 19);
+			this.Hchk_DisableMemFlush.TabIndex = 11;
+			this.Hchk_DisableMemFlush.Text = "Disable memory flush (SetProcessWorkingSetSize)";
+			this.Hchk_DisableMemFlush.UseVisualStyleBackColor = true;
+			// 
+			// Hlbl_AutoRestartMins
+			// 
+			this.Hlbl_AutoRestartMins.AutoSize = true;
+			this.Hlbl_AutoRestartMins.Location = new System.Drawing.Point(8, 124);
+			this.Hlbl_AutoRestartMins.Name = "Hlbl_AutoRestartMins";
+			this.Hlbl_AutoRestartMins.Size = new System.Drawing.Size(298, 15);
+			this.Hlbl_AutoRestartMins.TabIndex = 10;
+			this.Hlbl_AutoRestartMins.Text = "Auto-Restart Mahou(min) (0 - disable, restart required):";
+			// 
+			// Hnud_AutoRestartMins
+			// 
+			this.Hnud_AutoRestartMins.BackColor = System.Drawing.Color.Orange;
+			this.Hnud_AutoRestartMins.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Hnud_AutoRestartMins.ForeColor = System.Drawing.Color.LightCyan;
+			this.Hnud_AutoRestartMins.Location = new System.Drawing.Point(333, 121);
+			this.Hnud_AutoRestartMins.Maximum = new decimal(new int[] {
+			500,
+			0,
+			0,
+			0});
+			this.Hnud_AutoRestartMins.Name = "Hnud_AutoRestartMins";
+			this.Hnud_AutoRestartMins.Size = new System.Drawing.Size(83, 23);
+			this.Hnud_AutoRestartMins.TabIndex = 9;
+			// 
+			// Hlbl_OverlayExcludedInterval
+			// 
+			this.Hlbl_OverlayExcludedInterval.AutoSize = true;
+			this.Hlbl_OverlayExcludedInterval.Location = new System.Drawing.Point(8, 95);
+			this.Hlbl_OverlayExcludedInterval.Name = "Hlbl_OverlayExcludedInterval";
+			this.Hlbl_OverlayExcludedInterval.Size = new System.Drawing.Size(166, 15);
+			this.Hlbl_OverlayExcludedInterval.TabIndex = 8;
+			this.Hlbl_OverlayExcludedInterval.Text = "Overlay Excluded Interval(ms):";
+			// 
+			// Hnud_OverlayExcludedInterval
+			// 
+			this.Hnud_OverlayExcludedInterval.BackColor = System.Drawing.Color.Orange;
+			this.Hnud_OverlayExcludedInterval.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Hnud_OverlayExcludedInterval.ForeColor = System.Drawing.Color.LightCyan;
+			this.Hnud_OverlayExcludedInterval.Increment = new decimal(new int[] {
+			50,
+			0,
+			0,
+			0});
+			this.Hnud_OverlayExcludedInterval.Location = new System.Drawing.Point(333, 92);
+			this.Hnud_OverlayExcludedInterval.Maximum = new decimal(new int[] {
+			10000,
+			0,
+			0,
+			0});
+			this.Hnud_OverlayExcludedInterval.Minimum = new decimal(new int[] {
+			250,
+			0,
+			0,
+			0});
+			this.Hnud_OverlayExcludedInterval.Name = "Hnud_OverlayExcludedInterval";
+			this.Hnud_OverlayExcludedInterval.Size = new System.Drawing.Size(82, 23);
+			this.Hnud_OverlayExcludedInterval.TabIndex = 7;
+			this.Hnud_OverlayExcludedInterval.Value = new decimal(new int[] {
+			2500,
+			0,
+			0,
+			0});
+			// 
+			// Htxt_OverlayExcluded
+			// 
+			this.Htxt_OverlayExcluded.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_OverlayExcluded.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_OverlayExcluded.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_OverlayExcluded.Location = new System.Drawing.Point(270, 63);
+			this.Htxt_OverlayExcluded.Name = "Htxt_OverlayExcluded";
+			this.Htxt_OverlayExcluded.Size = new System.Drawing.Size(265, 23);
+			this.Htxt_OverlayExcluded.TabIndex = 6;
+			// 
+			// Hlbl_OverlayExcluded
+			// 
+			this.Hlbl_OverlayExcluded.AutoSize = true;
+			this.Hlbl_OverlayExcluded.Location = new System.Drawing.Point(8, 67);
+			this.Hlbl_OverlayExcluded.Name = "Hlbl_OverlayExcluded";
+			this.Hlbl_OverlayExcluded.Size = new System.Drawing.Size(262, 15);
+			this.Hlbl_OverlayExcluded.TabIndex = 5;
+			this.Hlbl_OverlayExcluded.Text = "Overlay processes disable Mahou: ( | - separator)";
+			// 
+			// Hchk_NCStray
+			// 
+			this.Hchk_NCStray.AutoSize = true;
+			this.Hchk_NCStray.Location = new System.Drawing.Point(8, 37);
+			this.Hchk_NCStray.Name = "Hchk_NCStray";
+			this.Hchk_NCStray.Size = new System.Drawing.Size(184, 19);
+			this.Hchk_NCStray.TabIndex = 4;
+			this.Hchk_NCStray.Text = "Num/Caps/Scroll Lock in Tray";
+			this.Hchk_NCStray.UseVisualStyleBackColor = true;
+			// 
+			// Hlbl_NCS
+			// 
+			this.Hlbl_NCS.AutoSize = true;
+			this.Hlbl_NCS.Location = new System.Drawing.Point(371, 39);
+			this.Hlbl_NCS.Name = "Hlbl_NCS";
+			this.Hlbl_NCS.Size = new System.Drawing.Size(122, 15);
+			this.Hlbl_NCS.TabIndex = 3;
+			this.Hlbl_NCS.Text = "[N]um [C]aps [S]croll:";
+			// 
+			// Htxt_NCS
+			// 
+			this.Htxt_NCS.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_NCS.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_NCS.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_NCS.Location = new System.Drawing.Point(501, 37);
+			this.Htxt_NCS.Name = "Htxt_NCS";
+			this.Htxt_NCS.Size = new System.Drawing.Size(34, 23);
+			this.Htxt_NCS.TabIndex = 2;
+			// 
+			// Hchk___selection_nomouse
+			// 
+			this.Hchk___selection_nomouse.AutoSize = true;
+			this.Hchk___selection_nomouse.Location = new System.Drawing.Point(8, 20);
+			this.Hchk___selection_nomouse.Name = "Hchk___selection_nomouse";
+			this.Hchk___selection_nomouse.Size = new System.Drawing.Size(448, 19);
+			this.Hchk___selection_nomouse.TabIndex = 1;
+			this.Hchk___selection_nomouse.Text = "Disable __selection()\'s mouse triggers. (double click triggers Ctrl+Insert, to co" +
+	"py)";
+			this.Hchk___selection_nomouse.UseVisualStyleBackColor = true;
+			// 
+			// Hchk___selection
+			// 
+			this.Hchk___selection.AutoSize = true;
+			this.Hchk___selection.Location = new System.Drawing.Point(8, 3);
+			this.Hchk___selection.Name = "Hchk___selection";
+			this.Hchk___selection.Size = new System.Drawing.Size(485, 19);
+			this.Hchk___selection.TabIndex = 0;
+			this.Hchk___selection.Text = "Enable __selection(), allows you to write snippet over selection and use it insid" +
+	"e snippet.\r\n";
+			this.Hchk___selection.UseVisualStyleBackColor = true;
+			// 
 			// btn_OK
 			// 
 			this.btn_OK.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -3950,6 +4501,11 @@ namespace Mahou
 			this.grb_MahouReleaseTitle.PerformLayout();
 			this.tab_about.ResumeLayout(false);
 			this.tab_about.PerformLayout();
+			this.tab_Hidden.ResumeLayout(false);
+			this.tab_Hidden.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Hnud_ASIgnoreTimeout)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.Hnud_AutoRestartMins)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.Hnud_OverlayExcludedInterval)).EndInit();
 			this.ResumeLayout(false);
 
 		}

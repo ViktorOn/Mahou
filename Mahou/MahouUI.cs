@@ -29,24 +29,19 @@ namespace Mahou {
 					hksOK, hklineOK, hkSIOK, hkExitOK, hkToglLPOK, hkShowTSOK, hkToggleMahouOK, hkUcOK, hklcOK, hkccOK,
 					hkSCCok, hkSCMUM;
 		public static string nPath = AppDomain.CurrentDomain.BaseDirectory, CustomSound, CustomSound2;
-		public static string onlySnippetsExcluded = "", onlyAutoSwitchExcluded = "";
-		public static string AutoCopyTranslation = "";
 		public static int ACT_Match = 0;
 		public static bool LoggingEnabled, dummy, CapsLockDisablerTimer, LangPanelUpperArrow, mouseLTUpperArrow, caretLTUpperArrow,
 						   ShiftInHotkey, AltInHotkey, CtrlInHotkey, WinInHotkey, AutoStartAsAdmin, UseJKL, AutoSwitchEnabled, ReadOnlyNA,
 						   SoundEnabled, UseCustomSound, SoundOnAutoSwitch, SoundOnConvLast, SoundOnSnippets, SoundOnLayoutSwitch,
 						   UseCustomSound2, SoundOnAutoSwitch2, SoundOnConvLast2, SoundOnSnippets2, SoundOnLayoutSwitch2, TrOnDoubleClick,
-						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory, ExcludeCaretLD, UsePaste, LibreCtrlAltShiftV,
-						   CycleCaseReset, __selection, __selection_nomouse, WriteInputHistoryByDate, WriteInputHistoryHourly, MahouMM = false, nomemoryflush,
+						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory, ExcludeCaretLD, UsePaste,
+						   WriteInputHistoryByDate, WriteInputHistoryHourly, MahouMM = false,
 						   hk_result, multi_continue = true;
 		static string[] UpdInfo;
 		public static List<int> HKBlockAlt = new List<int>();
 		public static bool BlockAltUpNOW = false;
-		static string CycleCaseOrder = "TULSR";
 		static bool updating, was, isold = true, checking, snip_checking, as_checking, check_ASD_size = true;
 		public static bool ENABLED = true, reload_snip = false;
-		static int OverlayExcludedInerval;
-		static string OverlayExcluded;
 		#region Timers
 		static Timer overlay_excluder;
 		static Timer tmr = new Timer();
@@ -64,6 +59,14 @@ namespace Mahou {
 		public Timer langPanelRefresh = new Timer();
 		public Timer res = new Timer();
 		public Timer resC = new Timer();
+		#endregion
+		#region [Hidden]
+		public static bool __setlayoutForce, __setlayoutOnlyWM, nomemoryflush, LibreCtrlAltShiftV, __selection, __selection_nomouse, CycleCaseReset,
+							OVEXDisabled;
+		public static string ReselectCustoms, AutoCopyTranslation = "", onlySnippetsExcluded = "", onlyAutoSwitchExcluded = "";
+		static string CycleCaseOrder = "TULSR", OverlayExcluded, tas, ncs;
+		static int OverlayExcludedInerval, arm;
+		static Timer armt;
 		#endregion
 		static uint lastTrayFlagLayout = 0;
 		public static Bitmap FLAG, ITEXT;
@@ -291,13 +294,6 @@ namespace Mahou {
 			} else { showUpdWnd.Dispose(); }
 			DPISCALE(this);
 			Memory.Flush();
-			var arm = MMain.MyConfs.ReadInt("Hidden", "AutoRestartMins");
-			if (arm > 0) {
-				var armt = new Timer();
-				armt.Interval = 1000 * arm * 60;
-				armt.Tick += (_, __) => Restart();
-				armt.Start();
-			}
 		}
 		static NotifyIcon[] Ticons;
 		static Timer ttmr;
@@ -307,8 +303,10 @@ namespace Mahou {
 			var icons_on = new []{Properties.Resources.num_on, Properties.Resources.caps_on, Properties.Resources.scr_on};
 			if (Ticons == null)
 				Ticons = new NotifyIcon[3];
-			var ncs = MMain.MyConfs.Read("Hidden", "NCS").ToUpper();
 			nvisible = new []{ncs.Contains("N"), ncs.Contains("C"), ncs.Contains("S")};
+			if (String.IsNullOrEmpty(ncs) || (nvisible[0] && nvisible[1] && nvisible[2])) {
+				NCS_destroy(); return;
+			}
 			var Tstates = new bool[3]{Control.IsKeyLocked(Keys.NumLock), Control.IsKeyLocked(Keys.CapsLock), Control.IsKeyLocked(Keys.Scroll)};
 			for (int v = 0; v < 3; v++) {
 				if (!nvisible[v])continue;
@@ -354,7 +352,7 @@ namespace Mahou {
 			}
 			if (Ticons != null) {
 				for (int v = 0; v<3; v++) {
-					if (!nvisible[v]) continue;
+					if (!nvisible[v] && Ticons[v] == null) continue;
 					if (Ticons[v].Visible) Ticons[v].Visible = false;
 					Ticons[v].Dispose();
 				}
@@ -1275,6 +1273,7 @@ namespace Mahou {
 				MMain.MyConfs.Write("Sounds", "UseCustomSound2", chk_UseCustomSnd2.Checked.ToString());
 				MMain.MyConfs.Write("Sounds", "CustomSound2", lbl_CustomSound2.Text);
 				#endregion
+				saveHidden();
 				MMain.MyConfs.WriteToDisk();
 				Logging.Log("All configurations saved.");
 			}
@@ -1374,11 +1373,95 @@ namespace Mahou {
 			}
 			return repl;
 		}
+		void saveHidden() {
+			MMain.MyConfs.Write("Hidden", "ChangeLayoutOnTrayLMB", Hchk_LMBTrayLayoutChange.Checked.ToString());
+			MMain.MyConfs.Write("Hidden", "DisableMemoryFlush", Hchk_DisableMemFlush.Checked.ToString());
+			MMain.MyConfs.Write("Hidden", "SymbolClear", Htxt_SymbolClear.Text);
+			MMain.MyConfs.Write("Hidden", "LibreCtrlAltShiftV", Hchk_LibrePasteFixCASV.Checked.ToString());
+			MMain.MyConfs.Write("Hidden", "CycleCaseOrder", Htxt_CycleCaseOrder.Text);
+			MMain.MyConfs.Write("Hidden", "CycleCaseReset", Hchk_CycleCaseReset.Checked.ToString());
+			MMain.MyConfs.Write("Hidden", "__selection", Hchk___selection.Checked.ToString());
+			MMain.MyConfs.Write("Hidden", "__selection_nomouse", Hchk___selection_nomouse.Checked.ToString());
+			MMain.MyConfs.Write("Hidden", "onlySnippetsExcluded", Htxt_OSnippetsExcluded.Text);
+			MMain.MyConfs.Write("Hidden", "onlyAutoSwitchExcluded", Htxt_OAutoSwitchExcluded.Text);
+			MMain.MyConfs.Write("Hidden", "OverlayExcluded", Htxt_OverlayExcluded.Text);
+			MMain.MyConfs.Write("Hidden", "OverlayExcludedInterval", Hnud_OverlayExcludedInterval.Value.ToString());
+			MMain.MyConfs.Write("Hidden", "AutoCopyTranslation", Htxt_AutoCopyTranslation.Text);
+			MMain.MyConfs.Write("Hidden", "AS_IngoreBack", Hchk_ASIgnoreBack.Checked.ToString());
+			MMain.MyConfs.Write("Hidden", "AS_IngoreDel", Hchk_ASIgnoreDel.Checked.ToString());
+			MMain.MyConfs.Write("Hidden", "AS_IngoreLS", Hchk_ASIgnoreLS.Checked.ToString());
+			MMain.MyConfs.Write("Hidden", "AS_IngoreRules", Htxt_AutoSwitchIngoreRules.Text.ToUpper());
+			MMain.MyConfs.Write("Hidden", "AS_IngoreLSTimeout", Hnud_ASIgnoreTimeout.Value.ToString());
+			MMain.MyConfs.Write("Hidden", "NCS_tray", Hchk_NCStray.Checked.ToString());
+			MMain.MyConfs.Write("Hidden", "NCS", Htxt_NCS.Text.ToUpper());
+			MMain.MyConfs.Write("Hidden", "ToggleAutoSwitchHK", Htxt_AutoSwitchHotkeyStr.Text);
+			MMain.MyConfs.Write("Hidden", "AutoRestartMins", Hnud_AutoRestartMins.Value.ToString());
+			MMain.MyConfs.Write("Hidden", "__setlayout_FORCED", Hchk___setlayoutForce.Checked.ToString());
+			MMain.MyConfs.Write("Hidden", "__setlayout_ONLYWM", Hchk___setlayoutOnlyWM.Checked.ToString());
+			MMain.MyConfs.Write("Hidden", "ReselectCustoms", Htxt_ReselectCustoms.Text);
+			NCS_destroy();
+		}
+		void loadHidden() {
+			Hchk_LMBTrayLayoutChange.Checked = MMain.MyConfs.ReadBool("Hidden", "ChangeLayoutOnTrayLMB");
+			Hchk_DisableMemFlush.Checked = nomemoryflush = MMain.MyConfs.ReadBool("Hidden", "DisableMemoryFlush");
+			Htxt_SymbolClear.Text = KMHook.symbolclear = MMain.MyConfs.Read("Hidden", "SymbolClear");
+			Hchk_LibrePasteFixCASV.Checked = LibreCtrlAltShiftV = MMain.MyConfs.ReadBool("Hidden", "LibreCtrlAltShiftV");
+			Htxt_CycleCaseOrder.Text = CycleCaseOrder = MMain.MyConfs.Read("Hidden", "CycleCaseOrder");
+			Hchk_CycleCaseReset.Checked = CycleCaseReset = MMain.MyConfs.ReadBool("Hidden", "CycleCaseReset");
+			Hchk___selection.Checked = __selection = MMain.MyConfs.ReadBool("Hidden", "__selection");
+			Hchk___selection_nomouse.Checked = __selection_nomouse = MMain.MyConfs.ReadBool("Hidden", "__selection_nomouse");
+			Htxt_OSnippetsExcluded.Text = onlySnippetsExcluded = MMain.MyConfs.Read("Hidden", "onlySnippetsExcluded");
+			Htxt_OAutoSwitchExcluded.Text = onlyAutoSwitchExcluded = MMain.MyConfs.Read("Hidden", "onlyAutoSwitchExcluded");
+			Htxt_OverlayExcluded.Text = OverlayExcluded = MMain.MyConfs.Read("Hidden", "OverlayExcluded");
+			Hnud_OverlayExcludedInterval.Value = OverlayExcludedInerval = MMain.MyConfs.ReadInt("Hidden", "OverlayExcludedInterval");
+			Htxt_AutoCopyTranslation.Text = AutoCopyTranslation = MMain.MyConfs.Read("Hidden", "AutoCopyTranslation");
+			Hchk_ASIgnoreBack.Checked = KMHook.AS_IGN_BACK = MMain.MyConfs.ReadBool("Hidden", "AS_IngoreBack");
+			Hchk_ASIgnoreDel.Checked = KMHook.AS_IGN_DEL = MMain.MyConfs.ReadBool("Hidden", "AS_IngoreDel");
+			Hchk_ASIgnoreLS.Checked = KMHook.AS_IGN_LS = MMain.MyConfs.ReadBool("Hidden", "AS_IngoreLS");
+			Htxt_AutoSwitchIngoreRules.Text = KMHook.AS_IGN_RULES = MMain.MyConfs.Read("Hidden", "AS_IngoreRules").ToUpper();
+			Hnud_ASIgnoreTimeout.Value = KMHook.AS_IGN_TIMEOUT = MMain.MyConfs.ReadInt("Hidden", "AS_IngoreLSTimeout");
+			Hchk_NCStray.Checked = MMain.MyConfs.ReadBool("Hidden", "NCS_tray");
+			Htxt_NCS.Text = ncs = MMain.MyConfs.Read("Hidden", "NCS").ToUpper();
+			Htxt_AutoSwitchHotkeyStr.Text = tas = MMain.MyConfs.Read("Hidden", "ToggleAutoSwitchHK");
+			Hnud_AutoRestartMins.Value = arm = MMain.MyConfs.ReadInt("Hidden", "AutoRestartMins");
+			Hchk___setlayoutForce.Checked = __setlayoutForce = MMain.MyConfs.ReadBool("Hidden", "__setlayout_FORCED");
+			Hchk___setlayoutOnlyWM.Checked = __setlayoutOnlyWM = MMain.MyConfs.ReadBool("Hidden", "__setlayout_ONLYWM");
+			Htxt_ReselectCustoms.Text = ReselectCustoms = MMain.MyConfs.Read("Hidden", "ReselectCustoms");
+			if (!String.IsNullOrEmpty(OverlayExcluded)) {
+				Debug.WriteLine("Starting overlay excluded");
+				if(overlay_excluder != null) {
+					overlay_excluder.Stop();
+					overlay_excluder.Dispose();
+				}
+				overlay_excluder = new Timer();
+				overlay_excluder.Interval = OverlayExcludedInerval;
+				overlay_excluder.Tick += (_,__) => {
+					OVEXDisabled = ENABLED = KMHook.OverlayExcluded(OverlayExcluded);
+//					Debug.WriteLine("Toggle Mahou to " +(!ENABLED));
+					ToggleMahou();
+				};
+				overlay_excluder.Start();
+			} else {
+				if(overlay_excluder != null) {
+					if (OVEXDisabled) {
+						ToggleMahou();
+					}
+					overlay_excluder.Stop();
+					overlay_excluder.Dispose();
+				}
+			}
+			if (arm > 0 && armt != null) {
+				armt = new Timer();
+				armt.Interval = 1000 * arm * 60;
+				armt.Tick += (_, __) => Restart();
+				armt.Start();
+			}
+		}
 		/// <summary>
 		/// Refresh all controls state from configs.
 		/// </summary>
 		void LoadConfigs() {
-			nomemoryflush = MMain.MyConfs.ReadBool("Hidden", "DisableMemoryFlush");
+			loadHidden();
 			decim = (string)Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\International", "sDecimal", null);
 			TrSetsValues = new Dictionary<string, string>();
 			chk_AppDataConfigs.Checked = (bool)DoInMainConfigs(() => MMain.MyConfs.ReadBool("Functions", "AppDataConfigs"));
@@ -1480,38 +1563,6 @@ namespace Mahou {
 			caretLTUpperArrow = MMain.MyConfs.ReadBool("Appearence", "CaretLTUpperArrow");
 			LDUseWindowsMessages = chk_LDMessages.Checked = MMain.MyConfs.ReadBool("Appearence", "WindowsMessages");
 			#endregion
-			#region Hidden
-			KMHook.symbolclear = MMain.MyConfs.Read("Hidden", "SymbolClear");
-			LibreCtrlAltShiftV = MMain.MyConfs.ReadBool("Hidden", "LibreCtrlAltShiftV");
-			CycleCaseOrder = MMain.MyConfs.Read("Hidden", "CycleCaseOrder");
-			CycleCaseReset = MMain.MyConfs.ReadBool("Hidden", "CycleCaseReset");
-			__selection = MMain.MyConfs.ReadBool("Hidden", "__selection");
-			__selection_nomouse = MMain.MyConfs.ReadBool("Hidden", "__selection_nomouse");
-			onlySnippetsExcluded = MMain.MyConfs.Read("Hidden", "onlySnippetsExcluded");
-			onlyAutoSwitchExcluded = MMain.MyConfs.Read("Hidden", "onlyAutoSwitchExcluded");
-			OverlayExcluded = MMain.MyConfs.Read("Hidden", "OverlayExcluded");
-			OverlayExcludedInerval = MMain.MyConfs.ReadInt("Hidden", "OverlayExcludedInterval");
-			if (!String.IsNullOrEmpty(OverlayExcluded)) {
-				Debug.WriteLine("Starting overlay excluded");
-				if(overlay_excluder != null) {
-					overlay_excluder.Stop();
-					overlay_excluder.Dispose();
-				}
-				overlay_excluder = new Timer();
-				overlay_excluder.Interval = OverlayExcludedInerval;
-				overlay_excluder.Tick += (_,__) => {
-					ENABLED = KMHook.OverlayExcluded(OverlayExcluded);
-//					Debug.WriteLine("Toggle Mahou to " +(!ENABLED));
-					ToggleMahou();
-				};
-				overlay_excluder.Start();
-			} else {
-				if(overlay_excluder != null) {
-					overlay_excluder.Stop();
-					overlay_excluder.Dispose();
-				}
-			}
-			#endregion
 			#region Timings
 			LD_MouseSkipMessagesCount = MMain.MyConfs.ReadInt("Timings", "LangTooltipForMouseSkipMessages");
 			if (LDUseWindowsMessages) {
@@ -1559,7 +1610,6 @@ namespace Mahou {
 			LangPanelUpperArrow = chk_LPUpperArrow.Checked = MMain.MyConfs.ReadBool("LangPanel", "UpperArrow");
 			#endregion
 			#region Translate Panel
-			AutoCopyTranslation = MMain.MyConfs.Read("Hidden", "AutoCopyTranslation");
 			TrEnabled = chk_TrEnable.Checked = MMain.MyConfs.ReadBool("TranslatePanel", "Enabled");
 			TranslatePanel.useGS = MMain.MyConfs.ReadBool("TranslatePanel", "UseGS");
 			TranslatePanel.useNA = MMain.MyConfs.ReadBool("TranslatePanel", "UseNA");
@@ -1616,11 +1666,6 @@ namespace Mahou {
 					               }, 650);
 				}
 			}
-			KMHook.AS_IGN_BACK = MMain.MyConfs.ReadBool("Hidden", "AS_IngoreBack");
-			KMHook.AS_IGN_DEL = MMain.MyConfs.ReadBool("Hidden", "AS_IngoreDel");
-			KMHook.AS_IGN_LS = MMain.MyConfs.ReadBool("Hidden", "AS_IngoreLS");
-			KMHook.AS_IGN_RULES = MMain.MyConfs.Read("Hidden", "AS_IngoreRules").ToUpper();
-			KMHook.AS_IGN_TIMEOUT = MMain.MyConfs.ReadInt("Hidden", "AS_IngoreLSTimeout");
 			#endregion
 			LoadTemps();
 			#region DICT reload
@@ -1737,7 +1782,7 @@ namespace Mahou {
 			}
 			UnregisterHotkeys();
 			RegisterHotkeys();
-			if (MMain.MyConfs.ReadBool("Hidden", "NCS_tray")) {
+			if (Hchk_NCStray.Checked) {
 				NCS_tray();
 			} else {
 				NCS_destroy();
@@ -2332,7 +2377,7 @@ DEL "+restartMahouPath;
 			}
 			icon = new TrayIcon(MMain.MyConfs.ReadBool("Functions", "TrayIconVisible"));
 			icon.Exit += (_, __) => ExitProgram();
-			if (MMain.MyConfs.ReadBool("Hidden", "ChangeLayoutOnTrayLMB"))
+			if (Hchk_LMBTrayLayoutChange.Checked)
 				icon.MLBAct += (_, __) => lastAltTabChangeLayout();
 			else
 				icon.MLBAct += (_, __) => ToggleVisibility();
@@ -3059,13 +3104,16 @@ DEL "+restartMahouPath;
 				WinAPI.RegisterHotKey(Handle, (int)Hotkey.HKID.ToggleMahou,
 				                      WinAPI.MOD_NO_REPEAT + Hotkey.GetMods(HKToggleMahou_tempMods), HKToggleMahou_tempKey);
 			if (ENABLED) {
-				var tas = MMain.MyConfs.Read("Hidden", "ToggleAutoSwitchHK");
 				if (!String.IsNullOrEmpty(tas)) {
-					var tasq = tas.Split('|');
-					var mods = Hotkey.GetMods(tasq[0]);
-					var kk = (int)KMHook.strparsekey(tasq[1])[0];
-					Debug.WriteLine("TT: Mod" + mods + " " + kk);
-					_regHK(Handle, 774, WinAPI.MOD_NO_REPEAT + mods, kk);
+					try {
+						var tasq = tas.Split('|');
+						var mods = Hotkey.GetMods(tasq[0]);
+						var kk = (int)KMHook.strparsekey(tasq[1])[0];
+						Debug.WriteLine("TT: Mod" + mods + " " + kk);
+						_regHK(Handle, 774, WinAPI.MOD_NO_REPEAT + mods, kk);
+					} catch(Exception e) {
+						Logging.Log("Error syntax: modifiers|keycode/key toggle AutoSwitch hotkey:" +e.Message);
+					}
 				}
 				if (HKCLast_tempEnabled)
 					_regHK(Handle, (int)Hotkey.HKID.ConvertLastWord, 

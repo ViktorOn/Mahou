@@ -33,7 +33,7 @@ namespace Mahou {
 		static string lastClipText = "", busy_on = "", lastLWClearReason = "";
 		public static string symbolclear;
 		static List<Keys> tempNumpads = new List<Keys>();
-		static Keys preKey = Keys.None, seKeyDown = Keys.None, aseKeyDown = Keys.None;
+		static Keys preKey = Keys.None; //, seKeyDown = Keys.None, aseKeyDown = Keys.None;
 		public static List<char> c_snip = new List<char>();
 		public static System.Windows.Forms.Timer doublekey = new System.Windows.Forms.Timer();
 		public static System.Timers.Timer AS_IGN_RESET = null;
@@ -471,29 +471,25 @@ namespace Mahou {
 					seKey = Keys.F14;
 				if (Key == seKey || seKey == Keys.F14)
 					preSnip = true;
-				if (MSG == WinAPI.WM_KEYUP) {
-					if (Key == seKeyDown)
-						seKeyDown = Keys.None;
-					if (Key == Keys.Space)
-						aseKeyDown = Keys.None;
-				}
+//				if (MSG == WinAPI.WM_KEYUP) {
+//					if (Key == seKeyDown)
+//						seKeyDown = Keys.None;
+//					if (Key == Keys.Space)
+//						aseKeyDown = Keys.None;
+//				}
 				if (MSG == WinAPI.WM_KEYDOWN) {
-					var snip = "";
-					foreach (var ch in c_snip) {
-						snip += ch;
-//						Debug.WriteLine(ch);
-					}
+					var snip = ""; foreach(var c in c_snip) { snip += c; };
 					var matched = false;
 					Debug.WriteLine("Snip " + snip + ", last: " + last_snip);
 					if (Key == seKey) {
-						if (seKeyDown == Keys.None) {
+//						if (seKeyDown == Keys.None) {
 			            	matched = CheckSnippet(snip);
 			            	if (!matched && !last_snipANY)
 			            		matched = CheckSnippet(last_snip+" "+snip, true);
 							if (MahouUI.__selection)
 								snip_selection = "";
-							seKeyDown = seKey;
-						}
+//							seKeyDown = seKey;
+//						}
 						if (matched || preSnip)
 							c_snip.Clear();
 					}
@@ -503,7 +499,7 @@ namespace Mahou {
 						if (IGN) { Logging.Log("[AS] > Ignore AutoSwitch by: B/D/LS: " + was_back + "/"+was_del+"/"+was_ls); }
 						Debug.WriteLine("Ignore AutoSwitch by: B/D/LS: " + was_back + "/"+was_del+"/"+was_ls);
 						Debug.WriteLine("IGN:"+IGN+"EVT"+MSG);
-						if (!matched && as_wrongs != null && Key == Keys.Space && !IGN && aseKeyDown == Keys.None) { 
+						if (!matched && as_wrongs != null && Key == Keys.Space && !IGN /*&& aseKeyDown == Keys.None*/) { 
 							var CW = c_word_backup;
 							var CLW = c_word_backup_last;
 							if (MahouUI.AddOneSpace) {
@@ -534,7 +530,7 @@ namespace Mahou {
 		    					Logging.Log("[AS] > Last AS word layout: " +snl );
 			            	}
 							c_snip.Clear();
-							aseKeyDown = Key;
+//							aseKeyDown = Key;
 						}
 					}
 					if (Key == seKey && !asls) {
@@ -1230,11 +1226,13 @@ namespace Mahou {
 		       		Debug.WriteLine("EXSNI: " + exsni);
 					if (switchLayout) {
 		       			bool skp = false;
-		       			if (MMain.MyConfs.ReadBool("Hidden", "__setlayout_FORCED")) 
+		       			if (MahouUI.__setlayoutForce) 
 		       				if (expand.Contains("__setlayout")) {
 		       				var i = expand.IndexOf("__setlayout", StringComparison.InvariantCulture);
-		       				if (expand[i-1] != '\\') {
+		       				Debug.WriteLine("__setlayout(x"+i);
+		       				if ((i>=1 && expand[i-1] != '\\') || i==0) {
 		       					skp = true;
+		       					Debug.WriteLine("__setlayout forced! "+expand);
 		       				}
 		       			}
 		       			if (!skp) {
@@ -1507,10 +1505,9 @@ namespace Mahou {
 						l = MahouUI.MAIN_LAYOUT1;
 					if (l2)
 						l = MahouUI.MAIN_LAYOUT2;
-					if (l > 2) {
-						var xx = MMain.MyConfs.ReadBool("Hidden", "__setlayout_ONLYWM");
-						Logging.Log("[SELAE] Changing to " +l + " ONLYWM: "+xx);
-						if (xx)
+					if (l > 2) {;
+						Logging.Log("[SELAE] Changing to " +l + " ONLYWM: "+MahouUI.__setlayoutOnlyWM);
+						if (MahouUI.__setlayoutOnlyWM)
 							NormalChangeToLayout(Locales.ActiveWindow(), l);
 						else 
 							ChangeToLayout(Locales.ActiveWindow(), l);
@@ -1728,6 +1725,9 @@ namespace Mahou {
 		}
 		public static bool ExcludedProgram(bool onlysnip = false, IntPtr hwnd = default(IntPtr), bool onlyas = false) {
 			if (MMain.mahou == null) return false;
+			if (onlysnip && String.IsNullOrEmpty(MahouUI.onlySnippetsExcluded)) { return false; } else
+			if (onlyas && String.IsNullOrEmpty(MahouUI.onlyAutoSwitchExcluded)) { return false; } else 
+			if (!onlysnip && !onlyas && String.IsNullOrEmpty(MahouUI.ExcludedPrograms)) { return false; }
 			if (hwnd == IntPtr.Zero || hwnd == default(IntPtr))
 				hwnd = WinAPI.GetForegroundWindow();
 			if (NOT_EXCLUDED_HWNDs.Contains(hwnd) && (!onlysnip && !onlyas)) {
@@ -2595,7 +2595,7 @@ namespace Mahou {
 		}
 		static void ReSelect(int count, string cT="") {
 			if (MahouUI.ReSelect) {
-				if (!MMain.MyConfs.Read("Hidden", "ReSelectCustoms").Contains(cT))
+				if (!MahouUI.ReselectCustoms.Contains(cT))
 					return;
 				//reselects text
 				Logging.Log("Reselecting text.");

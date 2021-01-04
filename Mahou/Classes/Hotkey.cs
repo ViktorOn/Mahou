@@ -48,13 +48,14 @@ namespace Mahou {
 		/// <param name="hkmods">Hotkey modifiers string.</param>
 		public static uint GetMods(string hkmods) {
 			uint MOD = 0;
-			if (hkmods.Contains("Alt"))
+			hkmods = hkmods.ToLower();
+			if (hkmods.Contains("alt"))
 				MOD += WinAPI.MOD_ALT;
-			if (hkmods.Contains("Control") || hkmods.Contains("Ctrl"))
+			if (hkmods.Contains("control") || hkmods.Contains("ctrl"))
 				MOD += WinAPI.MOD_CONTROL;
-			if (hkmods.Contains("Shift"))
+			if (hkmods.Contains("shift"))
 				MOD += WinAPI.MOD_SHIFT;
-			if( hkmods.Contains("Win"))
+			if( hkmods.Contains("win"))
 				MOD += WinAPI.MOD_WIN;
 			return MOD;
 		}
