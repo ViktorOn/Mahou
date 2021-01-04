@@ -304,7 +304,7 @@ namespace Mahou {
 			if (Ticons == null)
 				Ticons = new NotifyIcon[3];
 			nvisible = new []{ncs.Contains("N"), ncs.Contains("C"), ncs.Contains("S")};
-			if (String.IsNullOrEmpty(ncs) || (nvisible[0] && nvisible[1] && nvisible[2])) {
+			if (String.IsNullOrEmpty(ncs) || (!nvisible[0] && !nvisible[1] && !nvisible[2])) {
 				NCS_destroy(); return;
 			}
 			var Tstates = new bool[3]{Control.IsKeyLocked(Keys.NumLock), Control.IsKeyLocked(Keys.CapsLock), Control.IsKeyLocked(Keys.Scroll)};
@@ -352,7 +352,7 @@ namespace Mahou {
 			}
 			if (Ticons != null) {
 				for (int v = 0; v<3; v++) {
-					if (!nvisible[v] && Ticons[v] == null) continue;
+					if (Ticons[v] == null) continue;
 					if (Ticons[v].Visible) Ticons[v].Visible = false;
 					Ticons[v].Dispose();
 				}
