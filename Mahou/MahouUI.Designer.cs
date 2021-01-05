@@ -3957,7 +3957,7 @@ namespace Mahou
 			this.Hlbl_ASIgnoreTimeout.Name = "Hlbl_ASIgnoreTimeout";
 			this.Hlbl_ASIgnoreTimeout.Size = new System.Drawing.Size(180, 15);
 			this.Hlbl_ASIgnoreTimeout.TabIndex = 39;
-			this.Hlbl_ASIgnoreTimeout.Text = "Auto Switch ignore timeout(ms):";
+			this.Hlbl_ASIgnoreTimeout.Text = "Auto Switch ignore after layout changed <LC> timeout(ms):";
 			// 
 			// Hnud_ASIgnoreTimeout
 			// 
@@ -4005,7 +4005,7 @@ namespace Mahou
 			this.Hchk_ASIgnoreLS.Name = "Hchk_ASIgnoreLS";
 			this.Hchk_ASIgnoreLS.Size = new System.Drawing.Size(280, 19);
 			this.Hchk_ASIgnoreLS.TabIndex = 35;
-			this.Hchk_ASIgnoreLS.Text = "Auto Switch ignore: [Changed Layout Manually]";
+			this.Hchk_ASIgnoreLS.Text = "Auto Switch ignore: [Changed Layout Manually <LC>]";
 			this.Hchk_ASIgnoreLS.UseVisualStyleBackColor = true;
 			// 
 			// Hchk_ASIgnoreDel
@@ -4015,7 +4015,7 @@ namespace Mahou
 			this.Hchk_ASIgnoreDel.Name = "Hchk_ASIgnoreDel";
 			this.Hchk_ASIgnoreDel.Size = new System.Drawing.Size(217, 19);
 			this.Hchk_ASIgnoreDel.TabIndex = 34;
-			this.Hchk_ASIgnoreDel.Text = "Auto Switch ignore: [Pressed Delete]";
+			this.Hchk_ASIgnoreDel.Text = "Auto Switch ignore: [Pressed Delete <Del>]";
 			this.Hchk_ASIgnoreDel.UseVisualStyleBackColor = true;
 			// 
 			// Hchk_ASIgnoreBack
@@ -4025,7 +4025,7 @@ namespace Mahou
 			this.Hchk_ASIgnoreBack.Name = "Hchk_ASIgnoreBack";
 			this.Hchk_ASIgnoreBack.Size = new System.Drawing.Size(240, 19);
 			this.Hchk_ASIgnoreBack.TabIndex = 33;
-			this.Hchk_ASIgnoreBack.Text = "Auto Switch ignore: [Pressed BackSpace]";
+			this.Hchk_ASIgnoreBack.Text = "Auto Switch ignore: [Pressed BackSpace <Back>]";
 			this.Hchk_ASIgnoreBack.UseVisualStyleBackColor = true;
 			// 
 			// Hchk___setlayoutOnlyWM
