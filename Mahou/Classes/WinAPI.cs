@@ -235,11 +235,21 @@ public static class WinAPI {
 	public const int CF_TIFF = 6;
 	public const int CF_OEMTEXT = 7;
 	public const int CF_DIB = 8;
+	public const int CF_DIBV5 = 17;
 	public const int CF_PALETTE = 9;
 	public const int CF_PENDATA = 10;
 	public const int CF_RIFF = 11;
 	public const int CF_WAVE = 12;
 	public const int CF_UNICODETEXT = 13;
+    public const uint CF_ENHMETAFILE = 14;
+    public const uint CF_HDROP = 15;
+    public const uint CF_LOCALE = 16;
+    public const uint CF_MAX = 17;
+    public const uint CF_OWNERDISPLAY = 0x80;
+    public const uint CF_DSPTEXT = 0x81;
+    public const uint CF_DSPBITMAP = 0x82;
+    public const uint CF_DSPMETAFILEPICT = 0x83;
+    public const uint CF_DSPENHMETAFILE = 0x8E;
     public const uint GMEM_DDESHARE = 0x2000;
     public const uint GMEM_MOVEABLE = 0x2;
 	#endregion
@@ -355,6 +365,8 @@ public static class WinAPI {
     [DllImport("user32.dll", SetLastError = true)]
     public static extern bool CloseClipboard();
     [DllImport("user32.dll")]
+    public static extern uint EnumClipboardFormats(uint format);
+    [DllImport("user32.dll")]
     public static extern bool IsClipboardFormatAvailable(uint format);
     [DllImport("kernel32.dll")]
     public static extern IntPtr GlobalLock(IntPtr hMem);
@@ -363,9 +375,7 @@ public static class WinAPI {
     [DllImport("kernel32.dll")]
     public static extern IntPtr GlobalAlloc(uint uFlags, UIntPtr dwBytes);
     [DllImport("kernel32.dll")]
-    public static extern UIntPtr GlobalSize(IntPtr hMem);
-    [DllImport("kernel32.dll")]
-    public static extern uint EnumClipboardFormats(uint format);
+    public static extern IntPtr GlobalSize(IntPtr hMem);
     #endregion
     #region MahouForm requires
     [DllImport("user32.dll", CharSet = CharSet.Auto)]

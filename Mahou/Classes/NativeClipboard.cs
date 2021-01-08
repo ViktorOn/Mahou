@@ -1,5 +1,5 @@
 ﻿using System;
-//using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Mahou
@@ -39,79 +39,120 @@ namespace Mahou
             Logging.Log("Clipboard text was get.");
             return data;
         }
-        /// <summary>
-        /// Gets all clipboard data's, but only text-based data supported... for now...
-        /// </summary>
-        /// <returns></returns>
-//        public static ClipboardData GetClipboardDatas()
-//        {
-//            var cd = new ClipboardData()
-//            {
-//                data = new List<byte[]>(),
-//                format = new List<uint>()
-//            };
-//            WinAPI.OpenClipboard(IntPtr.Zero);
-//            foreach (var fmt in new uint[]{1,2,4,5,6,7,8,9,10,11,12,13,14})
-//            {
-//                IntPtr pos = WinAPI.GetClipboardData(fmt);
-//                if (pos == IntPtr.Zero)
-//                    continue;
-//                UIntPtr lenght = WinAPI.GlobalSize(pos);
-//                IntPtr gLock = WinAPI.GlobalLock(pos);
-//                //Console.WriteLine(fmt + " is available in clipboard!!");
-//                byte[] data;
-//                if ((uint)lenght > 0)
-//                {
-//                    //Init a buffer which will contain the clipboard data
-//                    data = new byte[(uint)lenght];
-//                    int l = Convert.ToInt32(lenght.ToString());
-//                    //Copy data from clipboard to our byte[] buffer
-//                    Marshal.Copy(gLock, data, 0, l);
-//                }
-//                else
-//                {
-//                    data = new byte[0];
-//                }
-//                cd.data.Add(data);
-//                cd.format.Add(fmt);
-//            }
-//            WinAPI.CloseClipboard();
-//            return cd;
-//        }
-        /// <summary>
-        /// Stores all data's to clipboard, but only text-based data supported... for now...
-        /// </summary>
-        /// <param name="datas">Data's to be stored into clipboard.</param>
-//        public static void RestoreData(ClipboardData datas)
-//        {
-//            WinAPI.OpenClipboard(IntPtr.Zero);
-//            WinAPI.EmptyClipboard();
-//            for (int i = 0; i != datas.data.Count; i++)
-//            {
-//                var data = datas.data[i];
-//                IntPtr alloc = WinAPI.GlobalAlloc(WinAPI.GMEM_MOVEABLE | WinAPI.GMEM_DDESHARE, new UIntPtr(Convert.ToUInt32(data.GetLength(0))));
-//                var glock = WinAPI.GlobalLock(alloc);
-//                if (glock == IntPtr.Zero) {
-//                	WinAPI.CloseClipboard();
-//                	WinAPI.OpenClipboard(IntPtr.Zero);
-//                	WinAPI.EmptyClipboard();
-//                	continue;
-//                }
-//                var fmt = datas.format[i];
-//                Marshal.Copy(data, 0, glock, data.GetLength(0));
-//                WinAPI.SetClipboardData(fmt, alloc);
-//                WinAPI.GlobalUnlock(alloc);
-//            }
-//            WinAPI.CloseClipboard();
-//            Logging.Log("Clipboard text was restored");
-//        }
-        /// <summary>
-        /// Contains data(list of byte array) and data format(uint).
-        /// </summary>
-//        public struct ClipboardData
-//        {
-//            public List<byte[]> data;
-//            public List<uint> format;
-//        }
+        /// <summary> Clipboard data/formats in two lists.</summary>
+		public class clip {
+			public int Count;
+			public List<uint> f;
+			public List<byte[]> d;
+			public clip() {
+				f = new List<uint>();
+				d = new List<byte[]>();
+				Count = 0;
+			}
+			public byte[] this[uint f] {
+				get { return get(f); }
+				set { set(f, value); }
+			}
+			public int findex(uint format) {
+				for (int i = 0; i < Count; i++) { if (f[i] == format) { return i; } }
+				return -1;
+			}
+			public byte[] get(uint format) {
+				int fi = findex(format);
+				if (fi != -1) { return d[fi]; }
+				//return null;
+				throw new Exception("No such format:" +format);
+			}
+			public void set(uint format, byte[] data, bool add_missing = false) {
+				int fi = findex(format);
+				if (fi == -1 /*&& add_missing*/) {
+					f.Add(format);
+					d.Add(data);
+				} else {
+					//formats[fi] = format;
+					d[fi] = data;
+				}
+				Count = f.Count;
+			}
+//			public void rem(uint format) {
+//				int fi = findex(format);
+//				if (fi != -1) {
+//					f.RemoveAt(fi);
+//					d.RemoveAt(fi);
+//				}
+//			}
+		}
+		public static void clip_set(clip c) {
+        	if (c == null) return;
+        	if (c.Count == 0) return;
+			WinAPI.OpenClipboard(IntPtr.Zero);
+			WinAPI.EmptyClipboard();
+			for (int i = 0; i < c.Count; i++) {
+				Logging.Log("[clip] Setting: "+ c.f[i] + " format.");
+				IntPtr hglob = Marshal.AllocHGlobal(c.d[i].Length);
+				Marshal.Copy(c.d[i], 0, hglob, c.d[i].Length);
+				WinAPI.SetClipboardData(c.f[i], hglob);
+				Marshal.FreeHGlobal(hglob);
+			}
+			WinAPI.CloseClipboard();
+		}
+		public static clip clip_get() {
+			if (!WinAPI.OpenClipboard(IntPtr.Zero)) {
+				Logging.Log("Error can't open clipboard.");
+				return null;
+			}
+			int size = -1, all_size = -1;
+			clip c = new clip();
+			IntPtr hglob, all;
+			IntPtr glock = IntPtr.Zero;
+			uint format, dib_skip = 0;
+			all = new IntPtr((uint)Marshal.SizeOf(typeof(uint)));
+			for (format = 0; (format = WinAPI.EnumClipboardFormats(format)) != 0;) {
+				switch (format) {
+					case WinAPI.CF_BITMAP:
+					case WinAPI.CF_ENHMETAFILE:
+					case WinAPI.CF_DSPENHMETAFILE:
+						continue; // unsafe formats for GlobalSize
+				}
+				if (format == WinAPI.CF_TEXT || format == WinAPI.CF_OEMTEXT // calculate only CF_UNICODETEXT instead
+					|| format == dib_skip) // also only one of dib/dibv5 formats should be calculated
+					continue;
+				hglob = WinAPI.GetClipboardData(format);
+				if (hglob != IntPtr.Zero)
+					size = WinAPI.GlobalSize(hglob).ToInt32();
+				else 
+					continue; // GetClipboardData() failed: skip this format.
+				glock = WinAPI.GlobalLock(hglob);
+				if (size != 0 || glock != IntPtr.Zero) {
+					all_size += size;
+					byte[] bin = new byte[size];
+					if (size != IntPtr.Zero.ToInt32()) {
+						Logging.Log("[clip] Marshal copy: size:" + size +", bin-len: " + bin.Length + " glock:" + glock);
+						Marshal.Copy(glock, bin, 0, size);
+						c[format] = bin;
+					}
+					if (size != 0)
+						WinAPI.GlobalUnlock(hglob);
+				}
+				Logging.Log("[clip] hglob:" + hglob + " x fmt: " + format);
+				all = new IntPtr(all.ToInt32() + (uint)Marshal.SizeOf(format) +
+				                   (uint)Marshal.SizeOf(size) + 
+				                   WinAPI.GlobalSize(hglob).ToInt32());
+				if (dib_skip == 0) {
+					if (format == WinAPI.CF_DIB)
+						dib_skip = WinAPI.CF_DIBV5;
+					else if (format == WinAPI.CF_DIBV5)
+						dib_skip = WinAPI.CF_DIB;
+				}
+			}
+			Logging.Log("[clip] formats_count:," + c.Count);
+			if (all.ToInt32() == (uint)Marshal.SizeOf(format)) {
+				WinAPI.CloseClipboard();
+				Logging.Log("Clipboard null/empty.");
+				return null;
+			}
+			WinAPI.CloseClipboard();
+			return c;
+		}
     }
 }

@@ -30,7 +30,8 @@ namespace Mahou {
 		static char sym = '\0'; static bool sym_upr = false;
 		static uint as_lword_layout = 0;
 		static uint cs_layout_last = 0;
-		static string lastClipText = "", busy_on = "", lastLWClearReason = "";
+		static string busy_on = "", lastLWClearReason = "";
+		static NativeClipboard.clip lastClip;
 		public static string symbolclear;
 		static List<Keys> tempNumpads = new List<Keys>();
 		static Keys preKey = Keys.None; //, seKeyDown = Keys.None, aseKeyDown = Keys.None;
@@ -2681,10 +2682,12 @@ namespace Mahou {
 			var restore = special;
 			bool spc = true;
 			if (String.IsNullOrEmpty(restore)) {
-				restore = lastClipText;
-				spc = false;
+				NativeClipboard.clip_set(lastClip);
+				return true;
+				//restore = lastClipText;
+				//spc = false;
 			}
-			Logging.Log((spc?"Special ":"")+"Restoring clipboard text: ["+restore+"].");
+			Logging.Log((spc?"Force-Text ":"")+"Restoring clipboard text: ["+restore+"].");
 			if (WaitForClip2BeFree()) {
 				try { Clipboard.SetDataObject(restore, true, 5, 120); return true; } 
 				catch { Logging.Log("Error during clipboard "+(spc?"Special ":"")+"text restore after 5 tries.", 2); return false; }
@@ -2724,11 +2727,13 @@ namespace Mahou {
 			// Backup & Restore feature, now only text supported...
 			if (MMain.MahouActive() && MMain.mahou.ActiveControl is TextBox)
 				return (MMain.mahou.ActiveControl as TextBox).SelectedText;
-			Logging.Log("Taking backup of clipboard text if possible.");
-			lastClipText = NativeClipboard.GetText();
+			//Logging.Log("Taking backup of clipboard text if possible.");
+			//lastClipText = NativeClipboard.GetText();
+			lastClip = NativeClipboard.clip_get();
+			
 //			Thread.Sleep(50);
-			if (!String.IsNullOrEmpty(lastClipText))
-				lastClipText = Clipboard.GetText();
+//			if (!String.IsNullOrEmpty(lastClipText))
+//				lastClipText = Clipboard.GetText();
 //			This prevents from converting text that already exist in Clipboard
 //			by pressing "Convert Selection hotkey" without selected text.
 			NativeClipboard.Clear();
@@ -2829,11 +2834,10 @@ namespace Mahou {
 			DoSelf(() => {
 				Debug.WriteLine(">> ST CLW");
 				var backs = YuKeys.Length;
-				var clipr = GetClipboard(4,10);
 				if (!String.IsNullOrEmpty(GetClipStr())) {
 					backs++;
 				}
-				RestoreClipBoard(clipr);
+				RestoreClipBoard();
 				// Fix for cmd exe pause hotkey leaving one char. 
 				var clsNM = new StringBuilder(256);
 				if (IfNW7() &&
