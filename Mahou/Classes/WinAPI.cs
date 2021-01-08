@@ -251,7 +251,7 @@ public static class WinAPI {
     public const uint CF_DSPMETAFILEPICT = 0x83;
     public const uint CF_DSPENHMETAFILE = 0x8E;
     public const uint GMEM_DDESHARE = 0x2000;
-    public const uint GMEM_MOVEABLE = 0x2;
+    public const uint GMEM_MOVEABLE = 0x0002;
 	#endregion
 	#region KMHook requirements
 	public static uint WM_LBUTTONDOWN = 0x0201;
@@ -352,13 +352,15 @@ public static class WinAPI {
 	public static extern bool GetGUIThreadInfo(uint hTreadID, ref GUITHREADINFO lpgui);
 	#endregion
     #region NativeClipboard requires 
-    [DllImport("user32.dll")]
+    [DllImport("shell32.dll", CharSet = CharSet.Auto)]
+    public static extern int DragQueryFile(IntPtr hDrop, uint iFile, [Out] StringBuilder lpszFile, int cch);
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
     public static extern IntPtr GetClipboardData(uint uFormat);
-    [DllImport("user32.dll")]
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
     public static extern IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
     [DllImport("user32.dll", SetLastError = true)]
     public static extern bool EmptyClipboard();
-    [DllImport("user32.dll")]
+    [DllImport("user32.dll", SetLastError=true)]
     public static extern bool OpenClipboard(IntPtr hWndNewOwner);
 	[DllImport("user32.dll")]
     public static extern IntPtr GetOpenClipboardWindow();
@@ -368,13 +370,15 @@ public static class WinAPI {
     public static extern uint EnumClipboardFormats(uint format);
     [DllImport("user32.dll")]
     public static extern bool IsClipboardFormatAvailable(uint format);
-    [DllImport("kernel32.dll")]
+    [DllImport("kernel32.dll", SetLastError=true)]
     public static extern IntPtr GlobalLock(IntPtr hMem);
-    [DllImport("kernel32.dll")]
+    [DllImport("kernel32.dll", SetLastError=true)]
+    public static extern IntPtr GlobalFree(IntPtr hMem);
+    [DllImport("kernel32.dll", SetLastError=true)]
     public static extern IntPtr GlobalUnlock(IntPtr hMem);
-    [DllImport("kernel32.dll")]
+    [DllImport("kernel32.dll", SetLastError=true)]
     public static extern IntPtr GlobalAlloc(uint uFlags, UIntPtr dwBytes);
-    [DllImport("kernel32.dll")]
+    [DllImport("kernel32.dll", SetLastError=true)]
     public static extern IntPtr GlobalSize(IntPtr hMem);
     #endregion
     #region MahouForm requires

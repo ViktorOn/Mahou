@@ -89,24 +89,31 @@ namespace Mahou
 			WinAPI.EmptyClipboard();
 			for (int i = 0; i < c.Count; i++) {
 				Logging.Log("[clip] Setting: "+ c.f[i] + " format.");
-				IntPtr hglob = Marshal.AllocHGlobal(c.d[i].Length);
-				Marshal.Copy(c.d[i], 0, hglob, c.d[i].Length);
-				WinAPI.SetClipboardData(c.f[i], hglob);
-				Marshal.FreeHGlobal(hglob);
+//				IntPtr hglob = Marshal.AllocHGlobal(c.d[i].Length);
+				IntPtr alloc = WinAPI.GlobalAlloc(WinAPI.GMEM_MOVEABLE | WinAPI.GMEM_DDESHARE, new UIntPtr(Convert.ToUInt32(c.d[i].GetLength(0))));
+				IntPtr glock = WinAPI.GlobalLock(alloc);
+				Marshal.Copy(c.d[i], 0, glock, c.d[i].Length);
+				WinAPI.GlobalUnlock(glock);
+				WinAPI.SetClipboardData(c.f[i], alloc);
+				WinAPI.GlobalFree(alloc);
+//				Marshal.FreeHGlobal(hglob);
 			}
 			WinAPI.CloseClipboard();
 		}
 		public static clip clip_get() {
-			if (!WinAPI.OpenClipboard(IntPtr.Zero)) {
-				Logging.Log("Error can't open clipboard.");
+        	clip c;
+    		var open = WinAPI.OpenClipboard(IntPtr.Zero);
+			if (!open) {
+    			WinAPI.CloseClipboard();
+				Logging.Log("[clip] Error can't open clipboard.");
 				return null;
 			}
-			int size = -1, all_size = -1;
-			clip c = new clip();
-			IntPtr hglob, all;
+			int size = 0, all_size = 0;
+			c = new clip();
+			IntPtr hglob = IntPtr.Zero;//, all;
 			IntPtr glock = IntPtr.Zero;
 			uint format, dib_skip = 0;
-			all = new IntPtr((uint)Marshal.SizeOf(typeof(uint)));
+//			all = new IntPtr((uint)Marshal.SizeOf(typeof(uint)));
 			for (format = 0; (format = WinAPI.EnumClipboardFormats(format)) != 0;) {
 				switch (format) {
 					case WinAPI.CF_BITMAP:
@@ -118,26 +125,58 @@ namespace Mahou
 					|| format == dib_skip) // also only one of dib/dibv5 formats should be calculated
 					continue;
 				hglob = WinAPI.GetClipboardData(format);
-				if (hglob != IntPtr.Zero)
-					size = WinAPI.GlobalSize(hglob).ToInt32();
-				else 
-					continue; // GetClipboardData() failed: skip this format.
+				if (hglob == IntPtr.Zero) { Logging.Log("[clip] hglob Fail: " +format);continue;  } // GetClipboardData() failed: skip this format.
+//				if (format == WinAPI.CF_HDROP) {
+//					System.Diagnostics.Debug.WriteLine("HGLOGADDR:" +hglob.ToInt32());
+//					glock = WinAPI.GlobalLock(hglob);
+//					if (glock != IntPtr.Zero) {
+////						System.Diagnostics.Debug.WriteLine("HGLOGADDR:" +glock.ToInt32() + " " +Marshal.GetLastWin32Error());
+////						int fc = WinAPI.DragQueryFile(glock, 0xFFFFFFFF, null, 0);
+////						System.Diagnostics.Debug.WriteLine("[clip] FC:" + fc);
+////						if (fc != 0) {
+////							size = ((fc - 1) * 2);  // Init; -1 if don't want a newline after last file.
+////							for (uint i = 0; i < fc; ++i) {
+////								var tsize = WinAPI.DragQueryFile(glock, i, null, 0);
+////								Logging.Log("[clip] File:" + i+ ", size:" +tsize);
+////								size+=tsize;
+////							}
+////						}
+////						else
+////							size = 0;
+//						size = WinAPI.GlobalSize(glock).ToInt32();
+//						if (size != 0) {
+//							byte[] bin = new byte[size];
+//							System.Diagnostics.Debug.WriteLine("[clip] CF_HDROP Marshal copy: size:" + size +", bin-len: " + bin.Length + " glock:" + glock);
+//							Marshal.Copy(glock, bin, 0, Convert.ToInt32(size));
+//							c[format] = bin;
+//						}
+////						fc = WinAPI.DragQueryFile(glock, 0xFFFFFFFF, new System.Text.StringBuilder(""), 0);
+////						System.Diagnostics.Debug.WriteLine("[clip] FC:" + fc);
+////						if (fc != 0) {
+////							size = ((fc - 1) * 2);  // Init; -1 if don't want a newline after last file.
+////							var fnb = new System.Text.StringBuilder(999);
+////							for (uint i = 0; i < fc; ++i) {
+////								var tsize = WinAPI.DragQueryFile(glock, i, fnb, 999);
+////							System.Diagnostics.Debug.WriteLine("[clip] File:" + i+ ", size:" +tsize);
+////								size+=tsize;
+////							}
+////							System.Diagnostics.Debug.WriteLine("[clip] Fnb:" +fnb);
+////						}
+////					}
+//					WinAPI.GlobalUnlock(glock);
+//					continue;
+//				}
 				glock = WinAPI.GlobalLock(hglob);
-				if (size != 0 || glock != IntPtr.Zero) {
+				if (glock != IntPtr.Zero) {
+					size = WinAPI.GlobalSize(glock).ToInt32();
 					all_size += size;
 					byte[] bin = new byte[size];
-					if (size != IntPtr.Zero.ToInt32()) {
-						Logging.Log("[clip] Marshal copy: size:" + size +", bin-len: " + bin.Length + " glock:" + glock);
-						Marshal.Copy(glock, bin, 0, size);
-						c[format] = bin;
-					}
-					if (size != 0)
-						WinAPI.GlobalUnlock(hglob);
-				}
+					Logging.Log("[clip] Marshal copy: size:" + size +", bin-len: " + bin.Length + " glock:" + glock);
+					Marshal.Copy(glock, bin, 0, (int)size);
+					c[format] = bin;
+				} else { Logging.Log("[clip] glock Fail: " +format); }
+				WinAPI.GlobalUnlock(glock);
 				Logging.Log("[clip] hglob:" + hglob + " x fmt: " + format);
-				all = new IntPtr(all.ToInt32() + (uint)Marshal.SizeOf(format) +
-				                   (uint)Marshal.SizeOf(size) + 
-				                   WinAPI.GlobalSize(hglob).ToInt32());
 				if (dib_skip == 0) {
 					if (format == WinAPI.CF_DIB)
 						dib_skip = WinAPI.CF_DIBV5;
@@ -146,13 +185,8 @@ namespace Mahou
 				}
 			}
 			Logging.Log("[clip] formats_count:," + c.Count);
-			if (all.ToInt32() == (uint)Marshal.SizeOf(format)) {
-				WinAPI.CloseClipboard();
-				Logging.Log("Clipboard null/empty.");
-				return null;
-			}
 			WinAPI.CloseClipboard();
 			return c;
-		}
+    	}
     }
 }
