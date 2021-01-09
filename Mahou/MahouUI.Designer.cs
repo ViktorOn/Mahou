@@ -3971,7 +3971,7 @@ namespace Mahou
 			0});
 			this.Hnud_ASIgnoreTimeout.Location = new System.Drawing.Point(362, 563);
 			this.Hnud_ASIgnoreTimeout.Maximum = new decimal(new int[] {
-			50000,
+			350000,
 			0,
 			0,
 			0});
