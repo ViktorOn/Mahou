@@ -303,10 +303,20 @@ namespace Mahou {
 			var icons_on = new []{Properties.Resources.num_on, Properties.Resources.caps_on, Properties.Resources.scr_on};
 			if (Ticons == null)
 				Ticons = new NotifyIcon[3];
-			nvisible = new []{ncs.Contains("N"), ncs.Contains("C"), ncs.Contains("S")};
-			if (String.IsNullOrEmpty(ncs) || (!nvisible[0] && !nvisible[1] && !nvisible[2])) {
-				NCS_destroy(); return;
+			if (nvisible != null) {
+				if (String.IsNullOrEmpty(ncs) && (nvisible[0] || nvisible[1] || nvisible[2])) {
+					NCS_destroy(); return;
+				} else {
+					var visible = new []{ncs.Contains("N"), ncs.Contains("C"), ncs.Contains("S")};
+					for (int v = 0; v<3; v++) {
+						if (Ticons[v] == null) continue;
+						if (!visible[v] || !nvisible[v]) { // if one of them off, remove 
+							Ticons[v].Visible = false;
+						}
+					}
+				}
 			}
+			nvisible = new []{ncs.Contains("N"), ncs.Contains("C"), ncs.Contains("S")};
 			var Tstates = new bool[3]{Control.IsKeyLocked(Keys.NumLock), Control.IsKeyLocked(Keys.CapsLock), Control.IsKeyLocked(Keys.Scroll)};
 			for (int v = 0; v < 3; v++) {
 				if (!nvisible[v])continue;
@@ -1400,7 +1410,7 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hidden", "__setlayout_FORCED", Hchk___setlayoutForce.Checked.ToString());
 			MMain.MyConfs.Write("Hidden", "__setlayout_ONLYWM", Hchk___setlayoutOnlyWM.Checked.ToString());
 			MMain.MyConfs.Write("Hidden", "ReselectCustoms", Htxt_ReselectCustoms.Text);
-			NCS_destroy();
+//			NCS_destroy();
 		}
 		void loadHidden() {
 			Hchk_LMBTrayLayoutChange.Checked = MMain.MyConfs.ReadBool("Hidden", "ChangeLayoutOnTrayLMB");
