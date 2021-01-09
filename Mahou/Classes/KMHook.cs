@@ -1726,9 +1726,11 @@ namespace Mahou {
 		}
 		public static bool ExcludedProgram(bool onlysnip = false, IntPtr hwnd = default(IntPtr), bool onlyas = false) {
 			if (MMain.mahou == null) return false;
-			if (onlysnip && String.IsNullOrEmpty(MahouUI.onlySnippetsExcluded)) { return false; } else
-			if (onlyas && String.IsNullOrEmpty(MahouUI.onlyAutoSwitchExcluded)) { return false; } else 
-			if (!onlysnip && !onlyas && String.IsNullOrEmpty(MahouUI.ExcludedPrograms)) { return false; }
+			if (String.IsNullOrEmpty(MahouUI.ExcludedPrograms)) {
+				if (onlysnip && String.IsNullOrEmpty(MahouUI.onlySnippetsExcluded)) { return false; }
+				if (onlyas && String.IsNullOrEmpty(MahouUI.onlyAutoSwitchExcluded)) { return false; }
+				if (!onlysnip && !onlyas) { return false; }
+			}
 			if (hwnd == IntPtr.Zero || hwnd == default(IntPtr))
 				hwnd = WinAPI.GetForegroundWindow();
 			if (NOT_EXCLUDED_HWNDs.Contains(hwnd) && (!onlysnip && !onlyas)) {
