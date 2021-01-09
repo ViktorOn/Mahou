@@ -2836,16 +2836,18 @@ namespace Mahou {
 			DoSelf(() => {
 				Debug.WriteLine(">> ST CLW");
 				var backs = YuKeys.Length;
-				if (!String.IsNullOrEmpty(GetClipStr())) {
-					backs++;
-				}
-				RestoreClipBoard();
 				// Fix for cmd exe pause hotkey leaving one char. 
-				var clsNM = new StringBuilder(256);
+				var clsNM = Locales.ActiveWindowClassName(40);
 				if (IfNW7() &&
-				    clsNM.ToString() == "ConsoleWindowClass" && (
+				    clsNM == "ConsoleWindowClass" && (
 					MMain.mahou.HKCLast.VirtualKeyCode == (int)Keys.Pause))
 					backs++;
+				if (clsNM.Contains("Chrome_WidgetWin") || clsNM.Contains("MozillaWindowClass") || clsNM.Contains("IEFrame")) {
+					if (!String.IsNullOrEmpty(GetClipStr())) {
+						backs++;
+					}
+					RestoreClipBoard();
+				}
 				Debug.WriteLine(">> LC Aft. " + (MMain.locales.Length * 20));
 				Logging.Log("Deleting old word, with lenght of [" + YuKeys.Length + "].");
 				KInputs.MakeInput(KInputs.AddPress(Keys.Back, backs));
