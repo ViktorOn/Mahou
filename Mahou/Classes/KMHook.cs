@@ -2885,8 +2885,12 @@ namespace Mahou {
 							if (MahouUI.UseJKL && !KMHook.JKLERR)
 								loc = MahouUI.currentLayout & 0xffff;
 							WinAPI.ToUnicodeEx((uint)k, (uint)WinAPI.MapVirtualKey((uint)k, 0), byu, c, c.Capacity, 1<<2, (IntPtr)loc);
-							var cc = c.ToString()[0];
-							c_snip.Add(cc);
+							if (c.Length > 0) {
+								var cc = c.ToString()[0];
+								c_snip.Add(cc);
+							} else {
+								Logging.Log("Snip rewrite failed: k:" + k +", loc:"+loc);
+							}
 						}
 					}
 				}
