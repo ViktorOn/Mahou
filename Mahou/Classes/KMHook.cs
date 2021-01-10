@@ -2875,7 +2875,7 @@ namespace Mahou {
 							q.AddRange(KInputs.AddPress(k));
 						if (upp)
 							q.Add(KInputs.AddKey(Keys.LShiftKey, false));
-						var c = new StringBuilder();
+						var c = new StringBuilder(10);
 						var byu = new byte[256];
 						if (u) {
 							byu[(int)Keys.ShiftKey] = 0xFF;
@@ -2884,8 +2884,9 @@ namespace Mahou {
 							var loc = (Locales.GetCurrentLocale() & 0xffff);
 							if (MahouUI.UseJKL && !KMHook.JKLERR)
 								loc = MahouUI.currentLayout & 0xffff;
-							WinAPI.ToUnicodeEx((uint)k, (uint)WinAPI.MapVirtualKey((uint)k, 0), byu, c, (int)5, 1<<2, (IntPtr)loc);
-							c_snip.Add(c[0]);
+							WinAPI.ToUnicodeEx((uint)k, (uint)WinAPI.MapVirtualKey((uint)k, 0), byu, c, c.Capacity, 1<<2, (IntPtr)loc);
+							var cc = c.ToString()[0];
+							c_snip.Add(cc);
 						}
 					}
 				}
