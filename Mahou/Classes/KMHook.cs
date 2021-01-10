@@ -1063,14 +1063,14 @@ namespace Mahou {
 			if (((ctrl||ctrl_r)&&(alt||alt_r)&&(shift||shift_r)) || (alt_r&&(shift||shift_r))) { return '\0'; }
 			// e.g. return nothing when ctrl+alt+shift+something is pressed
 			// or else the umlaut input will be *eaten*
-			var stb = new StringBuilder(10);
-			var byt = new byte[256];
+//			var stb = new StringBuilder(10);
+//			var byt = new byte[256];
 			if (!ignore) {
 				if (sym == '\0')
 					sym = getSym(vkCode, true);
 				if (IsUpperInput(!Char.IsLetterOrDigit(sym))) {
 					sym_upr = true;
-					byt[(int)Keys.ShiftKey] = 0xFF;
+//					byt[(int)Keys.ShiftKey] = 0xFF;
 				} else { sym_upr = false; }
 			}
 			uint layout = Locales.GetCurrentLocale() & 0xffff;
@@ -1082,10 +1082,10 @@ namespace Mahou {
 			}
 			//                                                                     0=alt, 1=noalt, 1<<2=?
 			// it eats umlaut characters with 0, so:
-			WinAPI.ToUnicodeEx((uint)vkCode, (uint)vkCode, byt, stb, stb.Capacity, 1<<2, (IntPtr)layout);
-			if (stb.Length > 0) {
-				var c = stb.ToString()[0];
-				Logging.Log("[GETSYM] > "+(ignore?"fake;":"true;")+" ToUnEx() => ["+stb+"].");
+			var c = ToUnicodeExMulti((uint)vkCode, (IntPtr)layout, sym_upr);
+//			WinAPI.ToUnicodeEx((uint)vkCode, (uint)vkCode, byt, stb, stb.Capacity, 1<<2, (IntPtr)layout);
+			if (c != '\0') {
+				Logging.Log("[GETSYM] > "+(ignore?"fake;":"true;")+" ToUnEx() => ["+c+"].");
 				return c;	
 			}
 			return '\0';
@@ -2237,24 +2237,25 @@ namespace Mahou {
 							foreach (char c in ClipStr) {
 								items++;
 								wasLocale = wawasLocale;
-								var s = new StringBuilder(10);
-								var sb = new StringBuilder(10);
+								var s = "";
+								var sb = "";
 								var yk = new YuKey();
 								var scan = WinAPI.VkKeyScanEx(c, wasLocale);
 								var state = ((scan >> 8) & 0xff);
-								var bytes = new byte[255];
-								if (state == 1)
-									bytes[(int)Keys.ShiftKey] = 0xFF;
+//								var bytes = new byte[255];
+//								if (state == 1)
+//									bytes[(int)Keys.ShiftKey] = 0xFF;
 								var scan2 = WinAPI.VkKeyScanEx(c, nowLocale);
 								var state2 = ((scan2 >> 8) & 0xff);
-								var bytes2 = new byte[255];
-								if (state2 == 1)
-									bytes2[(int)Keys.ShiftKey] = 0xFF;
+//								var bytes2 = new byte[255];
+//								if (state2 == 1)
+//									bytes2[(int)Keys.ShiftKey] = 0xFF;
 								if (MahouUI.ConvertSelectionLSPlus) {
 									Logging.Log("[CS] > Using Experimental CS-Switch mode.");
-									WinAPI.ToUnicodeEx((uint)scan, (uint)scan, bytes, s, s.Capacity, 1<<2, (IntPtr)wasLocale);
+									var y = ToUnicodeExMulti((uint)scan, (IntPtr)wasLocale, state==1);
+									if (y != '\0') s += y;
 									Logging.Log("[CS] > Char 1 is [" + s + "] in locale +[" + wasLocale + "].");
-									if (ClipStr[index].ToString() == s.ToString()) {
+									if (ClipStr[index].ToString() == s) {
 										if (!SymbolIgnoreRules((Keys)(scan & 0xff), state == 1, wasLocale, ref q)) {
 											Logging.Log("Making input of [" + scan + "] in locale +[" + nowLocale + "].");
 											q.Add(KInputs.AddString(InAnother(c, wasLocale, nowLocale))[0]);
@@ -2262,9 +2263,10 @@ namespace Mahou {
 										index++;
 										continue;
 									}
-									WinAPI.ToUnicodeEx((uint)scan2, (uint)scan2, bytes2, sb, sb.Capacity, 1<<2, (IntPtr)nowLocale);
+									y = ToUnicodeExMulti((uint)scan2, (IntPtr)nowLocale, state2==1);
+									if (y != '\0') sb += y;
 									Logging.Log("[CS] > Char 2 is [" + sb + "] in locale +[" + nowLocale + "].");
-									if (ClipStr[index].ToString() == sb.ToString()) {
+									if (ClipStr[index].ToString() == sb) {
 										Logging.Log("[CS] > Char 1, 2 and original are equivalent.");
 										ChangeToLayout(Locales.ActiveWindow(), wasLocale);
 										wasLocale = nowLocale;
@@ -2875,19 +2877,13 @@ namespace Mahou {
 							q.AddRange(KInputs.AddPress(k));
 						if (upp)
 							q.Add(KInputs.AddKey(Keys.LShiftKey, false));
-						var c = new StringBuilder(10);
-						var byu = new byte[256];
-						if (u) {
-							byu[(int)Keys.ShiftKey] = 0xFF;
-						}
 						if (!skipsnip) {
 							var loc = (Locales.GetCurrentLocale() & 0xffff);
 							if (MahouUI.UseJKL && !KMHook.JKLERR)
 								loc = MahouUI.currentLayout & 0xffff;
-							WinAPI.ToUnicodeEx((uint)k, (uint)WinAPI.MapVirtualKey((uint)k, 0), byu, c, c.Capacity, 1<<2, (IntPtr)loc);
-							if (c.Length > 0) {
-								var cc = c.ToString()[0];
-								c_snip.Add(cc);
+							var c = ToUnicodeExMulti((uint)k, (IntPtr)loc, u);
+							if (c != '\0') {
+								c_snip.Add(c);
 							} else {
 								Logging.Log("Snip rewrite failed: k:" + k +", loc:"+loc);
 							}
@@ -3274,6 +3270,25 @@ namespace Mahou {
 			//Use WinAPI.PostMessage to switch to next layout
 			ChangeToLayout(Locales.ActiveWindow(), GetNextLayout().uId);
 		}
+		static char ToUnicodeExMulti(uint vk, IntPtr layout, bool upper = false) {
+			var flags = new []{1<<2, 2, 0};
+			var s = new StringBuilder(10);
+			var byt = new byte[256];
+			if (upper) {
+				byt[(int)Keys.ShiftKey] = 0xFF;
+			}
+			var vsc = (uint)WinAPI.MapVirtualKey(vk, 0);
+			int tr = 0;
+			foreach (uint f in flags) {
+				tr++;
+				WinAPI.ToUnicodeEx(vk, vsc, byt, s, s.Capacity, f, layout);
+				if (s.Length > 0) {
+					Logging.Log("[ToUniEx] Try:" +tr + " char: "+s+" at flag:" + f);
+					return s.ToString()[0];
+				}
+			}
+			return '\0';
+		}
 		/// <summary>
 		/// Converts character(c) from layout(uID1) to another layout(uID2) by using WinAPI.ToUnicodeEx().
 		/// </summary>
@@ -3282,18 +3297,22 @@ namespace Mahou {
 		/// <param name="uID2">Layout id 2(to)</param>
 		/// <returns></returns>
 		static string InAnother(char c, uint uID1, uint uID2)  { //Remakes c from uID1  to uID2			var cc = c;
+			var s = "";
 			var chsc = WinAPI.VkKeyScanEx(cc, uID1);
+			if (chsc == -1) return s;
 			var state = (chsc >> 8) & 0xff;
-			var byt = new byte[256];
-			//it needs just 1 but,anyway let it be 10, i think that's better
-			var s = new StringBuilder(10);
-			//Checks if 'chsc' have upper state
-			if (state == 1) {
-				byt[(int)Keys.ShiftKey] = 0xFF;
-			}
-			//"Convert magic✩" is the string below
-			var ant = WinAPI.ToUnicodeEx((uint)chsc, (uint)chsc, byt, s, s.Capacity, 1<<2, (IntPtr)uID2);
-			return chsc != -1 ? s.ToString() : "";
+			
+//			var byt = new byte[256];
+//			//it needs just 1 but,anyway let it be 10, i think that's better
+			var y = ToUnicodeExMulti((uint)chsc, (IntPtr)uID2, state==1);
+			if (y != '\0') s+=y;
+//			//Checks if 'chsc' have upper state
+//			if (state == 1) {
+//				byt[(int)Keys.ShiftKey] = 0xFF;
+//			}
+//			//"Convert magic✩" is the string below
+//			var ant = WinAPI.ToUnicodeEx((uint)chsc, (uint)chsc, byt, s, s.Capacity, 1<<2, (IntPtr)uID2);
+			return s;
 		}
 		/// <summary>
 		/// Simplified WinAPI.keybd_event() with extended recognize feature.
