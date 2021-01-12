@@ -324,6 +324,7 @@ namespace Mahou
 		private System.Windows.Forms.Label Hlbl_ASIgnoreTimeout;
 		private System.Windows.Forms.NumericUpDown Hnud_ASIgnoreTimeout;
 		private System.Windows.Forms.Label Hlbl_scrollpastcontent;
+		private System.Windows.Forms.CheckBox chk_ZxZ;
 		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
@@ -341,8 +342,7 @@ namespace Mahou
 		/// <summary>
 		/// This method is required for Windows Forms designer support.
 		/// Do not change the method contents inside the source code editor. The Forms designer might
-		/// not be able to load this method if it was changed manually.
-		private void InitializeComponent()
+		public void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
 			this.tabs = new System.Windows.Forms.TabControl();
@@ -583,6 +583,7 @@ namespace Mahou
 			this.txt_restoreId = new System.Windows.Forms.TextBox();
 			this.lbl_restoreId = new System.Windows.Forms.Label();
 			this.grb_backup = new System.Windows.Forms.GroupBox();
+			this.chk_ZxZ = new System.Windows.Forms.CheckBox();
 			this.chk_Mmm = new System.Windows.Forms.CheckBox();
 			this.chk_andPROXY = new System.Windows.Forms.CheckBox();
 			this.pctBkpCopy = new System.Windows.Forms.PictureBox();
@@ -3511,12 +3512,24 @@ namespace Mahou
 			this.grb_backup.Controls.Add(this.chk_Ttxt);
 			this.grb_backup.Controls.Add(this.chk_Stxt);
 			this.grb_backup.Controls.Add(this.chk_Mini);
+			this.grb_backup.Controls.Add(this.chk_ZxZ);
 			this.grb_backup.Location = new System.Drawing.Point(8, 3);
 			this.grb_backup.Name = "grb_backup";
 			this.grb_backup.Size = new System.Drawing.Size(545, 130);
 			this.grb_backup.TabIndex = 0;
 			this.grb_backup.TabStop = false;
 			this.grb_backup.Text = "Backup";
+			// 
+			// chk_ZxZ
+			// 
+			this.chk_ZxZ.AutoSize = true;
+			this.chk_ZxZ.Location = new System.Drawing.Point(487, 41);
+			this.chk_ZxZ.Name = "chk_ZxZ";
+			this.chk_ZxZ.Size = new System.Drawing.Size(55, 19);
+			this.chk_ZxZ.TabIndex = 12;
+			this.chk_ZxZ.Text = "0x0.st";
+			this.chk_ZxZ.UseVisualStyleBackColor = true;
+			this.chk_ZxZ.CheckedChanged += new System.EventHandler(this.Chk_ZxZCheckedChanged);
 			// 
 			// chk_Mmm
 			// 
@@ -3955,7 +3968,7 @@ namespace Mahou
 			this.Hlbl_ASIgnoreTimeout.AutoSize = true;
 			this.Hlbl_ASIgnoreTimeout.Location = new System.Drawing.Point(8, 565);
 			this.Hlbl_ASIgnoreTimeout.Name = "Hlbl_ASIgnoreTimeout";
-			this.Hlbl_ASIgnoreTimeout.Size = new System.Drawing.Size(180, 15);
+			this.Hlbl_ASIgnoreTimeout.Size = new System.Drawing.Size(325, 15);
 			this.Hlbl_ASIgnoreTimeout.TabIndex = 39;
 			this.Hlbl_ASIgnoreTimeout.Text = "Auto Switch ignore after layout changed <LC> timeout(ms):";
 			// 
@@ -4003,7 +4016,7 @@ namespace Mahou
 			this.Hchk_ASIgnoreLS.AutoSize = true;
 			this.Hchk_ASIgnoreLS.Location = new System.Drawing.Point(8, 540);
 			this.Hchk_ASIgnoreLS.Name = "Hchk_ASIgnoreLS";
-			this.Hchk_ASIgnoreLS.Size = new System.Drawing.Size(280, 19);
+			this.Hchk_ASIgnoreLS.Size = new System.Drawing.Size(313, 19);
 			this.Hchk_ASIgnoreLS.TabIndex = 35;
 			this.Hchk_ASIgnoreLS.Text = "Auto Switch ignore: [Changed Layout Manually <LC>]";
 			this.Hchk_ASIgnoreLS.UseVisualStyleBackColor = true;
@@ -4013,7 +4026,7 @@ namespace Mahou
 			this.Hchk_ASIgnoreDel.AutoSize = true;
 			this.Hchk_ASIgnoreDel.Location = new System.Drawing.Point(8, 520);
 			this.Hchk_ASIgnoreDel.Name = "Hchk_ASIgnoreDel";
-			this.Hchk_ASIgnoreDel.Size = new System.Drawing.Size(217, 19);
+			this.Hchk_ASIgnoreDel.Size = new System.Drawing.Size(253, 19);
 			this.Hchk_ASIgnoreDel.TabIndex = 34;
 			this.Hchk_ASIgnoreDel.Text = "Auto Switch ignore: [Pressed Delete <Del>]";
 			this.Hchk_ASIgnoreDel.UseVisualStyleBackColor = true;
@@ -4023,7 +4036,7 @@ namespace Mahou
 			this.Hchk_ASIgnoreBack.AutoSize = true;
 			this.Hchk_ASIgnoreBack.Location = new System.Drawing.Point(8, 500);
 			this.Hchk_ASIgnoreBack.Name = "Hchk_ASIgnoreBack";
-			this.Hchk_ASIgnoreBack.Size = new System.Drawing.Size(240, 19);
+			this.Hchk_ASIgnoreBack.Size = new System.Drawing.Size(284, 19);
 			this.Hchk_ASIgnoreBack.TabIndex = 33;
 			this.Hchk_ASIgnoreBack.Text = "Auto Switch ignore: [Pressed BackSpace <Back>]";
 			this.Hchk_ASIgnoreBack.UseVisualStyleBackColor = true;

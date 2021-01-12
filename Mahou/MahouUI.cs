@@ -36,7 +36,7 @@ namespace Mahou {
 						   UseCustomSound2, SoundOnAutoSwitch2, SoundOnConvLast2, SoundOnSnippets2, SoundOnLayoutSwitch2, TrOnDoubleClick,
 						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory, ExcludeCaretLD, UsePaste,
 						   WriteInputHistoryByDate, WriteInputHistoryHourly, MahouMM = false,
-						   hk_result, multi_continue = true;
+						   hk_result, multi_continue = true, ZxZ = true;
 		static string[] UpdInfo;
 		public static List<int> HKBlockAlt = new List<int>();
 		public static bool BlockAltUpNOW = false;
@@ -183,6 +183,7 @@ namespace Mahou {
 		public static Dictionary<string, string> TrSetsValues = new Dictionary<string, string>();
 		static string latestSwitch = "null";
 		const string SYNC_HOST = "https://hastebin.com";
+		const string SYNC_HOST2 = "https://0x0.st";
 		const string SYNC_SEP = "#------>";
 		readonly string[] SYNC_NAMES = { "Mahou.ini", "snippets.txt", "history.txt", "TSDict.txt", "Mahou.mm" };
 		readonly string[] SYNC_TYPES = { "ini", "sni", "his", "tdi", "mm" };
@@ -1263,6 +1264,7 @@ namespace Mahou {
 				MMain.MyConfs.Write("Sync", "RBools", string.Join("|", bin(chk_rMini.Checked), bin(chk_rStxt.Checked), bin(chk_rHtxt.Checked), bin(chk_rTtxt.Checked), bin(chk_andPROXY2.Checked), bin(chk_rMmm.Checked)));
 				MMain.MyConfs.Write("Sync", "BLast", txt_backupId.Text);
 				MMain.MyConfs.Write("Sync", "RLast", txt_restoreId.Text);
+				MMain.MyConfs.Write("Sync", "ZxZ", ZxZ.ToString());
 				#endregion
 				#region Proxy
 				MMain.MyConfs.Write("Proxy", "ServerPort", txt_ProxyServerPort.Text);
@@ -1755,6 +1757,7 @@ namespace Mahou {
 			var rlast = MMain.MyConfs.Read("Sync", "RLast");
 			if (!string.IsNullOrEmpty(rlast))
 				txt_restoreId.Text = rlast;
+			ZxZ = MMain.MyConfs.ReadBool("Sync", "ZxZ");
 			#endregion
 			LLHook._ACTIVE = (RemapCapslockAsF18 || SnippetsExpandType == "Tab" || MahouMM);
 			if (LLHook._ACTIVE)
@@ -5149,6 +5152,9 @@ DEL ""ExtractASD.cmd""";
 				}
 			}
 		}
+		void Chk_ZxZCheckedChanged(object sender, EventArgs e) {
+			ZxZ = (sender as CheckBox).Checked;
+		}
 		#endregion
 		#region Sync
 		string[] ReadToBackup(string id, string name, bool chk, bool proxyg = true) {
@@ -5248,6 +5254,65 @@ DEL ""ExtractASD.cmd""";
 			stat += "OK:" + OK + (ERR != "" ? (Environment.NewLine +  "ERR:" + ERR) : "");
 			return stat;
 		}
+		public static Random rand = new Random();
+		public static string GetRandomString(int length) {
+		    const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		    var s = "";
+		    for (int i = 0; i < length; i++)
+		    	s+= chars[rand.Next(chars.Length)];
+		    return s;
+		}
+		string SyncUploadZxZ(string content) {
+	        try {
+				var fname = "Mahou-Sync."+GetRandomString(8)+".txt";
+				Console.WriteLine("fname:" + fname);
+	            string boundary = "----------------------------" + DateTime.Now.Ticks.ToString("x");
+	            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(SYNC_HOST2);
+				if (!String.IsNullOrEmpty(txt_ProxyServerPort.Text)) {
+					req.Proxy = MakeProxy();
+				}
+	            req.ContentType = "multipart/form-data; boundary=" + boundary;
+	            req.Method = "POST";
+	            req.KeepAlive = true;
+		        var form = Encoding.UTF8.GetBytes("\n--" + boundary + "\n" +
+	                                              "Content-Disposition: form-data; name=\"file\"; filename="+fname+"\n" +
+		                                		  "Content-Type: application/octet-stream\n\n" +
+		                                		  content + "\n--" + boundary + "--");
+	            req.ContentLength = form.Length;
+	            using (var rs = req.GetRequestStream()) {
+	                rs.Write(form, 0, form.Length);
+	            }
+	            using (var r = req.GetResponse()) {
+	                var rs = r.GetResponseStream();
+	                var sr = new StreamReader(rs);
+	                return sr.ReadToEnd();
+	            }
+	        }
+	        catch (WebException ex) {
+	            using (WebResponse r = ex.Response) {
+	                using (var sr = new StreamReader(r.GetResponseStream()))
+	                    return sr.ReadToEnd();
+	
+	            }
+	        }
+		}
+		string SyncUploadHB(byte[] data, ref string stat) {
+			using (var wc = new WebClient()) {
+				if (!String.IsNullOrEmpty(txt_ProxyServerPort.Text)) {
+					wc.Proxy = MakeProxy();
+				}
+				wc.Encoding = Encoding.UTF8;
+				try {
+					var r = wc.UploadData(new Uri(SYNC_HOST+"/documents"), "POST", data);
+					return Regex.Match(Encoding.UTF8.GetString(r), "^[{].key.:.(.+).[}]$").Groups[1].Value;
+				} catch (Exception e) { 
+					stat = e.Message;
+					if (data.Length >= 400000) 
+						stat += MMain.Lang[Languages.Element.TooBig];
+				}
+			}
+			return "";
+		}
 		void SyncBackup() {
 			string id = "";
 			var rawtext = "";
@@ -5259,22 +5324,12 @@ DEL ""ExtractASD.cmd""";
 				stat += r[1] != "" ? (Environment.NewLine + r[1]) : "";
 			}
 			Debug.WriteLine("Rawtext: " +rawtext);
-			using (var wc = new WebClient()) {
-				if (!String.IsNullOrEmpty(txt_ProxyServerPort.Text)) {
-					wc.Proxy = MakeProxy();
-				}
-				wc.Encoding = Encoding.UTF8;
-				try {
-					var r = wc.UploadData(new Uri(SYNC_HOST+"/documents"), "POST", Encoding.UTF8.GetBytes(rawtext));
-					id = Regex.Match(Encoding.UTF8.GetString(r), "^[{].key.:.(.+).[}]$").Groups[1].Value;
-				} catch (Exception e) { 
-					stat = e.Message;
-					if (rawtext.Length >= 400000) 
-						stat += MMain.Lang[Languages.Element.TooBig];
-				}
-			}
+			if (!ZxZ)
+				id = SyncUploadHB(Encoding.UTF8.GetBytes(rawtext), ref stat);
+			else
+				id = SyncUploadZxZ(rawtext);
 			Debug.WriteLine("id:" + id);
-			txt_backupId.Text = SYNC_HOST + "/" + id;
+			txt_backupId.Text = (ZxZ ? "" : (SYNC_HOST + "/")) + id;
 			MMain.MyConfs.Write("Sync", "BLast", txt_backupId.Text);
 			txt_backupId.Enabled = true;
 			txt_backupStatus.Text = stat;
@@ -5284,20 +5339,22 @@ DEL ""ExtractASD.cmd""";
 			var id = txt_restoreId.Text;
 			var stat = "";
 			if (!string.IsNullOrEmpty(id)) {
-				var raw = SYNC_HOST+"/raw";
-				if (id.StartsWith("http", StringComparison.InvariantCulture)) {
-					if (!id.StartsWith(raw, StringComparison.InvariantCulture) || id.Contains("hastebin.com")) {
-						var p = id.Split('/');
-						var l = p[p.Length-1];
-						if (string.IsNullOrEmpty(l))
-							l = p[p.Length-2];
-						id = raw + "/" + l;
+				if (!ZxZ) {
+					var raw = SYNC_HOST+"/raw";
+					if (id.StartsWith("http", StringComparison.InvariantCulture)) {
+						if (!id.StartsWith(raw, StringComparison.InvariantCulture) || id.Contains("hastebin.com")) {
+							var p = id.Split('/');
+							var l = p[p.Length-1];
+							if (string.IsNullOrEmpty(l))
+								l = p[p.Length-2];
+							id = raw + "/" + l;
+						}
+					} else {
+						if (id.Length >= 32) {
+							stat = MMain.Lang[Languages.Element.UnknownID];
+						} else 
+							id = raw + "/" + id;
 					}
-				} else {
-					if (id.Length >= 32) {
-						stat = MMain.Lang[Languages.Element.UnknownID];
-					} else 
-						id = raw + "/" + id;
 				}
 				Debug.WriteLine("id:" +id);
 				var d = "";

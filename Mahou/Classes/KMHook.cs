@@ -2552,8 +2552,6 @@ namespace Mahou {
 			string[] ClipStrLines = ClipStr.Split('\n');
 			int lines = 0;
 			var output = "";
-			Random rand = null;
-			if (random) rand = new Random();
 			foreach (var line in ClipStrLines) {
 				lines++;
 				string[] ClipStrWords = SplitWords(line);
@@ -2571,7 +2569,7 @@ namespace Mahou {
 					} else {
 						foreach(char ch in word) {
 							if (random) {
-								if (rand.NextDouble() >= 0.5) {
+								if (MahouUI.rand.NextDouble() >= 0.5) {
 									STULR += char.ToLower(ch);
 								} else {
 									STULR += char.ToUpper(ch);

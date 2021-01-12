@@ -240,6 +240,7 @@ namespace Mahou {
 			CheckString("Sync", "RBools", "1|1|1|1|0");
 			CheckString("Sync", "RLast", "");
 			CheckString("Sync", "BLast", "");
+			CheckBool("Sync", "ZxZ", "false");
 			#endregion
         	#region TranslatePanel
 			CheckString("TranslatePanel", "TextFont", "Microsoft Sans Serif; 8.25pt");
