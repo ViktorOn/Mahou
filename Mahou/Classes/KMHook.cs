@@ -2204,7 +2204,6 @@ namespace Mahou {
 				DoSelf(() => {
 					Logging.Log("[CS] > Starting Convert selection.");
 					string ClipStr = GetClipStr();
-					ClipStr = Regex.Replace(ClipStr, @"(\d+)[,.?бю/]", "$1.");
 					if (!String.IsNullOrEmpty(ClipStr)) {
 						csdoing = true;
 						Logging.Log("[CS] > Starting conversion of [" + ClipStr + "].");
@@ -2320,6 +2319,7 @@ namespace Mahou {
 							cs_layout_last = l2;
 							Logging.Log("[CS] > Conversion of string [" + ClipStr + "] from locale [" + l1 + "] into locale [" + l2 + "] became [" + result + "].");
 							//Inputs converted text
+							result = Regex.Replace(result, @"(\d+)[,.?бю/](\d+)[,.?бю/](\d+)[,.?бю/](\d+)", "$1.$2.$3.$4");
 							if (MahouUI.UsePaste) {
 						      PasteText(result, "Selection");
 							} else {
@@ -3477,6 +3477,14 @@ namespace Mahou {
 				Debug.WriteLine("Testing " +word+" against: " +l+" and "+l2);
 				for (int I = 0; I!=word.Length; I++) {
 					var c = word[I];
+					if (Char.IsNumber(c)) {
+						wordL += c;
+						wordL2 += c;
+						mux1 += c;
+						mux2 += c;
+						Debug.WriteLine("N-skip: " + c);
+						continue;
+					}
 					var sm = false;
 					if (c == 'ո' || c == 'Ո') {
 						if (c == 'ո') sm = true;
