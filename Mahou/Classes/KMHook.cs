@@ -3209,12 +3209,12 @@ namespace Mahou {
 			Debug.WriteLine(">> GNL");
 			var loc = new Locales.Locale();
 			uint last = 0;
-			var cur = Locales.GetCurrentLocale(); 
-			if (MahouUI.UseJKL && !KMHook.JKLERR)
+			var cur = before;
+			if (MahouUI.UseJKL && !KMHook.JKLERR) {
 				if (cur == 0 || cur == last)
 					cur = MahouUI.currentLayout;
-			if (before != 0)
-				cur = before;
+			} else if (cur == 0) 
+				cur = Locales.GetCurrentLocale();
 			Debug.WriteLine("Current: " +cur);
 			for (int i=0; i!=MMain.locales.Length; i++) {
 				if (last != 0 && cur != last)
@@ -3231,7 +3231,6 @@ namespace Mahou {
 //				Thread.Sleep(15);
 				var curind = MMain.locales.ToList().FindIndex(lid => lid.uId == cur);
 				if (curind == MMain.locales.Length - 1) {
-					Logging.Log("[GNL] > Next layout: first: " + MMain.locales[0].Lang);
 					loc = MMain.locales[0];
 				} else {
 					loc = MMain.locales[curind+1];
@@ -3256,7 +3255,7 @@ namespace Mahou {
 				}
 				last = cur;
 			}
-			Debug.WriteLine("[GNL] > Get Next layout return: " + loc.uId + ", layout before: " + cur);
+			Logging.Log("[GNL] > Get Next layout return: " + loc.uId + ", layout before: " + cur);
 			return loc;
 		}
 		/// <summary>
