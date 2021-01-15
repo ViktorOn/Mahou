@@ -62,7 +62,7 @@ namespace Mahou {
 		#endregion
 		#region [Hidden]
 		public static bool __setlayoutForce, __setlayoutOnlyWM, nomemoryflush, LibreCtrlAltShiftV, __selection, __selection_nomouse, CycleCaseReset,
-							OVEXDisabled, LMBSCLC_DCShow = false;
+							OVEXDisabled;
 		public static string ReselectCustoms, AutoCopyTranslation = "", onlySnippetsExcluded = "", onlyAutoSwitchExcluded = "";
 		static string CycleCaseOrder = "TULSR", OverlayExcluded, tas, ncs;
 		static int OverlayExcludedInerval, arm;
@@ -1412,6 +1412,7 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hidden", "__setlayout_FORCED", Hchk___setlayoutForce.Checked.ToString());
 			MMain.MyConfs.Write("Hidden", "__setlayout_ONLYWM", Hchk___setlayoutOnlyWM.Checked.ToString());
 			MMain.MyConfs.Write("Hidden", "ReselectCustoms", Htxt_ReselectCustoms.Text);
+			MMain.MyConfs.Write("Hidden", "ChangeLayoutOnTrayLMB+DoubleClick", Hchk_LMBTrayLayoutChangeDC.Checked.ToString());
 //			NCS_destroy();
 		}
 		void loadHidden() {
@@ -1440,7 +1441,7 @@ namespace Mahou {
 			Hchk___setlayoutForce.Checked = __setlayoutForce = MMain.MyConfs.ReadBool("Hidden", "__setlayout_FORCED");
 			Hchk___setlayoutOnlyWM.Checked = __setlayoutOnlyWM = MMain.MyConfs.ReadBool("Hidden", "__setlayout_ONLYWM");
 			Htxt_ReselectCustoms.Text = ReselectCustoms = MMain.MyConfs.Read("Hidden", "ReselectCustoms");
-			LMBSCLC_DCShow = MMain.MyConfs.ReadBool("Hidden", "ChangeLayoutOnTrayLMB+DoubleClick");
+			Hchk_LMBTrayLayoutChangeDC.Checked = MMain.MyConfs.ReadBool("Hidden", "ChangeLayoutOnTrayLMB+DoubleClick");
 			if (!String.IsNullOrEmpty(OverlayExcluded)) {
 				Debug.WriteLine("Starting overlay excluded");
 				if(overlay_excluder != null) {
@@ -2393,7 +2394,7 @@ DEL "+restartMahouPath;
 			icon = new TrayIcon(MMain.MyConfs.ReadBool("Functions", "TrayIconVisible"));
 			icon.Exit += (_, __) => ExitProgram();
 			if (Hchk_LMBTrayLayoutChange.Checked) {
-				if (LMBSCLC_DCShow) {
+				if (Hchk_LMBTrayLayoutChangeDC.Checked) {
 					var cc = 0; bool tx = false; Timer t = null;
 					icon.MLBAct += (_, __) => {
 						cc++;
