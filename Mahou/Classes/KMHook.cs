@@ -3466,6 +3466,8 @@ namespace Mahou {
 				int wordL2Minuses = 0;
 				int minmin = 0;
 				int thismin = 0;
+				int wordLFMinIndex = -1;
+				int wordL2FMinIndex = -1;
 				uint lay = 0;
 				var wordL = "";
 				var wordL2 = "";
@@ -3537,11 +3539,11 @@ namespace Mahou {
 					var T1 = InAnother(c, l & 0xffff, l2 & 0xffff);
 					wordL += T1;
 					mux1 += T1;
-					if (T1 == "") { wordLMinuses++; mux1 += c; }
+					if (T1 == "") { wordLMinuses++; mux1 += c; if (wordLFMinIndex == -1) { wordLFMinIndex = I; } }
 					var T2 = InAnother(c, l2 & 0xffff, l & 0xffff);
 					wordL2 += T2;
 					mux2 += T2;
-					if (T2 == "") { wordL2Minuses++; mux2 += c; }
+					if (T2 == "") { wordL2Minuses++; mux2 += c; if (wordL2FMinIndex == -1) { wordL2FMinIndex = I; }  }
 					Debug.WriteLine("T1: "+ T1 + ", T2: "+ T2 + ", C: " +c);
 					if (T2 == "" && T1 == "") {
 						nany = true;
@@ -3577,6 +3579,16 @@ namespace Mahou {
 						thismin = wordLMinuses;
 						lay = 0;
 						result = word;
+						bool one = wordLFMinIndex > wordL2FMinIndex;
+						if (one) {
+							if (mux1.Length == word.Length) {
+								result = mux1;
+							}
+						} else
+							if (mux2.Length == word.Length) {
+								result = mux2;
+						}
+						Debug.WriteLine("LMin" + wordLFMinIndex + " & L2Min: " + wordL2FMinIndex + " mux" + (one?"1":"2") + " => " + result);
 					}
 				}
 				if (result.Length > guess.Length || (lay != 0 && thismin <= minmin)) {
