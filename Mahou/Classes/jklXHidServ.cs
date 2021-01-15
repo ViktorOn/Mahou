@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Drawing;
 using System.IO;
+using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
 namespace Mahou {
@@ -11,14 +13,14 @@ namespace Mahou {
 		public static Action ActionOnLayout;
 		public static uint OnLayoutAction = 0;
 		public static int jkluMSG = -1;
+		const string HWND_SERVER_TITLE = "777_MAHOU_777_HIDDEN_HWND_SERVER";
 		public static bool running = false, self_change, actionOnLayoutExecuted;
 		/// <summary>0=exe, 1=dll, 2=x86.exe, 3=x86.dll</summary>
 		public static bool[] jklFEX = new bool[5];
 		public static string jklInfoStr = "";
-		static IntPtr HWND = IntPtr.Zero;
-		static WinAPI.WndProc WNDPROC_DELEGATE;
+		static HServer s;
 	    static public void Destroy() {
-			if (HWND != IntPtr.Zero) {
+			if (s != null) {
 				var serv = WinAPI.FindWindow("_HIDDEN_HWND_SERVER", "_HIDDEN_HWND_SERVER");
 				var x86help = WinAPI.FindWindow("_HIDDEN_X86_HELPER", "_HIDDEN_X86_HELPER");
 				if (serv != IntPtr.Zero)
@@ -26,6 +28,8 @@ namespace Mahou {
 				if (x86help != IntPtr.Zero)
 					WinAPI.PostMessage(x86help, WinAPI.WM_QUIT, 0, 0);
 				running = false;
+				s.Dispose();
+				s = null;
 				// Multiple CreateWindowEx & WM_DESTROY causes NullReference exception in NATIVE CODE!!
 				// So its disabled for now... Create window 1 time and not destroy it.
 //				WinAPI.PostMessage(HWND, WinAPI.WM_DESTROY, 0, 0); 
@@ -70,20 +74,10 @@ namespace Mahou {
 					running = false;
 				}
 			}
-			if (HWND == IntPtr.Zero) {
+			if (s == null) {
 				Logging.Log("[JKL] > Initializing JKL HWND server...");
-		        WNDPROC_DELEGATE = jklWndProc;
-		        var wnd_class = new WinAPI.WNDCLASS();
-		        wnd_class.lpszClassName = "_XHIDDEN_HWND_SERVER";
-		        wnd_class.lpfnWndProc = Marshal.GetFunctionPointerForDelegate(WNDPROC_DELEGATE);
-		        UInt16 cls_reg = WinAPI.RegisterClassW(ref wnd_class);
-		        int last_error = Marshal.GetLastWin32Error();
-		        if (cls_reg == 0 && last_error != 0) {
-		            Logging.Log("[JKL] > Could not register window class, for jkl Hidden Server, err: " + last_error, 1);
-		        }
-		        HWND = WinAPI.CreateWindowExW(0, "_XHIDDEN_HWND_SERVER", "_XHIDDEN_HWND_SERVER", 0, 0, 0, 0, 0,
-		                                      IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
-		        Logging.Log("[JKL] > SERVER HWND: " +HWND);
+				s = new HServer();
+		        Logging.Log("[JKL] > SERVER HWND: " +s.Handle + " WinTitle: " +s.Text);
 			}
 			if (!running) {
 				if (jklExist()) {
@@ -130,7 +124,7 @@ namespace Mahou {
 					KMHook.JKLERR = true;
 				else 
 					KMHook.JKLERR = false;
-				Logging.Log("[JKL] > Init done, umsg: ["+jkluMSG+"], JKLXServ: ["+HWND+"].");
+				Logging.Log("[JKL] > Init done, umsg: ["+jkluMSG+"], JKLXServ: ["+s.Handle+"].");
 			}
 	    }
 		public static void CycleAllLayouts(IntPtr hwnd) {
@@ -144,43 +138,51 @@ namespace Mahou {
 //			}/
 			self_change = false;
 		}
-	    static IntPtr jklWndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)  {
-			if (msg == jkluMSG) {
-				uint layout = (uint)lParam, laysho = layout & 0xffff;
-				MahouUI.GlobalLayout = MahouUI.currentLayout = layout;
-				Logging.Log("[JKL] > Layout changed to [" + layout + "] / [0x"+layout.ToString("X") +"].");
-				Debug.WriteLine(">> JKL LC: " + layout);
-				Logging.Log("[JKL] > On layout act:" +OnLayoutAction);
-				var anull = ActionOnLayout==null;
-				Logging.Log("[JKL] > ACtion: " +(anull?"null":ActionOnLayout.Method.Name));
-				if (layout == OnLayoutAction || (layout & 0xffff) == (OnLayoutAction & 0xffff)) {
-					actionOnLayoutExecuted = true;
-					OnLayoutAction = 0;
-					if (anull) {
-						Logging.Log("[JKL] > Action is null, something terribly went wrong... Please try to disable JKL, if layout changing went wild.",1);
-					} else {
-						Debug.WriteLine("Executing action: " + ActionOnLayout.Method.Name + " on layout: " +layout);
-					    ActionOnLayout();
-					    ActionOnLayout = null;
-					}
-				}
-				if (start_cyclEmuSwitch) {
-					Debug.WriteLine("Cycling out from: "+ layout + " to " + cycleEmuDesiredLayout +"...");
-					if (layout != cycleEmuDesiredLayout && laysho != cycleEmuDesiredLayout)
-						KMHook.CycleEmulateLayoutSwitch();
-					else
-						start_cyclEmuSwitch = false;
-				}
-				if (!self_change && !start_cyclEmuSwitch) {
-					MahouUI.RefreshFLAG();
-					MMain.mahou.RefreshAllIcons();
-					MMain.mahou.UpdateLDs();
-					if (anull && !KMHook.selfie) {
-						KMHook.AS_IGN_fun();
-					}
-				}
+		class HServer : Form {
+			public HServer() {
+				this.Visible = false;
+				this.Size = new Size(1,1);
+				this.Location = new Point(0,0);
+				this.Text = HWND_SERVER_TITLE;
 			}
-	        return WinAPI.DefWindowProcW(hWnd, msg, wParam, lParam);
-	    }
+			protected override void WndProc(ref Message m) {
+				if (m.Msg == jkluMSG) {
+					uint layout = (uint)m.LParam, laysho = layout & 0xffff;
+					MahouUI.GlobalLayout = MahouUI.currentLayout = layout;
+					Logging.Log("[JKL] > Layout changed to [" + layout + "] / [0x"+layout.ToString("X") +"].");
+					Debug.WriteLine(">> JKL LC: " + layout);
+					Logging.Log("[JKL] > On layout act:" +OnLayoutAction);
+					var anull = ActionOnLayout==null;
+					Logging.Log("[JKL] > ACtion: " +(anull?"null":ActionOnLayout.Method.Name));
+					if (layout == OnLayoutAction || (layout & 0xffff) == (OnLayoutAction & 0xffff)) {
+						actionOnLayoutExecuted = true;
+						OnLayoutAction = 0;
+						if (anull) {
+							Logging.Log("[JKL] > Action is null, something terribly went wrong... Please try to disable JKL, if layout changing went wild.",1);
+						} else {
+							Debug.WriteLine("Executing action: " + ActionOnLayout.Method.Name + " on layout: " +layout);
+						    ActionOnLayout();
+						    ActionOnLayout = null;
+						}
+					}
+					if (start_cyclEmuSwitch) {
+						Debug.WriteLine("Cycling out from: "+ layout + " to " + cycleEmuDesiredLayout +"...");
+						if (layout != cycleEmuDesiredLayout && laysho != cycleEmuDesiredLayout)
+							KMHook.CycleEmulateLayoutSwitch();
+						else
+							start_cyclEmuSwitch = false;
+					}
+					if (!self_change && !start_cyclEmuSwitch) {
+						MahouUI.RefreshFLAG();
+						MMain.mahou.RefreshAllIcons();
+						MMain.mahou.UpdateLDs();
+						if (anull && !KMHook.selfie) {
+							KMHook.AS_IGN_fun();
+						}
+					}
+				}
+				base.WndProc(ref m);
+			}
+		}
 	}
 }

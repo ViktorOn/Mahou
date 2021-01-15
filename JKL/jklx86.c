@@ -24,7 +24,7 @@ void *Is64Alive() {
 	while(1) {
 		sleep(2);
 		HWND X64 = FindWindow("_HIDDEN_HWND_SERVER", NULL);
-		HWND Mahou = FindWindow("_XHIDDEN_HWND_SERVER", NULL);
+		HWND Mahou = FindWindow(NULL, "777_MAHOU_777_HIDDEN_HWND_SERVER");
 		if (!Mahou) {
 			printf("Mahou is not with us...");
 			PostMessage(X64, WM_QUIT, 0, 0);

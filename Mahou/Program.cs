@@ -83,6 +83,7 @@ namespace Mahou
 						MahouUI.InitLanguage();
 						MyConfs.WriteSave("Layouts", "SpecificLayout1", Lang[Languages.Element.SwitchBetween]);
 						MyConfs.WriteSave("FirstStart", "First", "False");
+						MyConfs.WriteSave("Timings", "ExcludedPrograms", "LA.exe SomeProg.exe");
 					}
 				} else {
 					MahouUI.InitLanguage();

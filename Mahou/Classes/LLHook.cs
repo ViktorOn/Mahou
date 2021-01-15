@@ -73,7 +73,7 @@ namespace Mahou {
 				for (int i = 0; i != MahouUI.tray_hotkeys.len; i++) {
 					var hk = Hotkey.tray_hk_parse(MahouUI.tray_hotkeys[i].k);
 					var UpOrDown = OnUpOrDown((Keys)hk.Rest.Item2, wParam);
-					Debug.WriteLine((UpOrDown ? "UP":"DOWN") + " key: " +Key);
+//					Debug.WriteLine((UpOrDown ? "UP":"DOWN") + " key: " +Key);
 					if (UpOrDown) {
 						if (Hotkey.cmp_hotkey(hk, x)) {
 							var d = Hotkey.tray_hk_is_double(MahouUI.tray_hotkeys[i].k);

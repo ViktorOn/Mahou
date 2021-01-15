@@ -767,11 +767,11 @@ namespace Mahou {
 		#endregion
 		#region Functions/Struct
 		static void snipsel() {
-			var clipr = GetClipboard(4,10);
-			snip_selection = GetClipStr(); 
+//			var clipr = GetClipboard(4,10);
 			skip_kbd_events+=2;
+			snip_selection = GetClipStr(); 
 			Debug.WriteLine("SEL>> "+snip_selection);
-			RestoreClipBoard(clipr);
+			RestoreClipBoard();
 		}
 		static bool _hasKey(string[] ar, string key) {
 			for (int i = 0; i < ar.Length; i++) {
@@ -804,11 +804,11 @@ namespace Mahou {
 	        					if (MahouUI.SoundOnAutoSwitch2)
 	        						MahouUI.Sound2Play();
 	        					corr = as_corrects[i];
-	        					Debug.WriteLine("--- snil guess ---");
+	        					Logging.Log("[AS] --- snil guess ---");
 	        					var snl = WordGuessLayout(snil,0,false).Item2;
-	        					Debug.WriteLine("--- asl guess ---");
+	        					Logging.Log("[AS] --- asl guess ---");
 	        					var asl = WordGuessLayout(as_corrects[i],0,false).Item2;
-	        					Debug.WriteLine("--- end guesses ---");
+	        					Logging.Log("[AS] --- end guesses ---");
 	        					if (_hasKey(as_wrongs, as_corrects[i])) {
 	        						Logging.Log("[AS] > Double-layout autoswitch rule: " +as_wrongs[i] +"<=>" +as_corrects[i]);
 	        						if (snl == as_lword_layout) {
@@ -818,7 +818,7 @@ namespace Mahou {
 	        					}
     							as_lword_layout = asl;
 	        					var skipLS = (snl == asl);
-	        					Debug.WriteLine("snl: " +snil + ", l:" +snl + "\nas_crI: " + as_corrects[i] + ", l: " +asl + "\nSKIP: " +skipLS);
+	        					Logging.Log("[AS] snl: " +snil + ", l:" +snl + "as_crI: " + as_corrects[i] + ", l: " +asl + "SKIP: " +skipLS);
 	        					var ofk = false;
 	        					if (!skipLS) {
 	        						if (MahouUI.UseJKL && MahouUI.SwitchBetweenLayouts && MahouUI.EmulateLS && !KMHook.JKLERR) {
@@ -2766,28 +2766,28 @@ namespace Mahou {
 			DoSelf(() => {
 				//Repress's modifiers by RePress variables
 				if (shiftRP) {
+					skip_kbd_events++;
 					KeybdEvent(Keys.LShiftKey, 0);
 					swas = true;
 					shiftRP = false;
-					skip_kbd_events++;
 				}
 				if (altRP) {
+					skip_kbd_events++;
 					KeybdEvent(Keys.LMenu, 0);
 					awas = true;
 					altRP = false;
-					skip_kbd_events++;
 				}
 				if (ctrlRP) {
+					skip_kbd_events++;
 					KeybdEvent(Keys.LControlKey, 0);
 					cwas = true;
 					ctrlRP = false;
-					skip_kbd_events++;
 				}
 				if (winRP) {
+					skip_kbd_events++;
 					KeybdEvent(Keys.LWin, 0);
 					wwas = true;
 					winRP = false;
-					skip_kbd_events++;
 				}
 			       }, "repress");
 		}
@@ -3188,22 +3188,24 @@ namespace Mahou {
 		/// </summary>
 		public static void CycleEmulateLayoutSwitch() {
 			Debug.WriteLine(">> CELS");
-			if (MahouUI.EmulateLSType == "Alt+Shift") {
-				Logging.Log("Changing layout using cycle mode by simulating key press [Alt+Shift].");
-				//Emulate Alt+Shift
-				KInputs.MakeInput(KInputs.AddPress(Keys.LShiftKey), (int)WinAPI.MOD_ALT);
-			} else if (MahouUI.EmulateLSType == "Ctrl+Shift") {
-				Logging.Log("Changing layout using cycle mode by simulating key press [Ctrl+Shift].");
-				//Emulate Ctrl+Shift
-				KInputs.MakeInput(KInputs.AddPress(Keys.LShiftKey), (int)WinAPI.MOD_CONTROL);
-			} else {
-				Logging.Log("Changing layout using cycle mode by simulating key press [Win+Space].");
-				//Emulate Win+Space
-				KInputs.MakeInput(KInputs.AddPress(Keys.Space), (int)WinAPI.MOD_WIN);
-				Thread.Sleep(50); //Important!
-			}
-			if (!MahouUI.UseJKL || KMHook.JKLERR)
-				DoLater(() => { MahouUI.currentLayout = MahouUI.GlobalLayout = Locales.GetCurrentLocale(); }, 25);
+			DoSelf(() => {
+				if (MahouUI.EmulateLSType == "Alt+Shift") {
+					Logging.Log("Changing layout using cycle mode by simulating key press [Alt+Shift].");
+					//Emulate Alt+Shift
+					KInputs.MakeInput(KInputs.AddPress(Keys.LShiftKey), (int)WinAPI.MOD_ALT);
+				} else if (MahouUI.EmulateLSType == "Ctrl+Shift") {
+					Logging.Log("Changing layout using cycle mode by simulating key press [Ctrl+Shift].");
+					//Emulate Ctrl+Shift
+					KInputs.MakeInput(KInputs.AddPress(Keys.LShiftKey), (int)WinAPI.MOD_CONTROL);
+				} else {
+					Logging.Log("Changing layout using cycle mode by simulating key press [Win+Space].");
+					//Emulate Win+Space
+					KInputs.MakeInput(KInputs.AddPress(Keys.Space), (int)WinAPI.MOD_WIN);
+					Thread.Sleep(50); //Important!
+				}
+				if (!MahouUI.UseJKL || KMHook.JKLERR)
+					DoLater(() => { MahouUI.currentLayout = MahouUI.GlobalLayout = Locales.GetCurrentLocale(); }, 25);
+	       }, "cycle emulate layout switch");
 		}
 		public static Locales.Locale GetNextLayout(uint before = 0) {
 			Debug.WriteLine(">> GNL");
