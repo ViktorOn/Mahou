@@ -38,6 +38,7 @@ namespace Mahou {
             trIcon.Text = "Mahou (魔法)\nA magical layout switcher.";
             trIcon.ContextMenuStrip = cMenu;
             trIcon.MouseClick += (_,__) => { if (__.Button == MouseButtons.Left) MLBAction(_,__); };
+            trIcon.MouseDoubleClick += (_,__) => { if (__.Button == MouseButtons.Left) MLBAction(_,__); };
         }
         public void CheckShHi(bool shhi) {
         	ShHi.Checked = shhi;
@@ -75,7 +76,7 @@ namespace Mahou {
         }
         /// <summary>ShowHide event handler..</summary>
         void MLBAction(object sender, EventArgs e) {
-            if (MLBAct != null) MLBAct(this, null);
+            if (MLBAct != null) MLBAct(sender, e);
         }
         /// <summary>Hides tray icon.</summary>
         public void Hide() {

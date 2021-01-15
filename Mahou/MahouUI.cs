@@ -62,7 +62,7 @@ namespace Mahou {
 		#endregion
 		#region [Hidden]
 		public static bool __setlayoutForce, __setlayoutOnlyWM, nomemoryflush, LibreCtrlAltShiftV, __selection, __selection_nomouse, CycleCaseReset,
-							OVEXDisabled;
+							OVEXDisabled, LMBSCLC_DCShow = false;
 		public static string ReselectCustoms, AutoCopyTranslation = "", onlySnippetsExcluded = "", onlyAutoSwitchExcluded = "";
 		static string CycleCaseOrder = "TULSR", OverlayExcluded, tas, ncs;
 		static int OverlayExcludedInerval, arm;
@@ -1440,6 +1440,7 @@ namespace Mahou {
 			Hchk___setlayoutForce.Checked = __setlayoutForce = MMain.MyConfs.ReadBool("Hidden", "__setlayout_FORCED");
 			Hchk___setlayoutOnlyWM.Checked = __setlayoutOnlyWM = MMain.MyConfs.ReadBool("Hidden", "__setlayout_ONLYWM");
 			Htxt_ReselectCustoms.Text = ReselectCustoms = MMain.MyConfs.Read("Hidden", "ReselectCustoms");
+			LMBSCLC_DCShow = MMain.MyConfs.ReadBool("Hidden", "ChangeLayoutOnTrayLMB+DoubleClick");
 			if (!String.IsNullOrEmpty(OverlayExcluded)) {
 				Debug.WriteLine("Starting overlay excluded");
 				if(overlay_excluder != null) {
@@ -2391,9 +2392,36 @@ DEL "+restartMahouPath;
 			}
 			icon = new TrayIcon(MMain.MyConfs.ReadBool("Functions", "TrayIconVisible"));
 			icon.Exit += (_, __) => ExitProgram();
-			if (Hchk_LMBTrayLayoutChange.Checked)
-				icon.MLBAct += (_, __) => lastAltTabChangeLayout();
-			else
+			if (Hchk_LMBTrayLayoutChange.Checked) {
+				if (LMBSCLC_DCShow) {
+					var cc = 0; bool tx = false; Timer t = null;
+					icon.MLBAct += (_, __) => {
+						cc++;
+						Debug.WriteLine("CC" + cc);
+						if (cc > 1) {
+							ToggleVisibility();
+							cc = 0;
+							if (t != null) {
+								t.Stop();
+								t.Dispose();
+								tx = false;
+							}
+						}
+						else if (!tx) {
+							tx = true;
+							t = new Timer(); bool fign = false;
+							t.Tick += (x, xx) => { 
+								if (!fign) { fign = true; return; }
+								if (cc == 1) { lastAltTabChangeLayout(); } 
+								cc = 0; 
+								t.Stop(); t.Dispose(); tx = false; };
+							t.Interval = SystemInformation.DoubleClickTime;
+							t.Start();
+						}
+					};
+				} else
+					icon.MLBAct += (_, __) => lastAltTabChangeLayout();
+			} else
 				icon.MLBAct += (_, __) => ToggleVisibility();
 			icon.ShowHide += (_, __) => ToggleVisibility();
 			icon.EnaDisable += (_, __) => ToggleMahou();
