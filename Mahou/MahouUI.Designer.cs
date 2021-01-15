@@ -621,6 +621,7 @@ namespace Mahou
 			this.lnk_Site = new System.Windows.Forms.LinkLabel();
 			this.lnk_Repository = new System.Windows.Forms.LinkLabel();
 			this.tab_Hidden = new System.Windows.Forms.TabPage();
+			this.Hchk_LMBTrayLayoutChangeDC = new System.Windows.Forms.CheckBox();
 			this.Hlbl_scrollpastcontent = new System.Windows.Forms.Label();
 			this.Hlbl_ASIgnoreTimeout = new System.Windows.Forms.Label();
 			this.Hnud_ASIgnoreTimeout = new System.Windows.Forms.NumericUpDown();
@@ -664,7 +665,6 @@ namespace Mahou
 			this.btn_Cancel = new System.Windows.Forms.Button();
 			this.btn_Apply = new System.Windows.Forms.Button();
 			this.HelpMeUnderstand = new System.Windows.Forms.ToolTip(this.components);
-			this.Hchk_LMBTrayLayoutChangeDC = new System.Windows.Forms.CheckBox();
 			this.tabs.SuspendLayout();
 			this.tab_functions.SuspendLayout();
 			this.tab_layouts.SuspendLayout();
@@ -3959,6 +3959,16 @@ namespace Mahou
 			this.tab_Hidden.TabIndex = 15;
 			this.tab_Hidden.Text = "[Hidden]";
 			// 
+			// Hchk_LMBTrayLayoutChangeDC
+			// 
+			this.Hchk_LMBTrayLayoutChangeDC.AutoSize = true;
+			this.Hchk_LMBTrayLayoutChangeDC.Location = new System.Drawing.Point(8, 197);
+			this.Hchk_LMBTrayLayoutChangeDC.Name = "Hchk_LMBTrayLayoutChangeDC";
+			this.Hchk_LMBTrayLayoutChangeDC.Size = new System.Drawing.Size(450, 19);
+			this.Hchk_LMBTrayLayoutChangeDC.TabIndex = 41;
+			this.Hchk_LMBTrayLayoutChangeDC.Text = "[LMB-Tray-Mod] Double Left Click on Tray toggles Mahou window. (only with ↑)";
+			this.Hchk_LMBTrayLayoutChangeDC.UseVisualStyleBackColor = true;
+			// 
 			// Hlbl_scrollpastcontent
 			// 
 			this.Hlbl_scrollpastcontent.Location = new System.Drawing.Point(238, 602);
@@ -4058,7 +4068,7 @@ namespace Mahou
 			// Hchk___setlayoutForce
 			// 
 			this.Hchk___setlayoutForce.AutoSize = true;
-			this.Hchk___setlayoutForce.Location = new System.Drawing.Point(8, 432);
+			this.Hchk___setlayoutForce.Location = new System.Drawing.Point(8, 455);
 			this.Hchk___setlayoutForce.Name = "Hchk___setlayoutForce";
 			this.Hchk___setlayoutForce.Size = new System.Drawing.Size(496, 19);
 			this.Hchk___setlayoutForce.TabIndex = 31;
@@ -4414,16 +4424,6 @@ namespace Mahou
 			this.HelpMeUnderstand.ShowAlways = true;
 			this.HelpMeUnderstand.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			this.HelpMeUnderstand.Popup += new System.Windows.Forms.PopupEventHandler(this.HelpMeUnderstandPopup);
-			// 
-			// Hchk_LMBTrayLayoutChangeDC
-			// 
-			this.Hchk_LMBTrayLayoutChangeDC.AutoSize = true;
-			this.Hchk_LMBTrayLayoutChangeDC.Location = new System.Drawing.Point(8, 197);
-			this.Hchk_LMBTrayLayoutChangeDC.Name = "Hchk_LMBTrayLayoutChangeDC";
-			this.Hchk_LMBTrayLayoutChangeDC.Size = new System.Drawing.Size(450, 19);
-			this.Hchk_LMBTrayLayoutChangeDC.TabIndex = 41;
-			this.Hchk_LMBTrayLayoutChangeDC.Text = "[LMB-Tray-Mod] Double Left Click on Tray toggles Mahou window. (only with ↑)";
-			this.Hchk_LMBTrayLayoutChangeDC.UseVisualStyleBackColor = true;
 			// 
 			// MahouUI
 			// 

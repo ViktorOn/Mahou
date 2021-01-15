@@ -1293,38 +1293,38 @@ namespace Mahou {
 			LoadConfigs();
 		}
 		void SaveTrSets() {
-			var sets = "";
+			var sets = new StringBuilder();
 			for (int i = 1; i <= TrSetCount; i++) {
-				sets += "set_"+i+"/";
-				sets += TrSetsValues["cbb_fr"+i]+"/";
-				sets += TrSetsValues["cbb_to"+i];
+				sets.Append("set_").Append(i).Append("/")
+				    .Append(TrSetsValues[new StringBuilder("cbb_fr").Append(i).ToString()]).Append("/")
+				    .Append(TrSetsValues[new StringBuilder("cbb_to").Append(i).ToString()]);
 				if (i != TrSetCount)
-					sets += "|";
+					sets.Append("|");
 			}
-			if (String.IsNullOrEmpty(sets))
-				sets = "set_0";
-			MMain.MyConfs.Write("TranslatePanel", "LanguageSets", sets);
+			if (String.IsNullOrEmpty(sets.ToString()))
+				sets.Clear().Append("set_0");
+			MMain.MyConfs.Write("TranslatePanel", "LanguageSets", sets.ToString());
 		}
 		void SaveSpecificKeySets(bool change1set = false, int setId = 0, string typ = "") {
-			var sets = "";
+			var sets = new StringBuilder();;
 			for (int i = 1; i <= SpecKeySetCount; i++) {
-				sets += "set_"+i+"/";
-				sets += SpecKeySetsValues["txt_key"+i+"_key"]+"/";
-				sets += SpecKeySetsValues["txt_key"+i+"_mods"];
+				sets.Append("set_").Append(i).Append("/")
+				    .Append(SpecKeySetsValues[new StringBuilder("txt_key").Append(i).Append("_key").ToString()]).Append("/")
+					.Append(SpecKeySetsValues[new StringBuilder("txt_key").Append(i).Append("_mods").ToString()]);
 				if ((pan_KeySets.Controls["set_"+i].Controls["chk_win"+i] as CheckBox).Checked &&
 				    !SpecKeySetsValues["txt_key"+i+"_mods"].Contains("Win"))
-					sets += " + Win";
-				sets += "/";
+					sets.Append(" + Win");
+				sets.Append("/");
 				if (setId == i && change1set)
-					sets += typ;
+					sets.Append(typ);
 				else 
-					sets += SpecKeySetsValues["cbb_typ"+i];
+					sets.Append(SpecKeySetsValues["cbb_typ"+i]);
 				if (i != SpecKeySetCount)
-					sets += "|";
+					sets.Append("|");
 			}
-			if (String.IsNullOrEmpty(sets))
-				sets = "set_0";
-			MMain.MyConfs.Write("Layouts", "SpecificKeySets", sets);
+			if (String.IsNullOrEmpty(sets.ToString()))
+				sets.Clear().Append("set_0");
+			MMain.MyConfs.Write("Layouts", "SpecificKeySets", sets.ToString());
 		}
 		object DoInMainConfigs(Func<object> act) {
 			if (Configs.forceAppData) return (object)true;
@@ -1759,7 +1759,7 @@ namespace Mahou {
 			var rlast = MMain.MyConfs.Read("Sync", "RLast");
 			if (!string.IsNullOrEmpty(rlast))
 				txt_restoreId.Text = rlast;
-			ZxZ = MMain.MyConfs.ReadBool("Sync", "ZxZ");
+			chk_ZxZ.Checked = ZxZ = MMain.MyConfs.ReadBool("Sync", "ZxZ");
 			#endregion
 			LLHook._ACTIVE = (RemapCapslockAsF18 || SnippetsExpandType == "Tab" || MahouMM);
 			if (LLHook._ACTIVE)
@@ -1811,7 +1811,7 @@ namespace Mahou {
 			var sets = raw_sets.Split('|');
 			var last_set = sets[sets.Length-1];
 //			Debug.WriteLine(last_set);
-			var set_count = Int32.Parse(last_set.Split('/')[0].Replace("set_",""));
+//			var set_count = Int32.Parse(last_set.Split('/')[0].Replace("set_",""));
 			var SETS = new List<string[]>();
 			foreach (var _set in sets) {
 				SETS.Add(_set.Split('/'));
@@ -2298,10 +2298,13 @@ DEL "+restartMahouPath;
 						var b = new Bitmap(16, 16);
 						var g = Graphics.FromImage(b);
 						var sf = new StringFormat(){ LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
+						var sb = new SolidBrush(fg);
 						g.Clear(bg);
 						g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SystemDefault;
-						g.DrawString(t, fn, new SolidBrush(fg), new PointF(8, 8), sf);
+						g.DrawString(t, fn, sb, new PointF(8, 8), sf);
 						g.Dispose();
+						sf.Dispose();
+						sb.Dispose();
 						ITEXT = b;
 						if (n2 && LDCaretUseFlags_temp) {
 							ITEXT = FLAG;
@@ -2917,22 +2920,18 @@ DEL "+restartMahouPath;
 			}
 			File.Delete(xml_path);
 		}
-		public static void SoundPlay() {
+		public static void SoundPlay(bool second = false) {
 			if (SoundEnabled) {
-				var sp = new System.Media.SoundPlayer(new MemoryStream(Properties.Resources.snd));
-				if (UseCustomSound) 
-					if (File.Exists(CustomSound))
-						sp = new System.Media.SoundPlayer(CustomSound);
+				byte[] snd = second ? Properties.Resources.snd2 : Properties.Resources.snd;
+				bool ucs = second ? UseCustomSound2 : UseCustomSound;
+				string csf = second ? CustomSound2 : CustomSound;
+				var sms = new MemoryStream(snd);
+				var sp = new System.Media.SoundPlayer(sms);
+				if (ucs) if (File.Exists(csf))
+						sp = new System.Media.SoundPlayer(csf);
 				sp.Play();
-			}
-		}
-		public static void Sound2Play() {
-			if (SoundEnabled) {
-				var sp2 = new System.Media.SoundPlayer(new MemoryStream(Properties.Resources.snd2));
-				if (UseCustomSound2) 
-					if (File.Exists(CustomSound2))
-						sp2 = new System.Media.SoundPlayer(CustomSound2);
-				sp2.Play();
+				sp.Dispose();
+				sms.Dispose();
 			}
 		}
 		public string SelectGetWavFile() {
@@ -3009,12 +3008,14 @@ DEL "+restartMahouPath;
 							l = pif.StandardOutput.ReadLine();
 							if (l.Contains(Assembly.GetExecutingAssembly().Location)) {
 								Debug.WriteLine("Task path OK! in: " + l);
+								pif.Dispose();
 								return true;
 							}
 						}
 					}
 				}
 				Debug.WriteLine("Task path wrong!");
+				pif.Dispose();
 				return false;
 			}
 			var lnk = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "Mahou.lnk");
@@ -3855,7 +3856,9 @@ DEL /Q /F /A ""%TEMP%\UpdateMahou.cmd""";
 				request.ServicePoint.SetTcpKeepAlive(true, 5000, 1000);
 				var response = (HttpWebResponse)request.GetResponse();
                 if (response.StatusCode == HttpStatusCode.OK) {
-					var data = new StreamReader(response.GetResponseStream(), true).ReadToEnd();
+					var sr = new StreamReader(response.GetResponseStream(), true);
+					var data = sr.ReadToEnd();
+					sr.Dispose();
 					response.Close();
 					Logging.Log("Responce of url [" + url + "] succeded.");
 					return data;
@@ -4059,10 +4062,12 @@ DEL ""ExtractASD.cmd""";
 						AtUpdateShow = 1;
 					else {
 						if (UpdInfo[0] != MMain.Lang[Languages.Element.Error]) {
-							if (MessageBox.Show(new Form() { TopMost = false, Visible = false }, UpdInfo[1].Substring(0, ((UpdInfo[1].Length > 640) ? 640 : UpdInfo[1].Length)) +"...\n"+UpdInfo[3], UpdInfo[0],
+							var fx = new Form() { TopMost = false, Visible = false };
+							if (MessageBox.Show(fx, UpdInfo[1].Substring(0, ((UpdInfo[1].Length > 640) ? 640 : UpdInfo[1].Length)) +"...\n"+UpdInfo[3], UpdInfo[0],
 								     MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.OK) {
 								AtUpdateShow = 1;
 							} else { AtUpdateShow = 2; }
+							fx.Dispose();
 						} else {
 							AtUpdateShow = 3;
 						}
@@ -4469,20 +4474,20 @@ DEL ""ExtractASD.cmd""";
 		}
 		#endregion
 		#region Custom Context Menu
-		static string getargtype(string arg) {
-			arg = arg.ToLower();
-			if (arg.StartsWith("http"))
-				return "http";
-			if (arg.StartsWith("mailto"))
-				return "mailto";
-			if (File.Exists(arg)) {
-				var m = Regex.Match(arg, @".*\.(.*)");
-				if (m.Groups.Count >0) {
-					return m.Groups[1].Value;
-				}
-			}
-			return "unknown";
-		}
+//		static string getargtype(string arg) {
+//			arg = arg.ToLower();
+//			if (arg.StartsWith("http"))
+//				return "http";
+//			if (arg.StartsWith("mailto"))
+//				return "mailto";
+//			if (File.Exists(arg)) {
+//				var m = Regex.Match(arg, @".*\.(.*)");
+//				if (m.Groups.Count >0) {
+//					return m.Groups[1].Value;
+//				}
+//			}
+//			return "unknown";
+//		}
 		static string replaceenv(string arg, string env, Func<string> getvalue) {
 			if (arg.Contains(env))
 				arg = arg.Replace(env, getvalue());
@@ -4499,7 +4504,7 @@ DEL ""ExtractASD.cmd""";
 			act = act.ToLower();
 			arg = expandmenuarg(arg);
 			if (act == "url") {
-				var type = getargtype(arg);
+//				var type = getargtype(arg);
 				string args ="", prog =arg;
 				if (arg.Contains(" ")) {
 					var m = arg.Split(new[]{' '},2);
@@ -4601,55 +4606,64 @@ DEL ""ExtractASD.cmd""";
 				}
 				var lc = '\0';
 				var type = 0;
-				string buf, text, act, arg, hotk;
-				buf = text = act = arg = hotk = "";
+				StringBuilder buf, text, act, arg, hotk;
+				buf = new StringBuilder();
+				text = new StringBuilder();
+				act = new StringBuilder();
+				arg = new StringBuilder();
+				hotk = new StringBuilder();
 				int last = 2;
 				for (int i = 0; i != me.Length; i++) {
 					var c = me[i];
 					if ((lc != '\\' && c == '|') || i == me.Length-1) {
-						if (type == 0) text = buf;
-						if (type == 2 && (!string.IsNullOrEmpty(hotk) || string.IsNullOrEmpty(act))) {
-					    	act = buf;
+						if (type == 0) text = new StringBuilder(buf.ToString());
+						if (type == 2 && (!string.IsNullOrEmpty(hotk.ToString()) || string.IsNullOrEmpty(act.ToString()))) {
+							act = new StringBuilder(buf.ToString());
 					    	last++;
 					    }
 						if (type == 1) {
-							if (buf.StartsWith("^^"))
-								hotk = buf;
+							if (buf.ToString().StartsWith("^^"))
+								hotk = new StringBuilder(buf.ToString());
 							else
-								act = buf;
+								act = new StringBuilder(buf.ToString());
 						}
-						if (type == last) { arg = buf+c; }
-						if (act.ToLower() == "multi") {
-							arg = me.Substring(i+1, me.Length-i-1);
+						if (type == last) { arg = new StringBuilder(buf.ToString()).Append(c); }
+						if (act.ToString().ToLower() == "multi") {
+							arg.Clear().Append(me.Substring(i+1, me.Length-i-1));
 							break;
 						}
 						type++;
-						buf = "";
+						buf.Clear();
 						lc = c;
 						continue;
 					}
-					buf += c;
+					buf.Append(c);
 					lc = c;
 				}
-				if (!string.IsNullOrEmpty(hotk)) {
-					tray_hotkeys.Add(hotk, new Tuple<Action, string>(() => menuhandle(act, arg), act+"|"+arg));
-					var d = Hotkey.tray_hk_is_double(hotk);
+				if (!string.IsNullOrEmpty(hotk.ToString())) {
+					tray_hotkeys.Add(hotk.ToString(), new Tuple<Action, string>(() => 
+                        menuhandle(act.ToString(), arg.ToString()),
+                        	new StringBuilder().Append(act).Append("|").Append(arg).ToString()));
+					var d = Hotkey.tray_hk_is_double(hotk.ToString());
 					Debug.WriteLine("hotk: " + hotk + d.Item1);
 					if(d.Item1) {
-						if (hotk.Contains("((")) {
+						if (hotk.ToString().Contains("((")) {
 							hotk = hotk.Replace("((", "~")
 								.Replace("))", "ms [")
 								.Replace("&&", "] => ");
 					    } else {
 							hotk = hotk.Replace("&&", "] => ~250ms [");
 					    }
-						if (hotk.EndsWith("[")) {
-							hotk += d.Item3;
+						if (hotk.ToString().EndsWith("[")) {
+							hotk.Append(d.Item3);
 						}
 					}
-					text += "    [" + Regex.Replace(hotk.Replace("^^", ""), "((^|\\+|\\[)[lr]?.)", m => m.ToString().ToUpper()) + "]";
+					text.Append("    [")
+						.Append(Regex.Replace(hotk.Replace("^^", "").ToString(), "((^|\\+|\\[)[lr]?.)", m => m.ToString().ToUpper()))
+						.Append("]");
 				}
-				mms.DropDownItems.Add(new ToolStripMenuItem(text,null,(_,__) => menuhandle(act, arg)));
+				mms.DropDownItems.Add(new ToolStripMenuItem(text.ToString(),null,(_,__) =>
+				                                            menuhandle(act.ToString(), arg.ToString())));
 			}
 			var wfm = new Timer();
 			wfm.Interval = 1000;
@@ -4681,34 +4695,35 @@ DEL ""ExtractASD.cmd""";
 		}
 		void Btn_DebugInfoClick(object sender, EventArgs e) {
 			try {
-				string debuginfo = "<details><summary>MAHOU DEBUG INFO</summary>\r\n\r\n";
-				debuginfo += "<details><summary>Environment info</summary>\r\n\r\n";
-				debuginfo += "\r\n" + "- " + Text;
-				debuginfo += "\r\n" + "- OS = [" + Environment.OSVersion + "]";
-				debuginfo += "\r\n" + "- x64 = [" + Environment.Is64BitOperatingSystem + "]";
-				debuginfo += "\r\n" + "- .Net = [" + Environment.Version +"]";
-				debuginfo += "\r\n</details>";
-				debuginfo += "\r\n" + "<details><summary>All installed layouts</summary>\r\n\r\n";
+				var debuginfo = new StringBuilder().Append("<details><summary>MAHOU DEBUG INFO</summary>\r\n\r\n")
+					.Append("<details><summary>Environment info</summary>\r\n\r\n")
+					.Append("\r\n- ").Append(Text)
+					.Append("\r\n- OS = [").Append(Environment.OSVersion).Append("]")
+					.Append("\r\n- x64 = [").Append(Environment.Is64BitOperatingSystem).Append("]")
+					.Append("\r\n- .Net = [").Append(Environment.Version).Append("]")
+					.Append("\r\n</details>")
+					.Append("\r\n" + "<details><summary>All installed layouts</summary>\r\n\r\n");
 				foreach (var l in MMain.lcnmid) {
-					debuginfo += l + "\r\n";
+					debuginfo.Append(l).Append("\r\n");
 				}
-				debuginfo += "\r\n</details>";
-				debuginfo += "<details><summary>Mahou.ini</summary>\r\n\r\n```ini\r\n" + 
-					MMain.MyConfs.GetRawWithoutGroup("[Proxy]");
-				debuginfo += "\r\n</details>";
+				debuginfo.Append("\r\n</details>")
+				.Append("<details><summary>Mahou.ini</summary>\r\n\r\n```ini\r\n")
+					.Append(MMain.MyConfs.GetRawWithoutGroup("[Proxy]"))
+					.Append("\r\n</details>");
 				if (File.Exists(Path.Combine(nPath, "snippets.txt")))
-				    debuginfo += "\r\n" + "<details><summary>Snippets</summary>\r\n\r\n```\r\n" + File.ReadAllText(Path.Combine(nPath, "snippets.txt")) + "\r\n```";
-				debuginfo += "\r\n</details>";
+					debuginfo.Append("\r\n" + "<details><summary>Snippets</summary>\r\n\r\n```\r\n")
+						.Append(File.ReadAllText(Path.Combine(nPath, "snippets.txt"))).Append("\r\n```");
+				debuginfo.Append("\r\n</details>");
 				if (Directory.Exists(Path.Combine(nPath, "Flags"))) {
-				    	debuginfo += "\r\n" + "<details><summary>Additional flags in Flags directory</summary>\r\n\r\n";
-				    	foreach (var flg in Directory.GetFiles(Path.Combine(nPath, "Flags"))) {
-				    		debuginfo += "- " + Path.GetFileName(flg) + "\r\n";
-				    	}
-				    	debuginfo += "\r\n";
-						debuginfo += "\r\n</details>";
+					debuginfo.Append("\r\n").Append("<details><summary>Additional flags in Flags directory</summary>\r\n\r\n");
+			    	foreach (var flg in Directory.GetFiles(Path.Combine(nPath, "Flags"))) {
+						debuginfo.Append("- ").Append(Path.GetFileName(flg)).Append("\r\n");
+			    	}
+			    	debuginfo.Append("\r\n")
+		    			.Append("\r\n</details>");
 	             }
-				debuginfo += "\r\n</details>";
-				Clipboard.SetText(debuginfo);
+				debuginfo.Append("\r\n</details>");
+				Clipboard.SetText(debuginfo.ToString());
 				var btDgtTxtWas = btn_DebugInfo.Text;
 				btn_DebugInfo.Text = MMain.Lang[Languages.Element.DbgInf_Copied];
 				tmr.Tick += (_,__) => { 
@@ -5314,7 +5329,9 @@ DEL ""ExtractASD.cmd""";
 	            using (var r = req.GetResponse()) {
 	                var rs = r.GetResponseStream();
 	                var sr = new StreamReader(rs);
-	                return sr.ReadToEnd();
+	                var str = sr.ReadToEnd();
+	                sr.Dispose();
+	                return str;
 	            }
 	        }
 	        catch (WebException ex) {
@@ -5325,7 +5342,7 @@ DEL ""ExtractASD.cmd""";
 	            }
 	        }
 		}
-		string SyncUploadHB(byte[] data, ref string stat) {
+		string SyncUploadHB(byte[] data, ref StringBuilder stat) {
 			using (var wc = new WebClient()) {
 				if (!String.IsNullOrEmpty(txt_ProxyServerPort.Text)) {
 					wc.Proxy = MakeProxy();
@@ -5335,33 +5352,35 @@ DEL ""ExtractASD.cmd""";
 					var r = wc.UploadData(new Uri(SYNC_HOST+"/documents"), "POST", data);
 					return Regex.Match(Encoding.UTF8.GetString(r), "^[{].key.:.(.+).[}]$").Groups[1].Value;
 				} catch (Exception e) { 
-					stat = e.Message;
+					stat.Clear().Append(e.Message);
 					if (data.Length >= 400000) 
-						stat += MMain.Lang[Languages.Element.TooBig];
+						stat.Append(MMain.Lang[Languages.Element.TooBig]);
 				}
 			}
 			return "";
 		}
 		void SyncBackup() {
 			string id = "";
-			var rawtext = "";
+			var rawtext = new StringBuilder();
 			var bb = new [] { chk_Mini.Checked, chk_Stxt.Checked, chk_Htxt.Checked, chk_Ttxt.Checked, chk_Mmm.Checked };
-			var stat = "OK";
+			var stat = new StringBuilder("OK");
 			for (int i = 0; i!= SYNC_NAMES.Length; i++) {
 				var r = ReadToBackup(SYNC_TYPES[i], SYNC_NAMES[i], bb[i], chk_andPROXY.Checked);
-				rawtext += r[0];
-				stat += r[1] != "" ? (Environment.NewLine + r[1]) : "";
+				rawtext.Append(r[0]);
+				if (r[1] != "") {
+					stat.Append(Environment.NewLine).Append(r[1]);
+				}
 			}
 			Debug.WriteLine("Rawtext: " +rawtext);
 			if (!ZxZ)
-				id = SyncUploadHB(Encoding.UTF8.GetBytes(rawtext), ref stat);
+				id = SyncUploadHB(Encoding.UTF8.GetBytes(rawtext.ToString()), ref stat);
 			else
-				id = SyncUploadZxZ(rawtext);
+				id = SyncUploadZxZ(rawtext.ToString());
 			Debug.WriteLine("id:" + id);
 			txt_backupId.Text = (ZxZ ? "" : (SYNC_HOST + "/")) + id;
 			MMain.MyConfs.Write("Sync", "BLast", txt_backupId.Text);
 			txt_backupId.Enabled = true;
-			txt_backupStatus.Text = stat;
+			txt_backupStatus.Text = stat.ToString();
 			txt_backupStatus.Visible = true;
 		}
 		void SyncRestore() {

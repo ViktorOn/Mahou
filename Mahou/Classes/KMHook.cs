@@ -95,7 +95,7 @@ namespace Mahou {
 			if (MahouUI.CaretLangTooltipEnabled)
 				ff_chr_wheeled = false;
 			if (vkCode > 254) return;
-			var down = ((MSG == WinAPI.WM_SYSKEYDOWN) ? true : false) || ((MSG == WinAPI.WM_KEYDOWN) ? true : false);
+			var down = (MSG == WinAPI.WM_SYSKEYDOWN) || (MSG == WinAPI.WM_KEYDOWN);
 			var Key = (Keys)vkCode; // "Key" will further be used instead of "(Keys)vkCode"
 			if (MMain.c_words.Count == 0) {
 				MMain.c_words.Add(new List<YuKey>());
@@ -479,7 +479,8 @@ namespace Mahou {
 //						aseKeyDown = Keys.None;
 //				}
 				if (MSG == WinAPI.WM_KEYDOWN) {
-					var snip = ""; foreach(var c in c_snip) { snip += c; };
+					var ssb = new StringBuilder(); foreach(var c in c_snip) { ssb.Append(c); };
+					var snip = ssb.ToString();
 					var matched = false;
 					Debug.WriteLine("Snip " + snip + ", last: " + last_snip);
 					if (Key == seKey) {
@@ -802,7 +803,7 @@ namespace Mahou {
 	        					if (MahouUI.SoundOnAutoSwitch)
 	        						MahouUI.SoundPlay();
 	        					if (MahouUI.SoundOnAutoSwitch2)
-	        						MahouUI.Sound2Play();
+	        						MahouUI.SoundPlay(true);
 	        					corr = as_corrects[i];
 	        					Logging.Log("[AS] --- snil guess ---");
 	        					var snl = WordGuessLayout(snil,0,false).Item2;
@@ -956,7 +957,7 @@ namespace Mahou {
     					if (MahouUI.SoundOnSnippets)
     						MahouUI.SoundPlay();
     					if (MahouUI.SoundOnSnippets2)
-    						MahouUI.Sound2Play();
+    						MahouUI.SoundPlay(true);
 						any = snip.Substring(at, (snip.Length-laf-at));
 //						Debug.WriteLine("Yay!" + any);
 						Logging.Log("[SNI] > Current snippet [" + snip + "] matched with "+__ANY__+" existing snippet [" + exps[i] + "].");
@@ -975,7 +976,7 @@ namespace Mahou {
 	    					if (MahouUI.SoundOnSnippets)
 	    						MahouUI.SoundPlay();
 	    					if (MahouUI.SoundOnSnippets2)
-	    						MahouUI.Sound2Play();
+	    						MahouUI.SoundPlay(true);
 							Logging.Log("[SNI] > Current snippet [" + snip + "] matched existing snippet [" + exps[i] + "].");
 							ExpandSnippet(snip, exps[i], MahouUI.SnippetSpaceAfter, MahouUI.SnippetsSwitchToGuessLayout, false, x2);
 							matched = true;
@@ -1116,7 +1117,7 @@ namespace Mahou {
 			    	else if (rr != "")
 			    		dict[rr] = cc;
 			    	else
-			    		Logging.Log("[DICT] Empty entry, just | : " +lr, 2);
+			    		Logging.Log("[DICT] Empty entry, just | : " +line, 2);
 				} else {
 					Logging.Log("[DICT] > Wrong Dictionary, line #"+i+", => " +line);
 			    	dict = null;
@@ -1126,11 +1127,11 @@ namespace Mahou {
 			return dict;
 		} 
 		public static string DictToRaw(DICT<string, string> dict) {
-			var raw = "";
+			var raw = new StringBuilder();
 			for(int i = 0; i != dict.len; i++) {
-				raw += dict[i].k+"|"+dict[i].v+Environment.NewLine;
+				raw.Append(dict[i].k).Append("|").Append(dict[i].v).Append(Environment.NewLine);
 			}
-			return raw;
+			return raw.ToString();
 		}
 		public static void __RELOADDict(string PATH, ref DICT<string, string> OUTD, string type, bool tsdict = false, bool writedef = false, DICT<string, string> def = null) {
 			DICT<string, string> __dict = null;
@@ -1269,7 +1270,8 @@ namespace Mahou {
 		#region in Snippets expressions  
 		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert", "__setlayout", "__selection", "__clearlsnip", "__replace" };
 		static string ExpandSnippetWithExpressions(string expand) {
-			string ex = "", args = "", raw = "", err = "", allraw = "";
+			StringBuilder ex, args, raw, err, allraw;
+			ex = new StringBuilder(); args = new StringBuilder(); raw = new StringBuilder(); err = new StringBuilder(); allraw = new StringBuilder();
 			bool args_getting = false, is_expr = false, escaped = false;
 			int expr_start = -1;
 			bool contains_expr = false;
@@ -1294,18 +1296,18 @@ namespace Mahou {
 				}
 //				Debug.WriteLine("i:"+i+", e:"+e+ "just" + just_escaped);
 				if (!is_expr) {
-					if (ex == "__" && e == '_') { // Fix for multiple "_" repeats before __expr
-						raw += e;
+					if (ex.ToString() == "__" && e == '_') { // Fix for multiple "_" repeats before __expr
+						raw.Append(e);
 					} else {
-					  ex += e;
+						ex.Append(e);
 					}
 				}
-				else err+=e;
+				else err.Append(e);
 				if (is_expr && e == ')') { // Escape closing
 					if (expand[i-1] == '\\' && !just_escaped) {
 						Logging.Log("[EXPR] > Escaped \")\" at position: "+i);
 						if (args.Length >2)
-							args = args.Substring(0, args.Length-1);
+							args = new StringBuilder(args.ToString().Substring(0, args.Length-1));
 					} else {
 						if (args_getting) {
 							args_getting = false;
@@ -1313,26 +1315,26 @@ namespace Mahou {
 	//						Debug.WriteLine("end of args of: " + fun + " -> " +i);
 						} else {
 							Logging.Log("[EXPR] > Expression \"(\" missing, but \")\" were there, in ["+ex+"], at position: "+expr_start+" in ["+expand+"]");
-							KInputs.MakeInput(KInputs.AddString(ex+err));
+							KInputs.MakeInput(KInputs.AddString(new StringBuilder(ex.ToString()).Append(err).ToString()));
 							is_expr = false;
 							args_get = false;
 							escaped = false;
-							args = ex = raw = "";
+							args.Clear(); ex.Clear(); raw.Clear();
 						}
 					}
 				}
 				if (args_getting)
-					args += e;
+					args.Append(e);
 				if (is_expr && e == '(' && !args_getting) {
 					args_getting = true; 
 //					Debug.WriteLine("start of args of: " + fun + " -> " +i);
 				}
 				var maybe_fun = false;
-				if (!args_getting && !string.IsNullOrEmpty(ex) && !is_expr) {
+				if (!args_getting && !string.IsNullOrEmpty(ex.ToString()) && !is_expr) {
 					foreach (var expr in expressions) {
-						if (expr.StartsWith(ex, StringComparison.InvariantCulture)) {
+						if (expr.StartsWith(ex.ToString(), StringComparison.InvariantCulture)) {
 							maybe_fun = true;
-				    		if (expr == ex) {
+							if (expr == ex.ToString()) {
 								expr_start = i - (ex.Length-1);
 								escaped = false;
 								if (expr_start-1<0)
@@ -1341,7 +1343,7 @@ namespace Mahou {
 									escaped = true;
 								is_expr = !escaped;
 //								Debug.WriteLine("expr: " +expr+" equals " + ex + ", expr_start: " + expr_start + " is_expr: " + is_expr);
-								err = "";
+								err.Clear();
 								break;
 				    		}
 						} else
@@ -1352,41 +1354,41 @@ namespace Mahou {
 				}
 				if (is_expr && i == expand.Length-1 && !args_get) {
 					Logging.Log("[EXPR] > Expression [" + ex +"] missing its end \")\", at positon: " + expr_start +" in: [" + expand + "].", 2);
-					KInputs.MakeInput(KInputs.AddString(ex+err+args));
-					err = "";
+					KInputs.MakeInput(KInputs.AddString(new StringBuilder(ex.ToString()).Append(err.ToString()).Append(args.ToString()).ToString()));
+					err.Clear();
 				}
 				if (args_get && !escaped) {
 					Logging.Log("[EXPR] > Executing expression: " + ex + " with args: [" + args + "]");
 					var curlefts = expand.Length - i -1;
-					ExecExpression(ex, args, curlefts);
+					ExecExpression(ex.ToString(), args.ToString(), curlefts);
 					is_expr = false;
 					args_get = false;
-					args = ex = "";
+					args.Clear(); ex.Clear();
 				}
 				if (!args_getting && !maybe_fun && !is_expr) {
 					if (!escaped) {
 //						Debug.WriteLine("Not even start of any expression: " + ex);
-						raw += ex;
+						raw.Append(ex.ToString());
 					}
-					ex = "";
+					ex.Clear();
 					maybe_fun = false;
 					is_expr = false;
 					expr_start = -1;
 				}
-				if (!string.IsNullOrEmpty(raw)) {
+				if (!string.IsNullOrEmpty(raw.ToString())) {
 //					Debug.WriteLine("Inputting raw: ["+raw+"]");
-					KInputs.MakeInput(KInputs.AddString(raw));
-					allraw += raw;
-					raw = "";
+					KInputs.MakeInput(KInputs.AddString(raw.ToString()));
+					allraw.Append(raw.ToString());
+					raw.Clear();
 				}
 				if (escaped) {
 					Logging.Log("[EXPR] > Ignored espaced expression: " + ex);
 					KInputs.MakeInput(KInputs.AddPress(Keys.Back));
-					KInputs.MakeInput(KInputs.AddString(ex));
+					KInputs.MakeInput(KInputs.AddString(ex.ToString()));
 					is_expr = false;
 					args_get = false;
 					escaped = false;
-					args = ex = raw = "";
+					args.Clear(); ex.Clear(); raw.Clear();
 				}
 				just_escaped = false;
 			}
@@ -1394,7 +1396,7 @@ namespace Mahou {
 				KInputs.MakeInput(KInputs.AddPress(Keys.Left, cursormove));
 			}
 			cursormove = -1;
-			return allraw;
+			return allraw.ToString();
 				
 		}
 		static void ExecExpression(string expr, string args, int curlefts = -1) {
@@ -1491,13 +1493,13 @@ namespace Mahou {
 					KInputs.MakeInput(KInputs.AddString(ConvertText(args)));
 					break;
 				case "__setlayout":
-					bool err = false;
+//					bool err = false;
 					uint l = 0;
 					try {
 						UInt32.TryParse(args, out l);
-						var i = new System.Globalization.CultureInfo((int)(l&0xffff));
+//						var i = new System.Globalization.CultureInfo((int)(l&0xffff));
 					} catch (Exception e) {
-			         	err = true;	
+//			         	err = true;	
 						Logging.Log("__setlayout: ERR: " + e.Message);
 					}
 					var l1 = l == 1;
@@ -2121,7 +2123,7 @@ namespace Mahou {
 		public static string ConvertText(string ClipStr, uint l1 = 0, uint l2 = 0) {
 			if (l1 == 0) l1 = cs_layout_last;
 			if (l2 == 0) l2 = GetNextLayout(l1).uId;
-			var result = "";
+			var result = new StringBuilder();
 			var index = 0;
 			if (MahouUI.OneLayoutWholeWord) {
 				Logging.Log("[CT] > Using one layout whole word convert text mode.");
@@ -2132,12 +2134,12 @@ namespace Mahou {
 					var word_index = 0;
 					foreach (var w in allWords) {
 						if (w == " ") {
-							result += w;
+							result.Append(w);
 						} else {
 							var wx = WordGuessLayout(w, l2).Item1;
 							if (!String.IsNullOrEmpty(wx))
-								result += wx;
-							else result += w;
+								result.Append(wx);
+							else result.Append(w);
 						}
 						word_index +=1;
 //						Debug.WriteLine("(" + w + ") ["+ result +"]");
@@ -2145,7 +2147,7 @@ namespace Mahou {
 					}
 					lcnt++;
 					if (lcnt != lines.Count())
-						result += '\n';
+						result.Append('\n');
 				}
 			} else {
 				Logging.Log("[CT] > Using default convert text mode.");
@@ -2159,19 +2161,19 @@ namespace Mahou {
 								var shrt = l2 & 0xffff;
 								var _shrt = l1 & 0xffff;
 								if (shrt == 1033 || shrt == 1041) {
-									result += sm ? "u" : "U";
+									result.Append(sm ? "u" : "U");
 									I++; continue;
 								}
 								if (_shrt == 1033 || _shrt == 1041) {
-									result += sm ? "u" : "U";
+									result.Append(sm ? "u" : "U");
 									I++; continue;
 								}
 								if (shrt == 1049) {
-									result += sm ? "г" : "Г";
+									result.Append(sm ? "г" : "Г");
 									I++; continue;
 								}
 								if (_shrt == 1049) {
-									result += sm ? "г" : "Г";
+									result.Append(sm ? "г" : "Г");
 									I++; continue;
 								}
 							}
@@ -2190,10 +2192,10 @@ namespace Mahou {
 					}
 					if (T == "")
 						T = ClipStr[index].ToString();
-					result += T;
+					result.Append(T);
 				}
 			}
-			return result;
+			return result.ToString();
 		}
 		/// <summary>
 		/// Converts selected text.
@@ -2279,7 +2281,7 @@ namespace Mahou {
 								} else {
 									if (scan != -1) {
 										var key = (Keys)(scan & 0xff);
-										bool upper = false || state == 1;
+										bool upper = state == 1;
 										yk = new YuKey() { key = key, upper = upper };
 										Logging.Log("[CS] > Key of char [" + c + "] = {" + key + "}, upper = +[" + state + "].");
 									} else {
@@ -2388,13 +2390,13 @@ namespace Mahou {
 										output = output.Substring(0, output.Length-1);
 										n++;
 									}
-									var x = "";
+									var x = new StringBuilder();
 									n--;
 									int real = n-1;
 									Debug.WriteLine("EXTRA empty lines:"+real);
 									if(real > 0) {
 										for (int i = 0; i!=real; i++) {
-											x+="\n";
+											x.Append("\n");
 										}
 									}
 									output = output + x;
@@ -2475,7 +2477,7 @@ namespace Mahou {
 		public static string __dictReplace(DICT<string, string> d, string input, ref bool only_regex, bool reverse = false) {
 			var ir = input.Replace("\r","");
 			var lines = ir.Split('\n');
-			var result = "";
+			var result = new StringBuilder();
 			for (int o = 0; o != lines.Length; o++) {
 				var line = lines[o];
 				for (int z = 0; z != d.len; z++) {
@@ -2516,9 +2518,9 @@ namespace Mahou {
 						}
 					}
 	            }
-				result = result + line + (o == lines.Length-1 ? "" : "\n");
+				result.Append(line).Append((o == lines.Length-1 ? "" : "\n"));
 			}
-			return result;
+			return result.ToString();
 		}
 		public static string __TSDictReplace(string input, bool reverse = false, bool noloop = false) {
 			bool only_regex = true;
@@ -2551,50 +2553,50 @@ namespace Mahou {
 		public static string ToSTULRSelection(string ClipStr, bool swap = false, bool title = false, bool lower = false, bool random = false) {
 			string[] ClipStrLines = ClipStr.Split('\n');
 			int lines = 0;
-			var output = "";
+			var output = new StringBuilder();
 			foreach (var line in ClipStrLines) {
 				lines++;
 				string[] ClipStrWords = SplitWords(line);
 				int words = 0;
 				foreach (var word in ClipStrWords) {
 					words++;
-					var STULR = "";
+					var STULR = new StringBuilder();
 					if (title) {
 						if (word.Length > 0)
-							STULR += word[0].ToString().ToUpper();
+							STULR.Append(word[0].ToString().ToUpper());
 						if (word.Length > 1)
 							foreach(char ch in word.Substring(1, word.Length - 1)) {
-								STULR += char.ToLower(ch);
+								STULR.Append(char.ToLower(ch));
 							}
 					} else {
 						foreach(char ch in word) {
 							if (random) {
 								if (MahouUI.rand.NextDouble() >= 0.5) {
-									STULR += char.ToLower(ch);
+									STULR.Append(char.ToLower(ch));
 								} else {
-									STULR += char.ToUpper(ch);
+									STULR.Append(char.ToUpper(ch));
 								}
 							} else if (swap) {
 								if (char.IsUpper(ch))
-									STULR += char.ToLower(ch);
+									STULR.Append(char.ToLower(ch));
 								else if (char.IsLower(ch))
-									STULR += char.ToUpper(ch);
+									STULR.Append(char.ToUpper(ch));
 								else
-									STULR += ch;
+									STULR.Append(ch);
 							} else {
 								if (lower)
-									STULR += char.ToLower(ch);
+									STULR.Append(char.ToLower(ch));
 								else
-									STULR += char.ToUpper(ch);
+									STULR.Append(char.ToUpper(ch));
 							}
 						}
 					}
-					output +=STULR;
+					output.Append(STULR.ToString());
 				}
 				if (lines != ClipStrLines.Length)
-					output +="\n";
+					output.Append("\n");
 			}
-			return output;
+			return output.ToString();
 		}
 		static void ReSelect(int count, string cT="") {
 			if (MahouUI.ReSelect) {
@@ -2909,7 +2911,7 @@ namespace Mahou {
 				if (MahouUI.SoundOnConvLast)
 					MahouUI.SoundPlay();
 				if (MahouUI.SoundOnConvLast2)
-					MahouUI.Sound2Play();
+					MahouUI.SoundPlay(true);
 				var wasLocale = Locales.GetCurrentLocale() & 0xFFFF;
 				if (MahouUI.UseJKL && !KMHook.JKLERR)
 					wasLocale = MahouUI.currentLayout;
@@ -3048,7 +3050,7 @@ namespace Mahou {
 					if (MahouUI.SoundOnLayoutSwitch)
 						MahouUI.SoundPlay();
 					if (MahouUI.SoundOnLayoutSwitch2)
-						MahouUI.Sound2Play();
+						MahouUI.SoundPlay(true);
 				}
 				if (Locales.ActiveWindowProcess().ProcessName.ToLower() == "HD-Frontend".ToLower()) {
 		       		KInputs.MakeInput(KInputs.AddPress(Keys.Space), (int)WinAPI.MOD_CONTROL);
@@ -3471,20 +3473,20 @@ namespace Mahou {
 				int wordLFMinIndex = -1;
 				int wordL2FMinIndex = -1;
 				uint lay = 0;
-				var wordL = "";
-				var wordL2 = "";
-				var mux1 = "";
-				var mux2 = "";
-				var result = "";
-				var nany = false;
+				var wordL = new StringBuilder();
+				var wordL2 = new StringBuilder();
+				var mux1 = new StringBuilder();
+				var mux2 = new StringBuilder();
+				var result = new StringBuilder();
+//				var nany = false;
 				Debug.WriteLine("Testing " +word+" against: " +l+" and "+l2);
 				for (int I = 0; I!=word.Length; I++) {
 					var c = word[I];
 					if (Char.IsNumber(c)) {
-						wordL += c;
-						wordL2 += c;
-						mux1 += c;
-						mux2 += c;
+						wordL.Append(c);
+						wordL2.Append(c);
+						mux1.Append(c);
+						mux2.Append(c);
 						Debug.WriteLine("N-skip: " + c);
 						continue;
 					}
@@ -3496,19 +3498,19 @@ namespace Mahou {
 								var shrt = l2 & 0xffff;
 								var _shrt = l & 0xffff;
 								if (shrt == 1033 || shrt == 1041) {
-									wordL += sm ? "u" : "U";
+									wordL.Append(sm ? "u" : "U");
 									I++; continue;
 								}
 								if (_shrt == 1033 || _shrt == 1041) {
-									wordL2 += sm ? "u" : "U";
+									wordL2.Append(sm ? "u" : "U");
 									I++; continue;
 								}
 								if (shrt == 1049) {
-									wordL += sm ? "г" : "Г";
+									wordL.Append(sm ? "г" : "Г");
 									I++; continue;
 								}
 								if (_shrt == 1049) {
-									wordL2 += sm ? "г" : "Г";
+									wordL2.Append(sm ? "г" : "Г");
 									I++; continue;
 								}
 							}
@@ -3518,40 +3520,40 @@ namespace Mahou {
 						var T3 = GermanLayoutFix(c);
 						Debug.WriteLine("GEFIX: "+c+" T3"+T3);
 						if (T3 != "") {
-							wordL += T3;
-							wordL2 += T3;
+							wordL.Append(T3);
+							wordL2.Append(T3);
 							continue;
 						}
 					}
 					if (MahouUI.SymIgnEnabled) {
 						if (SymbolIgnoreRules(c)) {
-							wordL += c;
-							wordL2 += c;
+							wordL.Append(c);
+							wordL2.Append(c);
 							Debug.WriteLine("Symbol Ignored: " + c);
 							continue;
 						}
 					}
 					if (c == '\n') {
-						wordL += "\n";
-						wordL2 += "\n";
-						mux1 += "\n";
-						mux2 += "\n";
+						wordL.Append("\n");
+						wordL2.Append("\n");
+						mux1.Append("\n");
+						mux2.Append("\n");
 						continue;
 					}
 					var T1 = InAnother(c, l & 0xffff, l2 & 0xffff);
-					wordL += T1;
-					mux1 += T1;
-					if (T1 == "") { wordLMinuses++; mux1 += c; if (wordLFMinIndex == -1) { wordLFMinIndex = I; } }
+					wordL.Append(T1);
+					mux1.Append(T1);
+					if (T1 == "") { wordLMinuses++; mux1.Append(c); if (wordLFMinIndex == -1) { wordLFMinIndex = I; } }
 					var T2 = InAnother(c, l2 & 0xffff, l & 0xffff);
-					wordL2 += T2;
-					mux2 += T2;
-					if (T2 == "") { wordL2Minuses++; mux2 += c; if (wordL2FMinIndex == -1) { wordL2FMinIndex = I; }  }
+					wordL2.Append(T2);
+					mux2.Append(T2);
+					if (T2 == "") { wordL2Minuses++; mux2.Append(c); if (wordL2FMinIndex == -1) { wordL2FMinIndex = I; }  }
 					Debug.WriteLine("T1: "+ T1 + ", T2: "+ T2 + ", C: " +c);
 					if (T2 == "" && T1 == "") {
-						nany = true;
+//						nany = true;
 						Debug.WriteLine("Char ["+c+"] is not in any of two layouts ["+l+"], ["+l2+"] just rewriting.");
-						wordL += word[I].ToString();
-						wordL2 += word[I].ToString();
+						wordL.Append(word[I]);
+						wordL2.Append(word[I]);
 					}
 				}
 				if (wordLMinuses > wordL2Minuses) {
@@ -3580,7 +3582,7 @@ namespace Mahou {
 					} else {
 						thismin = wordLMinuses;
 						lay = 0;
-						result = word;
+						result.Clear().Append(word);
 						bool one = wordLFMinIndex > wordL2FMinIndex;
 						if (one) {
 							if (mux1.Length == word.Length) {
@@ -3594,7 +3596,7 @@ namespace Mahou {
 					}
 				}
 				if (result.Length > guess.Length || (lay != 0 && thismin <= minmin)) {
-					guess = result;
+					guess = result.ToString();
 					layout = lay;
 				}
 				if (thismin < minmin)

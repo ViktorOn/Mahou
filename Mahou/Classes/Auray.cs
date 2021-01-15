@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Diagnostics;
 /// <summary> Multidimensional various types array.</summary>
 public class Auray {
@@ -41,10 +42,10 @@ public class Auray {
 		var l = index_path.Length;
 		var indpath = __STR_INDEX_PATH(index_path);
 //		Debug.WriteLine(">Index Path => " + indpath);
-		var pre = "";
+		var pre = new StringBuilder();
 		var val = raw;
-		var post = "";
-		var nw = "";
+		var post = new StringBuilder();
+		var nw = new StringBuilder();
 		var c = 0;
 		var incr = false;
 		var _l = 0;
@@ -63,13 +64,13 @@ public class Auray {
 							var r = __PARSE(index_path[i], val);
 							val = r[0];
 							if (!incr) {
-								pre += r[1] + ",";
-								post += r[2];
+								pre.Append(r[1]).Append(",");
+								post.Append(r[2]);
 							}
 						}
 					} else {
-						pre = raw.Substring(1, raw.Length-2);
-						post = "]";
+						pre = new StringBuilder(raw.Substring(1, raw.Length-2));
+						post = new StringBuilder("]");
 						incr = true;
 					}
 				} else nuv = true;
@@ -78,24 +79,24 @@ public class Auray {
 				if (!tsm) {
 //					if (_l != 0)
 //						nw += ",";
-					nw += "["; c++;
+					nw.Append("["); c++;
 				}
 				var ll = index_path[i]-minus;
 //				Debug.WriteLine("ADDING "+ll+" emptys.");
 				for (int k = 0; ; k++) {
 					if (k >= ll) break;
-					nw += ",";
+					nw.Append(",");
 				}
 			}
 			_l = index_path[i];
 //			else throw new Exception("Out of index at #"+i+" index path ["+index_path[i]+"] of "+indpath+", value: " + val + " is not array.");
 		}
-		nw += VALUE;
+		nw.Append(VALUE);
 		for (int i = 0; i != c; i++)
-			nw += "]";
+			nw.Append("]");
 //		Debug.WriteLine(pre + "/" + val + "/" + post);
 //		Debug.WriteLine(nw);
-		raw = "["+pre+nw+post+"]";
+		raw = new StringBuilder("[").Append(pre.ToString()).Append(nw.ToString()).Append(post.ToString()).Append("]").ToString();
 		var dl = __SIZE(raw);
 		len = dl.len;
 		deep = dl.deep;
@@ -162,10 +163,10 @@ public class Auray {
 	}
 	string __STR_INDEX_PATH(int[] index_path, int l = -1) {
 		if (l == -1) l = index_path.Length;
-		var res="";
+		var res = new StringBuilder();
 		for(int i=0;i!=l;i++)
-			res+="["+index_path[i]+"]";
-		return res;
+			res.Append("[").Append(index_path[i]).Append("]");
+		return res.ToString();
 	}
 	SIZE __SIZE(string RAW) {
 		int mx = 0, lvl = 0, tvls = 0;

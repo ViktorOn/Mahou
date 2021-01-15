@@ -82,25 +82,24 @@ namespace Mahou {
 			return gtresp;
 		}
 		public static string getMultiParams(string[] tls, string[] qs, string[] sls = null) {
-			var multi = "[";
+			var multi = new StringBuilder("[");
 			for (int i = 0; i != qs.Length; i++) {
-				multi += "{\"q\":\""+HttpUtility.UrlEncode(HttpUtility.UrlPathEncode(
+				multi.Append("{\"q\":\"").Append(HttpUtility.UrlEncode(HttpUtility.UrlPathEncode(
 					qs[i].Replace(" ", "%20")
-				))+"\"";
-				multi += ", \"sl\":\"";
+				))).Append("\"").Append(", \"sl\":\"");
 				try {
-					multi += sls[i];
+					multi.Append(sls[i]);
 				} catch {
-					multi += "auto";
+					multi.Append("auto");
  				}
-				multi += "\"";
-				multi += ", \"tl\":\"" + tls[i] + "\"";
-				multi += "}";
+				multi.Append("\"")
+					.Append(", \"tl\":\"").Append(tls[i]).Append("\"")
+					.Append("}");
 				if (i != qs.Length-1)
-					multi += ",";
+					multi.Append(",");
 			}
-			multi += "]";
-			return multi;
+			multi.Append("]");
+			return multi.ToString();
  		}
 		#endregion
 		public static string dosen(int max, Auri au_se, string block) {

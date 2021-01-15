@@ -173,7 +173,7 @@ namespace Mahou {
         	return false;
         }
         public string GetRawWithoutGroup(string gr, string OutINI="") {
-        	var glr = "";
+        	var glr = new StringBuilder();
         	var inini = _INI.Raw;
         	if (!string.IsNullOrEmpty(OutINI)) {
         		inini = OutINI;
@@ -189,10 +189,10 @@ namespace Mahou {
         		}
         		if (g == 0) {
         			var nl = (i == lines.Length) ? "" : Environment.NewLine;
-        			glr += l.Replace("\r", "")+nl;
+        			glr.Append(l.Replace("\r", "")).Append(nl);
         		}
         	}
-        	return glr;
+        	return glr.ToString();
         }
         /// <summary> Check if configs file readable. </summary>
         /// <returns>Read access.</returns>

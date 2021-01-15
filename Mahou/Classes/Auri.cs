@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Text.RegularExpressions;
 
 public class Auri {
@@ -71,7 +72,7 @@ public class Auri {
 			if (f[1] == -1 && !noblock) {
 				throw new Exception("Bad array, block ending not found: }");
 			}
-			string bln = "";
+			var bln = new StringBuilder();
 			int max_v = 0;
 			if (f[0] != -1 || noblock) {
 				bool inb = false, inq = false, inqq = false, nextv = false, inbs = false, inbc = false, inbo = false, vals = false;
@@ -98,14 +99,14 @@ public class Auri {
 							throw new Exception("Can't get value, not array. Use block name instead.");
 						}
 						if (vl == ind && vals && q == 1) {
-							rawr = bln;
+							rawr = bln.ToString();
 							break;
 						}
 						if (q >= 1)
-							bln += k;
-						if (q == 1 && inbo) bln = "";
+							bln.Append(k);
+						if (q == 1 && inbo) bln.Clear();
 						if (vals)
-							bln = "";
+							bln.Clear();
 					} else {
 						if (i == 0 && q != 0) {
 							throw new Exception("Can't get value, not block. Use index instead. or "+DIGX+" shortcut.");
@@ -115,11 +116,11 @@ public class Auri {
 								inq = false;
 								var l = rawr[i+1];
 								if (l == ':') {
-									bln = bln.Substring(1, bln.Length-1);
+									bln = new StringBuilder(bln.ToString().Substring(1, bln.Length-1));
 									Console.WriteLine("blockname: " +bln);
-									if (bln == blox) {
+									if (bln.ToString() == blox) {
 										nextv = true;
-										bln = "";
+										bln.Clear();
 										i++;
 										sq = q;
 										continue;
@@ -130,12 +131,12 @@ public class Auri {
 						if (nextv) {
 							if ((k == ',' || i == f[1]-1)&& !inq && z == 1 && q == sq) {
 								if (!inq && k != ',')
-								bln += k;
+								bln.Append(k);
 								break;
 							}
-							bln += k;
+							bln.Append(k);
 						} else {
-							if (inq) bln += k; else bln = "";
+							if (inq) bln.Append(k); else bln.Clear();
 						}
 					}
 					vl = v;
@@ -144,7 +145,7 @@ public class Auri {
 				throw new Exception("There are no block in that array.");
 			}
 			if (indblock && max_v < ind) throw new Exception("Out of index, max: " +max_v+", requested: "+ind);
-			rawr = bln;
+			rawr = bln.ToString();
 		}
 		return rawr;
 	}
