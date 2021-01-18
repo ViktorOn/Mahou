@@ -4519,7 +4519,16 @@ DEL ""ExtractASD.cmd""";
 					}
 				}
 				try {
-					Process.Start(prog, args);
+					var re = new Regex(@"^([A-Za-z]:\\.*)\\");
+					var pi = new ProcessStartInfo();
+					pi.FileName = prog;
+					pi.Arguments = args;
+					var m = re.Matches(prog);
+					if (m.Count > 0) {
+						pi.WorkingDirectory = m[0].Groups[0].Value;
+//						Debug.WriteLine("SerWorkingDirectory: " + pi.WorkingDirectory);
+					}
+					Process.Start(pi);
 				} catch(Exception e) {
 					MessageBox.Show(e.Message+"\n"+arg, "Mahou.mm => " + MMain.Lang[Languages.Element.Error], MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				}
