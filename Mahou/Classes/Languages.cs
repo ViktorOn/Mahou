@@ -426,7 +426,7 @@ public class Languages
 		{ Element.AutoSwitchDependsOnSnippets, "To use this feature enable Snippets feature!" },
 		{ Element.AutoSwitchDictionaryWordsCount, "Words: " }, 
 		{ Element.DownloadAutoSwitchDictionaryInZip, "Download auto-switch dictionary in zip." }, 
-		{ Element.AutoSwitchDictionaryTooBigToDisplay, "Too big dictionary, it will take a lot time to display, dictionary display disabled." }, 
+		{ Element.AutoSwitchDictionaryTooBigToDisplay, "Too big dictionary, it will take a lot time to display, dictionary display disabled.\r\nDictionary WON'T be updated every time you press \"Apply\" button, it will be updated once only after restart or after disabling=>Apply=>enabling=>Apply AutoSwitch feature or through \"[Hidden] Toggle AutoSwitch Hotkey\" also only once." }, 
 		#endregion
 		#region Hotkeys
 		{ Element.ToggleMainWnd, "Toggle settings window" }, 
@@ -747,7 +747,7 @@ public class Languages
 		{ Element.AutoSwitchDependsOnSnippets, "Чтобы использовать эту функцию включите функцию Сниппетов!" },
 		{ Element.AutoSwitchDictionaryWordsCount, "Слов: " }, 
 		{ Element.DownloadAutoSwitchDictionaryInZip, "Скачивать словарь автозамены в zip архиве." }, 
-		{ Element.AutoSwitchDictionaryTooBigToDisplay, "Слишком большой словарь, займет много времени чтобы отобразить, отображение словаря отключено." }, 
+		{ Element.AutoSwitchDictionaryTooBigToDisplay, "Слишком большой словарь, займет много времени чтобы отобразить, отображение словаря отключено.\r\nСловарь НЕ будет обновляется каждый раз при нажатии кнопки \"Применить\", он будет обновлятся только 1 раз при запуске или при выключении=>Применить=>включении=>Применить функции Автозамены или через горячую клавишу: \"[Hidden] Toggle AutoSwitch Hotkey\" также только 1 раз." }, 
 		#endregion
 		#endregion
 		#region Hotkeys

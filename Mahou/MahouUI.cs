@@ -196,6 +196,7 @@ namespace Mahou {
 		public static string mahou_folder_appd = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Mahou");
 		public static string latest_save_dir = "";
 		public static string AutoSwitchDictionaryRaw = "";
+		public static bool AutoSwitchDictionaryTooBig = false;
 		public static Point LDC_lp = new Point(0,0);
 		public static int LD_MouseSkipMessagesCount = 0;
 		System.Threading.Thread uche;
@@ -484,6 +485,7 @@ namespace Mahou {
 					if (AutoSwitchEnabled && (KMHook.as_corrects == null)) {
 						if (File.Exists(AS_dictfile)) {
 							AutoSwitchDictionaryRaw = File.ReadAllText(AS_dictfile);
+							AutoSwitchDictionaryTooBig = AutoSwitchDictionaryRaw.Length > 710000;
 							ChangeAutoSwitchDictionaryTextBox();
 							UpdateSnippetCountLabel(AutoSwitchDictionaryRaw, lbl_AutoSwitchWordsCount, false);
 						}
@@ -1227,7 +1229,7 @@ namespace Mahou {
 				MMain.MyConfs.Write("AutoSwitch", "SpaceAfter", chk_AutoSwitchSpaceAfter.Checked.ToString());
 				MMain.MyConfs.Write("AutoSwitch", "SwitchToGuessLayout", chk_AutoSwitchSwitchToGuessLayout.Checked.ToString());
 				MMain.MyConfs.Write("AutoSwitch", "DownloadInZip", chk_DownloadASD_InZip.Checked.ToString());
-				if (AutoSwitchEnabled)
+				if (AutoSwitchEnabled && !string.IsNullOrEmpty(AutoSwitchDictionaryRaw) && !AutoSwitchDictionaryTooBig)
 					File.WriteAllText(AS_dictfile, AutoSwitchDictionaryRaw, Encoding.UTF8);
 				#endregion
 				#region Appearence & Hotkeys
@@ -1345,7 +1347,7 @@ namespace Mahou {
 			return rsl;
 		}
 		void ChangeAutoSwitchDictionaryTextBox() {
-			if (AutoSwitchDictionaryRaw.Length > 710000) {
+			if (AutoSwitchDictionaryTooBig) {
 				txt_AutoSwitchDictionary.ReadOnly = true;
 				txt_AutoSwitchDictionary.Text = MMain.Lang[Languages.Element.AutoSwitchDictionaryTooBigToDisplay];
 			} else {
@@ -1662,8 +1664,9 @@ namespace Mahou {
 			Dowload_ASD_InZip = chk_DownloadASD_InZip.Checked = MMain.MyConfs.ReadBool("AutoSwitch", "DownloadInZip");
 			check_ASD_size = true;
 			if(AutoSwitchEnabled && SnippetsEnabled)
-				if (File.Exists(AS_dictfile)) {
+				if (File.Exists(AS_dictfile) && !AutoSwitchDictionaryTooBig) {
 					AutoSwitchDictionaryRaw = File.ReadAllText(AS_dictfile);
+					AutoSwitchDictionaryTooBig = AutoSwitchDictionaryRaw.Length > 710000;
 					ChangeAutoSwitchDictionaryTextBox();
 					UpdateSnippetCountLabel(AutoSwitchDictionaryRaw, lbl_AutoSwitchWordsCount, false);
 				}
@@ -4096,6 +4099,7 @@ DEL ""ExtractASD.cmd""";
 //			});
 		}
 		void UpdateSnippetCountLabel(string snippets, Label target, bool isSnip = true) {
+			if (!isSnip && string.IsNullOrEmpty(snippets)) { return; }
 			var snipc = GetSnippetsCount(snippets);
 			target.Text = target.Text.Split(' ')[0] + " "  + snipc.Item1 + ((snipc.Item2 == Color.Red) ? "?" : "") + "(#" + snipc.Item3 +")";
 			target.ForeColor = snipc.Item2; 
@@ -4238,7 +4242,11 @@ DEL ""ExtractASD.cmd""";
 			chk_AutoSwitchSwitchToGuessLayout.Text = MMain.Lang[Languages.Element.AutoSwitchSwitchToGuessLayout];
 			btn_UpdateAutoSwitchDictionary.Text = MMain.Lang[Languages.Element.AutoSwitchUpdateDictionary];
 			lbl_AutoSwitchDependsOnSnippets.Text = MMain.Lang[Languages.Element.AutoSwitchDependsOnSnippets];
-			lbl_AutoSwitchWordsCount.Text = MMain.Lang[Languages.Element.AutoSwitchDictionaryWordsCount];
+			if (lbl_AutoSwitchWordsCount.Text.Contains(" ")) {
+				var t = lbl_AutoSwitchWordsCount.Text.Split(new[]{' '}, 2);
+				lbl_AutoSwitchWordsCount.Text = MMain.Lang[Languages.Element.AutoSwitchDictionaryWordsCount] + t[1];
+			} else
+				lbl_AutoSwitchWordsCount.Text = MMain.Lang[Languages.Element.AutoSwitchDictionaryWordsCount];
 			chk_DownloadASD_InZip.Text = MMain.Lang[Languages.Element.DownloadAutoSwitchDictionaryInZip];
 			#endregion
 			#region Hotkeys
@@ -4985,7 +4993,7 @@ DEL ""ExtractASD.cmd""";
 			MMain.MyConfs.WriteSave("Updates", "Channel", (sender as ComboBox).SelectedItem.ToString());
 		}
 		void Txt_AutoSwitchDictionaryTextChanged(object sender, EventArgs e) {
-			if (txt_AutoSwitchDictionary.Text.Length < 710000 && !txt_AutoSwitchDictionary.ReadOnly)
+			if (!AutoSwitchDictionaryTooBig && !txt_AutoSwitchDictionary.ReadOnly)
 				AutoSwitchDictionaryRaw = txt_AutoSwitchDictionary.Text;
 			if(!as_checking) {
 				as_checking = true;

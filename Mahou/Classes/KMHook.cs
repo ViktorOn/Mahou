@@ -3749,10 +3749,16 @@ namespace Mahou {
 					watch.Reset();
 					watch.Start();
 				}
-				if (MahouUI.AutoSwitchEnabled)
+				if (MahouUI.AutoSwitchEnabled) {
 					GetSnippetsData(MahouUI.AutoSwitchDictionaryRaw, false);
+					if (MahouUI.AutoSwitchDictionaryTooBig) {
+						MahouUI.AutoSwitchDictionaryRaw = null;
+						Memory.Flush();
+					}
+				}
 				else {
 					as_wrongs = as_corrects = null;
+					MahouUI.AutoSwitchDictionaryTooBig = false;
 					Memory.Flush();
 				}
 				if (MahouUI.LoggingEnabled && MahouUI.AutoSwitchEnabled) {
