@@ -3634,7 +3634,7 @@ namespace Mahou {
 				var line = snippets.Substring(k, l);
 				if (line.Length > 0) // Ingore empty lines
 					if (line[0] == '#' || (line[0] == '/' && (line.Length > 1 && line[1] == '/'))) {
-						Logging.Log("Ignored commented line in snippets:[" + line + "].");
+//						Logging.Log("Ignored commented line in snippets:[" + line + "].");
 						return new Tuple<bool, int>(true, line.Length-1);
 					}
 			}
