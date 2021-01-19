@@ -23,7 +23,7 @@ namespace Mahou {
 			IsHotkey, ff_chr_wheeled, preSnip, LMB_down, RMB_down, MMB_down,
 			dbl_click, click, selfie, aftsingleAS, JKLERR, JKLERRchecking, last_snipANY,
 			_selis, _mselis, snipselshiftpressed, snipselwassel, 
-			AS_IGN_BACK, AS_IGN_DEL, AS_IGN_LS, was_back, was_del, was_ls;
+			AS_IGN_BACK, AS_IGN_DEL, AS_IGN_LS, was_back, was_del, was_ls, __setsnip;
 		public static System.Timers.Timer click_reset = new System.Timers.Timer();
 		public static System.Timers.Timer JKLERRT = new System.Timers.Timer();
 		public static int skip_mouse_events, skip_spec_keys, cursormove = -1, guess_tries, skip_kbd_events, lsnip_noset, AS_IGN_TIMEOUT;
@@ -492,8 +492,12 @@ namespace Mahou {
 								snip_selection = "";
 //							seKeyDown = seKey;
 //						}
-						if (matched || preSnip)
-							c_snip.Clear();
+						if (matched || preSnip) {
+							if (__setsnip) 
+								__setsnip = false;
+							else
+								c_snip.Clear();
+						}
 					}
 					bool IGN = false;
 					if (MahouUI.AutoSwitchEnabled && !ExcludedProgram(false, hwnd, true)) {
@@ -1221,7 +1225,8 @@ namespace Mahou {
 		       			KInputs.MakeInput(KInputs.AddPress(Keys.Back, backs));
 						Logging.Log("[SNI] > Expanding snippet [" + snip + "] to [" + expand + "].");
 		       			exsni = ExpandSnippetWithExpressions(expand);
-						ClearWord(true, true, true, "Cleared due to snippet expansion");
+		       			var snipclear = !__setsnip;
+		       			ClearWord(true, true, snipclear, "Cleared due to snippet expansion" + (snipclear?"":" (snippet clear skipped by __setsnip!)"));
 						Debug.WriteLine("OK");
 //						KInputs.MakeInput(KInputs.AddString(expand));
 					}
@@ -1272,7 +1277,7 @@ namespace Mahou {
               }, "expand_snippet");
 		}
 		#region in Snippets expressions  
-		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert", "__setlayout", "__selection", "__clearlsnip", "__replace" };
+		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert", "__setlayout", "__selection", "__clearlsnip", "__replace", "__setsnip", "__setlsnip" };
 		static string ExpandSnippetWithExpressions(string expand) {
 			StringBuilder ex, args, raw, err, allraw;
 			ex = new StringBuilder(); args = new StringBuilder(); raw = new StringBuilder(); err = new StringBuilder(); allraw = new StringBuilder();
@@ -1364,7 +1369,7 @@ namespace Mahou {
 				if (args_get && !escaped) {
 					Logging.Log("[EXPR] > Executing expression: " + ex + " with args: [" + args + "]");
 					var curlefts = expand.Length - i -1;
-					ExecExpression(ex.ToString(), args.ToString(), curlefts);
+					ExecExpression(ex.ToString(), args.ToString(), curlefts, allraw.ToString());
 					is_expr = false;
 					args_get = false;
 					args.Clear(); ex.Clear();
@@ -1403,11 +1408,16 @@ namespace Mahou {
 			return allraw.ToString();
 				
 		}
-		static void ExecExpression(string expr, string args, int curlefts = -1) {
+		static void ExecExpression(string expr, string args, int curlefts = -1, string plaintext_pre = "") {
+			var result = new StringBuilder();
+			if (!string.IsNullOrEmpty(plaintext_pre)) {
+				result.Append(plaintext_pre);
+			}
 			switch (expr) {
 				case "__paste":
 					Logging.Log("[EXPR] > Pasting text from snippet.");
 					Debug.WriteLine("Paste: " + args);
+					result.Append(args);
 					GetClipStr();
 					RestoreClipBoard(Regex.Replace(args, "\r?\n|\r", Environment.NewLine));
 					KInputs.MakeInput(KInputs.AddPress(Keys.V), (int)WinAPI.MOD_CONTROL);
@@ -1423,16 +1433,23 @@ namespace Mahou {
 						else 
 							format = "HH:mm:ss";
 					}
-					KInputs.MakeInput(KInputs.AddString(now.ToString(format)));
+					var ndt = now.ToString(format);
+					result.Append(ndt);
+					KInputs.MakeInput(KInputs.AddString(ndt));
 					break;
 				case "__version":
-					KInputs.MakeInput(KInputs.AddString(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+					var v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+					result.Append(v);
+					KInputs.MakeInput(KInputs.AddString(v));
 					break;
 				 case "__title":
+					result.Append(MMain.mahou.Text);
 					KInputs.MakeInput(KInputs.AddString(MMain.mahou.Text));
 					 break;
 				case "__system":
-					KInputs.MakeInput(KInputs.AddString(Environment.OSVersion.ToString()));
+					var os = Environment.OSVersion.ToString();
+					result.Append(os);
+					KInputs.MakeInput(KInputs.AddString(os));
 					break;
 				case "__keyboard":
 					SimKeyboard(args);
@@ -1445,6 +1462,7 @@ namespace Mahou {
 						replace = replace.Replace(argv[i], argv[i+1]);
 					}
 					Debug.WriteLine("===REPLACED INPUT: " +replace);
+					result.Append(replace);
 					KInputs.MakeInput(KInputs.AddString(replace));
 					break;
 				case "__execute":
@@ -1456,6 +1474,7 @@ namespace Mahou {
 						Thread.Sleep(d);
 					break;
 				case "__mahouhome":
+					result.Append(MahouUI.nPath);
 					KInputs.MakeInput(KInputs.AddString(MahouUI.nPath));
 					break;
 				case "__cursorhere":
@@ -1490,11 +1509,15 @@ namespace Mahou {
 					if (subst != t.Length)
 						res += t.Substring(subst, t.Length-subst);
 					Debug.WriteLine("Uppercase conversion: " + res);
-					if (res != "")
+					if (res != "") {
+						result.Append(res);
 						KInputs.MakeInput(KInputs.AddString(res));
+					}
 					break;
 				case "__convert":
-					KInputs.MakeInput(KInputs.AddString(ConvertText(args)));
+					var ct = ConvertText(args);
+					result.Append(ct);
+					KInputs.MakeInput(KInputs.AddString(ct));
 					break;
 				case "__setlayout":
 //					bool err = false;
@@ -1521,13 +1544,27 @@ namespace Mahou {
 					}
 					break;
 				case "__selection":
-					if (!string.IsNullOrEmpty(snip_selection))
+					if (!string.IsNullOrEmpty(snip_selection)) {
+						result.Append(snip_selection);
 						KInputs.MakeInput(KInputs.AddString(snip_selection));
+					}
 					break;
-				case "__clearlsnip":
+				case "__clearlsnip": // acts as __setlsnip()
 					last_snip = "";
 					lsnip_noset++;
 					Logging.Log("[__clearlsnip] Cleared last snippet.");
+					break;
+				case "__setsnip":
+					args = args.Replace(">.<", result.ToString());
+					Logging.Log("[__setsnip] Set snip to [" + args + "]");
+					c_snip = args.ToCharArray().ToList();
+					__setsnip = true;
+					break;
+				case "__setlsnip":
+					args = args.Replace(">.<", result.ToString());
+					Logging.Log("[__setlsnip] Set last snip to [" + args + "]");
+					last_snip = args;
+					lsnip_noset++;
 					break;
 			}
 		}
