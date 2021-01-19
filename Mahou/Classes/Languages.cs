@@ -298,6 +298,7 @@ public class Languages
 		TT_CustomConversion,
 		TT_Transcription_1,
 		TT_Transcription_2,
+		TT_SnippetsEditHotkeys,
 		#endregion
 		#region Messages
 		MSG_SnippetsError
@@ -617,6 +618,7 @@ public class Languages
 		{ Element.TT_CustomConversion, "Converts selected text according to rules in CustomConversion.txt" },
 		{ Element.TT_Transcription_1, "Works only when [" },
 		{ Element.TT_Transcription_2, "] method is active. Not all languages have it." },
+		{ Element.TT_SnippetsEditHotkeys, "  Hotkeys:\r\n[Ctrl]+[K] or [Ctrl]+[/] = comment/uncomment line.\r\n     - If more than 1 line is selected, all selected lines will be commented/uncommented.." },
 		#endregion
 		#region Messages
 		{ Element.MSG_SnippetsError, "Snippets contains error in syntax, check if there are errors, details on snippets syntax you can find on Wiki." }
@@ -937,6 +939,7 @@ public class Languages
 		{ Element.TT_CustomConversion, "Меняет выделенный текст по заданным правилам в CustomConversion.txt" },
 		{ Element.TT_Transcription_1, "Работает только при [" },
 		{ Element.TT_Transcription_2, "] активном методе. Поддерживается не всеми языками." },
+		{ Element.TT_SnippetsEditHotkeys, "  Горячие клавиши:\r\n[Ctrl]+[K](Л) or [Ctrl]+[/](.) = закомментировать/раскомментировать линию.\r\n     - Если выделено больше 1 линии, все выделенные линии будут закомментированны/раскомментированны." },
 		#endregion
 		#region Messages
 		{ Element.MSG_SnippetsError, "Сниппеты содержат ошибки в синтаксисе, проверьте ваши сниппеты, детали синтаксиса можете найти на Wiki." }

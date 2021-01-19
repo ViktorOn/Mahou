@@ -4414,6 +4414,7 @@ DEL ""ExtractASD.cmd""";
 			HelpMeUnderstand.SetToolTip(lnk_OpenConfig, MMain.Lang[Languages.Element.TT_LeftRightMB]+"\n"+Configs.filePath);
 			HelpMeUnderstand.SetToolTip(chk_TrTranscription, MMain.Lang[Languages.Element.TT_Transcription_1]+
 			                            MMain.Lang[Languages.Element.DirectV2]+MMain.Lang[Languages.Element.TT_Transcription_2]);
+			HelpMeUnderstand.SetToolTip(txt_Snippets, MMain.Lang[Languages.Element.TT_SnippetsEditHotkeys]);
 		}
 		void HelpMeUnderstandPopup(object sender, PopupEventArgs e) {
 			HelpMeUnderstand.ToolTipTitle = e.AssociatedControl.Text;
@@ -5478,6 +5479,40 @@ DEL ""ExtractASD.cmd""";
 			if (b)
 				return 1;
 			return 0;
+		}
+		void Txt_SnippetsKeyDown(object sender, KeyEventArgs e) {
+			var t = (sender as TextBox);
+			Debug.WriteLine("C"+e.Control+" K"+e.KeyCode);
+			if (e.Control && (e.KeyCode == Keys.OemQuestion || e.KeyCode == Keys.K)) {
+				var cs = t.SelectionStart;
+				var l = t.GetLineFromCharIndex(t.SelectionStart);
+				var sl = t.SelectionLength;
+				var ll = l;
+				if (sl != 0) {
+					ll = t.GetLineFromCharIndex(t.SelectionStart+sl);
+				}
+				var tl = t.Lines;
+				Debug.WriteLine("U: Ss: " + cs + " Sl: " +sl);
+				for (int i = l; i<= ll; i++) {
+					var lv = tl.GetValue(i) as string;
+					Debug.WriteLine(i+": Cur: " +lv);
+					if (lv.StartsWith("#")) {
+						lv = lv.Substring(1, lv.Length-1);
+						if (sl > 0) sl--; else cs--;
+					} else {
+						lv = "#" + lv;
+						if (sl > 0) sl++; else cs++;
+					} 
+					tl.SetValue(lv, i);
+				}
+				t.Lines = tl;
+				if (cs < 0) {  cs = 0; }
+				Debug.WriteLine("Ss: " + cs + " Sl: " +sl);
+				t.SelectionStart = cs;
+				t.ScrollToCaret();
+				e.SuppressKeyPress = true;
+				t.Select(cs, sl);
+			}
 		}
 		#endregion
 	}
