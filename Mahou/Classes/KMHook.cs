@@ -1243,9 +1243,13 @@ namespace Mahou {
 						    	guess = WordGuessLayout(exsni).Item2;
 		       				else 
 		       					Debug.WriteLine("Skip Guess for snippet expand, layout suplied: " +guessl);
-		       				var gn = MMain.locales.ToList().Find(l => l.uId == guess).Lang;
-						    Logging.Log("[SNI] > Changing to guess layout [" + guess + "] after snippet ["+ gn + "].");
-							ChangeToLayout(Locales.ActiveWindow(), guess);
+		       				if (guess == 0) {
+		       					Logging.Log("Layout can't be guessed for: ["+snip+"].", 2);
+		       				} else {
+			       				var gn = MMain.locales.ToList().Find(l => l.uId == guess).Lang;
+							    Logging.Log("[SNI] > Changing to guess layout [" + guess + "] after snippet ["+ gn + "].");
+								ChangeToLayout(Locales.ActiveWindow(), guess);
+		       				}
 		       			} else {
 		       				Logging.Log("[SNI] > Switch layout skip due to __setlayout_FORCED");
 		       			}
