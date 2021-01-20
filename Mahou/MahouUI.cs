@@ -2463,7 +2463,7 @@ DEL "+restartMahouPath;
 				thmm.Tick += (_, __) => {
 					thmm.Stop(); // doesn't work..
 					thmmr = false;  // either
-					if (now_p.Equals(Cursor.Position)) {
+					if (now_p.Equals(Cursor.Position) && !icon.trIcon.ContextMenuStrip.Visible) {
 						Debug.WriteLine("You haven't moved from: " +now_p.X+"/"+now_p.Y+ " for "+TrayHoverMahouMM+"ms.");
 						ShowMahouMMMenuUnderMouse();
 						thmme = true; // prevents timer tick to go on and on
