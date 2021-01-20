@@ -2393,7 +2393,7 @@ DEL "+restartMahouPath;
 			t.Start();
 		}
 		static Timer thmm;
-		static bool thmmr, thmme;
+		static bool thmmr, thmme, start_skip = true;
 		/// <summary>
 		/// Initializes tray icon.
 		/// </summary>
@@ -2463,7 +2463,7 @@ DEL "+restartMahouPath;
 				thmm.Tick += (_, __) => {
 					thmm.Stop(); // doesn't work..
 					thmmr = false;  // either
-					if (now_p.Equals(Cursor.Position) && !icon.trIcon.ContextMenuStrip.Visible) {
+					if (now_p.Equals(Cursor.Position) && !icon.trIcon.ContextMenuStrip.Visible && !now_p.Equals(new Point(7777,7777))) {
 						Debug.WriteLine("You haven't moved from: " +now_p.X+"/"+now_p.Y+ " for "+TrayHoverMahouMM+"ms.");
 						ShowMahouMMMenuUnderMouse();
 						thmme = true; // prevents timer tick to go on and on
@@ -2475,6 +2475,7 @@ DEL "+restartMahouPath;
 				};
 				icon.trIcon.MouseMove += (_, __) => {
 					if (thmme) { return; }
+					if (start_skip) { start_skip = false; return; }
 					Debug.WriteLine("MOMO:"+Cursor.Position.X);
 					now_p = Cursor.Position;
 					if (thmmr) {
