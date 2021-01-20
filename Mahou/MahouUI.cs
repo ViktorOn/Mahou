@@ -3815,16 +3815,12 @@ DEL "+restartMahouPath;
 				mmdd.Add(y);
 			}
 			menu.Items.AddRange(mmdd.ToArray());
-			menu.KeyDown += (_, __) => {
-				if (__.KeyCode == Keys.Escape) {
-					menu.Hide();
-				}
-			};
             menu.BackColor = SystemColors.Control;
             menu.RenderMode = ToolStripRenderMode.System;
 			menu.Show(Cursor.Position);
 			menu.Focus();
-			menu.Items[0].Select();
+			if (menu.Items.Count >0) 
+				menu.Items[0].Select();
 			menu.LostFocus += (_, __) => { menu.Hide(); };
 			menu.VisibleChanged += (_, __) => {
 				if (!menu.Visible) {
@@ -3850,6 +3846,17 @@ DEL "+restartMahouPath;
 				}
 			};
 			t.Start();
+			menu.PreviewKeyDown += (_,__) => {
+				if (__.KeyCode == Keys.Escape) {
+					menu.Hide();
+				}
+				if (t != null) {
+					Debug.WriteLine("Autohide disabled by keyboard.");
+					t.Stop();
+					t.Dispose();
+					t = null;
+				}
+			};
 			WinAPI.SetForegroundWindow(menu.Handle);
 		}
 		#region Updates functions
