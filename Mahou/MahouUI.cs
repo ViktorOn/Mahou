@@ -3823,7 +3823,26 @@ DEL "+restartMahouPath;
             menu.RenderMode = ToolStripRenderMode.System;
 			menu.Show(Cursor.Position);
 			menu.Focus();
+			menu.Items[0].Select();
 			menu.LostFocus += (_, __) => { menu.Hide(); };
+			var t = new Timer();
+			t.Interval = 50;
+			var con = 0;
+			t.Tick += (_,__) => { 
+				var magick = menu.PointToClient(Cursor.Position);
+				if (magick.X < 0 || magick.Y < 0) {
+					con+=50;
+				} else {
+					con = 0;
+				}
+				if(con >= TrayHoverMahouMM*1.5) {
+					Debug.WriteLine("Out of menu for " +con+"ms!, autohide!");
+					menu.Hide();
+					t.Stop();
+					t.Dispose();
+				}
+			};
+			t.Start();
 			WinAPI.SetForegroundWindow(menu.Handle);
 		}
 		#region Updates functions
