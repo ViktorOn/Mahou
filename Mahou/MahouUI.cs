@@ -29,7 +29,7 @@ namespace Mahou {
 					hksOK, hklineOK, hkSIOK, hkExitOK, hkToglLPOK, hkShowTSOK, hkToggleMahouOK, hkUcOK, hklcOK, hkccOK,
 					hkSCCok, hkSCMUM;
 		public static string nPath = AppDomain.CurrentDomain.BaseDirectory, CustomSound, CustomSound2;
-		public static int ACT_Match = 0;
+		public static int ACT_Match = 0, TrayHoverMahouMM = 0;
 		public static bool LoggingEnabled, dummy, CapsLockDisablerTimer, LangPanelUpperArrow, mouseLTUpperArrow, caretLTUpperArrow,
 						   ShiftInHotkey, AltInHotkey, CtrlInHotkey, WinInHotkey, AutoStartAsAdmin, UseJKL, AutoSwitchEnabled, ReadOnlyNA,
 						   SoundEnabled, UseCustomSound, SoundOnAutoSwitch, SoundOnConvLast, SoundOnSnippets, SoundOnLayoutSwitch,
@@ -1415,6 +1415,7 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hidden", "__setlayout_ONLYWM", Hchk___setlayoutOnlyWM.Checked.ToString());
 			MMain.MyConfs.Write("Hidden", "ReselectCustoms", Htxt_ReselectCustoms.Text);
 			MMain.MyConfs.Write("Hidden", "ChangeLayoutOnTrayLMB+DoubleClick", Hchk_LMBTrayLayoutChangeDC.Checked.ToString());
+			MMain.MyConfs.Write("Hidden", "TrayHoverMahouMM", Hnud_TrayHoverMM.Value.ToString());
 //			NCS_destroy();
 		}
 		void loadHidden() {
@@ -1444,6 +1445,8 @@ namespace Mahou {
 			Hchk___setlayoutOnlyWM.Checked = __setlayoutOnlyWM = MMain.MyConfs.ReadBool("Hidden", "__setlayout_ONLYWM");
 			Htxt_ReselectCustoms.Text = ReselectCustoms = MMain.MyConfs.Read("Hidden", "ReselectCustoms");
 			Hchk_LMBTrayLayoutChangeDC.Checked = MMain.MyConfs.ReadBool("Hidden", "ChangeLayoutOnTrayLMB+DoubleClick");
+			TrayHoverMahouMM = MMain.MyConfs.ReadInt("Hidden", "TrayHoverMahouMM");
+			Hnud_TrayHoverMM.Value = TrayHoverMahouMM;
 			if (!String.IsNullOrEmpty(OverlayExcluded)) {
 				Debug.WriteLine("Starting overlay excluded");
 				if(overlay_excluder != null) {
@@ -2389,6 +2392,8 @@ DEL "+restartMahouPath;
 			t.Interval = 300;
 			t.Start();
 		}
+		static Timer thmm;
+		static bool thmmr, thmme;
 		/// <summary>
 		/// Initializes tray icon.
 		/// </summary>
@@ -2447,6 +2452,45 @@ DEL "+restartMahouPath;
 				MahouMM = true;
 				makemenu(File.ReadAllText(mm));
 			} else MahouMM = false;
+			if (MahouMM && TrayHoverMahouMM > 0) {
+				var now_p = new Point(7777,7777);
+				if (thmm != null) {
+					thmm.Stop();
+					thmm.Dispose();
+				}
+				thmm = new Timer();
+				thmm.Interval = TrayHoverMahouMM;
+				thmm.Tick += (_, __) => {
+					thmm.Stop(); // doesn't work..
+					thmmr = false;  // either
+					if (now_p.Equals(Cursor.Position)) {
+						Debug.WriteLine("You haven't moved from: " +now_p.X+"/"+now_p.Y+ " for "+TrayHoverMahouMM+"ms.");
+						ShowMahouMMMenuUnderMouse();
+						thmme = true; // prevents timer tick to go on and on
+						var t = new Timer(){Interval = 60}; // reset after 60ms
+						t.Tick += (z,zz) => { thmme = false; };
+						t.Start();
+					}
+					now_p = new Point(7777,7777);
+				};
+				icon.trIcon.MouseMove += (_, __) => {
+					if (thmme) { return; }
+					Debug.WriteLine("MOMO:"+Cursor.Position.X);
+					now_p = Cursor.Position;
+					if (thmmr) {
+						thmmr = false;
+						thmm.Stop();
+					}
+					if (!thmmr) { 
+						thmm.Start();
+						thmmr = true;
+					} 
+				};
+				icon.trIcon.MouseClick += (_, __) => {
+					Debug.WriteLine("CLI");
+					thmm.Stop(); thmmr = false;
+				};
+			}
 		}
 		/// <summary>
 		/// Initializes list boxes.
@@ -3753,6 +3797,34 @@ DEL "+restartMahouPath;
 		void ShowContextMenuUnderMouse() {
 			icon.trIcon.ContextMenuStrip.Show(Cursor.Position);
 			icon.trIcon.ContextMenuStrip.Focus();
+		}
+		void ShowMahouMMMenuUnderMouse() {
+			if (!MahouMM) return;
+			var menu = new ContextMenuStrip();
+			List<ToolStripMenuItem> mmdd = new List<ToolStripMenuItem>();
+			var mmddi = MMain.mahou.icon.trIcon.ContextMenuStrip.Items[0] as ToolStripMenuItem;
+			for(var i = 0; i != mmddi.DropDownItems.Count; i++) {
+				var z = mmddi.DropDownItems[i];
+				var events = typeof(System.ComponentModel.Component).
+							GetField("events", BindingFlags.NonPublic | BindingFlags.Instance);
+				var all_events = events.GetValue(z);
+				var y = new ToolStripMenuItem(z.Text);
+				y.Name = z.Name;
+				events.SetValue(y, all_events);
+				mmdd.Add(y);
+			}
+			menu.Items.AddRange(mmdd.ToArray());
+			menu.KeyDown += (_, __) => {
+				if (__.KeyCode == Keys.Escape) {
+					menu.Hide();
+				}
+			};
+            menu.BackColor = SystemColors.Control;
+            menu.RenderMode = ToolStripRenderMode.System;
+			menu.Show(Cursor.Position);
+			menu.Focus();
+			menu.LostFocus += (_, __) => { menu.Hide(); };
+			WinAPI.SetForegroundWindow(menu.Handle);
 		}
 		#region Updates functions
 		void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e) {

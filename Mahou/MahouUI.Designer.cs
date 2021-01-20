@@ -326,6 +326,8 @@ namespace Mahou
 		private System.Windows.Forms.Label Hlbl_scrollpastcontent;
 		private System.Windows.Forms.CheckBox chk_ZxZ;
 		private System.Windows.Forms.CheckBox Hchk_LMBTrayLayoutChangeDC;
+		private System.Windows.Forms.Label Hlbl_TrayHoverMM;
+		private System.Windows.Forms.NumericUpDown Hnud_TrayHoverMM;
 		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
@@ -339,10 +341,6 @@ namespace Mahou
 			}
 			base.Dispose(disposing);
 		}
-		
-		/// <summary>
-		/// This method is required for Windows Forms designer support.
-		/// Do not change the method contents inside the source code editor. The Forms designer might
 		public void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
@@ -621,8 +619,9 @@ namespace Mahou
 			this.lnk_Site = new System.Windows.Forms.LinkLabel();
 			this.lnk_Repository = new System.Windows.Forms.LinkLabel();
 			this.tab_Hidden = new System.Windows.Forms.TabPage();
+			this.Hlbl_TrayHoverMM = new System.Windows.Forms.Label();
+			this.Hnud_TrayHoverMM = new System.Windows.Forms.NumericUpDown();
 			this.Hchk_LMBTrayLayoutChangeDC = new System.Windows.Forms.CheckBox();
-			this.Hlbl_scrollpastcontent = new System.Windows.Forms.Label();
 			this.Hlbl_ASIgnoreTimeout = new System.Windows.Forms.Label();
 			this.Hnud_ASIgnoreTimeout = new System.Windows.Forms.NumericUpDown();
 			this.Htxt_AutoSwitchIngoreRules = new System.Windows.Forms.TextBox();
@@ -661,6 +660,7 @@ namespace Mahou
 			this.Htxt_NCS = new System.Windows.Forms.TextBox();
 			this.Hchk___selection_nomouse = new System.Windows.Forms.CheckBox();
 			this.Hchk___selection = new System.Windows.Forms.CheckBox();
+			this.Hlbl_scrollpastcontent = new System.Windows.Forms.Label();
 			this.btn_OK = new System.Windows.Forms.Button();
 			this.btn_Cancel = new System.Windows.Forms.Button();
 			this.btn_Apply = new System.Windows.Forms.Button();
@@ -720,6 +720,7 @@ namespace Mahou
 			this.grb_MahouReleaseTitle.SuspendLayout();
 			this.tab_about.SuspendLayout();
 			this.tab_Hidden.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Hnud_TrayHoverMM)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Hnud_ASIgnoreTimeout)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Hnud_AutoRestartMins)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Hnud_OverlayExcludedInterval)).BeginInit();
@@ -3912,8 +3913,9 @@ namespace Mahou
 			// 
 			this.tab_Hidden.AutoScroll = true;
 			this.tab_Hidden.BackColor = System.Drawing.Color.DarkSlateGray;
+			this.tab_Hidden.Controls.Add(this.Hlbl_TrayHoverMM);
+			this.tab_Hidden.Controls.Add(this.Hnud_TrayHoverMM);
 			this.tab_Hidden.Controls.Add(this.Hchk_LMBTrayLayoutChangeDC);
-			this.tab_Hidden.Controls.Add(this.Hlbl_scrollpastcontent);
 			this.tab_Hidden.Controls.Add(this.Hlbl_ASIgnoreTimeout);
 			this.tab_Hidden.Controls.Add(this.Hnud_ASIgnoreTimeout);
 			this.tab_Hidden.Controls.Add(this.Htxt_AutoSwitchIngoreRules);
@@ -3952,6 +3954,7 @@ namespace Mahou
 			this.tab_Hidden.Controls.Add(this.Htxt_NCS);
 			this.tab_Hidden.Controls.Add(this.Hchk___selection_nomouse);
 			this.tab_Hidden.Controls.Add(this.Hchk___selection);
+			this.tab_Hidden.Controls.Add(this.Hlbl_scrollpastcontent);
 			this.tab_Hidden.ForeColor = System.Drawing.Color.PapayaWhip;
 			this.tab_Hidden.Location = new System.Drawing.Point(4, 44);
 			this.tab_Hidden.Name = "tab_Hidden";
@@ -3959,6 +3962,35 @@ namespace Mahou
 			this.tab_Hidden.Size = new System.Drawing.Size(559, 268);
 			this.tab_Hidden.TabIndex = 15;
 			this.tab_Hidden.Text = "[Hidden]";
+			// 
+			// Hlbl_TrayHoverMM
+			// 
+			this.Hlbl_TrayHoverMM.AutoSize = true;
+			this.Hlbl_TrayHoverMM.Location = new System.Drawing.Point(8, 619);
+			this.Hlbl_TrayHoverMM.Name = "Hlbl_TrayHoverMM";
+			this.Hlbl_TrayHoverMM.Size = new System.Drawing.Size(384, 15);
+			this.Hlbl_TrayHoverMM.TabIndex = 43;
+			this.Hlbl_TrayHoverMM.Text = "Display Mahou.mm menu when hovering tray icon for:(ms, 0 = disable)";
+			// 
+			// Hnud_TrayHoverMM
+			// 
+			this.Hnud_TrayHoverMM.BackColor = System.Drawing.Color.Orange;
+			this.Hnud_TrayHoverMM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Hnud_TrayHoverMM.ForeColor = System.Drawing.Color.LightCyan;
+			this.Hnud_TrayHoverMM.Increment = new decimal(new int[] {
+			400,
+			0,
+			0,
+			0});
+			this.Hnud_TrayHoverMM.Location = new System.Drawing.Point(428, 616);
+			this.Hnud_TrayHoverMM.Maximum = new decimal(new int[] {
+			350000,
+			0,
+			0,
+			0});
+			this.Hnud_TrayHoverMM.Name = "Hnud_TrayHoverMM";
+			this.Hnud_TrayHoverMM.Size = new System.Drawing.Size(83, 23);
+			this.Hnud_TrayHoverMM.TabIndex = 42;
 			// 
 			// Hchk_LMBTrayLayoutChangeDC
 			// 
@@ -3970,17 +4002,10 @@ namespace Mahou
 			this.Hchk_LMBTrayLayoutChangeDC.Text = "[LMB-Tray-Mod] Double Left Click on Tray toggles Mahou window. (only with ↑)";
 			this.Hchk_LMBTrayLayoutChangeDC.UseVisualStyleBackColor = true;
 			// 
-			// Hlbl_scrollpastcontent
-			// 
-			this.Hlbl_scrollpastcontent.Location = new System.Drawing.Point(238, 602);
-			this.Hlbl_scrollpastcontent.Name = "Hlbl_scrollpastcontent";
-			this.Hlbl_scrollpastcontent.Size = new System.Drawing.Size(100, 23);
-			this.Hlbl_scrollpastcontent.TabIndex = 40;
-			// 
 			// Hlbl_ASIgnoreTimeout
 			// 
 			this.Hlbl_ASIgnoreTimeout.AutoSize = true;
-			this.Hlbl_ASIgnoreTimeout.Location = new System.Drawing.Point(8, 589);
+			this.Hlbl_ASIgnoreTimeout.Location = new System.Drawing.Point(8, 590);
 			this.Hlbl_ASIgnoreTimeout.Name = "Hlbl_ASIgnoreTimeout";
 			this.Hlbl_ASIgnoreTimeout.Size = new System.Drawing.Size(325, 15);
 			this.Hlbl_ASIgnoreTimeout.TabIndex = 39;
@@ -3996,7 +4021,7 @@ namespace Mahou
 			0,
 			0,
 			0});
-			this.Hnud_ASIgnoreTimeout.Location = new System.Drawing.Point(362, 587);
+			this.Hnud_ASIgnoreTimeout.Location = new System.Drawing.Point(428, 587);
 			this.Hnud_ASIgnoreTimeout.Maximum = new decimal(new int[] {
 			350000,
 			0,
@@ -4385,6 +4410,13 @@ namespace Mahou
 	"e snippet.\r\n";
 			this.Hchk___selection.UseVisualStyleBackColor = true;
 			// 
+			// Hlbl_scrollpastcontent
+			// 
+			this.Hlbl_scrollpastcontent.Location = new System.Drawing.Point(234, 628);
+			this.Hlbl_scrollpastcontent.Name = "Hlbl_scrollpastcontent";
+			this.Hlbl_scrollpastcontent.Size = new System.Drawing.Size(100, 23);
+			this.Hlbl_scrollpastcontent.TabIndex = 40;
+			// 
 			// btn_OK
 			// 
 			this.btn_OK.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -4530,6 +4562,7 @@ namespace Mahou
 			this.tab_about.PerformLayout();
 			this.tab_Hidden.ResumeLayout(false);
 			this.tab_Hidden.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Hnud_TrayHoverMM)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.Hnud_ASIgnoreTimeout)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.Hnud_AutoRestartMins)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.Hnud_OverlayExcludedInterval)).EndInit();
