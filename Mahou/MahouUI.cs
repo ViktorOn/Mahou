@@ -3825,6 +3825,11 @@ DEL "+restartMahouPath;
 			menu.Focus();
 			menu.Items[0].Select();
 			menu.LostFocus += (_, __) => { menu.Hide(); };
+			menu.VisibleChanged += (_, __) => {
+				if (!menu.Visible) {
+					menu.Close();
+				}
+			};
 			var t = new Timer();
 			t.Interval = 50;
 			var con = 0;
@@ -3837,7 +3842,8 @@ DEL "+restartMahouPath;
 				}
 				if(con >= TrayHoverMahouMM*1.5) {
 					Debug.WriteLine("Out of menu for " +con+"ms!, autohide!");
-					menu.Hide();
+					if (!menu.IsDisposed || !menu.Disposing)
+						menu.Hide();
 					t.Stop();
 					t.Dispose();
 				}
