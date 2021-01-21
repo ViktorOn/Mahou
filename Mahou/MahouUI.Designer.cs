@@ -2404,9 +2404,10 @@ namespace Mahou
 			this.txt_Snippets.MaxLength = 0;
 			this.txt_Snippets.Multiline = true;
 			this.txt_Snippets.Name = "txt_Snippets";
-			this.txt_Snippets.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txt_Snippets.ScrollBars = System.Windows.Forms.ScrollBars.Both;
 			this.txt_Snippets.Size = new System.Drawing.Size(541, 203);
 			this.txt_Snippets.TabIndex = 1;
+			this.txt_Snippets.WordWrap = false;
 			this.txt_Snippets.TextChanged += new System.EventHandler(this.Txt_SnippetsTextChanged);
 			this.txt_Snippets.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Txt_SnippetsKeyDown);
 			// 

@@ -4640,7 +4640,7 @@ DEL ""ExtractASD.cmd""";
 					var m = re.Matches(prog);
 					if (m.Count > 0) {
 						pi.WorkingDirectory = m[0].Groups[0].Value;
-//						Debug.WriteLine("SerWorkingDirectory: " + pi.WorkingDirectory);
+						Debug.WriteLine("SerWorkingDirectory: " + pi.WorkingDirectory);
 					}
 					Process.Start(pi);
 				} catch(Exception e) {
