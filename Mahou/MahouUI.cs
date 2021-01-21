@@ -5499,7 +5499,7 @@ DEL ""ExtractASD.cmd""";
 				id = SyncUploadHB(Encoding.UTF8.GetBytes(rawtext.ToString()), ref stat);
 			else
 				id = SyncUploadZxZ(rawtext.ToString());
-			Debug.WriteLine("id:" + id);
+			Debug.WriteLine("id:"+id);
 			txt_backupId.Text = (ZxZ ? "" : (SYNC_HOST + "/")) + id;
 			MMain.MyConfs.Write("Sync", "BLast", txt_backupId.Text);
 			txt_backupId.Enabled = true;
