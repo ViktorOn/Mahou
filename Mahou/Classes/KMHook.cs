@@ -34,7 +34,7 @@ namespace Mahou {
 		static NativeClipboard.clip lastClip;
 		public static string symbolclear;
 		static List<Keys> tempNumpads = new List<Keys>();
-		static Keys preKey = Keys.None; //, seKeyDown = Keys.None, aseKeyDown = Keys.None;
+		static Keys preKey = Keys.None, prevKEY; //, seKeyDown = Keys.None, aseKeyDown = Keys.None;
 		public static List<char> c_snip = new List<char>();
 		public static System.Windows.Forms.Timer doublekey = new System.Windows.Forms.Timer();
 		public static System.Timers.Timer AS_IGN_RESET = null;
@@ -45,6 +45,10 @@ namespace Mahou {
 		public static List<IntPtr> EXCLUDED_HWNDs = new List<IntPtr>(); 
 		public static Stopwatch pif = new Stopwatch();
 		public static List<IntPtr> NOT_EXCLUDED_HWNDs = new List<IntPtr>(); 
+		public static List<IntPtr> AS_NOT_EXCLUDED_HWNDs = new List<IntPtr>(); 
+		public static List<IntPtr> SNI_NOT_EXCLUDED_HWNDs = new List<IntPtr>(); 
+		public static List<IntPtr> AS_EXCLUDED_HWNDs = new List<IntPtr>(); 
+		public static List<IntPtr> SNI_EXCLUDED_HWNDs = new List<IntPtr>(); 
 		public static List<IntPtr> ConHost_HWNDs = new List<IntPtr>();
 		public static string[] snipps = new []{ "mahou", "eml" };
 		public static string[] exps = new [] {
@@ -389,7 +393,7 @@ namespace Mahou {
 					MahouUI.CCReset("cc/noShift.Hkey");
 					ClearWord(true, true, true, "Pressed combination of key and modifiers(not shift) or key that changes caret position.", true, AS_IGN_RULES.Contains("C"));
 				}
-				if (Key == Keys.Space) {
+				if (Key == Keys.Space && prevKEY != Keys.Space) {
 					Logging.Log("[FUN] > Adding one new empty word to words, and adding to it [Space] key.");
 					MMain.c_words.Add(new List<YuKey>());
 					MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Keys.Space });
@@ -404,7 +408,7 @@ namespace Mahou {
 					}
 					MahouUI.CCReset("space");
 				}
-				if (Key == Keys.Enter) {
+				if (Key == Keys.Enter && prevKEY != Keys.Enter) {
 					if (MahouUI.Add1NL && MMain.c_word.Count != 0 && 
 					    MMain.c_word[MMain.c_word.Count - 1].key != Keys.Enter) {
 						Logging.Log("[FUN] > Eat one New Line passed, next Enter will clear last word.");
@@ -591,6 +595,7 @@ namespace Mahou {
 			MMain.mahou.UpdateLDs();
 			#endregion
 			sym = '\0';
+			prevKEY = Key;
 			sym_upr = false;
 		}
 		public static void ListenMouse(ushort MSG) {
@@ -1780,6 +1785,26 @@ namespace Mahou {
 				Logging.Log("[EXCL] > This program was been checked already, it is not excluded hwnd: " + hwnd);
 				return false;
 			}
+			if (onlysnip && !onlyas) {
+				if (SNI_EXCLUDED_HWNDs.Contains(hwnd)) {
+					Logging.Log("[EXCL] > Excluded program by snippets excluded program saved hwnd: " + hwnd);
+					return true;
+			    }
+				if (SNI_NOT_EXCLUDED_HWNDs.Contains(hwnd)) {
+					Logging.Log("[EXCL] > This program was been checked already, it is snippets not excluded hwnd: " + hwnd);
+					return false;
+				}
+			}
+			if (!onlysnip && onlyas) {
+				if (AS_EXCLUDED_HWNDs.Contains(hwnd)) {
+					Logging.Log("[EXCL] > Excluded program by autoswitch excluded program saved hwnd: " + hwnd);
+					return true;
+			    }
+				if (AS_NOT_EXCLUDED_HWNDs.Contains(hwnd)) {
+					Logging.Log("[EXCL] > This program was been checked already, it is autoswitch not excluded hwnd: " + hwnd);
+					return false;
+				}
+			}
 			if (!EXCLUDED_HWNDs.Contains(hwnd)) {
 				uint pid;
 				WinAPI.GetWindowThreadProcessId(hwnd, out pid);
@@ -1794,12 +1819,18 @@ namespace Mahou {
 						if (!String.IsNullOrEmpty(MahouUI.onlySnippetsExcluded)) {
 							onlys = MahouUI.onlySnippetsExcluded.Split('|').Contains(prc.ProcessName.ToLower()+".exe");
 							Debug.WriteLine("ONLYSNIP EXCLUDE?: " +onlys);
+							SNI_EXCLUDED_HWNDs.Add(hwnd);
+						} else {
+							SNI_NOT_EXCLUDED_HWNDs.Add(hwnd);
 						}
 					}
 					if (onlyas) {
 						if (!String.IsNullOrEmpty(MahouUI.onlyAutoSwitchExcluded)) {
 							onlys = MahouUI.onlyAutoSwitchExcluded.Split('|').Contains(prc.ProcessName.ToLower()+".exe");
 							Debug.WriteLine("ONLYAS EXCLUDE?: " +onlys);
+							AS_EXCLUDED_HWNDs.Add(hwnd);
+						} else {
+							AS_NOT_EXCLUDED_HWNDs.Add(hwnd);
 						}
 					}
 					if (MahouUI.ExcludedPrograms.Replace(Environment.NewLine, " ").ToLower().Contains(prc.ProcessName.ToLower().Replace(" ", "_")) || onlys) {

@@ -1613,6 +1613,10 @@ namespace Mahou {
 			ExcludedPrograms = txt_ExcludedPrograms.Text = MMain.MyConfs.Read("Timings", "ExcludedPrograms").Replace("^cr^lf", Environment.NewLine);
 			KMHook.EXCLUDED_HWNDs.Clear();
 			KMHook.NOT_EXCLUDED_HWNDs.Clear();
+			KMHook.AS_EXCLUDED_HWNDs.Clear();
+			KMHook.AS_NOT_EXCLUDED_HWNDs.Clear();
+			KMHook.SNI_EXCLUDED_HWNDs.Clear();
+			KMHook.SNI_NOT_EXCLUDED_HWNDs.Clear();
 			ChangeLayoutInExcluded = chk_Change1KeyL.Checked = MMain.MyConfs.ReadBool("Timings", "ChangeLayoutInExcluded");
 			ConvertSWLinExcl = chk_ConvSWL.Checked = MMain.MyConfs.ReadBool("Timings", "ConvertSWLinExcl");
 			#endregion
