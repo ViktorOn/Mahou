@@ -1819,7 +1819,8 @@ namespace Mahou {
 						if (!String.IsNullOrEmpty(MahouUI.onlySnippetsExcluded)) {
 							onlys = MahouUI.onlySnippetsExcluded.Split('|').Contains(prc.ProcessName.ToLower()+".exe");
 							Debug.WriteLine("ONLYSNIP EXCLUDE?: " +onlys);
-							SNI_EXCLUDED_HWNDs.Add(hwnd);
+							if (onlys)
+								SNI_EXCLUDED_HWNDs.Add(hwnd);
 						} else {
 							SNI_NOT_EXCLUDED_HWNDs.Add(hwnd);
 						}
@@ -1828,7 +1829,8 @@ namespace Mahou {
 						if (!String.IsNullOrEmpty(MahouUI.onlyAutoSwitchExcluded)) {
 							onlys = MahouUI.onlyAutoSwitchExcluded.Split('|').Contains(prc.ProcessName.ToLower()+".exe");
 							Debug.WriteLine("ONLYAS EXCLUDE?: " +onlys);
-							AS_EXCLUDED_HWNDs.Add(hwnd);
+							if (onlys)
+								AS_EXCLUDED_HWNDs.Add(hwnd);
 						} else {
 							AS_NOT_EXCLUDED_HWNDs.Add(hwnd);
 						}
