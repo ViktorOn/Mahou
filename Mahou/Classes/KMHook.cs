@@ -3193,9 +3193,12 @@ namespace Mahou {
 			var loc = Locales.GetCurrentLocale();
 			//Cycles while layout not changed
 			do {
-				if (MahouUI.UseJKL && !KMHook.JKLERR)
+				if (MahouUI.UseJKL && !KMHook.JKLERR) {
 					if ((loc == last && loc != 0) || conhost)
 						loc = MahouUI.currentLayout;
+				} else {
+					loc = Locales.GetCurrentLocale();
+				}
 				if (LayoutId == 0) {
 					Logging.Log("Layout change skipped, 0 is not layout.", 1);
 				} else 
