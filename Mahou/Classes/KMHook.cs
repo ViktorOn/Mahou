@@ -819,13 +819,13 @@ namespace Mahou {
 	        					Logging.Log("[AS] --- asl guess ---");
 	        					var asl = WordGuessLayout(as_corrects[i],0,false).Item2;
 	        					Logging.Log("[AS] --- end guesses ---");
-	        					if (_hasKey(as_wrongs, as_corrects[i])) {
-	        						Logging.Log("[AS] > Double-layout autoswitch rule: " +as_wrongs[i] +"<=>" +as_corrects[i]);
-	        						if (snl == as_lword_layout) {
-	        							Logging.Log("[AS] > Leave as it was: "+snil);
-	        							break;
-	        						}
-	        					}
+        						if (snl == as_lword_layout) {
+		        					if (_hasKey(as_wrongs, as_corrects[i])) {
+		        						Logging.Log("[AS] > Double-layout autoswitch rule: " +as_wrongs[i] +"<=>" +as_corrects[i]);
+		        							Logging.Log("[AS] > Leave as it was: "+snil);
+		        							break;
+		        					}
+        						}
     							as_lword_layout = asl;
 	        					var skipLS = (snl == asl);
 	        					Logging.Log("[AS] snl: " +snil + ", l:" +snl + "as_crI: " + as_corrects[i] + ", l: " +asl + "SKIP: " +skipLS);
@@ -2880,7 +2880,7 @@ namespace Mahou {
 					mn = self_action.Method.Name;
 			mn += "+"+caller;
 			if (selfie) {
-				Logging.Log(pt+"Inside "+busy_on+"called: "+mn);
+				Logging.Log(pt+"Inside "+busy_on+" called: "+mn);
 				self_action();
 			} else {
 				Debug.WriteLine(pt+ mn);
@@ -2912,17 +2912,19 @@ namespace Mahou {
 			DoSelf(() => {
 				Debug.WriteLine(">> ST CLW");
 				var backs = YuKeys.Length;
-				// Fix for cmd exe pause hotkey leaving one char. 
-				var clsNM = Locales.ActiveWindowClassName(40);
-				if (IfNW7() &&
-				    clsNM == "ConsoleWindowClass" && (
-					MMain.mahou.HKCLast.VirtualKeyCode == (int)Keys.Pause))
-					backs++;
-				if (clsNM.Contains("Chrome_WidgetWin") || clsNM.Contains("MozillaWindowClass") || clsNM.Contains("IEFrame")) {
-					if (!String.IsNullOrEmpty(GetClipStr())) {
+				// Fix for cmd exe pause hotkey leaving one char.
+				if (!skipsnip) { // E.g. not from AutoSwitch
+					var clsNM = Locales.ActiveWindowClassName(40);
+					if (IfNW7() &&
+					    clsNM == "ConsoleWindowClass" && (
+						MMain.mahou.HKCLast.VirtualKeyCode == (int)Keys.Pause))
 						backs++;
+					if (clsNM.Contains("Chrome_WidgetWin") || clsNM.Contains("MozillaWindowClass") || clsNM.Contains("IEFrame")) {
+						if (!String.IsNullOrEmpty(GetClipStr())) {
+							backs++;
+						}
+						RestoreClipBoard();
 					}
-					RestoreClipBoard();
 				}
 				Debug.WriteLine(">> LC Aft. " + (MMain.locales.Length * 20));
 				Logging.Log("Deleting old word, with lenght of [" + YuKeys.Length + "].");
@@ -3205,7 +3207,7 @@ namespace Mahou {
 					WinAPI.PostMessage(hwnd, (int)WinAPI.WM_INPUTLANGCHANGEREQUEST, 0, LayoutId);
 				Thread.Sleep(10);//Give some time to switch layout
 				tries++;
-				if (tries == MMain.locales.Length) {
+				if (tries >= MMain.locales.Length*2) {
 					Logging.Log("Tries break, probably failed layout changing...",1);
 					break;
 				}
