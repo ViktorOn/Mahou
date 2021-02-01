@@ -1461,7 +1461,7 @@ namespace Mahou {
 					SimKeyboard(args);
 					break;
 				case "__replace":
-					var argv = args.Split(',');
+					var argv = SplitEsc(args, ',');
 					var replace = argv[0];
 					for (int i = 1; i < argv.Length-1; i+=2) {
 						Debug.WriteLine("Replacing: " +argv[i] +" => ", argv[i+1]);
@@ -2519,6 +2519,30 @@ namespace Mahou {
 					return true;
 			}
 			return false;
+		}
+		public static string[] SplitEsc(string input, char sep, char esc = '\\') {
+			bool esca = false; 
+			var result = new List<string>();
+			StringBuilder buf = new StringBuilder();
+			for(int i=0; i!= input.Length; i++) {
+				var c = input[i];
+				if (esca && c == sep) {
+					if (buf.Length >=1)
+						buf.Remove(buf.Length-1,1);
+				}
+				if (!esca && c == sep) {
+					result.Add(buf.ToString());
+					buf.Clear();
+					continue;
+				}
+				esca = false;
+				if (c == esc) { esca = true; }
+			    buf.Append(c);
+			}
+			if (buf.Length>=1) {
+				result.Add(buf.ToString());
+			}
+			return result.ToArray();
 		}
 		public static string[] SplitNoEsc(string input, char sep, char esc = '\\', char reCh = '\0', int reC = -1) {
 			bool esca = false; 
