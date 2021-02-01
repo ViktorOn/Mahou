@@ -932,6 +932,7 @@ namespace Mahou {
 					if (!String.IsNullOrEmpty(repl)) {
 					  ExpandSnippet(snip, repl, MahouUI.SnippetSpaceAfter, MahouUI.SnippetsSwitchToGuessLayout, false, x2);
 					  aftsingleAS = false;
+					  matched = true;
 					  break;
 				    }
 				}
