@@ -1283,7 +1283,7 @@ namespace Mahou {
               }, "expand_snippet");
 		}
 		#region in Snippets expressions  
-		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert", "__setlayout", "__selection", "__clearlsnip", "__replace", "__setsnip", "__setlsnip" };
+		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert", "__setlayout", "__selection", "__clearlsnip", "__replace", "__setsnip", "__setlsnip", "__if" };
 		static string ExpandSnippetWithExpressions(string expand) {
 			StringBuilder ex, args, raw, err, allraw;
 			ex = new StringBuilder(); args = new StringBuilder(); raw = new StringBuilder(); err = new StringBuilder(); allraw = new StringBuilder();
@@ -1470,6 +1470,14 @@ namespace Mahou {
 					Debug.WriteLine("===REPLACED INPUT: " +replace);
 					result.Append(replace);
 					KInputs.MakeInput(KInputs.AddString(replace));
+					break;
+				case "__if":
+					var sep = args[0];
+					argv = SplitEsc(args.Substring(1,args.Length-1), sep);
+					if (argv[0].Length >=1 && argv.Length >=2) {
+						result.Append(argv[1]);
+						KInputs.MakeInput(KInputs.AddString(argv[1]));
+					}
 					break;
 				case "__execute":
 					Execute(args);
