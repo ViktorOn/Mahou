@@ -167,12 +167,14 @@ namespace Mahou {
 					}
 					if (start_cyclEmuSwitch) {
 						Debug.WriteLine("Cycling out from: "+ layout + " to " + cycleEmuDesiredLayout +"...");
-						if (layout != cycleEmuDesiredLayout && laysho != cycleEmuDesiredLayout)
+						if (layout != cycleEmuDesiredLayout && laysho != cycleEmuDesiredLayout) {
 							KMHook.CycleEmulateLayoutSwitch();
+						}
 						else {
 							start_cyclEmuSwitch = false;
 							if (MahouUI.MAIN_LAYOUT1 == layout || MahouUI.MAIN_LAYOUT2 == layout) {
 								KMHook.last_switch_layout = layout;
+								KMHook.evt_layoutchanged(layout, 0, MahouUI.bindable_events[0]);
 							}
 						}
 					}

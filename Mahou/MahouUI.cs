@@ -4618,6 +4618,11 @@ DEL ""ExtractASD.cmd""";
 			arg = replaceenv(arg, "%mahou_dir%", () => nPath);
 			return arg;
 		}
+		/// <summary><br/>
+		/// 0 = layoutchange<br/>
+		/// 1 = layoutchangedfrom
+		/// </summary>
+		public static string[] bindable_events = {"layoutchange", "layoutchangedfrom"};
 		static void menuhandle(string act, string arg) {
 			act = act.ToLower();
 			arg = expandmenuarg(arg);
@@ -4713,13 +4718,24 @@ DEL ""ExtractASD.cmd""";
 					multi_continue = !hk_result;
 				}
 				Debug.WriteLine("Multi_continue set: "+multi_continue);
+			} else if (act == "evt") {
+				Debug.WriteLine("Event-bind: " + arg);
+				var argx = arg.Split(new []{'_'}, 3);
+				argx[0] = argx[0].ToLower();
+				foreach (var evt in bindable_events) {
+					if (Regex.Replace(argx[0], "\\d+", "") == evt) {
+						event_bindings.Add(argx[0], () => menuhandle(argx[1], argx[2]));
+					}
+				}
 			} else {
 				MessageBox.Show("Unknown action: " + act, "No such action",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
 		}
 		public static DICT<string,Tuple<Action,string>> tray_hotkeys = new DICT<string,Tuple<Action,string>>();
+		public static DICT<string,Action> event_bindings = new DICT<string, Action>();
 		static void makemenu(string mahoumenu) {
 			tray_hotkeys.Clear();
+			event_bindings.Clear();
 			var mm = Regex.Replace(mahoumenu, "\r?\n", "\n");
 			var mmls = mm.Split('\n');
 			var mms = new ToolStripMenuItem();
@@ -4788,6 +4804,10 @@ DEL ""ExtractASD.cmd""";
 					text.Append("    [")
 						.Append(Regex.Replace(hotk.Replace("^^", "").ToString(), "((^|\\+|\\[)[lr]?.)", m => m.ToString().ToUpper()))
 						.Append("]");
+				}
+				if (act.ToString() == "evt") {
+					menuhandle(act.ToString(), arg.ToString());
+					continue;
 				}
 				mms.DropDownItems.Add(new ToolStripMenuItem(text.ToString(),null,(_,__) =>
 				                                            menuhandle(act.ToString(), arg.ToString())));

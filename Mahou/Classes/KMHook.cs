@@ -3195,8 +3195,12 @@ namespace Mahou {
 								if (last_switch_layout != 0)
 									notnowLocale = last_switch_layout;
 							}
+							if (!MahouUI.EmulateLS)
+								evt_layoutchanged(0, nowLocale, MahouUI.bindable_events[1]);
 							ChangeToLayout(Locales.ActiveWindow(), notnowLocale, conhost);
 							desired = notnowLocale;
+							if (!MahouUI.EmulateLS)
+								evt_layoutchanged(desired, 0, MahouUI.bindable_events[0]);
 							if (MahouUI.EmulateLS)
 								break;
 						}
@@ -3210,6 +3214,29 @@ namespace Mahou {
 				}
 			}, "change_layout");
 			return desired;
+		}
+		public static void evt_layoutchanged(uint to, uint fr, string eve, int t=0) {
+	       	Logging.Log("[EVT] Check event bindings" + MahouUI.event_bindings.len);
+			if (MahouUI.event_bindings.len != 0) {
+				for(var i = 0; i != MahouUI.event_bindings.len; i++) {
+					var evt = MahouUI.event_bindings[i];
+//					for (var j = 0; j!= MahouUI.bindable_events.Length; j++) {
+//						var l = MahouUI.bindable_events[j];
+//						if (!l.StartsWith(lc)) { continue; }
+						var xxl = eve == MahouUI.bindable_events[0] ? to : fr;
+						if (Regex.Replace(evt.k, "\\d+", "") == eve) {
+							var sus = Regex.Replace(evt.k, "^[a-z]+","");
+							Debug.WriteLine("SUS: "+sus + "evk.k "+ evt.k +" " + eve);
+							var kt = UInt32.Parse(sus);
+							Logging.Log("[EVT] Starting event #"+i+" on "+evt.k+" | (" +(xxl&0xffff)+ " == " +(0xffff&kt)+") => "+evt.v.Method.Name);
+							if (kt == xxl || (kt&0xffff) == (xxl&0xffff)) {
+								if (t >0) { DoLater(evt.v, t); }
+								else { evt.v(); }
+							}
+						}
+//					}
+				}
+			}
 		}
 		/// <summary>
 		/// Calls functions to change layout based on EmulateLS variable.
@@ -3285,6 +3312,7 @@ namespace Mahou {
 					jklXHidServ.start_cyclEmuSwitch = true;
 					jklXHidServ.cycleEmuDesiredLayout = LayoutId;
 					Debug.WriteLine("LI: " + LayoutId);
+					KMHook.evt_layoutchanged(0, loc, MahouUI.bindable_events[1]);
 					CycleEmulateLayoutSwitch();
 					break;
 				} else {
