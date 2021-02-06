@@ -169,8 +169,12 @@ namespace Mahou {
 						Debug.WriteLine("Cycling out from: "+ layout + " to " + cycleEmuDesiredLayout +"...");
 						if (layout != cycleEmuDesiredLayout && laysho != cycleEmuDesiredLayout)
 							KMHook.CycleEmulateLayoutSwitch();
-						else
+						else {
 							start_cyclEmuSwitch = false;
+							if (MahouUI.MAIN_LAYOUT1 == layout || MahouUI.MAIN_LAYOUT2 == layout) {
+								KMHook.last_switch_layout = layout;
+							}
+						}
 					}
 					if (!self_change && !start_cyclEmuSwitch) {
 						MahouUI.RefreshFLAG();

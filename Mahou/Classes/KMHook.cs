@@ -29,6 +29,7 @@ namespace Mahou {
 		public static int skip_mouse_events, skip_spec_keys, cursormove = -1, guess_tries, skip_kbd_events, lsnip_noset, AS_IGN_TIMEOUT;
 		static char sym = '\0'; static bool sym_upr = false;
 		static uint as_lword_layout = 0;
+		public static uint last_switch_layout = 0;
 		static uint cs_layout_last = 0;
 		static string busy_on = "", lastLWClearReason = "";
 		static NativeClipboard.clip lastClip;
@@ -3187,6 +3188,13 @@ namespace Mahou {
 				                ? MahouUI.MAIN_LAYOUT2
 				                : MahouUI.MAIN_LAYOUT1;
 							last = nowLocale;
+							if (nowLocale != MahouUI.MAIN_LAYOUT1 &&
+							    nowLocale != MahouUI.MAIN_LAYOUT2 && notnowLocale != last_switch_layout) {
+								Debug.WriteLine("Not 2 layouts! " + nowLocale +" last:"+ last_switch_layout + " not:"+notnowLocale);
+								Logging.Log("> [ChangeLaouyt] Change layout, wanted: " +notnowLocale +" changed mind to " +last_switch_layout);
+								if (last_switch_layout != 0)
+									notnowLocale = last_switch_layout;
+							}
 							ChangeToLayout(Locales.ActiveWindow(), notnowLocale, conhost);
 							desired = notnowLocale;
 							if (MahouUI.EmulateLS)
@@ -3246,6 +3254,9 @@ namespace Mahou {
 				}
 				last = loc;
 			} while (loc != LayoutId);
+			if (MahouUI.MAIN_LAYOUT1 == loc || MahouUI.MAIN_LAYOUT2 == loc) {
+				last_switch_layout = loc;
+			}
 //			if (!MahouUI.UseJKL) // Wow, gives no sense!!
 				MahouUI.currentLayout = MahouUI.GlobalLayout = LayoutId;
 		}
@@ -3290,11 +3301,16 @@ namespace Mahou {
 				if (!failed)
 					break;
 			}
-			if (!MahouUI.UseJKL || KMHook.JKLERR)
+			if (!MahouUI.UseJKL || KMHook.JKLERR) {
 				if (!failed) {
+					if (MahouUI.MAIN_LAYOUT1 == LayoutId || MahouUI.MAIN_LAYOUT2 == LayoutId) {
+						last_switch_layout = LayoutId;
+					}
 					MahouUI.currentLayout = MahouUI.GlobalLayout = LayoutId;
-				} else
+				} else {
 					Logging.Log("Changing to layout [" + LayoutId + "] using emulation failed after # of layouts tries,\r\nmaybe you have more that 16 layouts, disabled change layout hotkey in windows, or working in console window(use getconkbl.dll)?", 1);
+				}
+			}
 			failed = true;
 		}
 		/// <summary>
