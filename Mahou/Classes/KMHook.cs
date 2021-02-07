@@ -2140,6 +2140,14 @@ namespace Mahou {
 				    }
           		}
 			}
+			ctrl = IsKDown(Keys.LControlKey);
+			ctrl_r = IsKDown(Keys.RControlKey);
+			alt = IsKDown(Keys.LMenu);
+			alt_r = IsKDown(Keys.RMenu);
+			win = IsKDown(Keys.LWin);
+			win_r = IsKDown(Keys.RWin);
+			shift = IsKDown(Keys.LShiftKey);
+			shift_r = IsKDown(Keys.RShiftKey);
 		}
 		public static void ClearModifiers() {
 			win = alt = ctrl = shift = win_r = alt_r = ctrl_r = shift_r = false;
@@ -3195,12 +3203,8 @@ namespace Mahou {
 								if (last_switch_layout != 0)
 									notnowLocale = last_switch_layout;
 							}
-							if (!MahouUI.EmulateLS)
-								evt_layoutchanged(0, nowLocale, MahouUI.bindable_events[1]);
 							ChangeToLayout(Locales.ActiveWindow(), notnowLocale, conhost);
 							desired = notnowLocale;
-							if (!MahouUI.EmulateLS)
-								evt_layoutchanged(desired, 0, MahouUI.bindable_events[0]);
 							if (MahouUI.EmulateLS)
 								break;
 						}
@@ -3260,8 +3264,12 @@ namespace Mahou {
 			Logging.Log("Changing layout using normal mode, WinAPI.SendMessage [WinAPI.WM_INPUTLANGCHANGEREQUEST] with LParam ["+LayoutId+"].");
 			int tries = 0;
 			uint last = 0;
-			var loc = Locales.GetCurrentLocale();
+			var loc = MahouUI.currentLayout;
+			if (!MahouUI.UseJKL || JKLERR) {
+				loc = Locales.GetCurrentLocale();
+			}
 			//Cycles while layout not changed
+			evt_layoutchanged(0, loc, MahouUI.bindable_events[1]);
 			do {
 				if (MahouUI.UseJKL && !KMHook.JKLERR) {
 					if ((loc == last && loc != 0) || conhost)
@@ -3281,6 +3289,7 @@ namespace Mahou {
 				}
 				last = loc;
 			} while (loc != LayoutId);
+			evt_layoutchanged(LayoutId, 0, MahouUI.bindable_events[0]);
 			if (MahouUI.MAIN_LAYOUT1 == loc || MahouUI.MAIN_LAYOUT2 == loc) {
 				last_switch_layout = loc;
 			}
