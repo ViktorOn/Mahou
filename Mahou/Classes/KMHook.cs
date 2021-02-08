@@ -1085,16 +1085,16 @@ namespace Mahou {
 //					byt[(int)Keys.ShiftKey] = 0xFF;
 				} else { sym_upr = false; }
 			}
-			uint layout = Locales.GetCurrentLocale() & 0xffff;
+			uint layout = Locales.GetCurrentLocale();
 			if (MahouUI.UseJKL && !KMHook.JKLERR) {
-				if (layout != (MahouUI.currentLayout & 0xffff)) {
+				if (layout != (MahouUI.currentLayout)) {
 					if (IsConhost())
-						layout = MahouUI.currentLayout & 0xffff;
+						layout = MahouUI.currentLayout;
 				}
 			}
 			//                                                                     0=alt, 1=noalt, 1<<2=?
 			// it eats umlaut characters with 0, so:
-			var c = ToUnicodeExMulti((uint)vkCode, (IntPtr)layout, sym_upr);
+			var c = ToUnicodeExMulti((uint)vkCode, (IntPtr)((int)layout), sym_upr);
 //			WinAPI.ToUnicodeEx((uint)vkCode, (uint)vkCode, byt, stb, stb.Capacity, 1<<2, (IntPtr)layout);
 			if (c != '\0') {
 				Logging.Log("[GETSYM] > "+(ignore?"fake;":"true;")+" ToUnEx() => ["+c+"].");
@@ -2271,13 +2271,13 @@ namespace Mahou {
 							}
 						}
 					}
-					var T = InAnother(c, l1 & 0xffff, l2 & 0xffff);
+					var T = InAnother(c, l1, l2);
 					for (int i = 0; i != MMain.locales.Length; i++) {
 						var l = MMain.locales[i].uId;
 						if (c == '\n')
 							T = "\n";
 						T = GermanLayoutFix(c);
-						T = InAnother(c, l & 0xffff, l2 & 0xffff);
+						T = InAnother(c, l, l2);
 						if (T != "") 
 							break;
 						index++;
@@ -2306,15 +2306,15 @@ namespace Mahou {
 						int items = 0;
 						if (MahouUI.ConvertSelectionLS && !MahouUI.OneLayoutWholeWord) {
 							Logging.Log("[CS] > Using CS-Switch mode.");
-							var wasLocale = Locales.GetCurrentLocale() & 0xffff;
+							var wasLocale = Locales.GetCurrentLocale();
 							if (MahouUI.UseJKL && !KMHook.JKLERR)
-								wasLocale = MahouUI.currentLayout & 0xffff;
-							var wawasLocale = wasLocale & 0xffff;
+								wasLocale = MahouUI.currentLayout;
+							var wawasLocale = wasLocale;
 							uint nowLocale = 0;
 							if(MahouUI.SwitchBetweenLayouts) {
-								nowLocale = wasLocale == (MahouUI.MAIN_LAYOUT1 & 0xffff)
-									? MahouUI.MAIN_LAYOUT2 & 0xffff
-									: MahouUI.MAIN_LAYOUT1 & 0xffff;
+								nowLocale = wasLocale == (MahouUI.MAIN_LAYOUT1)
+									? MahouUI.MAIN_LAYOUT2
+									: MahouUI.MAIN_LAYOUT1;
 								if (nowLocale == wasLocale && 
 								    (MahouUI.currentLayout == MahouUI.MAIN_LAYOUT1 || 
 								     MahouUI.currentLayout == MahouUI.MAIN_LAYOUT2)) {
@@ -2322,7 +2322,7 @@ namespace Mahou {
 										nowLocale = MahouUI.currentLayout;
 								}
 							} else {
-								Thread.Sleep(10); nowLocale = GetNextLayout().uId & 0xffff;
+								Thread.Sleep(10); nowLocale = GetNextLayout().uId;
 							}
 							ChangeLayout(true);
 							var index = 0;
@@ -2996,10 +2996,10 @@ namespace Mahou {
 						if (upp)
 							q.Add(KInputs.AddKey(Keys.LShiftKey, false));
 						if (!skipsnip) {
-							var loc = (Locales.GetCurrentLocale() & 0xffff);
+							var loc = (Locales.GetCurrentLocale());
 							if (MahouUI.UseJKL && !KMHook.JKLERR)
-								loc = MahouUI.currentLayout & 0xffff;
-							var c = ToUnicodeExMulti((uint)k, (IntPtr)loc, u);
+								loc = MahouUI.currentLayout;
+							var c = ToUnicodeExMulti((uint)k, (IntPtr)((int)loc), u);
 							if (c != '\0') {
 								c_snip.Add(c);
 							} else {
@@ -3030,7 +3030,7 @@ namespace Mahou {
 					MahouUI.SoundPlay();
 				if (MahouUI.SoundOnConvLast2)
 					MahouUI.SoundPlay(true);
-				var wasLocale = Locales.GetCurrentLocale() & 0xFFFF;
+				var wasLocale = Locales.GetCurrentLocale();
 				if (MahouUI.UseJKL && !KMHook.JKLERR)
 					wasLocale = MahouUI.currentLayout;
 				var desl = GetNextLayout(wasLocale).uId;
@@ -3304,7 +3304,7 @@ namespace Mahou {
 		static void EmulateChangeToLayout(uint LayoutId, bool conhost = false) {
 			Debug.WriteLine(">> E-CTL");
 			var last = MahouUI.currentLayout;
-			var lash = last & 0xffff;
+//			var lash = last;
 			if (last == LayoutId) {
 				if (!conhost && last == Locales.GetCurrentLocale()) {
 					Debug.WriteLine("Layout already " + LayoutId);
@@ -3315,9 +3315,9 @@ namespace Mahou {
 			Logging.Log("Changing to specific layout ["+LayoutId+"] by emulating layout switch.");
 			for (int i = MMain.locales.Length; i != 0; i--) {
 				uint loc = Locales.GetCurrentLocale();
-				uint locsh = loc & 0xffff;
+//				uint locsh = loc;
 //				Debug.WriteLine(loc + " " + last);
-				if (MahouUI.UseJKL && !KMHook.JKLERR && ((loc == 0 || loc == last || locsh == lash) || conhost)) {
+				if (MahouUI.UseJKL && !KMHook.JKLERR && ((loc == 0 || loc == last /*|| locsh == lash*/) || conhost)) {
 					jklXHidServ.start_cyclEmuSwitch = true;
 					jklXHidServ.cycleEmuDesiredLayout = LayoutId;
 					Debug.WriteLine("LI: " + LayoutId);
@@ -3326,7 +3326,7 @@ namespace Mahou {
 					break;
 				} else {
 //					Debug.WriteLine(i+".LayoutID: " + LayoutId + ", loc: " +loc);
-					if (loc == LayoutId || locsh == LayoutId) {
+					if (loc == LayoutId /*|| locsh == LayoutId*/) {
 						failed = false;
 						break;
 					}
@@ -3334,7 +3334,7 @@ namespace Mahou {
 					Thread.Sleep(10);
 				}
 				last = loc;
-				lash = locsh;
+//				lash = locsh;
 				if (!failed)
 					break;
 			}
@@ -3470,7 +3470,7 @@ namespace Mahou {
 			
 //			var byt = new byte[256];
 //			//it needs just 1 but,anyway let it be 10, i think that's better
-			var y = ToUnicodeExMulti((uint)chsc, (IntPtr)uID2, state==1);
+			var y = ToUnicodeExMulti((uint)chsc, (IntPtr)((int)uID2), state==1);
 			if (y != '\0') s+=y;
 //			//Checks if 'chsc' have upper state
 //			if (state == 1) {
@@ -3705,11 +3705,11 @@ namespace Mahou {
 						mux2.Append("\n");
 						continue;
 					}
-					var T1 = InAnother(c, l & 0xffff, l2 & 0xffff);
+					var T1 = InAnother(c, l, l2);
 					wordL.Append(T1);
 					mux1.Append(T1);
 					if (T1 == "") { wordLMinuses++; mux1.Append(c); if (wordLFMinIndex == -1) { wordLFMinIndex = I; } }
-					var T2 = InAnother(c, l2 & 0xffff, l & 0xffff);
+					var T2 = InAnother(c, l2, l);
 					wordL2.Append(T2);
 					mux2.Append(T2);
 					if (T2 == "") { wordL2Minuses++; mux2.Append(c); if (wordL2FMinIndex == -1) { wordL2FMinIndex = I; }  }
