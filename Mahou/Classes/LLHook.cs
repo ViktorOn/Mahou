@@ -143,7 +143,7 @@ namespace Mahou {
 			if (MahouUI.SnippetsEnabled)
 				if (KMHook.c_snip.Count > 0)
 					if (MMain.mahou.SnippetsExpandType == "Tab" && Key == Keys.Tab && !shift && !alt && !win && !ctrl && !shift_r && !alt_r && !ctrl_r && !win_r) {
-						WinAPI.keybd_event((byte)Keys.F14, (byte)Keys.F14, (int)WinAPI.KEYEVENTF_KEYUP, 0);
+						WinAPI.keybd_event((byte)Keys.F14, (byte)Keys.F14, 0, 0);
 						return (IntPtr)1; // Disable event
 					}
 			if (MahouUI.RemapCapslockAsF18) {
