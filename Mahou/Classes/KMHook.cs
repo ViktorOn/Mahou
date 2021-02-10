@@ -36,6 +36,7 @@ namespace Mahou {
 		public static string symbolclear;
 		static List<Keys> tempNumpads = new List<Keys>();
 		static Keys preKey = Keys.None, prevKEY; //, seKeyDown = Keys.None, aseKeyDown = Keys.None;
+		static Keys altwait = Keys.None;
 		public static List<char> c_snip = new List<char>();
 		public static System.Windows.Forms.Timer doublekey = new System.Windows.Forms.Timer();
 		public static System.Timers.Timer AS_IGN_RESET = null;
@@ -97,11 +98,30 @@ namespace Mahou {
 				skip_kbd_events--;
 				return;
 			}
+			if (altwait != Keys.None) {
+				if (alt) { alt = IsKDown(Keys.LMenu); }
+				if (alt_r) { alt_r = IsKDown(Keys.RMenu); }
+				if (shift) { shift = IsKDown(Keys.LShiftKey); }
+				if (shift_r) { shift_r = IsKDown(Keys.RShiftKey); }
+				if (ctrl) { ctrl = IsKDown(Keys.LControlKey); }
+				if (ctrl_r) { ctrl_r = IsKDown(Keys.RControlKey); }
+				if (win) { win = IsKDown(Keys.LWin); }
+				if (win_r) { win_r = IsKDown(Keys.RWin); }
+				if (!alt && !alt_r) { 
+					altwait = Keys.None; } else {
+					return;
+				}
+			}
 			if (MahouUI.CaretLangTooltipEnabled)
 				ff_chr_wheeled = false;
 			if (vkCode > 254) return;
 			var down = (MSG == WinAPI.WM_SYSKEYDOWN) || (MSG == WinAPI.WM_KEYDOWN);
 			var Key = (Keys)vkCode; // "Key" will further be used instead of "(Keys)vkCode"
+			if ((alt||alt_r) && Key == Keys.Tab) {
+					altwait = Keys.None;
+					if (alt) altwait = Keys.LMenu;
+					if (alt_r) altwait = Keys.RMenu;
+			}
 			if (MMain.c_words.Count == 0) {
 				MMain.c_words.Add(new List<YuKey>());
 			}
@@ -146,7 +166,7 @@ namespace Mahou {
 				IsHotkey = true;
 			} else
 				IsHotkey = false;
-			Console.WriteLine("Pressed hotkey?: "+IsHotkey+" => ["+Key+"+"+mods+"] .");
+//			Console.WriteLine("Pressed hotkey?: "+IsHotkey+" => ["+Key+"+"+mods+"] .");
 			if ((Key >= Keys.D0 || Key <= Keys.D9) && waitfornum)
 				IsHotkey = true;
 			if (MahouUI.OnceSpecific && !down) {

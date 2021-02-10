@@ -49,6 +49,9 @@ namespace Mahou {
 				}
 			}
 			SetModifs(Key, wParam);
+			if ((alt || alt) && (shift || shift_r) && Key == Keys.Tab) { // mysterious Alt+Shift+Tab, sends Shift Up before Tab down!?
+				KMHook.skip_kbd_events++;
+			}
 			Debug.WriteLine("Alive" + vk + " :: " +wParam);
 			#region Mahou.mm Tray Hotkeys
 			var x = new Tuple<bool, bool, bool, bool, bool, bool, bool, Tuple<bool, int>>(alt, alt_r, shift, shift_r, ctrl, ctrl_r, win, new Tuple<bool, int>(win_r, vk));
