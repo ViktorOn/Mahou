@@ -159,6 +159,7 @@ namespace Mahou {
         	}
         }
         public static bool SwitchToAppData(bool create, Exception e) {
+        	if (MMain.C_SWITCH) { return false; }
         	Logging.Log("Configs read/write error, details: " + e.Message +"\n"+e.StackTrace);
          	if (MessageBox.Show(MMain.Lang[Languages.Element.ConfigsCannot]+(create ? MMain.Lang[Languages.Element.Created] : MMain.Lang[Languages.Element.Readen])+", "+ MMain.Lang[Languages.Element.Error].ToLower() + ":\r\n" + e.Message + "\r\n" + MMain.Lang[Languages.Element.RetryInAppData],
         		                    MMain.Lang[Languages.Element.Error], MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes) {

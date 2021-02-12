@@ -209,6 +209,9 @@ namespace Mahou {
 			DeleteTrash();
 			MMain.MAHOU_HANDLE = Handle;
 			InitializeComponent();
+			if (MMain.C_SWITCH) {
+				chk_AppDataConfigs.Enabled = false;
+			}
 			// Visual designer always wants to put that string into resources, blast it!
 			txt_Snippets.Text = "-><"+KMHook.__ANY__+">====><"+KMHook.__ANY__+">__cursorhere()</"+KMHook.__ANY__+"><====\r\n->mahou\r\n====>Mahou (魔法) - Magical layout switcher.<====\r\n->eml\r\n====>BladeMight@" +
 	"gmail.com<====\r\n->nowtime====>__date(HH:mm:ss)<====\r\n->nowdate====>__date(dd/MM/yyyy)<====\r\n->datepretty====>__date(dd, ddd MMM)<===="+
@@ -1067,8 +1070,10 @@ namespace Mahou {
 		/// Update save paths for logs, snippets, autoswitch dictionary, configs.
 		/// </summary>
 		void UpdateSaveLoadPaths(bool appdata = false) {
-			if (Configs.forceAppData || appdata)
-				nPath = mahou_folder_appd;
+			if (!MMain.C_SWITCH) { 
+				if (Configs.forceAppData || appdata)
+					nPath = mahou_folder_appd;
+			}
 			snipfile = Path.Combine(nPath, "snippets.txt");
 			AS_dictfile = Path.Combine(nPath, "AS_dict.txt");
 			Logging.logdir = Path.Combine(nPath, "Logs");
@@ -1086,13 +1091,15 @@ namespace Mahou {
 				} catch { Logging.Log("Force AppData file was missing...", 2); }
 			}
 			bool only_load = false;
-			if (chk_AppDataConfigs.Checked) {
-				if (!Directory.Exists(mahou_folder_appd))
-					Directory.CreateDirectory(mahou_folder_appd);
-				nPath = mahou_folder_appd;
-			}
-			else {
-				nPath = AppDomain.CurrentDomain.BaseDirectory;
+			if (!MMain.C_SWITCH) {
+				if (chk_AppDataConfigs.Checked) {
+					if (!Directory.Exists(mahou_folder_appd))
+						Directory.CreateDirectory(mahou_folder_appd);
+					nPath = mahou_folder_appd;
+				}
+				else {
+					nPath = AppDomain.CurrentDomain.BaseDirectory;
+				}
 			}
 			Logging.Log("Base path: " + nPath);
 			AutoStartAsAdmin = (cbb_AutostartType.SelectedIndex != 0);
@@ -1329,7 +1336,7 @@ namespace Mahou {
 			MMain.MyConfs.Write("Layouts", "SpecificKeySets", sets.ToString());
 		}
 		object DoInMainConfigs(Func<object> act) {
-			if (Configs.forceAppData) return (object)true;
+			if (Configs.forceAppData || MMain.C_SWITCH) return (object)true;
 			var last = Configs.filePath; // Last configs file
 			Configs.filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Mahou.ini");
 			if (!Configs.Readable()) {

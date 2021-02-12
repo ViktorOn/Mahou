@@ -32,6 +32,7 @@ namespace Mahou
 		public static Dictionary<Languages.Element, string> Lang = Languages.English;
 		public static Configs MyConfs;
 		public static MahouUI mahou;
+		public static bool C_SWITCH = false;
 		public static IntPtr MAHOU_HANDLE;
 		public static RawInputForm rif;
 		public static System.Threading.Timer _logTimer = new System.Threading.Timer((_) => { try { Logging.UpdateLog(); } catch (Exception e) { Logging.Log("Error updating log, details:\r\n" + e.Message);}}, null, 20, 300);
@@ -53,17 +54,42 @@ namespace Mahou
 			if (Configs.forceAppData && Configs.fine)
 				MyConfs.Write("Functions", "AppDataConfigs", "true");
 			Logging.Log("Mahou started.");
+			var ind = 0;
 			using (var mutex = new Mutex(false, GGPU_Mutex)) {
 				if (!mutex.WaitOne(0, false)) {
 					if (args.Length > 0) {
-						var arg1 = args[0].ToUpper();
+						var arg1 = args[ind].ToUpper();
 						if (arg1.StartsWith("/R") || arg1.StartsWith("-R") || arg1.StartsWith("R")) {
+							ind = 1;
 							WinAPI.PostMessage((IntPtr)0xffff, re, 0, 0);
 							return;
 						}
 					} 
 					WinAPI.PostMessage((IntPtr)0xffff, ao, 0, 0);
 					return;
+				}
+				if (args.Length > ind) {
+					var arg1 = args[ind].ToUpper();
+					if (arg1.StartsWith("/C") || arg1.StartsWith("-C") || arg1.StartsWith("C")) {
+						if (args.Length > ind+1) {
+							var ok = false;
+							if (Directory.Exists(args[ind+1])) {
+								ok = true;
+							} else {
+								try {
+									Directory.CreateDirectory(args[ind+1]);
+									ok = true;
+								} catch (Exception e) {
+									Logging.Log("Can't create directory: "+args[ind+1]);
+								}
+							}
+							if (ok) {
+								Logging.Log("Switching config directory to : " + args[ind+1]);
+						    	MahouUI.nPath = args[ind+1];
+						    	C_SWITCH = true;
+							}
+						}
+					}
 				}
 				if (MMain.MyConfs.ReadBool("Functions", "AppDataConfigs")) {
 					var mahou_folder_appd = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Mahou");

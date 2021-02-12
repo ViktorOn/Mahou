@@ -109,6 +109,7 @@
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <StartAction>Project</StartAction>
+    <StartArguments>-C "D:\Program\Z+\Repos\Mahou\Mahou\bin\Debug_x86\configs"</StartArguments>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
