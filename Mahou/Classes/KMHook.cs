@@ -560,7 +560,6 @@ namespace Mahou {
 	    						as_lword_layout = snl;
 		    					Logging.Log("[AS] > Last AS word layout: " +snl );
 			            	}
-							c_snip.Clear();
 //							aseKeyDown = Key;
 						}
 					}
@@ -570,6 +569,8 @@ namespace Mahou {
 						else
 							lsnip_noset--;
 					}
+					if (Key == Keys.Space && seKey == Keys.F14 && matched)
+						c_snip.Clear();
 				}
 				if (MSG == WinAPI.WM_KEYUP) {
 					if (Key == Keys.Back) { was_back = true; }
