@@ -569,7 +569,7 @@ namespace Mahou {
 						else
 							lsnip_noset--;
 					}
-					if (Key == Keys.Space && seKey == Keys.F14 && matched)
+					if (Key == Keys.Space && seKey == Keys.F14)
 						c_snip.Clear();
 				}
 				if (MSG == WinAPI.WM_KEYUP) {
