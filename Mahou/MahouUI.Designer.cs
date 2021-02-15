@@ -2388,6 +2388,7 @@ namespace Mahou
 			this.cbb_SnippetExpandKeys.Name = "cbb_SnippetExpandKeys";
 			this.cbb_SnippetExpandKeys.Size = new System.Drawing.Size(121, 23);
 			this.cbb_SnippetExpandKeys.TabIndex = 7;
+			this.cbb_SnippetExpandKeys.SelectedIndexChanged += new System.EventHandler(this.Cbb_SnippetExpandKeysSelectedIndexChanged);
 			// 
 			// lbl_SnippetExpandKey
 			// 

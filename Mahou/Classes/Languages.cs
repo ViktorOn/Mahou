@@ -116,6 +116,7 @@ public class Languages
 		SnippetSwitchToGuessLayout,
 		SnippetsCount,
 		SnippetsExpandKey,
+		SnippetsExpKeyOther,
 		#endregion
 		#region AutoSwitch
 		AutoSwitchEnabled,
@@ -418,6 +419,7 @@ public class Languages
 		{ Element.SnippetSwitchToGuessLayout, "Switch to guess layout after snippet." }, 
 		{ Element.SnippetsCount, "Snippets: " }, 
 		{ Element.SnippetsExpandKey, "Snippet expand key: " }, 
+		{ Element.SnippetsExpKeyOther, "Other" }, 
 		#endregion
 		#region AutoSwitch
 		{ Element.AutoSwitchEnabled, "Enable auto-switch." }, 
@@ -741,6 +743,7 @@ public class Languages
 		{ Element.SnippetSwitchToGuessLayout, "Переключать на предполагаемую раскладку сниппетов." }, 
 		{ Element.SnippetsCount, "Сниппетов: " }, 
 		{ Element.SnippetsExpandKey, "Клавиша развертывания:" }, 
+		{ Element.SnippetsExpKeyOther, "Другая" }, 
 		#region AutoSwitch
 		{ Element.AutoSwitchEnabled, "Включить автозамену." }, 
 		{ Element.AutoSwitchSpaceAfter, "Добавлять 1 пробел после автозамены." }, 

@@ -36,7 +36,7 @@ namespace Mahou {
 						   UseCustomSound2, SoundOnAutoSwitch2, SoundOnConvLast2, SoundOnSnippets2, SoundOnLayoutSwitch2, TrOnDoubleClick,
 						   TrEnabled, TrBorderAero, OnceSpecific, WriteInputHistory, ExcludeCaretLD, UsePaste,
 						   WriteInputHistoryByDate, WriteInputHistoryHourly, MahouMM = false,
-						   hk_result, multi_continue = true, ZxZ = true;
+						   hk_result, multi_continue = true, ZxZ = true, configs_loading;
 		static string[] UpdInfo;
 		public static List<int> HKBlockAlt = new List<int>();
 		public static bool BlockAltUpNOW = false;
@@ -71,7 +71,7 @@ namespace Mahou {
 		static uint lastTrayFlagLayout = 0;
 		public static Bitmap FLAG, ITEXT;
 		static int progress = 0, _progress = 0;
-		public string SnippetsExpandType = "";
+		public string SnippetsExpandType = "", SnippetsExpKeyOther = "";
 		int titlebar = 12;
 		public static int AtUpdateShow, SpecKeySetCount, SnippetsCount, AutoSwitchCount, TrSetCount, InputHistoryBackSpaceWriteType;
 		public int DoubleHKInterval = 200, SelectedTextGetMoreTriesCount, DelayAfterBackspaces;
@@ -1230,6 +1230,7 @@ namespace Mahou {
 				if (SnippetsEnabled)
 					File.WriteAllText(snipfile, txt_Snippets.Text, Encoding.UTF8);
 				MMain.MyConfs.Write("Snippets", "SnippetExpandKey", cbb_SnippetExpandKeys.SelectedItem == null ? "null" : cbb_SnippetExpandKeys.SelectedItem.ToString());
+				MMain.MyConfs.Write("Snippets", "SnippetsExpKeyOther", SnippetsExpKeyOther);
 				#endregion
 				#region AutoSwitch
 				MMain.MyConfs.Write("AutoSwitch", "Enabled", chk_AutoSwitch.Checked.ToString());
@@ -1488,6 +1489,7 @@ namespace Mahou {
 		/// Refresh all controls state from configs.
 		/// </summary>
 		void LoadConfigs() {
+			configs_loading = true;
 			loadHidden();
 			decim = (string)Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\International", "sDecimal", null);
 			TrSetsValues = new Dictionary<string, string>();
@@ -1495,6 +1497,7 @@ namespace Mahou {
 			UpdateSaveLoadPaths(chk_AppDataConfigs.Checked);
 			InitializeTrayIcon();
 			InitLanguage();
+			SnippetsExpKeyOther = MMain.MyConfs.Read("Snippets", "SnippetsExpKeyOther");
 			RefreshLanguage();
 			#region Functions
 			MMain.MyConfs = new Configs();
@@ -1821,6 +1824,7 @@ namespace Mahou {
 				NCS_destroy();
 			}
 			Memory.Flush();
+			configs_loading = false;
 			Logging.Log("All configurations loaded.");
 		}
 		List<string[]> ParseSets(string raw_sets) {
@@ -4351,6 +4355,12 @@ DEL ""ExtractASD.cmd""";
 			chk_SnippetsSwitchToGuessLayout.Text = MMain.Lang[Languages.Element.SnippetSwitchToGuessLayout];
 			lbl_SnippetsCount.Text = MMain.Lang[Languages.Element.SnippetsCount];
 			lbl_SnippetExpandKey.Text = MMain.Lang[Languages.Element.SnippetsExpandKey];
+			var sko = (SnippetsExpKeyOther == "" ? MMain.Lang[Languages.Element.SnippetsExpKeyOther] : "*["+SnippetsExpKeyOther+"]");
+			if (cbb_SnippetExpandKeys.Items.Count <3) {
+				cbb_SnippetExpandKeys.Items.Add(sko);
+			} else {
+				cbb_SnippetExpandKeys.Items[2] = sko;
+			}
 			#endregion
 			#region AutoSwitch
 			chk_AutoSwitch.Text = MMain.Lang[Languages.Element.AutoSwitchEnabled];
@@ -5352,6 +5362,78 @@ DEL ""ExtractASD.cmd""";
 		}
 		void Chk_ZxZCheckedChanged(object sender, EventArgs e) {
 			ZxZ = (sender as CheckBox).Checked;
+		}
+		static string HotkeyForm_hotkey = "";
+		class HotkeyForm : Form {
+			Label hk;
+			public HotkeyForm() {
+				this.FormBorderStyle = FormBorderStyle.None;
+				this.ShowInTaskbar = false;
+				this.BackColor = Color.ForestGreen;
+				this.hk = new Label();
+				this.hk.AutoSize = false;
+				this.hk.Width = 238;
+				this.hk.Font = new Font(this.hk.Font.FontFamily, 14);
+				this.hk.Height = 26;
+				this.hk.BackColor = Color.White;
+				this.hk.ForeColor = Color.Orange;
+				this.hk.Location = new Point(1,1);
+				this.Controls.Add(hk);
+				this.MinimumSize = new Size(50,10);
+				this.Width = 240;
+				this.Height = 28;
+				this.CenterToScreen();
+				this.TopMost = true;
+			}
+			bool aok; int lmsg = 0;
+			protected override void WndProc(ref Message m) {
+				if (m.Msg == (int)WinAPI.WM_KEYUP ||
+						m.Msg == (int)WinAPI.WM_SYSKEYUP ||
+						m.Msg == (int)WinAPI.WM_SYSKEYDOWN ||
+						m.Msg == (int)WinAPI.WM_KEYDOWN) {
+					var mods = KMHook.GetModsStr();
+					var k = (Keys)m.WParam.ToInt32();
+					var ok = false;
+					if (k != Keys.LControlKey &&
+						    k != Keys.RControlKey &&
+						    k != Keys.LShiftKey &&
+						    k != Keys.RShiftKey &&
+						    k != Keys.LMenu &&
+						    k != Keys.RMenu &&
+						    k != Keys.ShiftKey &&
+						    k != Keys.Menu &&
+						    k != Keys.ControlKey &&
+						    k != Keys.LWin &&
+						    k != Keys.RWin) {
+						mods+=k;
+						ok = true;
+					}
+					this.hk.Text = mods;
+					if (lmsg == 0) { lmsg = m.Msg; }
+					if (ok) {
+						aok = true;
+						HotkeyForm_hotkey = this.hk.Text;
+					}
+					if (aok && lmsg != m.Msg) {
+						this.Close();
+					}
+					lmsg = m.Msg;
+				}
+				base.WndProc(ref m);
+			}
+		}
+		void Cbb_SnippetExpandKeysSelectedIndexChanged(object sender, EventArgs e) {
+			if (configs_loading) return;
+			if (cbb_SnippetExpandKeys.SelectedIndex == 2) {
+				Debug.WriteLine("Other");
+				var hkf = new HotkeyForm();
+				hkf.ShowDialog();
+				SnippetsExpKeyOther = HotkeyForm_hotkey;
+				configs_loading = true;
+				cbb_SnippetExpandKeys.Items[2] = "*["+SnippetsExpKeyOther+"]";
+				configs_loading = false;
+				Debug.WriteLine("Snippets-other-hotkey" + SnippetsExpKeyOther);
+			}
 		}
 		#endregion
 		#region Sync
