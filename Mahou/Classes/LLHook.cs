@@ -143,12 +143,24 @@ namespace Mahou {
 				}
 			}
 			#endregion
-			if (MahouUI.SnippetsEnabled)
-				if (KMHook.c_snip.Count > 0)
+			if (MahouUI.SnippetsEnabled) {
+				if (KMHook.c_snip.Count > 0) {
 					if (MMain.mahou.SnippetsExpandType == "Tab" && Key == Keys.Tab && !shift && !alt && !win && !ctrl && !shift_r && !alt_r && !ctrl_r && !win_r) {
 						WinAPI.keybd_event((byte)Keys.F14, (byte)Keys.F14, 0, 0);
 						return (IntPtr)1; // Disable event
+					} else if (wParam == (IntPtr)WinAPI.WM_KEYDOWN || wParam == (IntPtr)WinAPI.WM_SYSKEYDOWN) {
+						var ms = KMHook.GetModsStr(ctrl,ctrl_r,shift,shift_r,alt,alt_r,win,win_r);
+						ms += Key;
+						var othmatch = ms == MMain.mahou.SnippetsExpKeyOther;
+						Debug.WriteLine("Checking SnippetsExpOther: [" + ms + "] == [" + MMain.mahou.SnippetsExpKeyOther + "] => " + othmatch);
+						if (othmatch) {
+							KMHook.ClearModifiers();
+							WinAPI.keybd_event((byte)Keys.F20, (byte)Keys.F20, 0, 0);
+							return (IntPtr)1;
+						}
 					}
+				}
+			}
 			if (MahouUI.RemapCapslockAsF18) {
 				bool _shift = !shift, _alt = !alt, _ctrl = !ctrl, _win = !win, _shift_r = !shift_r, _alt_r = !alt_r, _ctrl_r = !ctrl_r, _win_r = !win_r;
 				if (Key == Keys.CapsLock) {

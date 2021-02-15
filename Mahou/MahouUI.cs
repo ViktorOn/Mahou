@@ -1781,7 +1781,7 @@ namespace Mahou {
 				txt_restoreId.Text = rlast;
 			chk_ZxZ.Checked = ZxZ = MMain.MyConfs.ReadBool("Sync", "ZxZ");
 			#endregion
-			LLHook._ACTIVE = (RemapCapslockAsF18 || SnippetsExpandType == "Tab" || MahouMM);
+			LLHook._ACTIVE = (RemapCapslockAsF18 || SnippetsExpandType != "Space" || MahouMM);
 			if (LLHook._ACTIVE)
 				LLHook.Set();
 			else
@@ -5391,7 +5391,7 @@ DEL ""ExtractASD.cmd""";
 						m.Msg == (int)WinAPI.WM_SYSKEYUP ||
 						m.Msg == (int)WinAPI.WM_SYSKEYDOWN ||
 						m.Msg == (int)WinAPI.WM_KEYDOWN) {
-					var mods = KMHook.GetModsStr();
+					var mods = KMHook.GetModsStr(KMHook.ctrl,KMHook.ctrl_r, KMHook.shift,KMHook.shift_r,KMHook.alt,KMHook.alt_r,KMHook.win,KMHook.win_r);
 					var k = (Keys)m.WParam.ToInt32();
 					var ok = false;
 					if (k != Keys.LControlKey &&

@@ -492,18 +492,13 @@ namespace Mahou {
 					Debug.WriteLine("added " + sym);
 				}
 				var seKey = Keys.Space;
-				bool asls = false, othmatch = false, oth = false;
+				bool asls = false;
 				if (MMain.mahou.SnippetsExpandType == "Tab")
 					seKey = Keys.F14;
 				else if (MMain.mahou.SnippetsExpandType != "Space") {
-					oth = true;
-					seKey = Keys.None;
-					var ms = GetModsStr();
-					ms += Key;
-					othmatch = ms == MMain.mahou.SnippetsExpKeyOther;
-					Debug.WriteLine("Checking SnippetsExpOther: [" + ms + "] == [" + MMain.mahou.SnippetsExpKeyOther + "] => " + othmatch);
+					seKey = Keys.F20;
 				}
-				if (Key == seKey || seKey == Keys.F14 || othmatch)
+				if (Key == seKey || seKey == Keys.F14 || seKey == Keys.F20)
 					preSnip = true;
 //				if (MSG == WinAPI.WM_KEYUP) {
 //					if (Key == seKeyDown)
@@ -516,7 +511,7 @@ namespace Mahou {
 					var snip = ssb.ToString();
 					var matched = false;
 					Debug.WriteLine("Snip " + snip + ", last: " + last_snip);
-					if (Key == seKey || othmatch) {
+					if (Key == seKey) {
 //						if (seKeyDown == Keys.None) {
 			            	matched = CheckSnippet(snip);
 			            	if (!matched && !last_snipANY)
@@ -571,13 +566,13 @@ namespace Mahou {
 //							aseKeyDown = Key;
 						}
 					}
-					if ((Key == seKey||othmatch) && !asls) {
+					if (Key == seKey && !asls) {
 						if (lsnip_noset <= 0) 
 							last_snip = snip;
 						else
 							lsnip_noset--;
 					}
-					if (Key == Keys.Space && (seKey == Keys.F14 || oth))
+					if (Key == Keys.Space && (seKey == Keys.F14 || seKey == Keys.F20))
 						c_snip.Clear();
 				}
 				if (MSG == WinAPI.WM_KEYUP) {
@@ -1775,16 +1770,16 @@ namespace Mahou {
 			                                             	act();
 			                                             });
 		}
-		public static string GetModsStr() {
+		public static string GetModsStr(bool c,bool cr, bool s, bool sr, bool a, bool ar, bool w, bool wr) {
 			var modstr = new StringBuilder();
-			if(ctrl) { modstr.Append("LCtrl + "); }
-			if(ctrl_r) { modstr.Append("RCtrl + "); }
-			if(shift) { modstr.Append("LShift + "); }
-			if(shift_r) { modstr.Append("RShift + "); }
-			if(alt) { modstr.Append("LAlt + "); }
-			if(alt_r) { modstr.Append("RAlt + "); }
-			if(win) { modstr.Append("LWin + "); }
-			if(win_r) { modstr.Append("RWin + "); }
+			if(c) { modstr.Append("LCtrl + "); }
+			if(cr) { modstr.Append("RCtrl + "); }
+			if(s) { modstr.Append("LShift + "); }
+			if(sr) { modstr.Append("RShift + "); }
+			if(a) { modstr.Append("LAlt + "); }
+			if(ar) { modstr.Append("RAlt + "); }
+			if(w) { modstr.Append("LWin + "); }
+			if(wr) { modstr.Append("RWin + "); }
 			return modstr.ToString();
 		}
 //		public static void SetNextLayout() {
