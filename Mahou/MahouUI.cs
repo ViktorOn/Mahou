@@ -515,7 +515,17 @@ namespace Mahou {
 					KMHook.ConvertLast(words);
 				} else if (KMHook.waitfornum) { FlushConvertMoreWords(); }
 				#endregion
-				#region SpecificKeys
+				var key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);	
+				#region Redefines
+				if (LLHook.redefines.len > 0) {
+					for (int i = 0; i < LLHook.redefines.len; i++) {
+						if (key == LLHook.redefines[i].v) {
+							KMHook.skip_up = LLHook.redefines[i].v;
+						}
+					}
+				}
+				#endregion
+				#region SpecificKeys			
 				var specific = false;
 				if (m.WParam.ToInt32() >= 201 && m.WParam.ToInt32() <= 299 && 
 				    (MahouUI.ChangeLayoutInExcluded || !KMHook.ExcludedProgram())) {
@@ -523,7 +533,6 @@ namespace Mahou {
 					if (!OnceSpecific) {
 						OnceSpecific = true;
 						var si = m.WParam.ToInt32() - 200;
-						var key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);
 						var type = SpecKeySetsValues["cbb_typ"+si];
 						try {
 							if (type == MMain.Lang[Languages.Element.SwitchBetween]) {
@@ -1404,7 +1413,7 @@ namespace Mahou {
 				var pyon = pon[i].Split(new[]{'<'}, 2);
 				var kin = pyon[0].Split(new[]{'>'}, 2);
 				if (String.IsNullOrEmpty(pon[i])) {
-					Debug.WriteLine("Ignore empty: #"+i);
+					Logging.Log("[REDEF] > Ignore empty: #"+i);
 			    	continue;
 			    }
 				if (kin.Length < 2) { 
@@ -1414,12 +1423,12 @@ namespace Mahou {
 				Keys k, k2;
 				try {
 					k = KMHook.strparsekey(kin[0])[0];
-				} catch { Debug.WriteLine("Can't parse key: " + kin[0]); continue; }
+				} catch { Logging.Log("[REDEF] > Can't parse key: " + kin[0]); continue; }
 				try {
 					k2 = KMHook.strparsekey(kin[1])[0];
-				} catch { Debug.WriteLine("Can't parse key: " + kin[1]); continue; }
+				} catch { Logging.Log("[REDEF] > Can't parse key: " + kin[1]); continue; }
 				var sn = (pyon.Length<2?"":pyon[1]);
-				Debug.WriteLine("+Redefine: " + k +" => " +k2 + " <= " + sn);
+				Logging.Log("[REDEF] > +Redefine: " + k +" => " +k2 + " <= " + sn);
 				LLHook.redefines.Add(k, k2);
 				LLHook.redefines_excl_mods.Add(sn);
 			}
@@ -1812,7 +1821,7 @@ namespace Mahou {
 				txt_restoreId.Text = rlast;
 			chk_ZxZ.Checked = ZxZ = MMain.MyConfs.ReadBool("Sync", "ZxZ");
 			#endregion
-			LLHook._ACTIVE = (RemapCapslockAsF18 || SnippetsExpandType != "Space" || MahouMM);
+			LLHook._ACTIVE = (RemapCapslockAsF18 || SnippetsExpandType != "Space" || MahouMM || LLHook.redefines.len > 0);
 			if (LLHook._ACTIVE)
 				LLHook.Set();
 			else

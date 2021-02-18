@@ -25,6 +25,7 @@ namespace Mahou {
 			_selis, _mselis, snipselshiftpressed, snipselwassel, 
 			AS_IGN_BACK, AS_IGN_DEL, AS_IGN_LS, was_back, was_del, was_ls, __setsnip;
 		public static System.Timers.Timer click_reset = new System.Timers.Timer();
+		public static Keys skip_up = Keys.None;
 		public static System.Timers.Timer JKLERRT = new System.Timers.Timer();
 		public static int skip_mouse_events, skip_spec_keys, cursormove = -1, guess_tries, skip_kbd_events, lsnip_noset, AS_IGN_TIMEOUT;
 		static char sym = '\0'; static bool sym_upr = false;
@@ -96,6 +97,15 @@ namespace Mahou {
 		public static void ListenKeyboard(int vkCode, uint MSG, short Flags = 0) {
 			if (skip_kbd_events > 0) {
 				skip_kbd_events--;
+				return;
+			}
+			if (skip_up != Keys.None) {
+				Debug.WriteLine("Skip up!"+skip_up);
+				if (MSG == WinAPI.WM_KEYUP || MSG == WinAPI.WM_SYSKEYUP) {
+					if (vkCode == (int)skip_up) {
+						skip_up = Keys.None;
+					}
+				}
 				return;
 			}
 			if (altwait != Keys.None) {
