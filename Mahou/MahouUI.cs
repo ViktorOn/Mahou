@@ -28,7 +28,7 @@ namespace Mahou {
 		public bool hksTTCOK, hksTRCOK, hksTSCOK, hksTrslOK, hkShWndOK, hkcwdsOK, hklOK, 
 					hksOK, hklineOK, hkSIOK, hkExitOK, hkToglLPOK, hkShowTSOK, hkToggleMahouOK, hkUcOK, hklcOK, hkccOK,
 					hkSCCok, hkSCMUM;
-		public static string nPath = AppDomain.CurrentDomain.BaseDirectory, CustomSound, CustomSound2;
+		public static string nPath = AppDomain.CurrentDomain.BaseDirectory, CustomSound, CustomSound2, Redefines;
 		public static int ACT_Match = 0, TrayHoverMahouMM = 0;
 		public static bool LoggingEnabled, dummy, CapsLockDisablerTimer, LangPanelUpperArrow, mouseLTUpperArrow, caretLTUpperArrow,
 						   ShiftInHotkey, AltInHotkey, CtrlInHotkey, WinInHotkey, AutoStartAsAdmin, UseJKL, AutoSwitchEnabled, ReadOnlyNA,
@@ -1396,6 +1396,34 @@ namespace Mahou {
 			}
 			return repl;
 		}
+		void parseRedefines() {
+			LLHook.redefines.Clear();
+			LLHook.redefines_excl_mods.Clear();
+			var pon = Redefines.Split('|');
+			for (int i = 0; i != pon.Length; i++) {
+				var pyon = pon[i].Split(new[]{'<'}, 2);
+				var kin = pyon[0].Split(new[]{'>'}, 2);
+				if (String.IsNullOrEmpty(pon[i])) {
+					Debug.WriteLine("Ignore empty: #"+i);
+			    	continue;
+			    }
+				if (kin.Length < 2) { 
+					Debug.WriteLine("Syntax error, expected: \">\"");
+					continue;
+				}
+				Keys k, k2;
+				try {
+					k = KMHook.strparsekey(kin[0])[0];
+				} catch { Debug.WriteLine("Can't parse key: " + kin[0]); continue; }
+				try {
+					k2 = KMHook.strparsekey(kin[1])[0];
+				} catch { Debug.WriteLine("Can't parse key: " + kin[1]); continue; }
+				var sn = (pyon.Length<2?"":pyon[1]);
+				Debug.WriteLine("+Redefine: " + k +" => " +k2 + " <= " + sn);
+				LLHook.redefines.Add(k, k2);
+				LLHook.redefines_excl_mods.Add(sn);
+			}
+		}
 		void saveHidden() {
 			MMain.MyConfs.Write("Hidden", "ChangeLayoutOnTrayLMB", Hchk_LMBTrayLayoutChange.Checked.ToString());
 			MMain.MyConfs.Write("Hidden", "DisableMemoryFlush", Hchk_DisableMemFlush.Checked.ToString());
@@ -1424,6 +1452,7 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hidden", "ReselectCustoms", Htxt_ReselectCustoms.Text);
 			MMain.MyConfs.Write("Hidden", "ChangeLayoutOnTrayLMB+DoubleClick", Hchk_LMBTrayLayoutChangeDC.Checked.ToString());
 			MMain.MyConfs.Write("Hidden", "TrayHoverMahouMM", Hnud_TrayHoverMM.Value.ToString());
+			MMain.MyConfs.Write("Hidden", "Redefines", Htxt_Redefines.Text);
 //			NCS_destroy();
 		}
 		void loadHidden() {
@@ -1454,6 +1483,8 @@ namespace Mahou {
 			Htxt_ReselectCustoms.Text = ReselectCustoms = MMain.MyConfs.Read("Hidden", "ReselectCustoms");
 			Hchk_LMBTrayLayoutChangeDC.Checked = MMain.MyConfs.ReadBool("Hidden", "ChangeLayoutOnTrayLMB+DoubleClick");
 			TrayHoverMahouMM = MMain.MyConfs.ReadInt("Hidden", "TrayHoverMahouMM");
+			Htxt_Redefines.Text = Redefines = MMain.MyConfs.Read("Hidden", "Redefines");
+			parseRedefines();
 			Hnud_TrayHoverMM.Value = TrayHoverMahouMM;
 			if (!String.IsNullOrEmpty(OverlayExcluded)) {
 				Debug.WriteLine("Starting overlay excluded");
@@ -3198,6 +3229,13 @@ DEL "+restartMahouPath;
 		}
 		public void _regHK(IntPtr h, int id, uint mod, int key) {
 			int rk = key;
+			if (LLHook.redefines.len > 0) {
+				for (int i = 0; i != LLHook.redefines.len; i++) {
+					if (key == (int)LLHook.redefines[i].k) {
+						rk = (int)LLHook.redefines[i].v;
+					}
+				}
+			}
 			if (RemapCapslockAsF18) {
 				if (key == (int)Keys.Capital) {
 					rk = (int)Keys.F18;
@@ -5433,6 +5471,30 @@ DEL ""ExtractASD.cmd""";
 				cbb_SnippetExpandKeys.Items[2] = "*["+SnippetsExpKeyOther+"]";
 				configs_loading = false;
 				Debug.WriteLine("Snippets-other-hotkey" + SnippetsExpKeyOther);
+			}
+		}
+		void Htxt_RedefinesEnter(object sender, EventArgs e) {
+			var t = (TextBox)sender;
+			t.Multiline = true;
+			t.Text = t.Text.Replace("|", Environment.NewLine);
+			if (t.Lines.Length > 1) {
+				t.Height = (int)(5*24);
+				t.ScrollBars = ScrollBars.Vertical;
+			}
+		}
+		void Htxt_RedefinesLeave(object sender, EventArgs e) {
+			var t = (TextBox)sender;
+			t.Text = t.Text.Replace(Environment.NewLine, "|");
+//			t.Height = 1;
+			t.Multiline = false;
+			t.ScrollBars = ScrollBars.None;
+		}
+		void Htxt_RedefinesTextChanged(object sender, EventArgs e) {
+			var t = (TextBox)sender;
+			if (t.Focused) {
+				var i = t.SelectionStart;
+				t.Text = t.Text.Replace("|", Environment.NewLine);
+				t.SelectionStart = i+1;
 			}
 		}
 		#endregion

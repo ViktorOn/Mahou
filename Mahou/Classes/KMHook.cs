@@ -1633,7 +1633,7 @@ namespace Mahou {
 			}
 		}
 		public static List<Keys> strparsekey(string key, int times = 1) {
-			key = key.ToLower();
+			key = key.ToLower().Replace("capslock", "capital");
 			List<Keys> keys = new List<Keys>();
 			foreach (Keys k in Enum.GetValues(typeof(Keys))) {
 				var _n = k.ToString().ToLower()
@@ -1905,9 +1905,9 @@ namespace Mahou {
 						was_ls = true;
 						if(AS_IGN_RULES.Contains("T")) {
 							if (AS_IGN_RESET != null) {
-								return;
 								AS_IGN_RESET.Stop();
 								AS_IGN_RESET.Dispose();
+								return;
 							}
 							AS_IGN_RESET = new System.Timers.Timer();
 							AS_IGN_RESET.Interval = AS_IGN_TIMEOUT;

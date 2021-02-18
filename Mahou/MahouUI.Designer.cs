@@ -328,6 +328,8 @@ namespace Mahou
 		private System.Windows.Forms.CheckBox Hchk_LMBTrayLayoutChangeDC;
 		private System.Windows.Forms.Label Hlbl_TrayHoverMM;
 		private System.Windows.Forms.NumericUpDown Hnud_TrayHoverMM;
+		private System.Windows.Forms.TextBox Htxt_Redefines;
+		private System.Windows.Forms.Label Hlbl_Redefines;
 		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
@@ -619,6 +621,11 @@ namespace Mahou
 			this.lnk_Site = new System.Windows.Forms.LinkLabel();
 			this.lnk_Repository = new System.Windows.Forms.LinkLabel();
 			this.tab_Hidden = new System.Windows.Forms.TabPage();
+			this.Htxt_Redefines = new System.Windows.Forms.TextBox();
+			this.Htxt_OAutoSwitchExcluded = new System.Windows.Forms.TextBox();
+			this.Htxt_OSnippetsExcluded = new System.Windows.Forms.TextBox();
+			this.Htxt_OverlayExcluded = new System.Windows.Forms.TextBox();
+			this.Hlbl_Redefines = new System.Windows.Forms.Label();
 			this.Hlbl_TrayHoverMM = new System.Windows.Forms.Label();
 			this.Hnud_TrayHoverMM = new System.Windows.Forms.NumericUpDown();
 			this.Hchk_LMBTrayLayoutChangeDC = new System.Windows.Forms.CheckBox();
@@ -636,9 +643,7 @@ namespace Mahou
 			this.Hlbl_CycleCaseOrder = new System.Windows.Forms.Label();
 			this.Htxt_ReselectCustoms = new System.Windows.Forms.TextBox();
 			this.Hlbl_ReselectCustoms = new System.Windows.Forms.Label();
-			this.Htxt_OAutoSwitchExcluded = new System.Windows.Forms.TextBox();
 			this.Hlbl_OnlyAutoSwitchExcluded = new System.Windows.Forms.Label();
-			this.Htxt_OSnippetsExcluded = new System.Windows.Forms.TextBox();
 			this.Hlbl_OnlySnippetsExcluded = new System.Windows.Forms.Label();
 			this.Htxt_AutoSwitchHotkeyStr = new System.Windows.Forms.TextBox();
 			this.Hlbl_AutoSwitchHotkey = new System.Windows.Forms.Label();
@@ -653,7 +658,6 @@ namespace Mahou
 			this.Hnud_AutoRestartMins = new System.Windows.Forms.NumericUpDown();
 			this.Hlbl_OverlayExcludedInterval = new System.Windows.Forms.Label();
 			this.Hnud_OverlayExcludedInterval = new System.Windows.Forms.NumericUpDown();
-			this.Htxt_OverlayExcluded = new System.Windows.Forms.TextBox();
 			this.Hlbl_OverlayExcluded = new System.Windows.Forms.Label();
 			this.Hchk_NCStray = new System.Windows.Forms.CheckBox();
 			this.Hlbl_NCS = new System.Windows.Forms.Label();
@@ -3915,6 +3919,11 @@ namespace Mahou
 			// 
 			this.tab_Hidden.AutoScroll = true;
 			this.tab_Hidden.BackColor = System.Drawing.Color.DarkSlateGray;
+			this.tab_Hidden.Controls.Add(this.Htxt_OSnippetsExcluded);
+			this.tab_Hidden.Controls.Add(this.Htxt_Redefines);
+			this.tab_Hidden.Controls.Add(this.Htxt_OAutoSwitchExcluded);
+			this.tab_Hidden.Controls.Add(this.Htxt_OverlayExcluded);
+			this.tab_Hidden.Controls.Add(this.Hlbl_Redefines);
 			this.tab_Hidden.Controls.Add(this.Hlbl_TrayHoverMM);
 			this.tab_Hidden.Controls.Add(this.Hnud_TrayHoverMM);
 			this.tab_Hidden.Controls.Add(this.Hchk_LMBTrayLayoutChangeDC);
@@ -3932,9 +3941,7 @@ namespace Mahou
 			this.tab_Hidden.Controls.Add(this.Hlbl_CycleCaseOrder);
 			this.tab_Hidden.Controls.Add(this.Htxt_ReselectCustoms);
 			this.tab_Hidden.Controls.Add(this.Hlbl_ReselectCustoms);
-			this.tab_Hidden.Controls.Add(this.Htxt_OAutoSwitchExcluded);
 			this.tab_Hidden.Controls.Add(this.Hlbl_OnlyAutoSwitchExcluded);
-			this.tab_Hidden.Controls.Add(this.Htxt_OSnippetsExcluded);
 			this.tab_Hidden.Controls.Add(this.Hlbl_OnlySnippetsExcluded);
 			this.tab_Hidden.Controls.Add(this.Htxt_AutoSwitchHotkeyStr);
 			this.tab_Hidden.Controls.Add(this.Hlbl_AutoSwitchHotkey);
@@ -3949,7 +3956,6 @@ namespace Mahou
 			this.tab_Hidden.Controls.Add(this.Hnud_AutoRestartMins);
 			this.tab_Hidden.Controls.Add(this.Hlbl_OverlayExcludedInterval);
 			this.tab_Hidden.Controls.Add(this.Hnud_OverlayExcludedInterval);
-			this.tab_Hidden.Controls.Add(this.Htxt_OverlayExcluded);
 			this.tab_Hidden.Controls.Add(this.Hlbl_OverlayExcluded);
 			this.tab_Hidden.Controls.Add(this.Hchk_NCStray);
 			this.tab_Hidden.Controls.Add(this.Hlbl_NCS);
@@ -3964,6 +3970,67 @@ namespace Mahou
 			this.tab_Hidden.Size = new System.Drawing.Size(559, 268);
 			this.tab_Hidden.TabIndex = 15;
 			this.tab_Hidden.Text = "[Hidden]";
+			// 
+			// Htxt_Redefines
+			// 
+			this.Htxt_Redefines.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_Redefines.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_Redefines.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_Redefines.Location = new System.Drawing.Point(270, 645);
+			this.Htxt_Redefines.Name = "Htxt_Redefines";
+			this.Htxt_Redefines.Size = new System.Drawing.Size(265, 23);
+			this.Htxt_Redefines.TabIndex = 45;
+			this.Htxt_Redefines.TextChanged += new System.EventHandler(this.Htxt_RedefinesTextChanged);
+			this.Htxt_Redefines.Enter += new System.EventHandler(this.Htxt_RedefinesEnter);
+			this.Htxt_Redefines.Leave += new System.EventHandler(this.Htxt_RedefinesLeave);
+			// 
+			// Htxt_OAutoSwitchExcluded
+			// 
+			this.Htxt_OAutoSwitchExcluded.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_OAutoSwitchExcluded.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_OAutoSwitchExcluded.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_OAutoSwitchExcluded.Location = new System.Drawing.Point(270, 354);
+			this.Htxt_OAutoSwitchExcluded.Name = "Htxt_OAutoSwitchExcluded";
+			this.Htxt_OAutoSwitchExcluded.Size = new System.Drawing.Size(265, 23);
+			this.Htxt_OAutoSwitchExcluded.TabIndex = 25;
+			this.Htxt_OAutoSwitchExcluded.TextChanged += new System.EventHandler(this.Htxt_RedefinesTextChanged);
+			this.Htxt_OAutoSwitchExcluded.Enter += new System.EventHandler(this.Htxt_RedefinesEnter);
+			this.Htxt_OAutoSwitchExcluded.Leave += new System.EventHandler(this.Htxt_RedefinesLeave);
+			// 
+			// Htxt_OSnippetsExcluded
+			// 
+			this.Htxt_OSnippetsExcluded.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_OSnippetsExcluded.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_OSnippetsExcluded.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_OSnippetsExcluded.Location = new System.Drawing.Point(270, 325);
+			this.Htxt_OSnippetsExcluded.Name = "Htxt_OSnippetsExcluded";
+			this.Htxt_OSnippetsExcluded.Size = new System.Drawing.Size(265, 23);
+			this.Htxt_OSnippetsExcluded.TabIndex = 23;
+			this.Htxt_OSnippetsExcluded.TextChanged += new System.EventHandler(this.Htxt_RedefinesTextChanged);
+			this.Htxt_OSnippetsExcluded.Enter += new System.EventHandler(this.Htxt_RedefinesEnter);
+			this.Htxt_OSnippetsExcluded.Leave += new System.EventHandler(this.Htxt_RedefinesLeave);
+			// 
+			// Htxt_OverlayExcluded
+			// 
+			this.Htxt_OverlayExcluded.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_OverlayExcluded.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_OverlayExcluded.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_OverlayExcluded.Location = new System.Drawing.Point(270, 63);
+			this.Htxt_OverlayExcluded.Name = "Htxt_OverlayExcluded";
+			this.Htxt_OverlayExcluded.Size = new System.Drawing.Size(265, 23);
+			this.Htxt_OverlayExcluded.TabIndex = 6;
+			this.Htxt_OverlayExcluded.TextChanged += new System.EventHandler(this.Htxt_RedefinesTextChanged);
+			this.Htxt_OverlayExcluded.Enter += new System.EventHandler(this.Htxt_RedefinesEnter);
+			this.Htxt_OverlayExcluded.Leave += new System.EventHandler(this.Htxt_RedefinesLeave);
+			// 
+			// Hlbl_Redefines
+			// 
+			this.Hlbl_Redefines.AutoSize = true;
+			this.Hlbl_Redefines.Location = new System.Drawing.Point(8, 649);
+			this.Hlbl_Redefines.Name = "Hlbl_Redefines";
+			this.Hlbl_Redefines.Size = new System.Drawing.Size(240, 15);
+			this.Hlbl_Redefines.TabIndex = 44;
+			this.Hlbl_Redefines.Text = "Redefine keys: (example: CapsLock>F18<all)";
 			// 
 			// Hlbl_TrayHoverMM
 			// 
@@ -4152,16 +4219,6 @@ namespace Mahou
 			this.Hlbl_ReselectCustoms.TabIndex = 26;
 			this.Hlbl_ReselectCustoms.Text = "Use reselect only in these convert selection hotkeys: (tTRSULCN)";
 			// 
-			// Htxt_OAutoSwitchExcluded
-			// 
-			this.Htxt_OAutoSwitchExcluded.BackColor = System.Drawing.Color.Orange;
-			this.Htxt_OAutoSwitchExcluded.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.Htxt_OAutoSwitchExcluded.ForeColor = System.Drawing.Color.LightCyan;
-			this.Htxt_OAutoSwitchExcluded.Location = new System.Drawing.Point(270, 354);
-			this.Htxt_OAutoSwitchExcluded.Name = "Htxt_OAutoSwitchExcluded";
-			this.Htxt_OAutoSwitchExcluded.Size = new System.Drawing.Size(265, 23);
-			this.Htxt_OAutoSwitchExcluded.TabIndex = 25;
-			// 
 			// Hlbl_OnlyAutoSwitchExcluded
 			// 
 			this.Hlbl_OnlyAutoSwitchExcluded.AutoSize = true;
@@ -4170,16 +4227,6 @@ namespace Mahou
 			this.Hlbl_OnlyAutoSwitchExcluded.Size = new System.Drawing.Size(251, 15);
 			this.Hlbl_OnlyAutoSwitchExcluded.TabIndex = 24;
 			this.Hlbl_OnlyAutoSwitchExcluded.Text = "Autoswitch excluded processes: ( | - separator)";
-			// 
-			// Htxt_OSnippetsExcluded
-			// 
-			this.Htxt_OSnippetsExcluded.BackColor = System.Drawing.Color.Orange;
-			this.Htxt_OSnippetsExcluded.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.Htxt_OSnippetsExcluded.ForeColor = System.Drawing.Color.LightCyan;
-			this.Htxt_OSnippetsExcluded.Location = new System.Drawing.Point(270, 325);
-			this.Htxt_OSnippetsExcluded.Name = "Htxt_OSnippetsExcluded";
-			this.Htxt_OSnippetsExcluded.Size = new System.Drawing.Size(265, 23);
-			this.Htxt_OSnippetsExcluded.TabIndex = 23;
 			// 
 			// Hlbl_OnlySnippetsExcluded
 			// 
@@ -4342,16 +4389,6 @@ namespace Mahou
 			0,
 			0});
 			// 
-			// Htxt_OverlayExcluded
-			// 
-			this.Htxt_OverlayExcluded.BackColor = System.Drawing.Color.Orange;
-			this.Htxt_OverlayExcluded.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.Htxt_OverlayExcluded.ForeColor = System.Drawing.Color.LightCyan;
-			this.Htxt_OverlayExcluded.Location = new System.Drawing.Point(270, 63);
-			this.Htxt_OverlayExcluded.Name = "Htxt_OverlayExcluded";
-			this.Htxt_OverlayExcluded.Size = new System.Drawing.Size(265, 23);
-			this.Htxt_OverlayExcluded.TabIndex = 6;
-			// 
 			// Hlbl_OverlayExcluded
 			// 
 			this.Hlbl_OverlayExcluded.AutoSize = true;
@@ -4414,7 +4451,7 @@ namespace Mahou
 			// 
 			// Hlbl_scrollpastcontent
 			// 
-			this.Hlbl_scrollpastcontent.Location = new System.Drawing.Point(234, 628);
+			this.Hlbl_scrollpastcontent.Location = new System.Drawing.Point(234, 658);
 			this.Hlbl_scrollpastcontent.Name = "Hlbl_scrollpastcontent";
 			this.Hlbl_scrollpastcontent.Size = new System.Drawing.Size(100, 23);
 			this.Hlbl_scrollpastcontent.TabIndex = 40;

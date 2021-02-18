@@ -2,20 +2,24 @@
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-
+using System.Collections.Generic;
 namespace Mahou {
 	/// <summary>
 	/// Low level hook.
 	/// </summary>
 	public static class LLHook {
+		public static DICT<Keys,Keys> redefines = new DICT<Keys, Keys>(/*
+			new []{Keys.CapsLock}, 
+			new []{Keys.F18}*/);
+		public static List<string> redefines_excl_mods = new List<string>()/*{"all"}*/;
 		public static bool _ACTIVE = false;
 		public static IntPtr _LLHook_ID = IntPtr.Zero;
 		public static WinAPI.LowLevelProc _LLHook_proc = LLHook.Callback;
 		static bool alt, alt_r, shift, shift_r, ctrl, ctrl_r, win, win_r;
 		static Action dhk_tray_act;
 		static string dhk_tray_hk, dhk_tray_hk_real;
-		static bool dhk_tray_wait;
-		static Timer dhk_timer;
+		static bool dhk_tray_wait, restarter_running = false;
+		static Timer dhk_timer, restarter;
 		public static void Set() {
 			if (!MahouUI.ENABLED) return;
 			if (_LLHook_ID != IntPtr.Zero)
@@ -26,6 +30,12 @@ namespace Mahou {
 					                                     WinAPI.GetModuleHandle(currModule.ModuleName), 0);
 			if (_LLHook_ID == IntPtr.Zero)
 				Logging.Log("Registering LLHook failed: " + Marshal.GetLastWin32Error(), 1);
+			restarter = new Timer();
+			restarter.Interval = 5000;
+			restarter.Tick += (_, __) => { Logging.Log("Planed LLHook restart"); restarter_running = true; Set(); };
+			if (!restarter_running) {
+				restarter.Start();
+			}
 		}
 		public static void UnSet() {
 			var r = WinAPI.UnhookWindowsHookEx(_LLHook_ID);
@@ -33,6 +43,9 @@ namespace Mahou {
 				_LLHook_ID = IntPtr.Zero;
 			else 
 				Logging.Log("BAD! LLHook unregister failed: " + System.Runtime.InteropServices.Marshal.GetLastWin32Error(), 1);
+			restarter.Stop();
+			restarter.Dispose();
+			restarter_running = false;
 		}
 		public static IntPtr Callback(int nCode, IntPtr wParam, IntPtr lParam) {
 			if (MMain.mahou == null || nCode < 0) return WinAPI.CallNextHookEx(_LLHook_ID, nCode, wParam, lParam);
@@ -53,6 +66,36 @@ namespace Mahou {
 				KMHook.skip_kbd_events++;
 			}
 			Debug.WriteLine("Alive" + vk + " :: " +wParam);
+			#region Redefines
+			if (redefines.len > 0) {
+				var modsstr = KMHook.GetModsStr(ctrl,ctrl_r,shift,shift_r,alt,alt_r,win,win_r).Replace("+"," ").Replace("  ", "").ToLower();
+				for (int i = 0; i != redefines.len; i++) {
+					if (Key == redefines[i].k) {
+						Logging.Log("[REDEF] > Redefined: " + redefines[i].k + " => " + redefines[i].v);
+						var rli = redefines_excl_mods[i].ToLower();
+						var redy = true;
+						if (rli == "all" && !(!shift && !alt && !ctrl && !win && !shift_r && !alt_r && !ctrl_r && !win_r)) {
+							redy = false;
+						} else {
+							var srli = rli.Split(' ');
+							for (int y = 0; y != srli.Length; y++) {
+								if (!String.IsNullOrEmpty(srli[y]) && modsstr.Contains(srli[y])) {
+									Logging.Log("[REDEF] > Contains the modifier: " + srli[y]);
+									redy = false;
+									break;
+								}
+							}
+						}
+						if (redy) {
+							KMHook.KeybdEvent(redefines[i].v, (wParam.ToInt32() == WinAPI.WM_KEYDOWN || wParam.ToInt32() == WinAPI.WM_SYSKEYDOWN) ? 0 : 2);
+							return (IntPtr)1;
+						} else {
+							Logging.Log("[REDEF] > Redefine cancelled: by mods: "+ redefines_excl_mods[i] + " ("+modsstr+")");
+						}
+					}
+				}
+			}
+			#endregion
 			#region Mahou.mm Tray Hotkeys
 			var x = new Tuple<bool, bool, bool, bool, bool, bool, bool, Tuple<bool, int>>(alt, alt_r, shift, shift_r, ctrl, ctrl_r, win, new Tuple<bool, int>(win_r, vk));
 //				Debug.WriteLine("x_hk: " + Hotkey.tray_hk_to_string(x));

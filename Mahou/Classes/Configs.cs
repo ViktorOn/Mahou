@@ -210,6 +210,7 @@ namespace Mahou {
         	CreateConfigsFile();
         	ReadFromDisk();
         	#region Hidden
+        	CheckString("Hidden", "Redefines", "");
         	CheckInt("Hidden", "TrayHoverMahouMM", "0");
         	CheckString("Hidden", "SymbolClear", "");
         	CheckInt("Hidden", "OverlayExcludedInterval", "2500");
