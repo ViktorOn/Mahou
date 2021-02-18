@@ -43,9 +43,11 @@ namespace Mahou {
 				_LLHook_ID = IntPtr.Zero;
 			else 
 				Logging.Log("BAD! LLHook unregister failed: " + System.Runtime.InteropServices.Marshal.GetLastWin32Error(), 1);
-			restarter.Stop();
-			restarter.Dispose();
-			restarter_running = false;
+			if (restarter_running) {
+				restarter.Stop();
+				restarter.Dispose();
+				restarter_running = false;
+			}
 		}
 		public static IntPtr Callback(int nCode, IntPtr wParam, IntPtr lParam) {
 			if (MMain.mahou == null || nCode < 0) return WinAPI.CallNextHookEx(_LLHook_ID, nCode, wParam, lParam);
