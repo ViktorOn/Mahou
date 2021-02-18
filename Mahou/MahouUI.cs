@@ -5485,7 +5485,9 @@ DEL ""ExtractASD.cmd""";
 		void Htxt_RedefinesEnter(object sender, EventArgs e) {
 			var t = (TextBox)sender;
 			t.Multiline = true;
+			var i = t.SelectionStart;
 			t.Text = t.Text.Replace("|", Environment.NewLine);
+			t.SelectionStart = i;
 			if (t.Lines.Length > 1) {
 				t.Height = (int)(5*24);
 				t.ScrollBars = ScrollBars.Vertical;
@@ -5493,7 +5495,9 @@ DEL ""ExtractASD.cmd""";
 		}
 		void Htxt_RedefinesLeave(object sender, EventArgs e) {
 			var t = (TextBox)sender;
+			var i = t.SelectionStart;
 			t.Text = t.Text.Replace(Environment.NewLine, "|");
+			t.SelectionStart = i;
 //			t.Height = 1;
 			t.Multiline = false;
 			t.ScrollBars = ScrollBars.None;
