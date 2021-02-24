@@ -30,6 +30,10 @@ namespace Mahou {
 					                                     WinAPI.GetModuleHandle(currModule.ModuleName), 0);
 			if (_LLHook_ID == IntPtr.Zero)
 				Logging.Log("Registering LLHook failed: " + Marshal.GetLastWin32Error(), 1);
+			if (restarter != null) {
+				restarter.Stop();
+				restarter.Dispose();
+			}
 			restarter = new Timer();
 			restarter.Interval = 5000;
 			restarter.Tick += (_, __) => { Logging.Log("Planed LLHook restart"); restarter_running = true; Set(); };
