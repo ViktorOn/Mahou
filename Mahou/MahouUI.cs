@@ -1925,8 +1925,8 @@ namespace Mahou {
 				UpdateSetControls(i, key, values[2]);
 			}
 		}
-		Tuple<int, Color, int> GetSnippetsCount(string snippets) {
-			if (String.IsNullOrEmpty(snippets)) return new Tuple<int, Color, int>(0, Color.Black, 0);
+		Tuple<int, Color, int, string> GetSnippetsCount(string snippets) {
+			if (String.IsNullOrEmpty(snippets)) return new Tuple<int, Color, int, string>(0, Color.Black, 0, "");
 			Logging.Log("Starting counting snippets...");
 			Stopwatch watch = null;
 			if (MahouUI.LoggingEnabled) {
@@ -1939,7 +1939,12 @@ namespace Mahou {
 			var ci = 0;
 			var cia = 0;
 			var cic = 0;
-			bool in_exp = false;
+			var cir = new bool[snippets.Length];
+			var ciar = new bool[snippets.Length];
+			var cicr = new bool[snippets.Length];
+			bool in_exp = false, ci_st = false;
+			var cil = -1;
+			var l = 0;
 			for (int k = 0; k < snippets.Length-1; k++) {
 				// Do not try to store snippets[k] & snippets[k+n] to string variable, that will be significally slower.
 				// with string.Concat() ~x15 slower, with string.Format() ~x45 slower.			
@@ -1949,24 +1954,42 @@ namespace Mahou {
 					k+= cml.Item2;
 					continue;
 				}
-				if(!in_exp && (snippets[k].Equals('-') && snippets[k+1].Equals('>')))
+				if(!in_exp && !ci_st && cil == -1 && (snippets[k].Equals('-') && snippets[k+1].Equals('>'))) {
+					ci_st = true;
 					ci++;
+					cil = l;
+					cir[cil] = true;
+				}
 				if (k+4 < snippets.Length) {
-					if(snippets[k].Equals('=') && snippets[k+1].Equals('=') &&
+					if(ci_st && !in_exp && snippets[k].Equals('=') && snippets[k+1].Equals('=') &&
 					   snippets[k+2].Equals('=') && snippets[k+3].Equals('=') &&
 					   snippets[k+4].Equals('>')) {
 						cia++;
+						ciar[cil] = true;
 						in_exp = true;
-					}
-					if(snippets[k].Equals('<') && snippets[k+1].Equals('=') &&
+						ci_st = false;
+					} 
+					if(in_exp && snippets[k].Equals('<') && snippets[k+1].Equals('=') &&
 					   snippets[k+2].Equals('=') && snippets[k+3].Equals('=') &&
 					   snippets[k+4].Equals('=')) {
 						cic++;
+						cicr[cil] = true;
 						in_exp = false;
+						cil = -1;
 					}
 				}
+				if (snippets[k] == '\n') {
+					l++;
+				}
 			}
+			var err = new StringBuilder();
 			Logging.Log("Snippets word count details: " + cic + ", " + cia + ", " + ci + "<com> " + com);
+			for(int k = 0; k != cir.Length; k++) {
+				if (cir[k] != ciar[k] || cir[k] != cicr[k] || ciar[k] != cicr[k]) {
+					err.Append((k+1)).Append(" ");
+				}
+			}
+			Debug.WriteLine("err " + err);
 			var result = ci+cia+cic;
 			if (MahouUI.LoggingEnabled) {
 				watch.Stop();
@@ -1974,8 +1997,8 @@ namespace Mahou {
 			}
 			Memory.Flush();
 			if (result %3 == 0)
-				return new Tuple<int, Color, int>(result/3, Color.Orange, com);
-			return new Tuple<int, Color, int>(ci , Color.Red, com);
+				return new Tuple<int, Color, int, string>(result/3, Color.Orange, com, "");
+			return new Tuple<int, Color, int, string>(ci , Color.Red, com, err.ToString());
 		}
 		void TestLayout(string layout, int id) {
 			if ((layout == Languages.English[Languages.Element.SwitchBetween] && MMain.Lang == Languages.Russian) ||
@@ -4269,6 +4292,17 @@ DEL ""ExtractASD.cmd""";
 			if (!isSnip && string.IsNullOrEmpty(snippets)) { return; }
 			var snipc = GetSnippetsCount(snippets);
 			target.Text = target.Text.Split(' ')[0] + " "  + snipc.Item1 + ((snipc.Item2 == Color.Red) ? "?" : "") + "(#" + snipc.Item3 +")";
+			var t = HelpMeUnderstand.GetToolTip(target);
+			if (t.StartsWith("ERR: ")) {
+				var fl = t.IndexOf('\n')+1;
+				var tn = t.Substring(fl,t.Length-fl);
+//				Debug.WriteLine("tn" + tn);
+				HelpMeUnderstand.SetToolTip(target, tn);
+			}
+			if (snipc.Item4 != "") {
+				t = HelpMeUnderstand.GetToolTip(target);
+				HelpMeUnderstand.SetToolTip(target, "ERR: " + snipc.Item4 + Environment.NewLine + t);
+			}
 			target.ForeColor = snipc.Item2; 
 			if (isSnip)
 				SnippetsCount = snipc.Item1;

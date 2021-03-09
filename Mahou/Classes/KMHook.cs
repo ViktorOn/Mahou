@@ -3861,14 +3861,14 @@ namespace Mahou {
 			string[]  bigs = new string[leng+1024];
 			if (String.IsNullOrEmpty(snippets)) return;
 			snippets = snippets.Replace("\r", "");
-			int last_exp_len = 0, ids = 0, idb = 0, add_alias = 0;
+			int ids = 0, idb = 0, add_alias = 0;
 			for (int k = 0; k < snippets.Length-6; k++) {
 				var com = SnippetsLineCommented(snippets, k);
 				if (com.Item1) {
 					k+=com.Item2; // skip commented line, speedup!
 					continue;
 				}
-				if ((last_exp_len <= 0 || last_exp_len-- == 0) && snippets[k].Equals('-') && snippets[k+1].Equals('>')) {
+				if (snippets[k].Equals('-') && snippets[k+1].Equals('>')) {
 					var len = -1;
 					var endl = snippets.IndexOf('\n', k+2);
 					if (endl==-1)
@@ -3914,7 +3914,6 @@ namespace Mahou {
 							break;
 						pyust.Append(pool[g]);
 					}
-					last_exp_len = pyust.Length;
 					if (add_alias != 0) {
 						while (add_alias != 0) {
 //							Debug.WriteLine("ADded exp alias: " +idb + ", ++ " + pyust);
@@ -3926,7 +3925,7 @@ namespace Mahou {
 						bigs[idb] = (pyust.ToString());
 						idb++;
 					}
-					k+=5;
+					k+=4+pyust.Length;
 				}
 			}
 			if (isSnip) {
