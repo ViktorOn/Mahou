@@ -2060,6 +2060,13 @@ namespace Mahou {
 								AS_IGN_fun();
 						    	return;
 							}
+							if (specificKey == 14 && ((Key == Keys.LMenu && ctrl) || (Key == Keys.LControlKey && alt)) &&
+							   !alt_r && !ctrl_r && !win && !win_r && !(keyAfterALT&&keyAfterCTRL)) {
+								Logging.Log("[SPKEY] > Changing layout by LCtrl+LAlt key.");
+								ChangeLayout();
+								AS_IGN_fun();
+						    	return;
+							}
 //							if (catched) {
 //			       			    if (Key == Keys.LMenu)
 //									DoSelf(()=>{ Thread.Sleep(150); KeybdEvent(Keys.LMenu, 0); KeybdEvent(Keys.LMenu, 2); });
@@ -2164,6 +2171,14 @@ namespace Mahou {
 							if (specificKey == 13 && ((Key == Keys.RShiftKey && shift) || (Key == Keys.LShiftKey && shift_r)) &&
 							   !alt && !alt_r && !ctrl_r && !ctrl && !win && !win_r) {
 								Logging.Log("[SPKEY] > Switching to specific layout by LShift+RShift key.");
+								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
+								matched = true;
+								AS_IGN_fun();
+						    	return;
+							}
+							if (specificKey == 14 && ((Key == Keys.LMenu && ctrl) || (Key == Keys.LControlKey && alt)) &&
+							    !alt_r && !ctrl_r && !win && !win_r && !(keyAfterALT&&keyAfterCTRL)) {
+								Logging.Log("[SPKEY] > Switching to specific layout by LCtrl+LAlt key.");
 								ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(speclayout).uId);
 								matched = true;
 								AS_IGN_fun();
@@ -3007,12 +3022,6 @@ namespace Mahou {
 					    clsNM == "ConsoleWindowClass" && (
 						MMain.mahou.HKCLast.VirtualKeyCode == (int)Keys.Pause))
 						backs++;
-					if (clsNM.Contains("Chrome_WidgetWin") || clsNM.Contains("MozillaWindowClass") || clsNM.Contains("IEFrame")) {
-						if (!String.IsNullOrEmpty(GetClipStr())) {
-							backs++;
-						}
-						RestoreClipBoard();
-					}
 				}
 				Debug.WriteLine(">> LC Aft. " + (MMain.locales.Length * 20));
 				Logging.Log("Deleting old word, with lenght of [" + YuKeys.Length + "].");
