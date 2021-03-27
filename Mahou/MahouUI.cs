@@ -5532,8 +5532,8 @@ DEL ""ExtractASD.cmd""";
 			var i = t.SelectionStart;
 			t.Text = t.Text.Replace(Environment.NewLine, "|");
 			t.SelectionStart = i;
-//			t.Height = 1;
-			t.Multiline = false;
+			t.Height = 24;
+//			t.Multiline = false;
 			t.ScrollBars = ScrollBars.None;
 		}
 		void Htxt_RedefinesTextChanged(object sender, EventArgs e) {
