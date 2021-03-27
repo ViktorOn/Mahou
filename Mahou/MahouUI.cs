@@ -4825,6 +4825,21 @@ DEL ""ExtractASD.cmd""";
 						event_bindings.Add(argx[0], () => menuhandle(argx[1], argx[2]));
 					}
 				}
+			} else if (act == "paste") {
+				var cl = NativeClipboard.GetText();
+				if (string.IsNullOrEmpty(cl)) {
+					cl = NativeClipboard.GetText(WinAPI.CF_HTMLFORMAT, false);
+					var st = "<!--StartFragment-->";
+					var s = cl.IndexOf(st)+st.Length;
+					var e = cl.IndexOf("<!--EndFragment-->");
+					cl = cl.Substring(s,e-s);
+				}
+				if (!string.IsNullOrEmpty(cl)) {
+					KMHook.lastClip = NativeClipboard.clip_get();
+					KMHook.SendModsUp(15);
+					KMHook.PasteText(cl);
+					KMHook.RestoreClipBoard();
+				}
 			} else {
 				MessageBox.Show("Unknown action: " + act, "No such action",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}

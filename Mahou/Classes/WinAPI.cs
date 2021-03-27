@@ -227,6 +227,7 @@ public static class WinAPI {
     public const uint CF_DSPBITMAP = 0x82;
     public const uint CF_DSPMETAFILEPICT = 0x83;
     public const uint CF_DSPENHMETAFILE = 0x8E;
+    public const uint CF_HTMLFORMAT = 49315;
     public const uint GMEM_DDESHARE = 0x2000;
     public const uint GMEM_MOVEABLE = 0x0002;
 	#endregion

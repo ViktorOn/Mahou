@@ -33,7 +33,7 @@ namespace Mahou {
 		public static uint last_switch_layout = 0;
 		static uint cs_layout_last = 0;
 		static string busy_on = "", lastLWClearReason = "";
-		static NativeClipboard.clip lastClip;
+		public static NativeClipboard.clip lastClip;
 		public static string symbolclear;
 		static List<Keys> tempNumpads = new List<Keys>();
 		static Keys preKey = Keys.None, prevKEY; //, seKeyDown = Keys.None, aseKeyDown = Keys.None;

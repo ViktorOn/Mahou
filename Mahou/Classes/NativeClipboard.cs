@@ -17,8 +17,8 @@ namespace Mahou
         /// Gets clipboard text if clipboard data contains text(CF_UNICODETEXT).
         /// </summary>
         /// <returns>string</returns>
-        public static string GetText()  { // Gets text data from clipboard
-            if (!WinAPI.IsClipboardFormatAvailable(WinAPI.CF_UNICODETEXT))
+        public static string GetText(uint format=WinAPI.CF_UNICODETEXT, bool wide=true)  { // Gets text data from clipboard
+            if (!WinAPI.IsClipboardFormatAvailable(format))
                 return null;
             int Tries = 0;
             var opened = false;
@@ -26,9 +26,12 @@ namespace Mahou
             while (true) {
                 ++Tries;
                 opened = WinAPI.OpenClipboard(IntPtr.Zero);
-                var hGlobal = WinAPI.GetClipboardData(WinAPI.CF_UNICODETEXT);
+                var hGlobal = WinAPI.GetClipboardData(format);
                 var lpwcstr = WinAPI.GlobalLock(hGlobal);
-                data = Marshal.PtrToStringUni(lpwcstr);
+                if (wide)
+                	data = Marshal.PtrToStringUni(lpwcstr);
+                else
+                	data = Marshal.PtrToStringAnsi(lpwcstr);
                 if (opened) {
                     WinAPI.GlobalUnlock(hGlobal);
                     break;
