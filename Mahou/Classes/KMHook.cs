@@ -784,6 +784,10 @@ namespace Mahou {
 				} else {
 					var strb = new StringBuilder(350);
 					WinAPI.GetClassName(hwnd, strb, strb.Capacity);
+					if (strb.ToString() == "Shell_InputSwitchTopLevelWindow") {
+						Logging.Log("[WND_CHANGE] > Ignore layout-select window "+hwnd);
+						return;
+					}
 					if (strb.ToString() == "ConsoleWindowClass" 
 					    //|| strb.ToString() == "Chrome_WidgetWin_1"
 					   ) {
