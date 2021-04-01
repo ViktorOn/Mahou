@@ -812,6 +812,13 @@ namespace Mahou {
 						ChangeToLayout(hwnd, MahouUI.GlobalLayout);
 			       	 }, 100);
 				}
+			if (ExcludedProgram(false, hwnd)) {
+				Logging.Log("[WinCh-HK] Disabled win-hotkeys.");
+				MMain.mahou.UnregisterHotkeys();
+			} else {
+				Logging.Log("[WinCh-HK] Enabled win-hotkeys.");
+				MMain.mahou.RegisterHotkeys();
+			}
 		}
 		#endregion
 		#region Functions/Struct
