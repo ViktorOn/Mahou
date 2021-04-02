@@ -2403,27 +2403,31 @@ DEL "+restartMahouPath;
 		/// Changes tray icon image to country flag based on current layout.
 		/// </summary>
 		void ChangeTrayIconToFlag(bool force = false) {
-			uint lcid = 0;
-			if (OneLayout)
-				lcid = GlobalLayout;
-			else if (!UseJKL || KMHook.JKLERR)
-				lcid = Locales.GetCurrentLocale();
-			else 
-				lcid = MahouUI.currentLayout;
-//			Debug.WriteLine("refresh?"+ (lastTrayFlagLayout != lcid || force));
-			if (lastTrayFlagLayout != lcid || force) {
-				RefreshFLAG(force);
-				var b = FLAG;
-				if (TrayText) b = ITEXT;
-				Icon flagicon;
-				if (FLAG != null)
-					flagicon = Icon.FromHandle(b.GetHicon());
+			try {
+				uint lcid = 0;
+				if (OneLayout)
+					lcid = GlobalLayout;
+				else if (!UseJKL || KMHook.JKLERR)
+					lcid = Locales.GetCurrentLocale();
 				else 
-					flagicon = Mahou.Properties.Resources.MahouTrayHD;
-				icon.trIcon.Icon = flagicon;
-				if (!force)
-					WinAPI.DestroyIcon(flagicon.Handle);
-				lastTrayFlagLayout = lcid;
+					lcid = MahouUI.currentLayout;
+	//			Debug.WriteLine("refresh?"+ (lastTrayFlagLayout != lcid || force));
+				if (lastTrayFlagLayout != lcid || force) {
+					RefreshFLAG(force);
+					var b = FLAG;
+					if (TrayText) b = ITEXT;
+					Icon flagicon;
+					if (FLAG != null)
+						flagicon = Icon.FromHandle(b.GetHicon());
+					else 
+						flagicon = Mahou.Properties.Resources.MahouTrayHD;
+					icon.trIcon.Icon = flagicon;
+					if (!force)
+						WinAPI.DestroyIcon(flagicon.Handle);
+					lastTrayFlagLayout = lcid;
+				}
+			} catch(Exception e) {
+				Logging.Log("[TrICON] > Can't change tray icon, error: " + e.Message + "\r\n" + e.StackTrace, 1);
 			}
 		}
 		/// <summary>
