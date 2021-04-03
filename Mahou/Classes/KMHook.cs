@@ -34,6 +34,7 @@ namespace Mahou {
 		static uint cs_layout_last = 0;
 		static string busy_on = "", lastLWClearReason = "";
 		public static NativeClipboard.clip lastClip;
+		public static string lastClipText;
 		public static string symbolclear;
 		static List<Keys> tempNumpads = new List<Keys>();
 		static Keys preKey = Keys.None, prevKEY; //, seKeyDown = Keys.None, aseKeyDown = Keys.None;
@@ -2874,10 +2875,13 @@ namespace Mahou {
 			var restore = special;
 			bool spc = true;
 			if (String.IsNullOrEmpty(restore)) {
-				NativeClipboard.clip_set(lastClip);
-				return true;
-				//restore = lastClipText;
-				//spc = false;
+				if (MahouUI.ClipBackOnlyText) {
+					restore = lastClipText;
+					spc = false;
+				} else {
+					NativeClipboard.clip_set(lastClip);
+					return true;
+				}
 			}
 			Logging.Log((spc?"Force-Text ":"")+"Restoring clipboard text: ["+restore+"].");
 			if (WaitForClip2BeFree()) {
@@ -2920,8 +2924,11 @@ namespace Mahou {
 			if (MMain.MahouActive() && MMain.mahou.ActiveControl is TextBox)
 				return (MMain.mahou.ActiveControl as TextBox).SelectedText;
 			//Logging.Log("Taking backup of clipboard text if possible.");
-			//lastClipText = NativeClipboard.GetText();
-			lastClip = NativeClipboard.clip_get();
+			if (MahouUI.ClipBackOnlyText) {
+				lastClipText = NativeClipboard.GetText();
+			} else {
+				lastClip = NativeClipboard.clip_get();
+			}
 			
 //			Thread.Sleep(50);
 //			if (!String.IsNullOrEmpty(lastClipText))

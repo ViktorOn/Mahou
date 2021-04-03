@@ -62,7 +62,7 @@ namespace Mahou {
 		#endregion
 		#region [Hidden]
 		public static bool __setlayoutForce, __setlayoutOnlyWM, nomemoryflush, LibreCtrlAltShiftV, __selection, __selection_nomouse, CycleCaseReset,
-							OVEXDisabled;
+							OVEXDisabled, ClipBackOnlyText;
 		public static string ReselectCustoms, AutoCopyTranslation = "", onlySnippetsExcluded = "", onlyAutoSwitchExcluded = "";
 		static string CycleCaseOrder = "TULSR", OverlayExcluded, tas, ncs;
 		static int OverlayExcludedInerval, arm;
@@ -1462,6 +1462,7 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hidden", "ChangeLayoutOnTrayLMB+DoubleClick", Hchk_LMBTrayLayoutChangeDC.Checked.ToString());
 			MMain.MyConfs.Write("Hidden", "TrayHoverMahouMM", Hnud_TrayHoverMM.Value.ToString());
 			MMain.MyConfs.Write("Hidden", "Redefines", Htxt_Redefines.Text);
+			MMain.MyConfs.Write("Hidden", "ClipBackOnlyText", Hchk_ClipBackOnlyText.Checked.ToString());
 //			NCS_destroy();
 		}
 		void loadHidden() {
@@ -1493,6 +1494,7 @@ namespace Mahou {
 			Hchk_LMBTrayLayoutChangeDC.Checked = MMain.MyConfs.ReadBool("Hidden", "ChangeLayoutOnTrayLMB+DoubleClick");
 			TrayHoverMahouMM = MMain.MyConfs.ReadInt("Hidden", "TrayHoverMahouMM");
 			Htxt_Redefines.Text = Redefines = MMain.MyConfs.Read("Hidden", "Redefines");
+			ClipBackOnlyText = Hchk_ClipBackOnlyText.Checked = MMain.MyConfs.ReadBool("Hidden", "ClipBackOnlyText");
 			parseRedefines();
 			Hnud_TrayHoverMM.Value = TrayHoverMahouMM;
 			if (!String.IsNullOrEmpty(OverlayExcluded)) {
@@ -4839,7 +4841,11 @@ DEL ""ExtractASD.cmd""";
 					cl = cl.Substring(s,e-s);
 				}
 				if (!string.IsNullOrEmpty(cl)) {
-					KMHook.lastClip = NativeClipboard.clip_get();
+					if (MahouUI.ClipBackOnlyText) {
+						KMHook.lastClipText = NativeClipboard.GetText();
+					} else {
+						KMHook.lastClip = NativeClipboard.clip_get();
+					}
 					KMHook.SendModsUp(15);
 					KMHook.PasteText(cl);
 					KMHook.RestoreClipBoard();
