@@ -24,6 +24,7 @@ namespace Mahou {
 			dbl_click, click, selfie, aftsingleAS, JKLERR, JKLERRchecking, last_snipANY,
 			_selis, _mselis, snipselshiftpressed, snipselwassel, 
 			AS_IGN_BACK, AS_IGN_DEL, AS_IGN_LS, was_back, was_del, was_ls, __setsnip;
+	    public static string AS_END_symbols = "";
 		public static System.Timers.Timer click_reset = new System.Timers.Timer();
 		public static Keys skip_up = Keys.None;
 		public static System.Timers.Timer JKLERRT = new System.Timers.Timer();
@@ -854,17 +855,32 @@ namespace Mahou {
 //					} else {
 	    			if (as_wrongs[i] == null)
 	    				break;
-						if (snip.Length == as_wrongs[i].Length) {
-							if (snil == as_wrongs[i].ToLowerInvariant()) {
+    					var withsymbol = false;
+    					var core = "";
+    					if (!String.IsNullOrEmpty(AS_END_symbols)) {
+	    					if (snip.Length == as_wrongs[i].Length+1) {
+    							for(int m = 0; m!= AS_END_symbols.Length; m++) {
+    								var asi = new StringBuilder(as_wrongs[i]).Append(AS_END_symbols[m]);
+    								if (snip == asi.ToString()) {
+    									Debug.WriteLine("Word: " +as_wrongs[i] + " with symbol ending: " + AS_END_symbols[m]);
+    									withsymbol = true;
+    									core = AS_END_symbols[m].ToString();
+    									break;
+	    							}
+    							}
+	    					}
+						}
+						if (snip.Length == as_wrongs[i].Length || withsymbol) {
+							if (snil == as_wrongs[i].ToLowerInvariant() || withsymbol) {
 	        					if (MahouUI.SoundOnAutoSwitch)
 	        						MahouUI.SoundPlay();
 	        					if (MahouUI.SoundOnAutoSwitch2)
 	        						MahouUI.SoundPlay(true);
-	        					corr = as_corrects[i];
+	        					corr = as_corrects[i]+core;
 	        					Logging.Log("[AS] --- snil guess ---");
 	        					var snl = WordGuessLayout(snil,0,false).Item2;
 	        					Logging.Log("[AS] --- asl guess ---");
-	        					var asl = WordGuessLayout(as_corrects[i],0,false).Item2;
+	        					var asl = WordGuessLayout(corr,0,false).Item2;
 	        					Logging.Log("[AS] --- end guesses ---");
         						if (snl == as_lword_layout) {
 		        					if (_hasKey(as_wrongs, as_corrects[i])) {

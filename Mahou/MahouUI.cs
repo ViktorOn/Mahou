@@ -1463,6 +1463,7 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hidden", "TrayHoverMahouMM", Hnud_TrayHoverMM.Value.ToString());
 			MMain.MyConfs.Write("Hidden", "Redefines", Htxt_Redefines.Text);
 			MMain.MyConfs.Write("Hidden", "ClipBackOnlyText", Hchk_ClipBackOnlyText.Checked.ToString());
+			MMain.MyConfs.Write("Hidden", "AutoSwitchEndingSymbols", Htxt_ASEndSymbols.Text);
 //			NCS_destroy();
 		}
 		void loadHidden() {
@@ -1495,6 +1496,7 @@ namespace Mahou {
 			TrayHoverMahouMM = MMain.MyConfs.ReadInt("Hidden", "TrayHoverMahouMM");
 			Htxt_Redefines.Text = Redefines = MMain.MyConfs.Read("Hidden", "Redefines");
 			ClipBackOnlyText = Hchk_ClipBackOnlyText.Checked = MMain.MyConfs.ReadBool("Hidden", "ClipBackOnlyText");
+			KMHook.AS_END_symbols = Htxt_ASEndSymbols.Text = MMain.MyConfs.Read("Hidden", "AutoSwitchEndingSymbols");
 			parseRedefines();
 			Hnud_TrayHoverMM.Value = TrayHoverMahouMM;
 			if (!String.IsNullOrEmpty(OverlayExcluded)) {

@@ -210,6 +210,7 @@ namespace Mahou {
         	CreateConfigsFile();
         	ReadFromDisk();
         	#region Hidden
+        	CheckString("Hidden", "AutoSwitchEndingSymbols", "");
         	CheckBool("Hidden", "ClipBackOnlyText", "false");
         	CheckString("Hidden", "Redefines", "");
         	CheckInt("Hidden", "TrayHoverMahouMM", "0");

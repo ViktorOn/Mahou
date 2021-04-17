@@ -331,6 +331,8 @@ namespace Mahou
 		private System.Windows.Forms.TextBox Htxt_Redefines;
 		private System.Windows.Forms.Label Hlbl_Redefines;
 		private System.Windows.Forms.CheckBox Hchk_ClipBackOnlyText;
+		private System.Windows.Forms.TextBox Htxt_ASEndSymbols;
+		private System.Windows.Forms.Label Hlbl_ASEndSymbols;
 		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
@@ -671,6 +673,8 @@ namespace Mahou
 			this.btn_Cancel = new System.Windows.Forms.Button();
 			this.btn_Apply = new System.Windows.Forms.Button();
 			this.HelpMeUnderstand = new System.Windows.Forms.ToolTip(this.components);
+			this.Htxt_ASEndSymbols = new System.Windows.Forms.TextBox();
+			this.Hlbl_ASEndSymbols = new System.Windows.Forms.Label();
 			this.tabs.SuspendLayout();
 			this.tab_functions.SuspendLayout();
 			this.tab_layouts.SuspendLayout();
@@ -956,7 +960,7 @@ namespace Mahou
 			this.chk_GuessKeyCodeFix.AutoSize = true;
 			this.chk_GuessKeyCodeFix.Location = new System.Drawing.Point(302, 114);
 			this.chk_GuessKeyCodeFix.Name = "chk_GuessKeyCodeFix";
-			this.chk_GuessKeyCodeFix.Size = new System.Drawing.Size(146, 19);
+			this.chk_GuessKeyCodeFix.Size = new System.Drawing.Size(147, 19);
 			this.chk_GuessKeyCodeFix.TabIndex = 20;
 			this.chk_GuessKeyCodeFix.Text = "Use guess key code fix.";
 			this.chk_GuessKeyCodeFix.UseVisualStyleBackColor = true;
@@ -967,7 +971,7 @@ namespace Mahou
 			this.lbl_TaskExist.ForeColor = System.Drawing.Color.RoyalBlue;
 			this.lbl_TaskExist.Location = new System.Drawing.Point(269, 9);
 			this.lbl_TaskExist.Name = "lbl_TaskExist";
-			this.lbl_TaskExist.Size = new System.Drawing.Size(14, 15);
+			this.lbl_TaskExist.Size = new System.Drawing.Size(13, 15);
 			this.lbl_TaskExist.TabIndex = 19;
 			this.lbl_TaskExist.Text = "T";
 			this.lbl_TaskExist.Visible = false;
@@ -1101,7 +1105,7 @@ namespace Mahou
 			this.chk_ReSelect.AutoSize = true;
 			this.chk_ReSelect.Location = new System.Drawing.Point(8, 147);
 			this.chk_ReSelect.Name = "chk_ReSelect";
-			this.chk_ReSelect.Size = new System.Drawing.Size(219, 19);
+			this.chk_ReSelect.Size = new System.Drawing.Size(220, 19);
 			this.chk_ReSelect.TabIndex = 3;
 			this.chk_ReSelect.Text = "Re-select text after convert selection.";
 			this.chk_ReSelect.UseVisualStyleBackColor = true;
@@ -1916,7 +1920,7 @@ namespace Mahou
 			this.chk_LangTTTransparentColor.AutoSize = true;
 			this.chk_LangTTTransparentColor.Location = new System.Drawing.Point(406, 52);
 			this.chk_LangTTTransparentColor.Name = "chk_LangTTTransparentColor";
-			this.chk_LangTTTransparentColor.Size = new System.Drawing.Size(118, 19);
+			this.chk_LangTTTransparentColor.Size = new System.Drawing.Size(117, 19);
 			this.chk_LangTTTransparentColor.TabIndex = 3;
 			this.chk_LangTTTransparentColor.Text = "Transparent color";
 			this.chk_LangTTTransparentColor.UseVisualStyleBackColor = true;
@@ -2143,7 +2147,7 @@ namespace Mahou
 			this.chk_SelectedTextGetMoreTries.AutoSize = true;
 			this.chk_SelectedTextGetMoreTries.Location = new System.Drawing.Point(8, 182);
 			this.chk_SelectedTextGetMoreTries.Name = "chk_SelectedTextGetMoreTries";
-			this.chk_SelectedTextGetMoreTries.Size = new System.Drawing.Size(206, 19);
+			this.chk_SelectedTextGetMoreTries.Size = new System.Drawing.Size(207, 19);
 			this.chk_SelectedTextGetMoreTries.TabIndex = 16;
 			this.chk_SelectedTextGetMoreTries.Text = "Use more tries to get selected text:";
 			this.chk_SelectedTextGetMoreTries.UseVisualStyleBackColor = true;
@@ -2334,7 +2338,7 @@ namespace Mahou
 			this.lbl_ExcludedPrograms.AutoSize = true;
 			this.lbl_ExcludedPrograms.Location = new System.Drawing.Point(20, 0);
 			this.lbl_ExcludedPrograms.Name = "lbl_ExcludedPrograms";
-			this.lbl_ExcludedPrograms.Size = new System.Drawing.Size(111, 15);
+			this.lbl_ExcludedPrograms.Size = new System.Drawing.Size(112, 15);
 			this.lbl_ExcludedPrograms.TabIndex = 25;
 			this.lbl_ExcludedPrograms.Text = "Excluded programs:";
 			// 
@@ -2343,7 +2347,7 @@ namespace Mahou
 			this.chk_Change1KeyL.AutoSize = true;
 			this.chk_Change1KeyL.Location = new System.Drawing.Point(185, 0);
 			this.chk_Change1KeyL.Name = "chk_Change1KeyL";
-			this.chk_Change1KeyL.Size = new System.Drawing.Size(243, 19);
+			this.chk_Change1KeyL.Size = new System.Drawing.Size(244, 19);
 			this.chk_Change1KeyL.TabIndex = 26;
 			this.chk_Change1KeyL.Text = "Change layout by 1 key even in excluded.";
 			this.chk_Change1KeyL.UseVisualStyleBackColor = true;
@@ -2760,7 +2764,7 @@ namespace Mahou
 			this.chk_SndSnippets2.AutoSize = true;
 			this.chk_SndSnippets2.Location = new System.Drawing.Point(6, 40);
 			this.chk_SndSnippets2.Name = "chk_SndSnippets2";
-			this.chk_SndSnippets2.Size = new System.Drawing.Size(149, 19);
+			this.chk_SndSnippets2.Size = new System.Drawing.Size(150, 19);
 			this.chk_SndSnippets2.TabIndex = 3;
 			this.chk_SndSnippets2.Text = "On Snippets expansion.";
 			this.chk_SndSnippets2.UseVisualStyleBackColor = true;
@@ -2855,7 +2859,7 @@ namespace Mahou
 			this.chk_SndSnippets.AutoSize = true;
 			this.chk_SndSnippets.Location = new System.Drawing.Point(6, 40);
 			this.chk_SndSnippets.Name = "chk_SndSnippets";
-			this.chk_SndSnippets.Size = new System.Drawing.Size(149, 19);
+			this.chk_SndSnippets.Size = new System.Drawing.Size(150, 19);
 			this.chk_SndSnippets.TabIndex = 3;
 			this.chk_SndSnippets.Text = "On Snippets expansion.";
 			this.chk_SndSnippets.UseVisualStyleBackColor = true;
@@ -3037,7 +3041,7 @@ namespace Mahou
 			this.lbl_LPTrasparency.AutoSize = true;
 			this.lbl_LPTrasparency.Location = new System.Drawing.Point(17, 58);
 			this.lbl_LPTrasparency.Name = "lbl_LPTrasparency";
-			this.lbl_LPTrasparency.Size = new System.Drawing.Size(80, 15);
+			this.lbl_LPTrasparency.Size = new System.Drawing.Size(79, 15);
 			this.lbl_LPTrasparency.TabIndex = 26;
 			this.lbl_LPTrasparency.Text = "Transparency:";
 			// 
@@ -3197,7 +3201,7 @@ namespace Mahou
 			this.lbl_TrTitleFont.AutoSize = true;
 			this.lbl_TrTitleFont.Location = new System.Drawing.Point(338, 81);
 			this.lbl_TrTitleFont.Name = "lbl_TrTitleFont";
-			this.lbl_TrTitleFont.Size = new System.Drawing.Size(60, 15);
+			this.lbl_TrTitleFont.Size = new System.Drawing.Size(59, 15);
 			this.lbl_TrTitleFont.TabIndex = 50;
 			this.lbl_TrTitleFont.Text = "Title Font:";
 			// 
@@ -3234,7 +3238,7 @@ namespace Mahou
 			this.lbl_TrLanguages.AutoSize = true;
 			this.lbl_TrLanguages.Location = new System.Drawing.Point(6, 98);
 			this.lbl_TrLanguages.Name = "lbl_TrLanguages";
-			this.lbl_TrLanguages.Size = new System.Drawing.Size(114, 15);
+			this.lbl_TrLanguages.Size = new System.Drawing.Size(113, 15);
 			this.lbl_TrLanguages.TabIndex = 46;
 			this.lbl_TrLanguages.Text = "Translate languages:";
 			// 
@@ -3359,7 +3363,7 @@ namespace Mahou
 			this.lbl_TrTransparency.AutoSize = true;
 			this.lbl_TrTransparency.Location = new System.Drawing.Point(8, 48);
 			this.lbl_TrTransparency.Name = "lbl_TrTransparency";
-			this.lbl_TrTransparency.Size = new System.Drawing.Size(80, 15);
+			this.lbl_TrTransparency.Size = new System.Drawing.Size(79, 15);
 			this.lbl_TrTransparency.TabIndex = 28;
 			this.lbl_TrTransparency.Text = "Transparency:";
 			// 
@@ -3410,7 +3414,7 @@ namespace Mahou
 			this.chk_andPROXY2.AutoSize = true;
 			this.chk_andPROXY2.Location = new System.Drawing.Point(91, 22);
 			this.chk_andPROXY2.Name = "chk_andPROXY2";
-			this.chk_andPROXY2.Size = new System.Drawing.Size(79, 19);
+			this.chk_andPROXY2.Size = new System.Drawing.Size(80, 19);
 			this.chk_andPROXY2.TabIndex = 11;
 			this.chk_andPROXY2.Text = "(+[Proxy])";
 			this.chk_andPROXY2.UseVisualStyleBackColor = true;
@@ -3447,7 +3451,7 @@ namespace Mahou
 			this.chk_rHtxt.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.chk_rHtxt.Location = new System.Drawing.Point(268, 22);
 			this.chk_rHtxt.Name = "chk_rHtxt";
-			this.chk_rHtxt.Size = new System.Drawing.Size(78, 19);
+			this.chk_rHtxt.Size = new System.Drawing.Size(79, 19);
 			this.chk_rHtxt.TabIndex = 12;
 			this.chk_rHtxt.Text = "history.txt";
 			this.chk_rHtxt.UseVisualStyleBackColor = true;
@@ -3471,7 +3475,7 @@ namespace Mahou
 			this.chk_rStxt.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.chk_rStxt.Location = new System.Drawing.Point(176, 22);
 			this.chk_rStxt.Name = "chk_rStxt";
-			this.chk_rStxt.Size = new System.Drawing.Size(86, 19);
+			this.chk_rStxt.Size = new System.Drawing.Size(87, 19);
 			this.chk_rStxt.TabIndex = 10;
 			this.chk_rStxt.Text = "snippets.txt";
 			this.chk_rStxt.UseVisualStyleBackColor = true;
@@ -3551,7 +3555,7 @@ namespace Mahou
 			this.chk_andPROXY.AutoSize = true;
 			this.chk_andPROXY.Location = new System.Drawing.Point(92, 22);
 			this.chk_andPROXY.Name = "chk_andPROXY";
-			this.chk_andPROXY.Size = new System.Drawing.Size(79, 19);
+			this.chk_andPROXY.Size = new System.Drawing.Size(80, 19);
 			this.chk_andPROXY.TabIndex = 10;
 			this.chk_andPROXY.Text = "(+[Proxy])";
 			this.chk_andPROXY.UseVisualStyleBackColor = true;
@@ -3614,7 +3618,7 @@ namespace Mahou
 			this.chk_Htxt.AutoSize = true;
 			this.chk_Htxt.Location = new System.Drawing.Point(268, 22);
 			this.chk_Htxt.Name = "chk_Htxt";
-			this.chk_Htxt.Size = new System.Drawing.Size(78, 19);
+			this.chk_Htxt.Size = new System.Drawing.Size(79, 19);
 			this.chk_Htxt.TabIndex = 3;
 			this.chk_Htxt.Text = "history.txt";
 			this.chk_Htxt.UseVisualStyleBackColor = true;
@@ -3636,7 +3640,7 @@ namespace Mahou
 			this.chk_Stxt.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.chk_Stxt.Location = new System.Drawing.Point(176, 22);
 			this.chk_Stxt.Name = "chk_Stxt";
-			this.chk_Stxt.Size = new System.Drawing.Size(86, 19);
+			this.chk_Stxt.Size = new System.Drawing.Size(87, 19);
 			this.chk_Stxt.TabIndex = 1;
 			this.chk_Stxt.Text = "snippets.txt";
 			this.chk_Stxt.UseVisualStyleBackColor = true;
@@ -3657,7 +3661,7 @@ namespace Mahou
 			this.chk_ZxZ.AutoSize = true;
 			this.chk_ZxZ.Location = new System.Drawing.Point(487, 41);
 			this.chk_ZxZ.Name = "chk_ZxZ";
-			this.chk_ZxZ.Size = new System.Drawing.Size(55, 19);
+			this.chk_ZxZ.Size = new System.Drawing.Size(56, 19);
 			this.chk_ZxZ.TabIndex = 12;
 			this.chk_ZxZ.Text = "0x0.st";
 			this.chk_ZxZ.UseVisualStyleBackColor = true;
@@ -3925,6 +3929,8 @@ namespace Mahou
 			// 
 			this.tab_Hidden.AutoScroll = true;
 			this.tab_Hidden.BackColor = System.Drawing.Color.DarkSlateGray;
+			this.tab_Hidden.Controls.Add(this.Htxt_ASEndSymbols);
+			this.tab_Hidden.Controls.Add(this.Hlbl_ASEndSymbols);
 			this.tab_Hidden.Controls.Add(this.Hchk_ClipBackOnlyText);
 			this.tab_Hidden.Controls.Add(this.Htxt_OSnippetsExcluded);
 			this.tab_Hidden.Controls.Add(this.Htxt_Redefines);
@@ -4045,7 +4051,7 @@ namespace Mahou
 			this.Hlbl_Redefines.AutoSize = true;
 			this.Hlbl_Redefines.Location = new System.Drawing.Point(8, 649);
 			this.Hlbl_Redefines.Name = "Hlbl_Redefines";
-			this.Hlbl_Redefines.Size = new System.Drawing.Size(240, 15);
+			this.Hlbl_Redefines.Size = new System.Drawing.Size(241, 15);
 			this.Hlbl_Redefines.TabIndex = 44;
 			this.Hlbl_Redefines.Text = "Redefine keys: (example: CapsLock>F18<all)";
 			// 
@@ -4083,7 +4089,7 @@ namespace Mahou
 			this.Hchk_LMBTrayLayoutChangeDC.AutoSize = true;
 			this.Hchk_LMBTrayLayoutChangeDC.Location = new System.Drawing.Point(8, 197);
 			this.Hchk_LMBTrayLayoutChangeDC.Name = "Hchk_LMBTrayLayoutChangeDC";
-			this.Hchk_LMBTrayLayoutChangeDC.Size = new System.Drawing.Size(450, 19);
+			this.Hchk_LMBTrayLayoutChangeDC.Size = new System.Drawing.Size(448, 19);
 			this.Hchk_LMBTrayLayoutChangeDC.TabIndex = 41;
 			this.Hchk_LMBTrayLayoutChangeDC.Text = "[LMB-Tray-Mod] Double Left Click on Tray toggles Mahou window. (only with ↑)";
 			this.Hchk_LMBTrayLayoutChangeDC.UseVisualStyleBackColor = true;
@@ -4132,7 +4138,7 @@ namespace Mahou
 			this.Hlbl_AutoSwitchIngoreRules.AutoSize = true;
 			this.Hlbl_AutoSwitchIngoreRules.Location = new System.Drawing.Point(8, 500);
 			this.Hlbl_AutoSwitchIngoreRules.Name = "Hlbl_AutoSwitchIngoreRules";
-			this.Hlbl_AutoSwitchIngoreRules.Size = new System.Drawing.Size(416, 15);
+			this.Hlbl_AutoSwitchIngoreRules.Size = new System.Drawing.Size(415, 15);
 			this.Hlbl_AutoSwitchIngoreRules.TabIndex = 36;
 			this.Hlbl_AutoSwitchIngoreRules.Text = "AutoSwitch ignore rules ([S]pace [W]indow [M]ouse [C]aret [L]ayout [T]imer):";
 			// 
@@ -4213,7 +4219,7 @@ namespace Mahou
 			this.Hlbl_CycleCaseOrder.AutoSize = true;
 			this.Hlbl_CycleCaseOrder.Location = new System.Drawing.Point(10, 414);
 			this.Hlbl_CycleCaseOrder.Name = "Hlbl_CycleCaseOrder";
-			this.Hlbl_CycleCaseOrder.Size = new System.Drawing.Size(362, 15);
+			this.Hlbl_CycleCaseOrder.Size = new System.Drawing.Size(361, 15);
 			this.Hlbl_CycleCaseOrder.TabIndex = 28;
 			this.Hlbl_CycleCaseOrder.Text = "Cycle Case Hotkey order: ([T]itle [U]pper [L]ower [S]wap [R]andom)";
 			// 
@@ -4232,7 +4238,7 @@ namespace Mahou
 			this.Hlbl_ReselectCustoms.AutoSize = true;
 			this.Hlbl_ReselectCustoms.Location = new System.Drawing.Point(10, 385);
 			this.Hlbl_ReselectCustoms.Name = "Hlbl_ReselectCustoms";
-			this.Hlbl_ReselectCustoms.Size = new System.Drawing.Size(345, 15);
+			this.Hlbl_ReselectCustoms.Size = new System.Drawing.Size(344, 15);
 			this.Hlbl_ReselectCustoms.TabIndex = 26;
 			this.Hlbl_ReselectCustoms.Text = "Use reselect only in these convert selection hotkeys: (tTRSULCN)";
 			// 
@@ -4241,7 +4247,7 @@ namespace Mahou
 			this.Hlbl_OnlyAutoSwitchExcluded.AutoSize = true;
 			this.Hlbl_OnlyAutoSwitchExcluded.Location = new System.Drawing.Point(9, 356);
 			this.Hlbl_OnlyAutoSwitchExcluded.Name = "Hlbl_OnlyAutoSwitchExcluded";
-			this.Hlbl_OnlyAutoSwitchExcluded.Size = new System.Drawing.Size(251, 15);
+			this.Hlbl_OnlyAutoSwitchExcluded.Size = new System.Drawing.Size(252, 15);
 			this.Hlbl_OnlyAutoSwitchExcluded.TabIndex = 24;
 			this.Hlbl_OnlyAutoSwitchExcluded.Text = "Autoswitch excluded processes: ( | - separator)";
 			// 
@@ -4250,7 +4256,7 @@ namespace Mahou
 			this.Hlbl_OnlySnippetsExcluded.AutoSize = true;
 			this.Hlbl_OnlySnippetsExcluded.Location = new System.Drawing.Point(9, 327);
 			this.Hlbl_OnlySnippetsExcluded.Name = "Hlbl_OnlySnippetsExcluded";
-			this.Hlbl_OnlySnippetsExcluded.Size = new System.Drawing.Size(236, 15);
+			this.Hlbl_OnlySnippetsExcluded.Size = new System.Drawing.Size(237, 15);
 			this.Hlbl_OnlySnippetsExcluded.TabIndex = 22;
 			this.Hlbl_OnlySnippetsExcluded.Text = "Snippets excluded processes: ( | - separator)";
 			// 
@@ -4297,7 +4303,7 @@ namespace Mahou
 			this.Hchk_LibrePasteFixCASV.AutoSize = true;
 			this.Hchk_LibrePasteFixCASV.Location = new System.Drawing.Point(8, 244);
 			this.Hchk_LibrePasteFixCASV.Name = "Hchk_LibrePasteFixCASV";
-			this.Hchk_LibrePasteFixCASV.Size = new System.Drawing.Size(260, 19);
+			this.Hchk_LibrePasteFixCASV.Size = new System.Drawing.Size(261, 19);
 			this.Hchk_LibrePasteFixCASV.TabIndex = 15;
 			this.Hchk_LibrePasteFixCASV.Text = "Libre Office fix, paste using Ctrl+Alt+Shift+V";
 			this.Hchk_LibrePasteFixCASV.UseVisualStyleBackColor = true;
@@ -4317,7 +4323,7 @@ namespace Mahou
 			this.Hlbl_AutoCopyTranslation.AutoSize = true;
 			this.Hlbl_AutoCopyTranslation.Location = new System.Drawing.Point(8, 221);
 			this.Hlbl_AutoCopyTranslation.Name = "Hlbl_AutoCopyTranslation";
-			this.Hlbl_AutoCopyTranslation.Size = new System.Drawing.Size(471, 15);
+			this.Hlbl_AutoCopyTranslation.Size = new System.Drawing.Size(470, 15);
 			this.Hlbl_AutoCopyTranslation.TabIndex = 13;
 			this.Hlbl_AutoCopyTranslation.Text = "[Translator] Auto Copy to Clipboard translation (only one lang short code, e.g. j" +
 	"a/en/ru):";
@@ -4327,7 +4333,7 @@ namespace Mahou
 			this.Hchk_LMBTrayLayoutChange.AutoSize = true;
 			this.Hchk_LMBTrayLayoutChange.Location = new System.Drawing.Point(8, 175);
 			this.Hchk_LMBTrayLayoutChange.Name = "Hchk_LMBTrayLayoutChange";
-			this.Hchk_LMBTrayLayoutChange.Size = new System.Drawing.Size(479, 19);
+			this.Hchk_LMBTrayLayoutChange.Size = new System.Drawing.Size(477, 19);
 			this.Hchk_LMBTrayLayoutChange.TabIndex = 12;
 			this.Hchk_LMBTrayLayoutChange.Text = "Left Click on Tray Icon changes layout (uses Alt+Tab to go back to your previous " +
 	"app).";
@@ -4372,7 +4378,7 @@ namespace Mahou
 			this.Hlbl_OverlayExcludedInterval.AutoSize = true;
 			this.Hlbl_OverlayExcludedInterval.Location = new System.Drawing.Point(8, 95);
 			this.Hlbl_OverlayExcludedInterval.Name = "Hlbl_OverlayExcludedInterval";
-			this.Hlbl_OverlayExcludedInterval.Size = new System.Drawing.Size(166, 15);
+			this.Hlbl_OverlayExcludedInterval.Size = new System.Drawing.Size(167, 15);
 			this.Hlbl_OverlayExcludedInterval.TabIndex = 8;
 			this.Hlbl_OverlayExcludedInterval.Text = "Overlay Excluded Interval(ms):";
 			// 
@@ -4420,7 +4426,7 @@ namespace Mahou
 			this.Hchk_NCStray.AutoSize = true;
 			this.Hchk_NCStray.Location = new System.Drawing.Point(8, 37);
 			this.Hchk_NCStray.Name = "Hchk_NCStray";
-			this.Hchk_NCStray.Size = new System.Drawing.Size(184, 19);
+			this.Hchk_NCStray.Size = new System.Drawing.Size(183, 19);
 			this.Hchk_NCStray.TabIndex = 4;
 			this.Hchk_NCStray.Text = "Num/Caps/Scroll Lock in Tray";
 			this.Hchk_NCStray.UseVisualStyleBackColor = true;
@@ -4468,7 +4474,7 @@ namespace Mahou
 			// 
 			// Hlbl_scrollpastcontent
 			// 
-			this.Hlbl_scrollpastcontent.Location = new System.Drawing.Point(234, 677);
+			this.Hlbl_scrollpastcontent.Location = new System.Drawing.Point(234, 711);
 			this.Hlbl_scrollpastcontent.Name = "Hlbl_scrollpastcontent";
 			this.Hlbl_scrollpastcontent.Size = new System.Drawing.Size(100, 23);
 			this.Hlbl_scrollpastcontent.TabIndex = 40;
@@ -4513,6 +4519,25 @@ namespace Mahou
 			this.HelpMeUnderstand.ShowAlways = true;
 			this.HelpMeUnderstand.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			this.HelpMeUnderstand.Popup += new System.Windows.Forms.PopupEventHandler(this.HelpMeUnderstandPopup);
+			// 
+			// Htxt_ASEndSymbols
+			// 
+			this.Htxt_ASEndSymbols.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_ASEndSymbols.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_ASEndSymbols.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_ASEndSymbols.Location = new System.Drawing.Point(324, 696);
+			this.Htxt_ASEndSymbols.Name = "Htxt_ASEndSymbols";
+			this.Htxt_ASEndSymbols.Size = new System.Drawing.Size(211, 23);
+			this.Htxt_ASEndSymbols.TabIndex = 48;
+			// 
+			// Hlbl_ASEndSymbols
+			// 
+			this.Hlbl_ASEndSymbols.AutoSize = true;
+			this.Hlbl_ASEndSymbols.Location = new System.Drawing.Point(8, 700);
+			this.Hlbl_ASEndSymbols.Name = "Hlbl_ASEndSymbols";
+			this.Hlbl_ASEndSymbols.Size = new System.Drawing.Size(274, 15);
+			this.Hlbl_ASEndSymbols.TabIndex = 47;
+			this.Hlbl_ASEndSymbols.Text = "AutoSwitch possible end symbols:(empty=disable)";
 			// 
 			// MahouUI
 			// 
