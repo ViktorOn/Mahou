@@ -5003,15 +5003,17 @@ DEL ""ExtractASD.cmd""";
 				if (e>=maxentries) { break; }
 				FileAttributes attr;
 				bool directory = false;
-				string ext = "";
+				string ext = "", n = "";
 				if (File.Exists(fidi)) {
 					var inf = new FileInfo(fidi);
 					attr = inf.Attributes;
 					ext = inf.Extension;
+					n = inf.Name;
 				} else if (Directory.Exists(fidi)) {
 					var inf = new DirectoryInfo(fidi);
 					attr = inf.Attributes;
 					directory = true;
+					n = inf.Name;
 				} else { continue; }
 				if ((attr & FileAttributes.Hidden) == FileAttributes.Hidden) { continue; }
 				if (!directory) {
@@ -5031,7 +5033,7 @@ DEL ""ExtractASD.cmd""";
 							continue;
 					}
 				}
-				var new_root = new ToolStripMenuItem(fidi,null);
+				var new_root = new ToolStripMenuItem(n,null);
 				new_root.MouseDown += (_, __) => __lopen(fidi, directory ? "DIR" : ext, __.Button == MouseButtons.Right);
 				if (directory)
 					dirparser(ref new_root, fidi, max_depth, allow_types, maxentries, this_depth+1);
