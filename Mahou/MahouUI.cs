@@ -4997,22 +4997,29 @@ DEL ""ExtractASD.cmd""";
 			var dirs = Directory.EnumerateDirectories(dir);
 			var fils = Directory.EnumerateFiles(dir);
 			var fidis = new List<string>();
-			fidis.AddRange(dirs);
-			fidis.AddRange(fils);
+			foreach(var d in dirs) {
+				fidis.Add("D^"+d);
+			}
+			foreach(var f in fils) {
+				fidis.Add("F^"+f);
+			}
 			fidis.Sort();
 			int e = 0;
+			List<ToolStripMenuItem> _files = new List<ToolStripMenuItem>();
 			foreach (var fidi in fidis) {
 				if (e>=maxentries) { break; }
 				FileAttributes attr;
-				bool directory = false;
+				string t = fidi.Substring(0,2);
+				var fd =  fidi.Substring(2);
+				bool directory = t=="D^";
 				string ext = "", n = "";
-				if (File.Exists(fidi)) {
-					var inf = new FileInfo(fidi);
+				if (t=="F^") {
+					var inf = new FileInfo(fd);
 					attr = inf.Attributes;
 					ext = inf.Extension;
 					n = inf.Name;
-				} else if (Directory.Exists(fidi)) {
-					var inf = new DirectoryInfo(fidi);
+				} else if (directory) {
+					var inf = new DirectoryInfo(fd);
 					attr = inf.Attributes;
 					directory = true;
 					n = inf.Name;
@@ -5040,12 +5047,13 @@ DEL ""ExtractASD.cmd""";
 					if (file_icons_cache.ContainsKey(ext)) {
 						img = file_icons_cache[ext];
 					} else {
-						var b = Icon.ExtractAssociatedIcon(fidi).ToBitmap();
+						var b = Icon.ExtractAssociatedIcon(fd).ToBitmap();
 						img = Image.FromHbitmap(b.GetHbitmap());
 						b.Dispose();
 						file_icons_cache[ext] = img;
 					}
-				} else {
+				} 
+				else {
 					if (file_icons_cache.ContainsKey("<DIRECTORY>")) {
 						img = file_icons_cache["<DIRECTORY>"];
 					} else {
@@ -5064,11 +5072,17 @@ DEL ""ExtractASD.cmd""";
 					}
 				}
 				var new_root = new ToolStripMenuItem(n,img);
-				new_root.MouseDown += (_, __) => __lopen(fidi, directory ? "DIR" : ext, __.Button == MouseButtons.Right);
-				if (directory)
-					dirparser(ref new_root, fidi, max_depth, allow_types, maxentries, this_depth+1);
-				root.DropDownItems.Add(new_root);
+				new_root.MouseDown += (_, __) => __lopen(fd, directory ? "DIR" : ext, __.Button == MouseButtons.Right);
+				if (directory) {
+					dirparser(ref new_root, fd, max_depth, allow_types, maxentries, this_depth+1);
+					root.DropDownItems.Add(new_root);
+				} else {
+					_files.Add(new_root);
+				}
 				e++;
+			}
+			if (_files.Count>0) {
+				root.DropDownItems.AddRange(_files.ToArray());
 			}
 		}
 		#endregion
