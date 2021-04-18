@@ -4935,7 +4935,7 @@ DEL ""ExtractASD.cmd""";
 					menuhandle(acts, arg.ToString());
 					continue;
 				}
-				if (acts == "dir") {
+				if (acts.ToLower() == "dir") {
 					try {
 						var argts = arg.ToString();
 						string dir = argts, allow_types = ".*";
