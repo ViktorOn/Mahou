@@ -4989,7 +4989,9 @@ DEL ""ExtractASD.cmd""";
 			};
 			wfm.Start();
 		}
+		static Dictionary<string, Image> file_icons_cache = new Dictionary<string, Image>();
 		static void dirparser(ref ToolStripMenuItem root, string dir, int max_depth, string allow_types, int maxentries, int this_depth=-1) {
+			Debug.WriteLine("parsing: " +dir);
 			if (this_depth == -1) { this_depth = 0; }
 			if (this_depth > max_depth) { return; }
 			var dirs = Directory.EnumerateDirectories(dir);
@@ -5033,7 +5035,35 @@ DEL ""ExtractASD.cmd""";
 							continue;
 					}
 				}
-				var new_root = new ToolStripMenuItem(n,null);
+				Image img = null;
+				if (!directory) {
+					if (file_icons_cache.ContainsKey(ext)) {
+						img = file_icons_cache[ext];
+					} else {
+						var b = Icon.ExtractAssociatedIcon(fidi).ToBitmap();
+						img = Image.FromHbitmap(b.GetHbitmap());
+						b.Dispose();
+						file_icons_cache[ext] = img;
+					}
+				} else {
+					if (file_icons_cache.ContainsKey("<DIRECTORY>")) {
+						img = file_icons_cache["<DIRECTORY>"];
+					} else {
+				        IntPtr large;
+				        IntPtr small;
+				        WinAPI.ExtractIconEx("shell32.dll", 3, out large, out small, 1);
+				        try { 
+				        	var b = Icon.FromHandle(large != IntPtr.Zero ? large : small).ToBitmap();
+				        	img = Image.FromHbitmap(b.GetHbitmap());
+				        	b.Dispose();
+				        }
+				        catch (Exception ee) {
+				        	Logging.Log("Can't extract icon..." +ee.Message + ee.StackTrace, 1);
+				        }
+						file_icons_cache["<DIRECTORY>"] = img;
+					}
+				}
+				var new_root = new ToolStripMenuItem(n,img);
 				new_root.MouseDown += (_, __) => __lopen(fidi, directory ? "DIR" : ext, __.Button == MouseButtons.Right);
 				if (directory)
 					dirparser(ref new_root, fidi, max_depth, allow_types, maxentries, this_depth+1);
