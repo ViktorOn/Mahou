@@ -4930,8 +4930,43 @@ DEL ""ExtractASD.cmd""";
 						.Append(Regex.Replace(hotk.Replace("^^", "").ToString(), "((^|\\+|\\[)[lr]?.)", m => m.ToString().ToUpper()))
 						.Append("]");
 				}
-				if (act.ToString() == "evt") {
-					menuhandle(act.ToString(), arg.ToString());
+				var acts=act.ToString();
+				if (acts == "evt") {
+					menuhandle(acts, arg.ToString());
+					continue;
+				}
+				if (acts == "dir") {
+					try {
+						var argts = arg.ToString();
+						string dir = argts, allow_types = ".*";
+						int maxd = 10, maxentries = 25;
+						if (argts.Contains(">")) {
+							var spl = argts.Split(new []{'>'});
+							if (spl.Length >=1) {
+								dir = spl[0];
+							} 
+							if (spl.Length >=2) {
+								var t = spl[1];
+								if (t.Contains("&")) {
+									var splspl = t.Split(new [] {'&'});
+									t = splspl[0];
+									Int32.TryParse(splspl[1], out maxentries);
+								}
+								Int32.TryParse(t, out maxd);
+							}
+							if (spl.Length >=3) {
+								allow_types = spl[2];
+							}
+						}
+						if (Directory.Exists(dir)) {
+							var mmd = new ToolStripMenuItem(text.ToString(),null);
+							dirparser(ref mmd, dir, maxd, allow_types, maxentries);
+							mms.DropDownItems.Add(mmd);
+						}
+					} catch(Exception e) {
+						Debug.WriteLine(e.Message + e.StackTrace);
+						Logging.Log("Mahou.mm > DIR error: " + e.Message + e.StackTrace, 1);
+					}
 					continue;
 				}
 				mms.DropDownItems.Add(new ToolStripMenuItem(text.ToString(),null,(_,__) =>
@@ -4953,6 +4988,56 @@ DEL ""ExtractASD.cmd""";
 				}
 			};
 			wfm.Start();
+		}
+		static void dirparser(ref ToolStripMenuItem root, string dir, int max_depth, string allow_types, int maxentries, int this_depth=-1) {
+			if (this_depth == -1) { this_depth = 0; }
+			if (this_depth > max_depth) { return; }
+			var dirs = Directory.EnumerateDirectories(dir);
+			var fils = Directory.EnumerateFiles(dir);
+			var fidis = new List<string>();
+			fidis.AddRange(dirs);
+			fidis.AddRange(fils);
+			fidis.Sort();
+			int e = 0;
+			foreach (var fidi in fidis) {
+				if (e>=maxentries) { break; }
+				FileAttributes attr;
+				bool directory = false;
+				string ext = "";
+				if (File.Exists(fidi)) {
+					var inf = new FileInfo(fidi);
+					attr = inf.Attributes;
+					ext = inf.Extension;
+				} else if (Directory.Exists(fidi)) {
+					var inf = new DirectoryInfo(fidi);
+					attr = inf.Attributes;
+					directory = true;
+				} else { continue; }
+				if ((attr & FileAttributes.Hidden) == FileAttributes.Hidden) { continue; }
+				if (!directory) {
+					if (!string.IsNullOrEmpty(allow_types)) {
+						var allowed = allow_types.ToLower().Split(',');
+						var lex = ext.ToLower();
+						var allow_that = false;
+						foreach (var a in allowed) {
+							if (a.EndsWith("*") && lex.StartsWith(a.Substring(0,a.Length-2)) ||
+							    a.StartsWith("*") && lex.EndsWith(a.Substring(1)) ||
+							   	a == lex) {
+								allow_that = true;
+								break;
+							}
+						}
+						if (!allow_that)
+							continue;
+					}
+				}
+				var new_root = new ToolStripMenuItem(fidi,null);
+				new_root.MouseDown += (_, __) => __lopen(fidi, directory ? "DIR" : ext, __.Button == MouseButtons.Right);
+				if (directory)
+					dirparser(ref new_root, fidi, max_depth, allow_types, maxentries, this_depth+1);
+				root.DropDownItems.Add(new_root);
+				e++;
+			}
 		}
 		#endregion
 		#region Mahou UI controls events
