@@ -624,6 +624,8 @@ namespace Mahou
 			this.lnk_Site = new System.Windows.Forms.LinkLabel();
 			this.lnk_Repository = new System.Windows.Forms.LinkLabel();
 			this.tab_Hidden = new System.Windows.Forms.TabPage();
+			this.Htxt_ASEndSymbols = new System.Windows.Forms.TextBox();
+			this.Hlbl_ASEndSymbols = new System.Windows.Forms.Label();
 			this.Hchk_ClipBackOnlyText = new System.Windows.Forms.CheckBox();
 			this.Htxt_OSnippetsExcluded = new System.Windows.Forms.TextBox();
 			this.Htxt_Redefines = new System.Windows.Forms.TextBox();
@@ -673,8 +675,6 @@ namespace Mahou
 			this.btn_Cancel = new System.Windows.Forms.Button();
 			this.btn_Apply = new System.Windows.Forms.Button();
 			this.HelpMeUnderstand = new System.Windows.Forms.ToolTip(this.components);
-			this.Htxt_ASEndSymbols = new System.Windows.Forms.TextBox();
-			this.Hlbl_ASEndSymbols = new System.Windows.Forms.Label();
 			this.tabs.SuspendLayout();
 			this.tab_functions.SuspendLayout();
 			this.tab_layouts.SuspendLayout();
@@ -3929,11 +3929,11 @@ namespace Mahou
 			// 
 			this.tab_Hidden.AutoScroll = true;
 			this.tab_Hidden.BackColor = System.Drawing.Color.DarkSlateGray;
+			this.tab_Hidden.Controls.Add(this.Htxt_Redefines);
 			this.tab_Hidden.Controls.Add(this.Htxt_ASEndSymbols);
 			this.tab_Hidden.Controls.Add(this.Hlbl_ASEndSymbols);
 			this.tab_Hidden.Controls.Add(this.Hchk_ClipBackOnlyText);
 			this.tab_Hidden.Controls.Add(this.Htxt_OSnippetsExcluded);
-			this.tab_Hidden.Controls.Add(this.Htxt_Redefines);
 			this.tab_Hidden.Controls.Add(this.Htxt_OAutoSwitchExcluded);
 			this.tab_Hidden.Controls.Add(this.Htxt_OverlayExcluded);
 			this.tab_Hidden.Controls.Add(this.Hlbl_Redefines);
@@ -3983,6 +3983,25 @@ namespace Mahou
 			this.tab_Hidden.Size = new System.Drawing.Size(559, 268);
 			this.tab_Hidden.TabIndex = 15;
 			this.tab_Hidden.Text = "[Hidden]";
+			// 
+			// Htxt_ASEndSymbols
+			// 
+			this.Htxt_ASEndSymbols.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_ASEndSymbols.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_ASEndSymbols.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_ASEndSymbols.Location = new System.Drawing.Point(324, 696);
+			this.Htxt_ASEndSymbols.Name = "Htxt_ASEndSymbols";
+			this.Htxt_ASEndSymbols.Size = new System.Drawing.Size(211, 23);
+			this.Htxt_ASEndSymbols.TabIndex = 48;
+			// 
+			// Hlbl_ASEndSymbols
+			// 
+			this.Hlbl_ASEndSymbols.AutoSize = true;
+			this.Hlbl_ASEndSymbols.Location = new System.Drawing.Point(8, 700);
+			this.Hlbl_ASEndSymbols.Name = "Hlbl_ASEndSymbols";
+			this.Hlbl_ASEndSymbols.Size = new System.Drawing.Size(274, 15);
+			this.Hlbl_ASEndSymbols.TabIndex = 47;
+			this.Hlbl_ASEndSymbols.Text = "AutoSwitch possible end symbols:(empty=disable)";
 			// 
 			// Hchk_ClipBackOnlyText
 			// 
@@ -4519,25 +4538,6 @@ namespace Mahou
 			this.HelpMeUnderstand.ShowAlways = true;
 			this.HelpMeUnderstand.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			this.HelpMeUnderstand.Popup += new System.Windows.Forms.PopupEventHandler(this.HelpMeUnderstandPopup);
-			// 
-			// Htxt_ASEndSymbols
-			// 
-			this.Htxt_ASEndSymbols.BackColor = System.Drawing.Color.Orange;
-			this.Htxt_ASEndSymbols.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.Htxt_ASEndSymbols.ForeColor = System.Drawing.Color.LightCyan;
-			this.Htxt_ASEndSymbols.Location = new System.Drawing.Point(324, 696);
-			this.Htxt_ASEndSymbols.Name = "Htxt_ASEndSymbols";
-			this.Htxt_ASEndSymbols.Size = new System.Drawing.Size(211, 23);
-			this.Htxt_ASEndSymbols.TabIndex = 48;
-			// 
-			// Hlbl_ASEndSymbols
-			// 
-			this.Hlbl_ASEndSymbols.AutoSize = true;
-			this.Hlbl_ASEndSymbols.Location = new System.Drawing.Point(8, 700);
-			this.Hlbl_ASEndSymbols.Name = "Hlbl_ASEndSymbols";
-			this.Hlbl_ASEndSymbols.Size = new System.Drawing.Size(274, 15);
-			this.Hlbl_ASEndSymbols.TabIndex = 47;
-			this.Hlbl_ASEndSymbols.Text = "AutoSwitch possible end symbols:(empty=disable)";
 			// 
 			// MahouUI
 			// 
