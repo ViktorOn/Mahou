@@ -23,7 +23,7 @@ namespace Mahou {
 			IsHotkey, ff_chr_wheeled, preSnip, LMB_down, RMB_down, MMB_down,
 			dbl_click, click, selfie, aftsingleAS, JKLERR, JKLERRchecking, last_snipANY,
 			_selis, _mselis, snipselshiftpressed, snipselwassel, 
-			AS_IGN_BACK, AS_IGN_DEL, AS_IGN_LS, was_back, was_del, was_ls, __setsnip;
+			AS_IGN_BACK, AS_IGN_DEL, AS_IGN_LS, was_back, was_del, was_ls, __setsnip, L_DOWN;
 	    public static string AS_END_symbols = "";
 		public static System.Timers.Timer click_reset = new System.Timers.Timer();
 		public static Keys skip_up = Keys.None;
@@ -239,10 +239,18 @@ namespace Mahou {
 			}
 			// Anti win-stuck rule
 			if (Key == Keys.L) {
-				if (win)
-					win = false;
-				if (win_r)
-					win_r = false;
+				L_DOWN = MSG == WinAPI.WM_KEYDOWN || MSG == WinAPI.WM_SYSKEYDOWN;
+			}
+			if (Key == Keys.LWin) {
+				win = MSG == WinAPI.WM_KEYDOWN || MSG == WinAPI.WM_SYSKEYDOWN;
+			}
+			if (Key == Keys.RWin) {
+				win_r = MSG == WinAPI.WM_KEYDOWN || MSG == WinAPI.WM_SYSKEYDOWN;
+			}
+			if (L_DOWN && (win || win_r)) {
+				preKey = Keys.None;
+				L_DOWN = win = win_r = false;
+				return;
 			}
 			// Clear currentLayout in MMain.mahou rule
 			if (!MahouUI.UseJKL || KMHook.JKLERR)
