@@ -3256,8 +3256,17 @@ DEL "+restartMahouPath;
 		/// Unregisters Mahou hotkeys.
 		/// </summary>
 		/// <param name="noglobal">Keeps *global hotkeys*(the one's that goes after TransliterateSelection in HKID enum) alive if true.</param>
-		public void UnregisterHotkeys(int noglobal = 0) {
+		public void UnregisterHotkeys(int noglobal = 0, bool excluded_related = false) {
 			foreach (int id in Enum.GetValues(typeof(Hotkey.HKID))) {
+				if (excluded_related) {
+					if (ConvertSWLinExcl) {
+						if (id == (int)Hotkey.HKID.ConvertLastWord || 
+						    id == (int)Hotkey.HKID.ConvertSelection||
+						    id == (int)Hotkey.HKID.ConvertLastLine) {
+							continue;
+						}
+					}
+				}
 				if (noglobal == 1 && (id > (int)Hotkey.HKID.TransliterateSelection)) break;
 				if (noglobal == 2 && (id > (int)Hotkey.HKID.ShowSelectionTranslation)) break;
 				WinAPI.UnregisterHotKey(Handle, id);

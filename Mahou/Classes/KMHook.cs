@@ -824,7 +824,7 @@ namespace Mahou {
 				}
 			if (ExcludedProgram(false, hwnd)) {
 				Logging.Log("[WinCh-HK] Disabled win-hotkeys.");
-				MMain.mahou.UnregisterHotkeys();
+				MMain.mahou.UnregisterHotkeys(0, true);
 			} else if (MahouUI.ENABLED) {
 				Logging.Log("[WinCh-HK] Enabled win-hotkeys.");
 				MMain.mahou.RegisterHotkeys();
