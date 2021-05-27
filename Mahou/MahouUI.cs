@@ -62,7 +62,7 @@ namespace Mahou {
 		#endregion
 		#region [Hidden]
 		public static bool __setlayoutForce, __setlayoutOnlyWM, nomemoryflush, LibreCtrlAltShiftV, __selection, __selection_nomouse, CycleCaseReset,
-							OVEXDisabled, ClipBackOnlyText, MahouMMHKLostFocusClose;
+							OVEXDisabled, ClipBackOnlyText, MahouMMTrayHoverLostFocusClose;
 		public static string ReselectCustoms, AutoCopyTranslation = "", onlySnippetsExcluded = "", onlyAutoSwitchExcluded = "";
 		static string CycleCaseOrder = "TULSR", OverlayExcluded, tas, ncs;
 		static int OverlayExcludedInerval, arm;
@@ -1497,7 +1497,7 @@ namespace Mahou {
 			Htxt_Redefines.Text = Redefines = MMain.MyConfs.Read("Hidden", "Redefines");
 			ClipBackOnlyText = Hchk_ClipBackOnlyText.Checked = MMain.MyConfs.ReadBool("Hidden", "ClipBackOnlyText");
 			KMHook.AS_END_symbols = Htxt_ASEndSymbols.Text = MMain.MyConfs.Read("Hidden", "AutoSwitchEndingSymbols");
-			MahouMMHKLostFocusClose = MMain.MyConfs.ReadBool("Hidden", "MahouMMHotkeyShowLostFocusClose");
+			MahouMMTrayHoverLostFocusClose = MMain.MyConfs.ReadBool("Hidden", "MahouMMTrayHoverLostFocusClose");
 			parseRedefines();
 			Hnud_TrayHoverMM.Value = TrayHoverMahouMM;
 			if (!String.IsNullOrEmpty(OverlayExcluded)) {
@@ -3925,7 +3925,7 @@ DEL "+restartMahouPath;
 			if (menu.Items.Count >0) 
 				menu.Items[0].Select();
 			Timer t = null;
-			if (MahouMMHKLostFocusClose) {
+			if (MahouMMTrayHoverLostFocusClose) {
 				menu.LostFocus += (_, __) => { menu.Hide(); };
 				menu.VisibleChanged += (_, __) => {
 					if (!menu.Visible) {

@@ -210,7 +210,7 @@ namespace Mahou {
         	CreateConfigsFile();
         	ReadFromDisk();
         	#region Hidden
-        	CheckBool("Hidden", "MahouMMHotkeyShowLostFocusClose", "true");
+        	CheckBool("Hidden", "MahouMMTrayHoverLostFocusClose", "true");
         	CheckString("Hidden", "AutoSwitchEndingSymbols", "");
         	CheckBool("Hidden", "ClipBackOnlyText", "false");
         	CheckString("Hidden", "Redefines", "");
