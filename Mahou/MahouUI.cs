@@ -62,7 +62,7 @@ namespace Mahou {
 		#endregion
 		#region [Hidden]
 		public static bool __setlayoutForce, __setlayoutOnlyWM, nomemoryflush, LibreCtrlAltShiftV, __selection, __selection_nomouse, CycleCaseReset,
-							OVEXDisabled, ClipBackOnlyText;
+							OVEXDisabled, ClipBackOnlyText, MahouMMHKLostFocusClose;
 		public static string ReselectCustoms, AutoCopyTranslation = "", onlySnippetsExcluded = "", onlyAutoSwitchExcluded = "";
 		static string CycleCaseOrder = "TULSR", OverlayExcluded, tas, ncs;
 		static int OverlayExcludedInerval, arm;
@@ -1497,6 +1497,7 @@ namespace Mahou {
 			Htxt_Redefines.Text = Redefines = MMain.MyConfs.Read("Hidden", "Redefines");
 			ClipBackOnlyText = Hchk_ClipBackOnlyText.Checked = MMain.MyConfs.ReadBool("Hidden", "ClipBackOnlyText");
 			KMHook.AS_END_symbols = Htxt_ASEndSymbols.Text = MMain.MyConfs.Read("Hidden", "AutoSwitchEndingSymbols");
+			MahouMMHKLostFocusClose = MMain.MyConfs.ReadBool("Hidden", "MahouMMHotkeyShowLostFocusClose");
 			parseRedefines();
 			Hnud_TrayHoverMM.Value = TrayHoverMahouMM;
 			if (!String.IsNullOrEmpty(OverlayExcluded)) {
@@ -3923,31 +3924,34 @@ DEL "+restartMahouPath;
 			menu.Focus();
 			if (menu.Items.Count >0) 
 				menu.Items[0].Select();
-			menu.LostFocus += (_, __) => { menu.Hide(); };
-			menu.VisibleChanged += (_, __) => {
-				if (!menu.Visible) {
-					menu.Close();
-				}
-			};
-			var t = new Timer();
-			t.Interval = 50;
-			var con = 0;
-			t.Tick += (_,__) => { 
-				var magick = menu.PointToClient(Cursor.Position);
-				if (magick.X < 0 || magick.Y < 0) {
-					con+=50;
-				} else {
-					con = 0;
-				}
-				if(con >= TrayHoverMahouMM*1.5) {
-					Debug.WriteLine("Out of menu for " +con+"ms!, autohide!");
-					if (!menu.IsDisposed || !menu.Disposing)
-						menu.Hide();
-					t.Stop();
-					t.Dispose();
-				}
-			};
-			t.Start();
+			Timer t = null;
+			if (MahouMMHKLostFocusClose) {
+				menu.LostFocus += (_, __) => { menu.Hide(); };
+				menu.VisibleChanged += (_, __) => {
+					if (!menu.Visible) {
+						menu.Close();
+					}
+				};
+				t = new Timer();
+				t.Interval = 50;
+				var con = 0;
+				t.Tick += (_,__) => { 
+					var magick = menu.PointToClient(Cursor.Position);
+					if (magick.X < 0 || magick.Y < 0) {
+						con+=50;
+					} else {
+						con = 0;
+					}
+					if(con >= TrayHoverMahouMM*1.5) {
+						Debug.WriteLine("Out of menu for " +con+"ms!, autohide!");
+						if (!menu.IsDisposed || !menu.Disposing)
+							menu.Hide();
+						t.Stop();
+						t.Dispose();
+					}
+				};
+				t.Start();
+			}
 			menu.PreviewKeyDown += (_,__) => {
 				if (__.KeyCode == Keys.Escape) {
 					menu.Hide();
