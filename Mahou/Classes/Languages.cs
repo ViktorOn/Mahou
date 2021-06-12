@@ -429,7 +429,7 @@ public class Languages
 		{ Element.AutoSwitchDependsOnSnippets, "To use this feature enable Snippets feature!" },
 		{ Element.AutoSwitchDictionaryWordsCount, "Words: " }, 
 		{ Element.DownloadAutoSwitchDictionaryInZip, "Download auto-switch dictionary in zip." }, 
-		{ Element.AutoSwitchDictionaryTooBigToDisplay, "Too big dictionary, it will take a lot time to display, dictionary display disabled.\r\nDictionary WON'T be updated every time you press \"Apply\" button, it will be updated once only after restart or after disabling=>Apply=>enabling=>Apply AutoSwitch feature or through \"[Hidden] Toggle AutoSwitch Hotkey\" also only once." }, 
+		{ Element.AutoSwitchDictionaryTooBigToDisplay, "Too big dictionary, it will take a lot time to display, dictionary display disabled.\r\nDictionary WON'T be updated every time you press [Apply] button, it will be updated once only after restart or after disabling=>Apply=>enabling=>Apply AutoSwitch feature or through \"[Hidden] Toggle AutoSwitch Hotkey\" also only once." }, 
 		#endregion
 		#region Hotkeys
 		{ Element.ToggleMainWnd, "Toggle settings window" }, 
@@ -498,9 +498,9 @@ public class Languages
 		{ Element.About, "Hotkeys: you can see them in Hotkeys tab.\r\n\r\n"+
             "*Note that if your typing layout is not selected in settings,"+
 			" conversion will switch typed text to Language 1 (Ignored if Switch between layouts is OFF).\r\n\r\n"+
-            "**If you have problems with symbols conversion (selection) try enabling function \"Use layout for whole word in CS\", "+
-			" or \"switching languages (1=>2 & 2=>1)\""+
-			" or \"Convert selection layout switching\" or Plus option." +
+            "**If you have problems with symbols conversion (selection) try enabling function [Use layout for whole word in CS], "+
+			" or [switching languages (1=>2 & 2=>1)]"+
+			" or [Convert selection layout switching] or Plus option." +
 			"***If you have problems with selection conversion try increasing tries to get selected text in Timings tab." +
 			"\r\nRead the wiki, or ask me if you have any questions about Mahou(email and links are below)!\r\n\r\nRegards." },
 		#endregion
@@ -563,18 +563,18 @@ public class Languages
 		{ Element.TT_SwitchBetween, "While this option is disabled, [Convert word], [Convert line] and [Convert selection with \"Convert selection layout switching\" enabled]\n" + 
 		                                  "will just cycle between all locales instead of switching between the selected ones in settings."+
 		                                  "If there is a program in which [Convert word], [Convert line] or [Convert selection with \"CS-Switch\" enabled] don't work,try with this option enabled.\nThere is also possible now to enable this function with Emulate layout switching, that will fix problems with apps like MSOffice2016.\nThis function is not working in console apps without getconkbl.dll." },
-		{ Element.TT_ConvertSelectionSwitch, "This function can add layout switching to convert selection,\nnow it can be used together with [Use layout for whole word in CS.],\nif enabled with that function then it will cause layout switching before conversion.\nConversion mode will be used from [Use layout for whole word in CS.] function.\n+ Mode can't be enabled while function [Use layout for whole word in CS.] enabled.\n\nCan cause bugs!!\r\nIf enabled, Convert selection will use layout switching.\nAll symbols will be written as the must(if layout before switching was the one where they are written it).\nThere also a plus version of that function." }, 
-		{ Element.TT_BlockCtrl, "Blocks hotkeys that use Control,\nwhen \"Switch layout by key\" is set to Left/Right Control." }, 
+		{ Element.TT_ConvertSelectionSwitch, "This function can add layout switching to convert selection,\nnow it can be used together with [Use layout for whole word in CS],\nin that case it will cause layout switching before conversion.\nConversion mode will be used from [Use layout for whole word in CS] function.\n+ Mode can't be enabled while function [Use layout for whole word in CS] enabled.\n\nCan cause bugs!!\r\nIf enabled, Convert selection will use layout switching.\nAll symbols will be written as the must(if layout before switching was the one where they are written it).\nThere also a plus version of that function." }, 
+		{ Element.TT_BlockCtrl, "Blocks hotkeys that use Control,\nwhen [Switch layout by key] is set to Left/Right Control." }, 
 		{ Element.TT_CapsDis, "If enabled, timer which disables CapsLock(led) will work." }, 
 		{ Element.TT_EmulateLS, "If enabled, layout switching will emulate press of keys selected on right.\nNow it is possible to enable this function with [Switch between layouts] function." }, 
 		{ Element.TT_RePress, "If enabled, modifiers(Ctrl/Alt/Shift/Win) will be pressed again conversion(NOT recommended),\r\n"+
 				"although if you release modifiers before conversion action finishes - modifiers may stuck...))." },
 		{ Element.TT_Add1Space, "If enabled,  space will be adding to last word." },
 		{ Element.TT_Add1NL, "If enabled, ONE Enter(line break) will be adding to last word,\r\n\r\nso the convert last word will work if you accidentally press Enter after the word." }, 
-		{ Element.TT_ReSelect, "If enabled, any \"Convert selected\" will select text again after conversion." }, 
-		{ Element.TT_ScrollTip, "Highlight Scroll Lock when active language 1, selected in Layouts tab.\nUnnesesary to keep enabled \"Switch between layouts\" function enabled for this function to work, just select layout #1 below it and then disable it if you need to." }, 
+		{ Element.TT_ReSelect, "If enabled, any [Convert selected] will select text again after conversion." }, 
+		{ Element.TT_ScrollTip, "Highlight Scroll Lock when active language 1, selected in Layouts tab.\nUnnesesary to keep enabled [Switch between layouts] function enabled for this function to work, just select layout #1 below it and then disable it if you need to." }, 
 		{ Element.TT_LDOnlyOnChange, "Display language tooltip only on layout change.\nDisplay time - 2x[Refresh rate for mouse + for caret]." }, 
-		{ Element.TT_ConvertSelectionSwitchPlus, "Can cause bugs!!\r\nCombines some abilities of Convert selection with enabled \"Convert selection layout switching\" and when it's disabled." +
+		{ Element.TT_ConvertSelectionSwitchPlus, "Can cause bugs!!\r\nCombines some abilities of Convert selection with enabled [Convert selection layout switching] and when it's disabled." +
 										"\nIt can:"+
 										"\n1.Convert text from different layouts to different layouts at once."+
 										"\n2.Ignore symbols feature work in it."+
@@ -584,8 +584,8 @@ public class Languages
 		{ Element.TT_LDForCaret, "If enabled, a language tooltip will be displayed around the caret." }, 
 		{ Element.TT_Snippets, "If enabled, pressing SPACE will expand small (which starts with \"->\") word, to big (which is between \"====>\" and \"<====\") word/text fragment." }, 
 		{ Element.TT_Logging, "Designed ONLY to search for errors, BIG PERFORMANCE IMPACT, logs are saved in Mahou's folder, in folder Logs." }, 
-		{ Element.TT_LDDifferentAppearence, "If enabled, you can select different appearance for main layouts(1&2), for others will be used from \"around mouse\" or \"around caret\"." }, 
-		{ Element.TT_TrayDisplayType, "Allows to choose what to display in tray icon.\nIf layout text selected, its appearance will be same as in Appearance tab's \"Layout 1\" and \"Layout 2\" appearance, and \"around caret\" for any other layout.\nAlso it is possible to use flags for any other layout, just enable \"Use flags\" in \"around caret\"." }, 
+		{ Element.TT_LDDifferentAppearence, "If enabled, you can select different appearance for main layouts(1&2), for others will be used from [around mouse] or [around caret]." }, 
+		{ Element.TT_TrayDisplayType, "Allows to choose what to display in tray icon.\nIf [Layout text] is selected, its appearance will be same as in Appearance tab's [Layout 1] and [Layout 2] appearance, and [around caret]/[around mouse] for any other layout.\nAlso it is possible to use flags for any other layout, just enable [Use flags] in [around caret]/[around mouse]." }, 
 		{ Element.TT_SymbolIgnore, "If enabled, symbols []{};':\"./<>? will be ignored.\nWorks in Convert last word, line, selection.\n" +
 										"WON'T WORK IF YOU HAVE MORE THAN 2 LAYOUTS AND FUNCTION \"Switch between layouts\" disabled!" }, 
 		{ Element.TT_ConvertWords, "Allow to convert specific last word count by pressing hotkey and then 0-9 (0 = 10) on keyboard." }, 
@@ -602,7 +602,7 @@ public class Languages
 		{ Element.TT_QWERTZ, "Makes right substitutes in QWERTZ keyboards for chars: ß, ä, ö, ü, Ä, Ö, Ü, Y, Z in Convert Selection\r\n(!! but convert selection layout switching(or +) not supported)." },
 		{ Element.TT_Change1KeyLayoutInExcluded, "Function is in Layouts tab -> [Change to specific layout by keys]." },
 		{ Element.TT_AllowConvertSWL, "Hotkeys affected: -> \r\n[Convert Selection]\r\n[Convert Last Word]\r\n[Convert Last Line]." },
-		{ Element.TT_SnippetsSwitchToGuessLayout, "Switches to *guessed* layout after snippet expanded.\r\nGuess works like in whole \"One Layout for whole word in Convert Selection\" function."},
+		{ Element.TT_SnippetsSwitchToGuessLayout, "Switches to *guessed* layout after snippet expanded.\r\nGuess works like in whole [One Layout for whole word in Convert Selection] function."},
 		{ Element.TT_SnippetsCount,	"If ORANGE snippets are OK.\r\nIf RED snippets has errors, maybe its unfinished etc.\r\nIn brackets are displayed count of commented lines(they are ignored by Mahou),\r\nvalid comment characters: # and // and only at start of line." },
 		{ Element.TT_GuessKeyCodeFix, "Enabling this will make snippets, convert selection, auto-switch to send real virtual key codes instead of unicode chars,\r\nbut that will cause that all characters will be in your current layout.\r\nUseful in programs virtual machines.(BlueStacks, VirtualBox etc.)" },
 		{ Element.TT_ConfigsInAppData, "If enabled Mahou will copy current configs to AppData, and will use them.\r\nAlso logs and snippets will be stored in %AppData%\\Mahou.\r\nAfter this checkbox state changed other checkboxes/datas configurations from user interface will not be saved, because they will be loaded from another configs(if switched, from Mahou's directory or from %AppData%\\Mahou).\r\nUseful if you need to run Mahou from Program Files directory by multiple users, and while some of them have no write access to it,\r\nalso it makes possible to have different configurations for each user." },		
@@ -673,7 +673,7 @@ public class Languages
 		{ Element.ConfigsInAppData, "Конфигурация в AppData." }, 
 		{ Element.RemapCapslockAsF18, "Переопределить Caps Lock как F18." }, 
 		{ Element.UseJKL, "Получать раскладку с JKL." },
-		{ Element.ReadOnlyNA, "Только чтение если нет доступа." },
+		{ Element.ReadOnlyNA, "Только чтение, если нет доступа." },
 		{ Element.WriteInputHistory, "Записывать историю ввода." },
 		{ Element.BackSpaceType, "Тип BackSpace:" },
 		#endregion
@@ -752,7 +752,7 @@ public class Languages
 		{ Element.AutoSwitchDependsOnSnippets, "Чтобы использовать эту функцию включите функцию Сниппетов!" },
 		{ Element.AutoSwitchDictionaryWordsCount, "Слов: " }, 
 		{ Element.DownloadAutoSwitchDictionaryInZip, "Скачивать словарь автозамены в zip архиве." }, 
-		{ Element.AutoSwitchDictionaryTooBigToDisplay, "Слишком большой словарь, займет много времени чтобы отобразить, отображение словаря отключено.\r\nСловарь НЕ будет обновляется каждый раз при нажатии кнопки \"Применить\", он будет обновляться только 1 раз при запуске или при выключении=>Применить=>включении=>Применить функции Автозамены или через горячую клавишу: \"[Hidden] Toggle AutoSwitch Hotkey\" также только 1 раз." }, 
+		{ Element.AutoSwitchDictionaryTooBigToDisplay, "Слишком большой словарь, займет много времени чтобы отобразить, отображение словаря отключено.\r\nСловарь НЕ будет обновляется каждый раз при нажатии кнопки [Применить], он будет обновляться только 1 раз при запуске или при выключении=>Применить=>включении=>Применить функции Автозамены или через горячую клавишу: \"[Hidden] Toggle AutoSwitch Hotkey\" также, только 1 раз." }, 
 		#endregion
 		#endregion
 		#region Hotkeys
@@ -822,10 +822,10 @@ public class Languages
 		{ Element.Site, "Сайт" }, 
 		{ Element.Releases, "Релизы" }, 
 		{ Element.About, "Горячие клавиши: Вы можете посмотреть их во вкладке горячие клавиши.\r\n"+
-			"\r\n*Заметьте что если Вы вводите текст не из выбранных раскладок в настройках, то конвертация конвертирует текст в Язык 1 (Не актуально если включён Циклич. режим).\r\n\r\n"+
-            "**Если у Вас проблемы с символами при Конвертации выделения, включите функцию(рекомендуется) \"Считать раскладку для всего слова в КВ\", еще можете попробовать \"переключить языки местами (1=>2 & 2=>1)\" или включите \"Смена раскладки в конвертации выделения\" или плюс.\r\n"+
+			"\r\n*Заметьте, что, если Вы вводите текст не из выбранных раскладок в настройках, то конвертация конвертирует текст в Язык 1 (Не актуально, если включён Циклич. режим).\r\n\r\n"+
+            "**Если у Вас проблемы с символами при Конвертации выделения, включите функцию(рекомендуется) [Считать раскладку для всего слова в КВ], еще можете попробовать [переключить языки местами (1=>2 & 2=>1)] или включите [Смена раскладки в конвертации выделения] или плюс.\r\n"+
 			"***Если у Вас проблемы при Конвертации выделения попробуйте увеличить количество попыток взятия текста во вкладке Тайминги." +
-			"\r\nПочитайте wiki, или спросите меня если у Вас есть вопросы по поводу Mahou(эл. почта и ссылка на wiki ниже).\r\nУдачи."}, 
+			"\r\nПочитайте wiki, или спросите меня, если у Вас есть вопросы по поводу Mahou(эл. почта и ссылка на wiki ниже).\r\nУдачи."}, 
 		#endregion
 		#region Sync
 		{ Element.Backup, "Бэкап" },
@@ -882,34 +882,34 @@ public class Languages
 		{ Element.ButtonCancel, "Отмена" }, 
 		#endregion
 		#region Tooltips
-		{ Element.TT_SwitchBetween, "Пока включена, [Конвертация слова] and [Конвертация линии] and [Конвертация выделения с \"Смена раскладки в конвертации выделения\" включённой]\n" +
+		{ Element.TT_SwitchBetween, "Пока включена, [Конвертация слова] и [Конвертация линии] и [Конвертация выделения с \"Смена раскладки в конвертации выделения\" включённой]\n" +
 		                                  "будет переключать раскладку циклично, вместо переключения между выбранными в настройках." +
-		                                  "Если есть программа в которой [Конвертация слова] или [Конвертация линии] или [Конвертация выделения с \"Смена раскладки в конвертации выделения\" включённой] не работают,то попробуйте включить эту функцию.\nТакже теперь можно включать эту функцию *вместе* с эмуляцией переключения раскладку,\nэто исправляет проблемы в программах типа MSOffice2016, функция не работает в консольных приложениях без getconbl.dll." }, 
-		{ Element.TT_ConvertSelectionSwitch, "Эту функцию можно включать чтоб производилась смена раскладки при Конвертации выделения,\nтеперь можно включать вместе с функцией [Считать раскладку для всего слова в КВ.],\nесли включать ее вместе с этой функцией то будет производится смена раскладки перед конвертацией.\nСам режим конвертации будет использоваться из [Считать раскладку для всего слова в КВ.].\n+Режим не возможно включить если включена функция [Считать раскладку для всего слова в КВ.]\n\nМожет вызвать проблемы если используется без [Считать раскладку для всего слова в КВ.]!!\r\nЕсли включена, Конвертация выделения Будет использовать переключение раскладки.\nВсе символы будут напечатаны правильно(если перед переключением стояла раскладка в которой они были написаны).\nТакже есть улучшение функции, \"плюс\"." }, 
-		{ Element.TT_BlockCtrl, "Блокирует горячие клавиши содержащие Control,\nможет быть полезно если \"Переключать язык клавишей\" установлен на Left/Right Control." }, 
+		                                  "Если есть программа в которой [Конвертация слова] или [Конвертация линии] или [Конвертация выделения с \"Смена раскладки в конвертации выделения\" включённой] не работают,то попробуйте включить эту функцию.\nТакже, теперь можно включать эту функцию *вместе* с эмуляцией переключения раскладку,\nэто исправляет проблемы в программах типа MSOffice2016, функция не работает в консольных приложениях без getconbl.dll." }, 
+		{ Element.TT_ConvertSelectionSwitch, "Эту функцию можно включать чтобы производилась смена раскладки при Конвертации выделения.\nТеперь можно включать вместе с функцией [Считать раскладку для всего слова в КВ],\nв этом случае будет производится смена раскладки перед конвертацией.\nСам режим конвертации будет использоваться из [Считать раскладку для всего слова в КВ].\n+Режим невозможно включить, если включена функция [Считать раскладку для всего слова в КВ]\n\nМожет вызвать проблемы, если используется без [Считать раскладку для всего слова в КВ]!!\r\nЕсли включена, Конвертация выделения будет менять раскладку после конвертации.\nВсе символы будут напечатаны(Mahou) правильно, если перед переключением стояла раскладка, в которой они были написаны(пользователь).\nТакже, есть улучшение функции, [Смена раскладки в Конвертации выделения+]." }, 
+		{ Element.TT_BlockCtrl, "Блокирует горячие клавиши содержащие Control,\nможет быть полезно, если [Переключать язык клавишей] установлен на Left/Right Control." }, 
 		{ Element.TT_CapsDis, "Если включено, то будет работать таймер который будет выключать CapsLock(лампочку)." }, 
-		{ Element.TT_EmulateLS, "Если включено, Mahou будет эмулировать выбранные клавиши(справа в списке \"Тип эмуляции\") для смены раскладки.\nСледует выбирать такой Тип эмуляции как используется в системе для смены раскладки.\nЭту функцию теперь можно включать вместе с функцией [Переключать между раскладками]." }, 
+		{ Element.TT_EmulateLS, "Если включено, Mahou будет эмулировать выбранные клавиши(справа в списке [Тип эмуляции]) для смены раскладки.\nСледует выбирать такой Тип эмуляции как используется в системе для смены раскладки.\nЭту функцию теперь можно включать вместе с функцией [Переключать между раскладками]." }, 
 		{ Element.TT_RePress, "Если включено, то модификаторы(Ctrl/Alt/Shift/Win) будут нажаты заново после действия горячей клавиши.(НЕ рекомендуется),\r\n"+
-							  "хотя если вы отпустите модификаторы до того как завершиться действие конвертации - могут залипнуть модификаторы...)." },
+							  "хотя, если вы отпустите модификаторы до того как завершиться действие конвертации - могут залипнуть модификаторы...)." },
 		{ Element.TT_Add1Space, "Если включено, то ОДИН пробел будет добавляться в последнее слово." },
-		{ Element.TT_Add1NL, "Если включено, то к последнему введенному слову будет добавляться ОДИН перевод строки,\r\nблагодаря чему конвертация последнего слова будет работать если вы случайно нажали Enter после слова." }, 
-		{ Element.TT_ReSelect, "Если включено, любые \"Конвертация выделения\" будут выделять текcт заново." }, 
-		{ Element.TT_ScrollTip, "Подсвечивать лампочку Scroll Lock когда активна раскладка 1, выбранная во вкладке Раскладки.\nНе обязательно оставлять включенным функцию \"Переключать между раскладками\", нужно просто выбрать раскладку #1 ниже неё." }, 
+		{ Element.TT_Add1NL, "Если включено, то к последнему введенному слову будет добавляться ОДИН перевод строки,\r\nблагодаря чему конвертация последнего слова будет работать, если вы случайно нажали Enter после слова." }, 
+		{ Element.TT_ReSelect, "Если включено, любые [Конвертация выделения] будут выделять текcт заново." }, 
+		{ Element.TT_ScrollTip, "Подсвечивать лампочку Scroll Lock когда активна раскладка 1, выбранная во вкладке Раскладки.\nНе обязательно оставлять включенным функцию [Переключать между раскладками], нужно просто выбрать раскладку #1 ниже неё." }, 
 		{ Element.TT_LDOnlyOnChange, "Отображать подсказку языка только при смене раскладки.\nВремя отображения - 2x[Скорость обновления возле каретки + возле мыши]." }, 
-		{ Element.TT_ConvertSelectionSwitchPlus, "Может вызвать проблемы!!\r\nСовмещает способности Конвертация выделения с включенным \"Смена раскладки в Конвертации выделения\" и когда она выключена." +
+		{ Element.TT_ConvertSelectionSwitchPlus, "Может вызвать проблемы!!\r\nСовмещает способности Конвертация выделения с включенным [Смена раскладки в Конвертации выделения] и когда она выключена." +
 										"\nВозможности:"+
 										"\n1.Конвертировать текст с разных языков на разные языки за 1 конвертацию."+
 										"\n2.Игнорирование символов работает здесь."+
 										"\n3.Авто-разпознавание раскладки текста(символы которые есть в обоих раскладках не поддерживаются)"+
-										"\n4.Конвертировать не поддерживаемые символы по разному если менять раскладку перед конвертацией." }, 
+										"\n4.Конвертировать не поддерживаемые символы по разному, если менять раскладку перед конвертацией." }, 
 		{ Element.TT_LDForMouse, "Если включена, то при наведении на текстовую форму мышью будет отображаться подсказка языка." }, 
 		{ Element.TT_LDForCaret, "Если включена, то возле текстового курсора будет отображаться подсказка языка." }, 
 		{ Element.TT_Snippets, "Если включено, нажатие ПРОБЕЛА увеличит маленькое слово(которое имеет суффикс \"->\"), в большой кусок текста(который между \"====>\" и \"<====\")." }, 
-		{ Element.TT_Logging, "Создано ТОЛЬКО поиска ошибок, БОЛЬШОЕ ВЛИЯНИЕ НА СКОРОСТЬ РАБОТЫ, журналы сохраняются в папке где Mahou.exe в папке \"Logs\"." }, 
-		{ Element.TT_LDDifferentAppearence, "Если включено то вы сможете выбрать разный вид для двух раскладок(1&2), для других будут использоваться стандартные из \"возле мыши\" или \"возле каретки\"." }, 
-		{ Element.TT_TrayDisplayType, "Позволяет выбирать что отображать в иконке трея.\nЕсли выбрано текст раскладки, их вид будет такой же как и у \"Раскладка 1\" и \"Раскладка 2\" во вкладке Вид, для других раскладок будет использоваться вид из \"возле каретки\".\nТакже можно настроить использование *флагов* для остальных раскладок, если включить \"Использовать флаги\" в виде \"возле каретки\"." },
+		{ Element.TT_Logging, "Создано ТОЛЬКО поиска ошибок, БОЛЬШОЕ ВЛИЯНИЕ НА СКОРОСТЬ РАБОТЫ, журналы сохраняются в папке где Mahou.exe в папке [Logs]." }, 
+		{ Element.TT_LDDifferentAppearence, "Если включено то вы сможете выбрать разный вид для двух раскладок(1&2), для других будут использоваться стандартные из [возле мыши] или [возле каретки]." }, 
+		{ Element.TT_TrayDisplayType, "Позволяет выбирать, что отображать в иконке трея.\nЕсли выбрано [Текст раскладки], вид иконки будет разный для каждой из двух раскладок: [Раскладка 1] и [Раскладка 2] во вкладке Вид, для других раскладок будет использоваться вид из [возле каретки] или [Возле мыши].\nТакже, можно настроить использование *флагов* для остальных раскладок, если включить [Использовать флаги] в виде [возле каретки]/[возле мыши]." },
 		{ Element.TT_SymbolIgnore, "Если включено, символы []{};':\"./<>? будут проигнорированы.\nРаботает в Конвертации слова, линии, выделения.\n" +
-										"НЕ БУДЕТ РАБОТАТЬ если у Вас больше 2 раскладок и функция \"Переключать между раскладками\" выключена!" }, 
+										"НЕ БУДЕТ РАБОТАТЬ, если у Вас больше 2 раскладок и функция [Переключать между раскладками] выключена!" }, 
 		{ Element.TT_ConvertWords, "Дает возможность конвертировать специфическое количество последних слов, после горячей клавиши нажмите 0-9(0 = 10) на клавиатуре." }, 
 		{ Element.TT_ExcludedPrograms, "Программы(исключения) в которых горячие клавиши Конвертирования/Смены раскладки не будут работать.\nРазделители пробелы и новые строки.\r\nЕсли в именах процессах есть пробел заменяйте его на _ , сам _ тоже можно заменять на _ .\r\nПример: Имя процесса: mon_hun online.exe\r\nВ Mahou: mon_hun_online.exe." }, 
 		{ Element.TT_MCDSSupport, "Дает возможность отображения подсказки текущего языка возле каретки в Sublime Text 3.\nДля его работы нужно установить плагин, ссылка с права.\nНастройки во вкладке Вид.\nСверху: Высота заголовка окна + высота панели вкладок ST3,\nСнизу: Ваши y пиксели от конца окна до формы ввода консоли ST3(ctrl+`).\nДля разных Windows/Тем будут нужны разные настройки!" }, 
@@ -924,18 +924,18 @@ public class Languages
 		{ Element.TT_QWERTZ, "Делает правильные замены в клавиатурах QWERTZ для букв: ß, ä, ö, ü, Ä, Ö, Ü, Y, Z в Конвертации выделения\r\n(!! но не совместимо со сменой раскладки в конвертации выделения (или +))." },
 		{ Element.TT_Change1KeyLayoutInExcluded, "Функция находится во вкладке раскладки -> [Переключать раскладки по клавишам]." },
 		{ Element.TT_AllowConvertSWL, "Влияет на горячие клавиши: -> \r\n[Конвертация выделенного текста]\r\n[Конвертация последнего слова]\r\n[Конвертация последней линии]." },
-		{ Element.TT_SnippetsSwitchToGuessLayout, "Меняет раскладку в *угаданную* после того как сниппет конвертировался.\r\nУгадывание работает так же как в функции \"Одна раскладка для целого слова в Конвертации Выделения\"."},
+		{ Element.TT_SnippetsSwitchToGuessLayout, "Меняет раскладку в *угаданную* после того как сниппет конвертировался.\r\nУгадывание работает так же как в функции [Одна раскладка для целого слова в Конвертации Выделения]."},
 		{ Element.TT_SnippetsCount,	"Если ОРАНЖЕВЫЙ то со сниппетами все OK.\r\nЕсли КРАСНЫЙ то в сниппетах есть ошибка, может незавершен сниппет и т.д.\r\nВ скобках отображается количество закомментированых линий(они игнорируются Mahou),\r\nдоступные символы для комментирования линий: # или // и только вначале линии." },
-		{ Element.TT_GuessKeyCodeFix, "Включая это сниппеты, конвертация выделения, автозамена будут отправлять реальные коды клавиш вместо Unicode символов,\r\nно это сделает так что все символы будут в вашей текущей раскладке.\r\nПолезно в приложениях виртуальных машинах(BlueStacks, VirtualBox, etc)." },
-		{ Element.TT_ConfigsInAppData, "Если включено Mahou скопирует текущую конфигурацию(Mahou.ini) в AppData, и будет использовать их.\r\nТакже логи и сниппеты будут храниться в %AppData%\\Mahou.\r\nКогда состояние этой галочки изменено все другие галочки/данные конфигурации измененные в пользовательском интерфейсе не будут сохранены,\r\nт.к. произойдет смена конфигурации и загрузка выбранной(из папки Mahou или из %AppData%\\Mahou).\r\nПолезно если нужно запускать Mahou в папке Program files а прав на запись у всех пользователей - нет,\r\nи еще даёт возможность иметь разные настройки для каждого пользователя." },		
+		{ Element.TT_GuessKeyCodeFix, "Включая это сниппеты, конвертация выделения, автозамена будут отправлять реальные коды клавиш вместо Unicode символов,\r\nно это сделает так, что все символы будут в вашей текущей раскладке.\r\nПолезно в приложениях виртуальных машинах(BlueStacks, VirtualBox, etc)." },
+		{ Element.TT_ConfigsInAppData, "Если включено Mahou скопирует текущую конфигурацию(Mahou.ini) в AppData, и будет использовать их.\r\nТакже, логи и сниппеты будут храниться в %AppData%\\Mahou.\r\nКогда состояние этой галочки изменено все другие галочки/данные конфигурации измененные в пользовательском интерфейсе не будут сохранены,\r\nт.к. произойдет смена конфигурации и загрузка выбранной(из папки Mahou или из %AppData%\\Mahou).\r\nПолезно, если нужно запускать Mahou в папке Program files а прав на запись у всех пользователей - нет,\r\nи еще даёт возможность иметь разные настройки для каждого пользователя." },		
 		{ Element.TT_KeysType, "Выберите какой тип клавиш отображать в Mahou, оба типа работают ВМЕСТЕ,\r\nтак что лучше не назначайте одинаковые клавиши/гор. клавиши во избежание двойного переключения раскладки."},
 		{ Element.TT_SnippetExpandKey, "Выберите какой клавишей развертывать(увеличивать/превращать) сниппеты,\r\nработает только для сниппетов, автозамена как и раньше будет работать только при Space." },
 		{ Element.TT_LDUseWinMessages, "Если включено, подсказки будут обновляться не через таймеры,\r\nвместо этого они будут обновляться на соответствующих Сообщениях Windows.\r\nПотребляет меньше ЦП.\r\nСамая требовательная к ЦП функция - подсказка возле мыши при всегда включенной,\r\nпотребляет ЦП только при движении/кликах мыши,\r\nчтобы уменьшить ее потребление ЦП, есть новая конфигурация во вкладке Тайминги.\r\nПропуск х Сообщений Windows(движения мыши) перед обновлением подсказки." },
 		{ Element.TT_RemapCapslockAsF18, "Переопределяет клавишу Caps Lock как F18, после этого функция клавиши CapsLock будет отключена.\r\nЧтобы переключить состояние Caps Lock нажмите вместе с одной из клавиш модификаторов: Ctrl/Alt/Shift/Win.\r\n! Окно Mahou исключено из переопределения!\r\nВ Mahou назначайте гор. клавиши на Caps Lock, в других программах она будет переопределена как F18.\r\nПосле смены гор. клавиш не забудьте нажать Применить или ОК." },
 		{ Element.TT_UseJKL, "Позволяет Mahou получать раскладку с jkl.exe.\r\nПозволяет всегда получать правильную раскладку.(Очень рекомендуется)\r\n" },
 		{ Element.TT_ReadOnlyNA, "Переключается в режим только-чтение когда нет прав на запись Mahou.ini.\r\nПолезно для Администраторов." },
-		{ Element.TT_WriteInputHistory, "Будет писать историю ввода в history.txt(в папке Mahou или в AppData в зависимости от настроек),\nс поддержкой клавиши <BackSpace>!, хотя может быть медленным если история слишком большая." },
-		{ Element.TT_UseDelayAfterBackspaces, "Если включено Mahou будет ждать некоторое время после удаления старого слова и перед вводом конвертированного слова.\r\nПолезно если в некоторых программах функция Mahou Конвертация последнего слова не работает нормально." },
+		{ Element.TT_WriteInputHistory, "Будет писать историю ввода в history.txt(в папке Mahou или в AppData в зависимости от настроек),\nс поддержкой клавиши <BackSpace>!, хотя может быть медленным, если история слишком большая." },
+		{ Element.TT_UseDelayAfterBackspaces, "Если включено Mahou будет ждать некоторое время после удаления старого слова и перед вводом конвертированного слова.\r\nПолезно, если в некоторых программах функция Mahou Конвертация последнего слова не работает нормально." },
 		{ Element.TT_ShowSelectionTranslationHotkey, "Включите переводчик на вкладке [Переводчик], чтобы эта горячая клавиша работала." },
 		{ Element.TT_LeftRightMB, "Левая кнопка - открыть файл.\nПравая кнопка - открыть папку." },
 		{ Element.TT_CycleCase, "По циклу переключает регистр выделенных слов, по:\r\nЗаглавный => ВЕРХНИЙ => нижний => слУчАЙный => оБРАТНЫЙ => Заглавный => ..." },
