@@ -3225,13 +3225,18 @@ DEL "+restartMahouPath;
 			PreExit();
 			if (!KMHook.IfNW7())
 				System.Threading.Thread.Sleep(100);
-			var piKill = new ProcessStartInfo() {
-				FileName = "taskkill",
-				Arguments = "/IM Mahou.exe /F", 
-				WindowStyle = ProcessWindowStyle.Hidden };
-			Process.Start(piKill);
-			piKill.Arguments = "/PID " + Process.GetCurrentProcess().Id + " /F";
-			Process.Start(piKill);
+			try {
+				var piKill = new ProcessStartInfo() {
+					FileName = "taskkill",
+					Arguments = "/IM Mahou.exe /F", 
+					WindowStyle = ProcessWindowStyle.Hidden };
+				Process.Start(piKill);
+				piKill.Arguments = "/PID " + Process.GetCurrentProcess().Id + " /F";
+				Process.Start(piKill);
+			} catch (Exception e) {
+				Logging.Log("Taskkill error, try exit normally...", 1);
+				Application.Exit();
+			}
 		}
 		/// <summary>
 		/// Registers keys 1->9 & 0 on keyboard as hotkey to be used as word count selector for Convert Multiple Words Count.
