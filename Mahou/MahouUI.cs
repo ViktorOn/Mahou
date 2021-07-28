@@ -62,8 +62,8 @@ namespace Mahou {
 		#endregion
 		#region [Hidden]
 		public static bool __setlayoutForce, __setlayoutOnlyWM, nomemoryflush, LibreCtrlAltShiftV, __selection, __selection_nomouse, CycleCaseReset,
-							OVEXDisabled, ClipBackOnlyText, MahouMMTrayHoverLostFocusClose;
-		public static string ReselectCustoms, AutoCopyTranslation = "", onlySnippetsExcluded = "", onlyAutoSwitchExcluded = "";
+							OVEXDisabled, ClipBackOnlyText, MahouMMTrayHoverLostFocusClose, CycleCaseSaveBase;
+		public static string ReselectCustoms, AutoCopyTranslation = "", onlySnippetsExcluded = "", onlyAutoSwitchExcluded = "", CycleCaseBase;
 		static string CycleCaseOrder = "TULSR", OverlayExcluded, tas, ncs;
 		static int OverlayExcludedInerval, arm;
 		static Timer armt;
@@ -706,6 +706,9 @@ namespace Mahou {
 			}
 		}
 		public static void CCReset(string info = "") {
+			if (CycleCaseSaveBase) {
+				CycleCaseBase = "";
+			}
 			if (CycleCaseReset) {
 				CCPos = 0;
 				if (!string.IsNullOrEmpty(info)) {
@@ -730,6 +733,20 @@ namespace Mahou {
 					KMHook.SelectionConversion(KMHook.ConvT.Swap); break;
 				case 'R':
 					KMHook.SelectionConversion(KMHook.ConvT.Random); break;
+				case 'B':
+					if (!CycleCaseSaveBase) { 
+						Debug.WriteLine("Skip CC [B]: not enabled."); CCPos++; 
+						CycleCase();
+						break;
+					}
+					if (CycleCaseBase != "") {
+						Debug.WriteLine("CC [B]: Inputting: " + CycleCaseBase);
+						KMHook.DoSelf(() => {
+							KMHook.ClearModifiers();
+							KInputs.MakeInput(KInputs.AddString(CycleCaseBase));
+							KMHook.ReSelect(CycleCaseBase.Length);
+		                }, "Cycle Case [B]ase restore");
+					} break;
 				default:
 					Logging.Log("I have no idea what: " + a + " means..."); break;
 			}
@@ -1464,6 +1481,7 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hidden", "Redefines", Htxt_Redefines.Text);
 			MMain.MyConfs.Write("Hidden", "ClipBackOnlyText", Hchk_ClipBackOnlyText.Checked.ToString());
 			MMain.MyConfs.Write("Hidden", "AutoSwitchEndingSymbols", Htxt_ASEndSymbols.Text);
+			MMain.MyConfs.Write("Hidden", "CycleCaseSaveBase", Hchk_SaveBase.Checked.ToString());
 //			NCS_destroy();
 		}
 		void loadHidden() {
@@ -1498,6 +1516,7 @@ namespace Mahou {
 			ClipBackOnlyText = Hchk_ClipBackOnlyText.Checked = MMain.MyConfs.ReadBool("Hidden", "ClipBackOnlyText");
 			KMHook.AS_END_symbols = Htxt_ASEndSymbols.Text = MMain.MyConfs.Read("Hidden", "AutoSwitchEndingSymbols");
 			MahouMMTrayHoverLostFocusClose = MMain.MyConfs.ReadBool("Hidden", "MahouMMTrayHoverLostFocusClose");
+			CycleCaseSaveBase = Hchk_SaveBase.Checked = MMain.MyConfs.ReadBool("Hidden", "CycleCaseSaveBase");
 			parseRedefines();
 			Hnud_TrayHoverMM.Value = TrayHoverMahouMM;
 			if (!String.IsNullOrEmpty(OverlayExcluded)) {

@@ -2548,6 +2548,12 @@ namespace Mahou {
 					string ClipStr = GetClipStr();
 					var cT = "";
 					if (!String.IsNullOrEmpty(ClipStr)) {
+						if (MahouUI.CycleCaseSaveBase) {
+							if (String.IsNullOrEmpty(MahouUI.CycleCaseBase)) {
+								MahouUI.CycleCaseBase = ClipStr;
+								Debug.WriteLine("CC [B]ase saved: " + MahouUI.CycleCaseBase);
+							}
+						}
 						var output = "";
 						switch (t) {
 							case ConvT.Custom:
@@ -2811,13 +2817,17 @@ namespace Mahou {
 			}
 			return output.ToString();
 		}
-		static void ReSelect(int count, string cT="") {
+		public static void ReSelect(int count, string cT="") {
 			if (MahouUI.ReSelect) {
 				if (!MahouUI.ReselectCustoms.Contains(cT))
 					return;
 				//reselects text
 				Logging.Log("Reselecting text.");
-				KInputs.MakeInput(KInputs.AddPress(Keys.Left, count), (int)WinAPI.MOD_SHIFT);
+				var f = new List<WinAPI.INPUT>();
+				f.Add(KInputs.AddKey(Keys.RShiftKey, true));
+				f.AddRange(KInputs.AddPress(Keys.Left, count));
+				f.Add(KInputs.AddKey(Keys.RShiftKey, false));
+		        KInputs.MakeInput(f.ToArray());
 			}
 		}
 		static string ArmenianSignleCharFix(string word, uint next_layout, uint this_layout = 0) {

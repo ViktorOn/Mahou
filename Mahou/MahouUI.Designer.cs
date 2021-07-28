@@ -333,6 +333,7 @@ namespace Mahou
 		private System.Windows.Forms.CheckBox Hchk_ClipBackOnlyText;
 		private System.Windows.Forms.TextBox Htxt_ASEndSymbols;
 		private System.Windows.Forms.Label Hlbl_ASEndSymbols;
+		private System.Windows.Forms.CheckBox Hchk_SaveBase;
 		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
@@ -624,11 +625,11 @@ namespace Mahou
 			this.lnk_Site = new System.Windows.Forms.LinkLabel();
 			this.lnk_Repository = new System.Windows.Forms.LinkLabel();
 			this.tab_Hidden = new System.Windows.Forms.TabPage();
+			this.Htxt_Redefines = new System.Windows.Forms.TextBox();
 			this.Htxt_ASEndSymbols = new System.Windows.Forms.TextBox();
 			this.Hlbl_ASEndSymbols = new System.Windows.Forms.Label();
 			this.Hchk_ClipBackOnlyText = new System.Windows.Forms.CheckBox();
 			this.Htxt_OSnippetsExcluded = new System.Windows.Forms.TextBox();
-			this.Htxt_Redefines = new System.Windows.Forms.TextBox();
 			this.Htxt_OAutoSwitchExcluded = new System.Windows.Forms.TextBox();
 			this.Htxt_OverlayExcluded = new System.Windows.Forms.TextBox();
 			this.Hlbl_Redefines = new System.Windows.Forms.Label();
@@ -675,6 +676,7 @@ namespace Mahou
 			this.btn_Cancel = new System.Windows.Forms.Button();
 			this.btn_Apply = new System.Windows.Forms.Button();
 			this.HelpMeUnderstand = new System.Windows.Forms.ToolTip(this.components);
+			this.Hchk_SaveBase = new System.Windows.Forms.CheckBox();
 			this.tabs.SuspendLayout();
 			this.tab_functions.SuspendLayout();
 			this.tab_layouts.SuspendLayout();
@@ -3929,6 +3931,7 @@ namespace Mahou
 			// 
 			this.tab_Hidden.AutoScroll = true;
 			this.tab_Hidden.BackColor = System.Drawing.Color.DarkSlateGray;
+			this.tab_Hidden.Controls.Add(this.Hchk_SaveBase);
 			this.tab_Hidden.Controls.Add(this.Htxt_Redefines);
 			this.tab_Hidden.Controls.Add(this.Htxt_ASEndSymbols);
 			this.tab_Hidden.Controls.Add(this.Hlbl_ASEndSymbols);
@@ -3984,12 +3987,25 @@ namespace Mahou
 			this.tab_Hidden.TabIndex = 15;
 			this.tab_Hidden.Text = "[Hidden]";
 			// 
+			// Htxt_Redefines
+			// 
+			this.Htxt_Redefines.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_Redefines.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_Redefines.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_Redefines.Location = new System.Drawing.Point(270, 668);
+			this.Htxt_Redefines.Name = "Htxt_Redefines";
+			this.Htxt_Redefines.Size = new System.Drawing.Size(265, 23);
+			this.Htxt_Redefines.TabIndex = 45;
+			this.Htxt_Redefines.TextChanged += new System.EventHandler(this.Htxt_RedefinesTextChanged);
+			this.Htxt_Redefines.Enter += new System.EventHandler(this.Htxt_RedefinesEnter);
+			this.Htxt_Redefines.Leave += new System.EventHandler(this.Htxt_RedefinesLeave);
+			// 
 			// Htxt_ASEndSymbols
 			// 
 			this.Htxt_ASEndSymbols.BackColor = System.Drawing.Color.Orange;
 			this.Htxt_ASEndSymbols.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.Htxt_ASEndSymbols.ForeColor = System.Drawing.Color.LightCyan;
-			this.Htxt_ASEndSymbols.Location = new System.Drawing.Point(324, 696);
+			this.Htxt_ASEndSymbols.Location = new System.Drawing.Point(324, 719);
 			this.Htxt_ASEndSymbols.Name = "Htxt_ASEndSymbols";
 			this.Htxt_ASEndSymbols.Size = new System.Drawing.Size(211, 23);
 			this.Htxt_ASEndSymbols.TabIndex = 48;
@@ -3997,7 +4013,7 @@ namespace Mahou
 			// Hlbl_ASEndSymbols
 			// 
 			this.Hlbl_ASEndSymbols.AutoSize = true;
-			this.Hlbl_ASEndSymbols.Location = new System.Drawing.Point(8, 700);
+			this.Hlbl_ASEndSymbols.Location = new System.Drawing.Point(8, 723);
 			this.Hlbl_ASEndSymbols.Name = "Hlbl_ASEndSymbols";
 			this.Hlbl_ASEndSymbols.Size = new System.Drawing.Size(274, 15);
 			this.Hlbl_ASEndSymbols.TabIndex = 47;
@@ -4006,7 +4022,7 @@ namespace Mahou
 			// Hchk_ClipBackOnlyText
 			// 
 			this.Hchk_ClipBackOnlyText.AutoSize = true;
-			this.Hchk_ClipBackOnlyText.Location = new System.Drawing.Point(8, 671);
+			this.Hchk_ClipBackOnlyText.Location = new System.Drawing.Point(8, 694);
 			this.Hchk_ClipBackOnlyText.Name = "Hchk_ClipBackOnlyText";
 			this.Hchk_ClipBackOnlyText.Size = new System.Drawing.Size(285, 19);
 			this.Hchk_ClipBackOnlyText.TabIndex = 46;
@@ -4025,19 +4041,6 @@ namespace Mahou
 			this.Htxt_OSnippetsExcluded.TextChanged += new System.EventHandler(this.Htxt_RedefinesTextChanged);
 			this.Htxt_OSnippetsExcluded.Enter += new System.EventHandler(this.Htxt_RedefinesEnter);
 			this.Htxt_OSnippetsExcluded.Leave += new System.EventHandler(this.Htxt_RedefinesLeave);
-			// 
-			// Htxt_Redefines
-			// 
-			this.Htxt_Redefines.BackColor = System.Drawing.Color.Orange;
-			this.Htxt_Redefines.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.Htxt_Redefines.ForeColor = System.Drawing.Color.LightCyan;
-			this.Htxt_Redefines.Location = new System.Drawing.Point(270, 645);
-			this.Htxt_Redefines.Name = "Htxt_Redefines";
-			this.Htxt_Redefines.Size = new System.Drawing.Size(265, 23);
-			this.Htxt_Redefines.TabIndex = 45;
-			this.Htxt_Redefines.TextChanged += new System.EventHandler(this.Htxt_RedefinesTextChanged);
-			this.Htxt_Redefines.Enter += new System.EventHandler(this.Htxt_RedefinesEnter);
-			this.Htxt_Redefines.Leave += new System.EventHandler(this.Htxt_RedefinesLeave);
 			// 
 			// Htxt_OAutoSwitchExcluded
 			// 
@@ -4068,7 +4071,7 @@ namespace Mahou
 			// Hlbl_Redefines
 			// 
 			this.Hlbl_Redefines.AutoSize = true;
-			this.Hlbl_Redefines.Location = new System.Drawing.Point(8, 649);
+			this.Hlbl_Redefines.Location = new System.Drawing.Point(8, 672);
 			this.Hlbl_Redefines.Name = "Hlbl_Redefines";
 			this.Hlbl_Redefines.Size = new System.Drawing.Size(241, 15);
 			this.Hlbl_Redefines.TabIndex = 44;
@@ -4077,7 +4080,7 @@ namespace Mahou
 			// Hlbl_TrayHoverMM
 			// 
 			this.Hlbl_TrayHoverMM.AutoSize = true;
-			this.Hlbl_TrayHoverMM.Location = new System.Drawing.Point(8, 619);
+			this.Hlbl_TrayHoverMM.Location = new System.Drawing.Point(8, 642);
 			this.Hlbl_TrayHoverMM.Name = "Hlbl_TrayHoverMM";
 			this.Hlbl_TrayHoverMM.Size = new System.Drawing.Size(384, 15);
 			this.Hlbl_TrayHoverMM.TabIndex = 43;
@@ -4093,7 +4096,7 @@ namespace Mahou
 			0,
 			0,
 			0});
-			this.Hnud_TrayHoverMM.Location = new System.Drawing.Point(428, 616);
+			this.Hnud_TrayHoverMM.Location = new System.Drawing.Point(428, 639);
 			this.Hnud_TrayHoverMM.Maximum = new decimal(new int[] {
 			350000,
 			0,
@@ -4116,7 +4119,7 @@ namespace Mahou
 			// Hlbl_ASIgnoreTimeout
 			// 
 			this.Hlbl_ASIgnoreTimeout.AutoSize = true;
-			this.Hlbl_ASIgnoreTimeout.Location = new System.Drawing.Point(8, 590);
+			this.Hlbl_ASIgnoreTimeout.Location = new System.Drawing.Point(8, 613);
 			this.Hlbl_ASIgnoreTimeout.Name = "Hlbl_ASIgnoreTimeout";
 			this.Hlbl_ASIgnoreTimeout.Size = new System.Drawing.Size(325, 15);
 			this.Hlbl_ASIgnoreTimeout.TabIndex = 39;
@@ -4132,7 +4135,7 @@ namespace Mahou
 			0,
 			0,
 			0});
-			this.Hnud_ASIgnoreTimeout.Location = new System.Drawing.Point(428, 587);
+			this.Hnud_ASIgnoreTimeout.Location = new System.Drawing.Point(428, 610);
 			this.Hnud_ASIgnoreTimeout.Maximum = new decimal(new int[] {
 			350000,
 			0,
@@ -4147,7 +4150,7 @@ namespace Mahou
 			this.Htxt_AutoSwitchIngoreRules.BackColor = System.Drawing.Color.Orange;
 			this.Htxt_AutoSwitchIngoreRules.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.Htxt_AutoSwitchIngoreRules.ForeColor = System.Drawing.Color.LightCyan;
-			this.Htxt_AutoSwitchIngoreRules.Location = new System.Drawing.Point(428, 498);
+			this.Htxt_AutoSwitchIngoreRules.Location = new System.Drawing.Point(428, 521);
 			this.Htxt_AutoSwitchIngoreRules.Name = "Htxt_AutoSwitchIngoreRules";
 			this.Htxt_AutoSwitchIngoreRules.Size = new System.Drawing.Size(107, 23);
 			this.Htxt_AutoSwitchIngoreRules.TabIndex = 37;
@@ -4155,7 +4158,7 @@ namespace Mahou
 			// Hlbl_AutoSwitchIngoreRules
 			// 
 			this.Hlbl_AutoSwitchIngoreRules.AutoSize = true;
-			this.Hlbl_AutoSwitchIngoreRules.Location = new System.Drawing.Point(8, 500);
+			this.Hlbl_AutoSwitchIngoreRules.Location = new System.Drawing.Point(8, 523);
 			this.Hlbl_AutoSwitchIngoreRules.Name = "Hlbl_AutoSwitchIngoreRules";
 			this.Hlbl_AutoSwitchIngoreRules.Size = new System.Drawing.Size(415, 15);
 			this.Hlbl_AutoSwitchIngoreRules.TabIndex = 36;
@@ -4164,7 +4167,7 @@ namespace Mahou
 			// Hchk_ASIgnoreLS
 			// 
 			this.Hchk_ASIgnoreLS.AutoSize = true;
-			this.Hchk_ASIgnoreLS.Location = new System.Drawing.Point(8, 564);
+			this.Hchk_ASIgnoreLS.Location = new System.Drawing.Point(8, 587);
 			this.Hchk_ASIgnoreLS.Name = "Hchk_ASIgnoreLS";
 			this.Hchk_ASIgnoreLS.Size = new System.Drawing.Size(313, 19);
 			this.Hchk_ASIgnoreLS.TabIndex = 35;
@@ -4174,7 +4177,7 @@ namespace Mahou
 			// Hchk_ASIgnoreDel
 			// 
 			this.Hchk_ASIgnoreDel.AutoSize = true;
-			this.Hchk_ASIgnoreDel.Location = new System.Drawing.Point(8, 544);
+			this.Hchk_ASIgnoreDel.Location = new System.Drawing.Point(8, 567);
 			this.Hchk_ASIgnoreDel.Name = "Hchk_ASIgnoreDel";
 			this.Hchk_ASIgnoreDel.Size = new System.Drawing.Size(253, 19);
 			this.Hchk_ASIgnoreDel.TabIndex = 34;
@@ -4184,7 +4187,7 @@ namespace Mahou
 			// Hchk_ASIgnoreBack
 			// 
 			this.Hchk_ASIgnoreBack.AutoSize = true;
-			this.Hchk_ASIgnoreBack.Location = new System.Drawing.Point(8, 524);
+			this.Hchk_ASIgnoreBack.Location = new System.Drawing.Point(8, 547);
 			this.Hchk_ASIgnoreBack.Name = "Hchk_ASIgnoreBack";
 			this.Hchk_ASIgnoreBack.Size = new System.Drawing.Size(284, 19);
 			this.Hchk_ASIgnoreBack.TabIndex = 33;
@@ -4194,7 +4197,7 @@ namespace Mahou
 			// Hchk___setlayoutOnlyWM
 			// 
 			this.Hchk___setlayoutOnlyWM.AutoSize = true;
-			this.Hchk___setlayoutOnlyWM.Location = new System.Drawing.Point(8, 476);
+			this.Hchk___setlayoutOnlyWM.Location = new System.Drawing.Point(8, 499);
 			this.Hchk___setlayoutOnlyWM.Name = "Hchk___setlayoutOnlyWM";
 			this.Hchk___setlayoutOnlyWM.Size = new System.Drawing.Size(501, 19);
 			this.Hchk___setlayoutOnlyWM.TabIndex = 32;
@@ -4205,7 +4208,7 @@ namespace Mahou
 			// Hchk___setlayoutForce
 			// 
 			this.Hchk___setlayoutForce.AutoSize = true;
-			this.Hchk___setlayoutForce.Location = new System.Drawing.Point(8, 455);
+			this.Hchk___setlayoutForce.Location = new System.Drawing.Point(8, 478);
 			this.Hchk___setlayoutForce.Name = "Hchk___setlayoutForce";
 			this.Hchk___setlayoutForce.Size = new System.Drawing.Size(496, 19);
 			this.Hchk___setlayoutForce.TabIndex = 31;
@@ -4493,7 +4496,7 @@ namespace Mahou
 			// 
 			// Hlbl_scrollpastcontent
 			// 
-			this.Hlbl_scrollpastcontent.Location = new System.Drawing.Point(234, 711);
+			this.Hlbl_scrollpastcontent.Location = new System.Drawing.Point(234, 734);
 			this.Hlbl_scrollpastcontent.Name = "Hlbl_scrollpastcontent";
 			this.Hlbl_scrollpastcontent.Size = new System.Drawing.Size(100, 23);
 			this.Hlbl_scrollpastcontent.TabIndex = 40;
@@ -4538,6 +4541,16 @@ namespace Mahou
 			this.HelpMeUnderstand.ShowAlways = true;
 			this.HelpMeUnderstand.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			this.HelpMeUnderstand.Popup += new System.Windows.Forms.PopupEventHandler(this.HelpMeUnderstandPopup);
+			// 
+			// Hchk_SaveBase
+			// 
+			this.Hchk_SaveBase.AutoSize = true;
+			this.Hchk_SaveBase.Location = new System.Drawing.Point(8, 457);
+			this.Hchk_SaveBase.Name = "Hchk_SaveBase";
+			this.Hchk_SaveBase.Size = new System.Drawing.Size(423, 19);
+			this.Hchk_SaveBase.TabIndex = 49;
+			this.Hchk_SaveBase.Text = "Save text before first Cycle Case conversion. (to return use [B]ase in order ↑)";
+			this.Hchk_SaveBase.UseVisualStyleBackColor = true;
 			// 
 			// MahouUI
 			// 
