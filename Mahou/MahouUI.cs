@@ -707,6 +707,7 @@ namespace Mahou {
 		}
 		public static void CCReset(string info = "") {
 			if (CycleCaseSaveBase) {
+				Debug.WriteLine("CC [B]ase reset by: " +info);
 				CycleCaseBase = "";
 			}
 			if (CycleCaseReset) {
@@ -734,12 +735,15 @@ namespace Mahou {
 				case 'R':
 					KMHook.SelectionConversion(KMHook.ConvT.Random); break;
 				case 'B':
-					if (!CycleCaseSaveBase) { 
-						Debug.WriteLine("Skip CC [B]: not enabled."); CCPos++; 
+					var cbe = String.IsNullOrEmpty(CycleCaseBase);
+					var r = CycleCaseSaveBase?(cbe?"Emtpy, needs saving first":"???"):"not enabled";
+					if (!CycleCaseSaveBase || cbe) { 
+						Debug.WriteLine("Skip CC [B]: "+r); 
+						CCPos++;
 						CycleCase();
 						break;
 					}
-					if (CycleCaseBase != "") {
+					if (!cbe) {
 						Debug.WriteLine("CC [B]: Inputting: " + CycleCaseBase);
 						KMHook.DoSelf(() => {
 							KMHook.ClearModifiers();
