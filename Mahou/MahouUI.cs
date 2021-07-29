@@ -3932,39 +3932,58 @@ DEL "+restartMahouPath;
 		}
 		void ShowMahouMMMenuUnderMouse() {
 			if (!MahouMM) return;
-			var menu = new ContextMenuStrip();
-			List<ToolStripMenuItem> mmdd = new List<ToolStripMenuItem>();
-			var mmddi = MMain.mahou.icon.trIcon.ContextMenuStrip.Items[0] as ToolStripMenuItem;
-			for(var i = 0; i != mmddi.DropDownItems.Count; i++) {
-				var z = mmddi.DropDownItems[i];
-				var events = typeof(System.ComponentModel.Component).
-							GetField("events", BindingFlags.NonPublic | BindingFlags.Instance);
-				var all_events = events.GetValue(z);
-				var y = new ToolStripMenuItem(z.Text);
-				y.Name = z.Name;
-				events.SetValue(y, all_events);
-				mmdd.Add(y);
-			}
-			menu.Items.AddRange(mmdd.ToArray());
-            menu.BackColor = SystemColors.Control;
-            menu.RenderMode = ToolStripRenderMode.System;
-			menu.Show(Cursor.Position);
-			menu.Focus();
-			if (menu.Items.Count >0) 
-				menu.Items[0].Select();
+//			List<ToolStripMenuItem> mmdd = new List<ToolStripMenuItem>();
+//			var mmddi = MMain.mahou.icon.trIcon.ContextMenuStrip.Items[0] as ToolStripMenuItem;
+//			for(var i = 0; i != mmddi.DropDownItems.Count; i++) {
+//				var z = mmddi.DropDownItems[i];
+//				var events = typeof(System.ComponentModel.Component).
+//							GetField("events", BindingFlags.NonPublic | BindingFlags.Instance);
+//				var all_events = events.GetValue(z);
+//				var y = new ToolStripMenuItem(z.Text);
+//				y.Name = z.Name;
+//				events.SetValue(y, all_events);
+//				mmdd.Add(y);
+//			}
+//			menu.Items.AddRange(mmdd.ToArray());
+            MMmenu.BackColor = SystemColors.Control;
+            MMmenu.RenderMode = ToolStripRenderMode.System;
+			MMmenu.Show(Cursor.Position);
+			MMmenu.Focus();
+			if (MMmenu.Items.Count >0) 
+				MMmenu.Items[0].Select();
 			Timer t = null;
 			if (MahouMMTrayHoverLostFocusClose) {
-				menu.LostFocus += (_, __) => { menu.Hide(); };
-				menu.VisibleChanged += (_, __) => {
-					if (!menu.Visible) {
-						menu.Close();
-					}
-				};
+				MMmenu.LostFocus += (_, __) => { MMmenu.Hide(); };
+//				MMmenu.VisibleChanged += (_, __) => {
+//					if (!menu.Visible) {
+//						menu.Close();
+//					}
+//				};
 				t = new Timer();
 				t.Interval = 50;
 				var con = 0;
 				t.Tick += (_,__) => { 
-					var magick = menu.PointToClient(Cursor.Position);
+					var magick = MMmenu.PointToClient(Cursor.Position);
+					for (int i = 0; i != MMmenu.Items.Count; i++) {
+						var x = MMmenu.Items[i] as ToolStripMenuItem;
+						if (x.HasDropDownItems) {
+							if (magick.X < 0 || magick.Y < 0) {
+								magick = x.DropDown.PointToClient(Cursor.Position);
+//								while (x.HasDropDownItems) {
+//									if (magick.X < 0 || magick.Y < 0) {
+//										for (int z = 0; z < x.DropDownItems.Count; z++) {
+//											var y = x.DropDownItems[z] as ToolStripMenuItem;
+//											if (y.HasDropDownItems) {
+//												magick = y.DropDown.PointToClient(Cursor.Position);
+//												x = y;
+//											}
+//										}
+//									}
+//								}
+							}
+						}
+					}
+					Debug.WriteLine(magick);
 					if (magick.X < 0 || magick.Y < 0) {
 						con+=50;
 					} else {
@@ -3972,17 +3991,17 @@ DEL "+restartMahouPath;
 					}
 					if(con >= TrayHoverMahouMM*1.5) {
 						Debug.WriteLine("Out of menu for " +con+"ms!, autohide!");
-						if (!menu.IsDisposed || !menu.Disposing)
-							menu.Hide();
+//						if (!menu.IsDisposed || !menu.Disposing)
+							MMmenu.Hide();
 						t.Stop();
 						t.Dispose();
 					}
 				};
 				t.Start();
 			}
-			menu.PreviewKeyDown += (_,__) => {
+			MMmenu.PreviewKeyDown += (_,__) => {
 				if (__.KeyCode == Keys.Escape) {
-					menu.Hide();
+					MMmenu.Hide();
 				}
 				if (t != null) {
 					Debug.WriteLine("Autohide disabled by keyboard.");
@@ -3991,7 +4010,7 @@ DEL "+restartMahouPath;
 					t = null;
 				}
 			};
-			WinAPI.SetForegroundWindow(menu.Handle);
+			WinAPI.SetForegroundWindow(MMmenu.Handle);
 		}
 		#region Updates functions
 		void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e) {
@@ -4899,9 +4918,16 @@ DEL ""ExtractASD.cmd""";
 		}
 		public static DICT<string,Tuple<Action,string>> tray_hotkeys = new DICT<string,Tuple<Action,string>>();
 		public static DICT<string,Action> event_bindings = new DICT<string, Action>();
+		static ContextMenuStrip MMmenu;
 		static void makemenu(string mahoumenu) {
 			tray_hotkeys.Clear();
 			event_bindings.Clear();
+			if (MMmenu == null) {
+				MMmenu = new ContextMenuStrip();
+			} else {
+				MMmenu.Dispose(); MMmenu = null;
+				MMmenu = new ContextMenuStrip();
+			}
 			var mm = Regex.Replace(mahoumenu, "\r?\n", "\n");
 			var mmls = mm.Split('\n');
 			var mms = new ToolStripMenuItem();
@@ -5003,6 +5029,9 @@ DEL ""ExtractASD.cmd""";
 							var mmd = new ToolStripMenuItem(text.ToString(),null);
 							dirparser(ref mmd, dir, maxd, allow_types, maxentries);
 							mms.DropDownItems.Add(mmd);
+							var mmd2 = new ToolStripMenuItem(text.ToString(),null);
+							dirparser(ref mmd2, dir, maxd, allow_types, maxentries);
+							MMmenu.Items.Add(mmd2);
 						}
 					} catch(Exception e) {
 						Debug.WriteLine(e.Message + e.StackTrace);
@@ -5012,6 +5041,8 @@ DEL ""ExtractASD.cmd""";
 				}
 				mms.DropDownItems.Add(new ToolStripMenuItem(text.ToString(),null,(_,__) =>
 				                                            menuhandle(act.ToString(), arg.ToString())));
+				MMmenu.Items.Add(new ToolStripMenuItem(text.ToString(),null,(_,__) =>
+		                                                    menuhandle(act.ToString(), arg.ToString())));
 			}
 			var wfm = new Timer();
 			wfm.Interval = 1000;
