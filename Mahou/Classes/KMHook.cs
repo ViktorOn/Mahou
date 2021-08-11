@@ -94,6 +94,7 @@ namespace Mahou {
         	{"abc", "xyz"}, { "s/^hold/bold/", "" } 
 		});
 		static DICT<string, string> transliterationDict = DefaultTransliterationDict;
+		static DICT<int, DICT<int, int>> LKDict;
 		#endregion
 		#region Keyboard, Mouse & Event hooks callbacks
 		public static void ListenKeyboard(int vkCode, uint MSG, short Flags = 0) {
@@ -3120,11 +3121,122 @@ namespace Mahou {
 				Debug.WriteLine("XX CLW_END");
 			}, "st_conv_word");
 		}
+		public static void LayoutKeyReplaceInit() {
+			var p = System.IO.Path.Combine(MahouUI.nPath, "LayoutKeyCodeReplace.txt");
+			if (System.IO.File.Exists(p)) {
+				var t = System.IO.File.ReadAllText(p);
+				var ll = Regex.Split(t, @"\r?\n");
+				LKDict = new DICT<int, DICT<int, int>>();
+				var tmp = new DICT<int,int>();
+				var thisid = 0;
+				foreach (string l in ll) {
+					if (thisid != 0) {
+						var kcs = new List<string>();
+						if (l.Contains(',')) {
+							kcs.AddRange(l.Split(','));
+						} else { kcs.Add(l); }
+						for (int i = 0; i < kcs.Count; i++) {
+							if (!kcs[i].Contains('=')) continue;
+							var eqs = kcs[i].Split('=');
+							if ((eqs.Length > 2) && (eqs.Length%2==0)) {
+								for (int x = 0; x < eqs.Length; x+=2) {
+									int x1=0,x2=0;
+									if (eqs[x][0] == '[' && eqs[x][eqs[x].Length] == ']') {
+										if (eqs[x+1][0] == '[' && eqs[x+1][eqs[x+1].Length] == ']') {
+											Int32.TryParse(eqs[x].Substring(1,eqs[x].Length-2), out x1);
+											Int32.TryParse(eqs[x+1].Substring(1,eqs[x+1].Length-2), out x2);
+											if (x1 != 0 && x2 != 0) {
+												tmp.Add(x1, x2);
+											}
+										}
+									}
+								}
+							} else {
+								int x1=0,x2=0;
+								string xx1 = eqs[0].Substring(1,eqs[0].Length-2), 
+										xx2 = eqs[1].Substring(1,eqs[1].Length-2);
+								Int32.TryParse(xx1, out x1);
+								Int32.TryParse(xx2, out x2);
+								if (x1 != 0 && x2 != 0) {
+									tmp.Add(x1, x2);
+								}
+							}
+						}
+					}
+					if (l[0] == '<') {
+						var id = l.Substring(1, l.Length-1);
+						var tid = -1;
+						Int32.TryParse(id, out tid);
+						if (thisid == tid) {
+							LKDict.Set(thisid, tmp);
+							thisid = 0;
+							tmp = new DICT<int, int>();
+						}
+					}
+					if (l[0] == '>') {
+						var id = l.Substring(1,l.Length-1);
+						Debug.WriteLine("id"+id);
+						Int32.TryParse(id, out thisid);
+					}
+				}
+		    }
+		}
+		public static List<YuKey> LayoutKeyReplace(List<YuKey> yks, int layout, int next) {
+			Debug.WriteLine("LK start!");
+			if (LKDict == null) return yks;
+			bool reverse = false;
+			int st = 0;
+			DICT<int, int> l = null;
+			for (int i = 0; i < LKDict.len; i++) {
+				if (LKDict[i].k == next) {
+					l = LKDict.GetByKey(next);
+					reverse = true;
+					st = l.len-1;
+					Debug.WriteLine("REVERSE to layout " + next);
+					break;
+				}
+				if (LKDict[i].k == layout) {
+					l = LKDict.GetByKey(layout);
+					break;
+				}
+			}
+			Debug.WriteLine("LK? Dict OK" + l==null);
+			if (l == null) return yks;
+			Debug.WriteLine("LK Dict OK" + l.len);
+			for(int z = 0; z != yks.Count; z++) {
+				if (yks[z].altnum) continue;
+				for (int i = st;;) {
+					if (reverse ? (i < 0) : (i==l.len)) break;
+					int kk = l[i].k, vv = l[i].v;
+					if (reverse) {
+						kk = l[i].v; vv = l[i].k;
+					}
+					Debug.WriteLine(">>TEST " + ((int)yks[z].key) + "==" + kk + " => " + vv);
+					if ((int)yks[z].key == kk) {
+						Keys kn = yks[z].key;
+						Debug.WriteLine("GOT: " + vv);
+						try {
+							kn = (Keys)vv;
+							yks[z] = new YuKey(){key = kn, altnum = yks[z].altnum, numpads = yks[z].numpads, upper = yks[z].upper};
+							break;
+						} catch {
+							Logging.Log(vv + " is not a valid key code.");
+						}
+					}
+					if (reverse) {
+						i--;
+					} else {
+						i++;
+					}
+				}
+			}
+			return yks;
+		}
 		/// <summary>
 		/// Converts last word/line/words.
 		/// </summary>
 		/// <param name="c_">List of YuKeys to be converted.</param>
-		public static void ConvertLast(List<YuKey> c_) {
+		public static void ConvertLast(List<YuKey> c_, bool line = false) {
 			try { //Used to catch errors, since it called as Task
 				Debug.WriteLine("Start CL");
 				Debug.WriteLine(c_.Count + " LL");
@@ -3132,7 +3244,6 @@ namespace Mahou {
 				if (c_.Count <= 0)
 					return;
 				Locales.IfLessThan2();
-				YuKey[] YuKeys = c_.ToArray();
 				if (MahouUI.SoundOnConvLast)
 					MahouUI.SoundPlay();
 				if (MahouUI.SoundOnConvLast2)
@@ -3141,6 +3252,7 @@ namespace Mahou {
 				if (MahouUI.UseJKL && !KMHook.JKLERR)
 					wasLocale = MahouUI.currentLayout;
 				var desl = GetNextLayout(wasLocale).uId;
+				YuKey[] YuKeys = line ? c_.ToArray() : LayoutKeyReplace(c_, (int)(wasLocale>>16), (int)(desl>>16)).ToArray();
 				if (MahouUI.UseJKL && MahouUI.SwitchBetweenLayouts && MahouUI.EmulateLS && !JKLERR) {
 					Debug.WriteLine("JKL-ed CLW");
 					Logging.Log("[CLAST] > On JKL layout: " +desl);

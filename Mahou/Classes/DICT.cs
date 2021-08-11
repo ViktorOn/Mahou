@@ -45,10 +45,16 @@ namespace Mahou {
 			len++;
 		}
 		public KV<T,TV> Get(int i) {
-			if (i>len-1) throw new Exception("Index: "+i+"(count) is outside of the length: "+len);
+			if (i>len-1) {
+//				if (Key[0] is int) {
+//					Object k = i;
+//					return new KV<T, TV>() { k = (T)k, v = Get((T)k) };
+//				}
+				throw new Exception("Index: "+i+"(count) is outside of the length: "+len);
+			}
 			return new KV<T, TV>(){k = Key[i], v = Val[i]};
 		}
-		public TV Get(T s) {
+		public TV GetByKey(T s) {
 			var io = Key.IndexOf(s);
 			if (io != -1)
 				return Val[io];
@@ -101,7 +107,7 @@ namespace Mahou {
 			set { Set(value, i); }
 		}
 		public TV this [T v] {
-			get { return Get(v); }
+			get { return GetByKey(v); }
 			set { Set(v, value); }
 		}
 //		public KV<T> operator +(KV kv) {

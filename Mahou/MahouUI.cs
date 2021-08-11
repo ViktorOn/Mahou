@@ -504,15 +504,20 @@ namespace Mahou {
 					Logging.Log("Attempt to convert " + wordnum + " word(s).");
 					var words = new List<KMHook.YuKey>();
 					try {
-						foreach (var word in MMain.c_words.GetRange(MMain.c_words.Count-wordnum,wordnum)) {
-							words.AddRange(word);
+						var wasLocale = Locales.GetCurrentLocale();
+						if (MahouUI.UseJKL && !KMHook.JKLERR)
+							wasLocale = MahouUI.currentLayout;
+						var desl = KMHook.GetNextLayout(wasLocale).uId;
+						for(int w = MMain.c_words.Count-wordnum; w != MMain.c_words.Count; w++) {
+							var mt = KMHook.LayoutKeyReplace(MMain.c_words[w], (int)(wasLocale>>16), (int)(desl>>16)).ToArray();
+							words.AddRange(mt);
 						}
 						Logging.Log("Full character count in all " + wordnum + " last word(s) is " + words.Count + ".");
 					} catch {
 						Logging.Log("Converting " + wordnum + " word(s) impossible it is bigger that entered words.");
 					}
 					FlushConvertMoreWords();
-					KMHook.ConvertLast(words);
+					KMHook.ConvertLast(words, true);
 				} else if (KMHook.waitfornum) { FlushConvertMoreWords(); }
 				#endregion
 				var key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);	
@@ -657,13 +662,18 @@ namespace Mahou {
 	    }
 		static void ConvertLastLine() {
 			var line = new List<KMHook.YuKey>();
-			foreach (var word in MMain.c_words) {
-				line.AddRange(word);
-				foreach(var x in word) {
+			var wasLocale = Locales.GetCurrentLocale();
+			if (MahouUI.UseJKL && !KMHook.JKLERR)
+				wasLocale = MahouUI.currentLayout;
+			var desl = KMHook.GetNextLayout(wasLocale).uId;
+			for(int w = 0; w!= MMain.c_words.Count; w++) {
+				var mt = KMHook.LayoutKeyReplace(MMain.c_words[w], (int)(wasLocale>>16), (int)(desl>>16)).ToArray();
+				line.AddRange(mt);
+				foreach(var x in mt) {
 					Debug.WriteLine("KK: " + x.key);
 				}
 			}
-			KMHook.ConvertLast(line);
+			KMHook.ConvertLast(line, true);
 		}
 		static bool tooltip = true;
 		public static void ShowTooltip(string text, int time) {
@@ -1780,6 +1790,7 @@ namespace Mahou {
 			if (HKSelCustConv_tempEnabled) {
 				KMHook.ReloadCusRepDict();
 			}
+			KMHook.LayoutKeyReplaceInit();
 			#endregion
 			#region Appearence & Hotkeys
 			UpdateLangDisplayControlsSwitch();
