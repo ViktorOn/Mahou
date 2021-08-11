@@ -2312,12 +2312,13 @@ DEL "+restartMahouPath;
 			}
 			if (force) FLAG = ITEXT = null;
 			Debug.WriteLine("STIlL");
-			int lcid = 0;
+			uint lcraw = 0;
 			if (!UseJKL || KMHook.JKLERR)
-				lcid = (int)(Locales.GetCurrentLocale()>>16);
+				lcraw = Locales.GetCurrentLocale();
 			else
-				lcid = (int)(MahouUI.currentLayout>>16);
+				lcraw = MahouUI.currentLayout;
 			var ol = false;
+			int lcid = (int)(lcraw>>16);
 			if (MMain.mahou != null) 
 				ol = MahouUI.OneLayout;
 			else 
@@ -2326,9 +2327,13 @@ DEL "+restartMahouPath;
 				lcid = (int)(MahouUI.GlobalLayout>>16);
 			if (lcid > 0) { 
 				var flagname = "jp";
-				var clangname = new CultureInfo(lcid);
+				CultureInfo clangname; 
+				try {
+					clangname = new CultureInfo(lcid);
+				} catch {
+					clangname = new CultureInfo((int)(lcraw&0xffff));
+				}
 				flagname = clangname.ThreeLetterISOLanguageName.Substring(0, 2).ToLower();
-				
 				var flagpth = Path.Combine(MahouUI.nPath, "Flags\\" + flagname + ".png");
 				Debug.WriteLine("UpDATe?"+flagname+", "+(flagname != latestSwitch || (TrayText && ITEXT == null) || (TrayFlags && FLAG == null)));
 				if (flagname != latestSwitch || (TrayText && ITEXT == null) || (TrayFlags && FLAG == null)) {
