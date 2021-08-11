@@ -1609,7 +1609,7 @@ namespace Mahou {
 					uint l = 0;
 					try {
 						UInt32.TryParse(args, out l);
-//						var i = new System.Globalization.CultureInfo((int)(l&0xffff));
+//						var i = new System.Globalization.CultureInfo((int)(l>>16));
 					} catch (Exception e) {
 //			         	err = true;	
 						Logging.Log("__setlayout: ERR: " + e.Message);
@@ -2347,8 +2347,8 @@ namespace Mahou {
 						if (c == 'ո') sm = true;
 						if (ClipStr.Length > I+1) {
 							if (ClipStr[I+1] == 'ւ') {
-								var shrt = l2 & 0xffff;
-								var _shrt = l1 & 0xffff;
+								var shrt = l2>>16;
+								var _shrt = l1>>16;
 								if (shrt == 1033 || shrt == 1041) {
 									result.Append(sm ? "u" : "U");
 									I++; continue;
@@ -2831,8 +2831,8 @@ namespace Mahou {
 			}
 		}
 		static string ArmenianSignleCharFix(string word, uint next_layout, uint this_layout = 0) {
-			var shrt = next_layout & 0xffff;
-			var _shrt = this_layout & 0xffff;
+			var shrt = next_layout>>16;
+			var _shrt = this_layout>>16;
 //			if (shrt == 1033 || shrt == 1041) // English/Japanese
 			var repl = word;
 //			Debug.WriteLine("Next: " + next_layout + ", word: " +word);
@@ -3202,7 +3202,7 @@ namespace Mahou {
 		/// <returns></returns>
 		static bool SymbolIgnoreRules(Keys key, bool upper, uint wasLocale, ref List<WinAPI.INPUT> q) {
 			Logging.Log("Passing Key = ["+key+"]+["+(upper ? "UPPER" : "lower") + "] with WasLayoutID = ["+wasLocale+"] through symbol ignore rules.");
-			wasLocale &= 0xffff;
+			wasLocale = wasLocale>>16;
 			if (MMain.mahou.HKSymIgn.Enabled &&
 			    MahouUI.SymIgnEnabled &&
 			    (wasLocale == 1033 || wasLocale == 1041) &&
@@ -3339,8 +3339,8 @@ namespace Mahou {
 							var sus = Regex.Replace(evt.k, "^[a-z]+","");
 							Debug.WriteLine("SUS: "+sus + "evk.k "+ evt.k +" " + eve);
 							var kt = UInt32.Parse(sus);
-							Logging.Log("[EVT] Starting event #"+i+" on "+evt.k+" | (" +(xxl&0xffff)+ " == " +(0xffff&kt)+") => "+evt.v.Method.Name);
-							if (kt == xxl || (kt&0xffff) == (xxl&0xffff)) {
+							Logging.Log("[EVT] Starting event #"+i+" on "+evt.k+" | (" +(xxl>>16)+ " == " +(kt>>16)+") => "+evt.v.Method.Name);
+							if (kt == xxl || (kt>>16) == (xxl>>16)) {
 								if (t >0) { DoLater(evt.v, t); }
 								else { evt.v(); }
 							}
@@ -3767,8 +3767,8 @@ namespace Mahou {
 						if (c == 'ո') sm = true;
 						if (word.Length > I+1) {
 							if (word[I+1] == 'ւ') {
-								var shrt = l2 & 0xffff;
-								var _shrt = l & 0xffff;
+								var shrt = l2>>16;
+								var _shrt = l>>16;
 								if (shrt == 1033 || shrt == 1041) {
 									wordL.Append(sm ? "u" : "U");
 									I++; continue;

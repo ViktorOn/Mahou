@@ -2303,16 +2303,16 @@ DEL "+restartMahouPath;
 			Debug.WriteLine("STIlL");
 			int lcid = 0;
 			if (!UseJKL || KMHook.JKLERR)
-				lcid = (int)(Locales.GetCurrentLocale() & 0xffff);
+				lcid = (int)(Locales.GetCurrentLocale()>>16);
 			else
-				lcid = (int)(MahouUI.currentLayout & 0xffff);
+				lcid = (int)(MahouUI.currentLayout>>16);
 			var ol = false;
 			if (MMain.mahou != null) 
 				ol = MahouUI.OneLayout;
 			else 
 				ol = MMain.MyConfs.ReadBool("Layouts", "OneLayout");
 			if (ol)
-				lcid = (int)(MahouUI.GlobalLayout & 0xffff);
+				lcid = (int)(MahouUI.GlobalLayout>>16);
 			if (lcid > 0) { 
 				var flagname = "jp";
 				var clangname = new CultureInfo(lcid);
@@ -2393,13 +2393,13 @@ DEL "+restartMahouPath;
 						var bg = LDCaretBack_temp;
 						var fg = LDCaretFore_temp;
 						var fn = LDCaretFont_temp;
-						if (lcid == (MAIN_LAYOUT2 & 0xffff)) {
+						if (lcid == (MAIN_LAYOUT2>>16)) {
 							bg = Layout2Back_temp;
 							fg = Layout2Fore_temp;
 							fn = Layout2Font_temp;
 							if (!String.IsNullOrEmpty(Layout2TText)) t = Layout2TText;
 							n2 = false;	
-						} else if (lcid == (MAIN_LAYOUT1 & 0xffff)) {
+						} else if (lcid == (MAIN_LAYOUT1>>16)) {
 							bg = Layout1Back_temp;
 							fg = Layout1Fore_temp;
 							fn = Layout1Font_temp;

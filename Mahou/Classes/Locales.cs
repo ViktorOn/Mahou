@@ -94,7 +94,7 @@ namespace Mahou
 			var PHl = new List<uint>();
 			foreach (InputLanguage lang in InputLanguage.InstalledInputLanguages) {
 				uint u = (uint)lang.Handle;
-				uint shc = u & 0xffff;
+				uint shc = u >> 16;
 				if (!PHl.Contains(shc))
 					PHl.Add(shc);
 				count++;
