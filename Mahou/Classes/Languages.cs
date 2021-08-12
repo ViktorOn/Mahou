@@ -477,7 +477,7 @@ public class Languages
 		{ Element.Method, "Method" }, 
 		#endregion
 		#region Updates
-		{ Element.CheckForUpdates, "Check for updates:" }, 
+		{ Element.CheckForUpdates, "Check for updates" }, 
 		{ Element.YouHaveLatest, "You have latest version." }, 
 		{ Element.TimeToUpdate, "I think it is time to update." }, 
 		{ Element.UpdateMahou, "Update Mahou to <version>" }, 
@@ -801,7 +801,7 @@ public class Languages
 		{ Element.Method, "Метод" }, 
 		#endregion
 		#region Updates
-		{ Element.CheckForUpdates, "Проверить обновления:" }, 
+		{ Element.CheckForUpdates, "Проверить обновления" }, 
 		{ Element.Checking, "Проверяю..." }, 
 		{ Element.YouHaveLatest, "У Вас последняя версия." }, 
 		{ Element.TimeToUpdate, "Думаю пора обновиться." }, 

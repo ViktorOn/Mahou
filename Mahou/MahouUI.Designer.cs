@@ -625,6 +625,7 @@ namespace Mahou
 			this.lnk_Site = new System.Windows.Forms.LinkLabel();
 			this.lnk_Repository = new System.Windows.Forms.LinkLabel();
 			this.tab_Hidden = new System.Windows.Forms.TabPage();
+			this.Hchk_SaveBase = new System.Windows.Forms.CheckBox();
 			this.Htxt_Redefines = new System.Windows.Forms.TextBox();
 			this.Htxt_ASEndSymbols = new System.Windows.Forms.TextBox();
 			this.Hlbl_ASEndSymbols = new System.Windows.Forms.Label();
@@ -676,7 +677,6 @@ namespace Mahou
 			this.btn_Cancel = new System.Windows.Forms.Button();
 			this.btn_Apply = new System.Windows.Forms.Button();
 			this.HelpMeUnderstand = new System.Windows.Forms.ToolTip(this.components);
-			this.Hchk_SaveBase = new System.Windows.Forms.CheckBox();
 			this.tabs.SuspendLayout();
 			this.tab_functions.SuspendLayout();
 			this.tab_layouts.SuspendLayout();
@@ -3700,12 +3700,12 @@ namespace Mahou
 			// 
 			// lbl_UpdateChannel
 			// 
-			this.lbl_UpdateChannel.AutoSize = true;
-			this.lbl_UpdateChannel.Location = new System.Drawing.Point(88, 35);
+			this.lbl_UpdateChannel.Location = new System.Drawing.Point(8, 35);
 			this.lbl_UpdateChannel.Name = "lbl_UpdateChannel";
-			this.lbl_UpdateChannel.Size = new System.Drawing.Size(98, 15);
+			this.lbl_UpdateChannel.Size = new System.Drawing.Size(296, 15);
 			this.lbl_UpdateChannel.TabIndex = 4;
 			this.lbl_UpdateChannel.Text = "Updates channel:";
+			this.lbl_UpdateChannel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// grb_DownloadUpdate
 			// 
@@ -4646,7 +4646,6 @@ namespace Mahou
 			this.grb_backup.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pctBkpCopy)).EndInit();
 			this.tab_updates.ResumeLayout(false);
-			this.tab_updates.PerformLayout();
 			this.grb_DownloadUpdate.ResumeLayout(false);
 			this.grb_ProxyConfig.ResumeLayout(false);
 			this.grb_ProxyConfig.PerformLayout();
