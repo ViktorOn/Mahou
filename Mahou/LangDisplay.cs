@@ -89,8 +89,14 @@ namespace Mahou
 				transparentBG = true;
 			else transparentBG = false;
 			var notTwo = false;
-			if ((cLid >> 16) > 0) {
-				var clangname = new System.Globalization.CultureInfo((int)(cLid >> 16));
+			if (cLid > 0) {
+				System.Globalization.CultureInfo clangname = null;
+				try {
+					clangname = new System.Globalization.CultureInfo((int)(cLid >> 16));
+				} catch {
+					clangname = new System.Globalization.CultureInfo((int)(cLid & 0xffff));
+				}
+				if (clangname == null) return;
 				if (MahouUI.DiffAppearenceForLayouts && !DisplayFlag) {
 					if (cLid == MahouUI.MAIN_LAYOUT1) {
 						ChangeColors(MahouUI.Layout1Font_temp, MahouUI.Layout1Fore_temp, 
