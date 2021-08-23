@@ -5842,8 +5842,10 @@ DEL ""ExtractASD.cmd""";
 			var t = (TextBox)sender;
 			if (t.Focused) {
 				var i = t.SelectionStart;
-				if (t.Text[t.Text.Length-1] == '|') i++;
-				t.Text = t.Text.Replace("|", Environment.NewLine);
+				if (t.Text.Length > 0) {
+					if (t.Text[t.Text.Length-1] == '|') i++;
+					t.Text = t.Text.Replace("|", Environment.NewLine);
+				}
 				t.SelectionStart = i;
 				t.ScrollToCaret();
 			}
