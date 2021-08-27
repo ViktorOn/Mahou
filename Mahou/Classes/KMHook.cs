@@ -2010,7 +2010,7 @@ namespace Mahou {
 						var speclayout = (string)typeof(MahouUI).GetField("Layout"+i).GetValue(MMain.mahou);
 						if (String.IsNullOrEmpty(speclayout)) {
 						    Logging.Log("[SPKEY] > No layout for Layout"+i + " variable.");
-						    return;
+						    continue;
 					    }
 						if (speclayout == MMain.Lang[Languages.Element.SwitchBetween]) {
 							if (specificKey == 12 && Key == Keys.Tab && !ctrl && !ctrl_r && !shift_r && !shift && !win && !win_r && !alt && !alt_r) {
