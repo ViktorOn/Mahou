@@ -1554,7 +1554,7 @@ namespace Mahou {
 				case "__nif":
 					sep = args[0];
 					argv = SplitEsc(args.Substring(1,args.Length-1), sep);
-					if (argv[0].Length <=1 && argv.Length >=2) {
+					if (argv[0].Length ==0 && argv.Length >=2) {
 						result.Append(argv[1]);
 						KInputs.MakeInput(KInputs.AddString(argv[1]));
 					}
