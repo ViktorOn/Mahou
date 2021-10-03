@@ -758,6 +758,7 @@ namespace Mahou {
 						KMHook.DoSelf(() => {
 							KMHook.ClearModifiers();
 							KInputs.MakeInput(KInputs.AddString(CycleCaseBase));
+							MahouUI.hk_result = true;
 							KMHook.ReSelect(CycleCaseBase.Length, "B");
 		                }, "Cycle Case [B]ase restore");
 					} break;
