@@ -4264,7 +4264,7 @@ DEL ""ExtractASD.cmd""";
 				// cosmetics
 				Description = Description.Replace(":memo:", "📝").Replace(":gem:", "💎").Replace(":bug:", "🐛")
 						   				 .Replace(":speech_balloon:", "💬").Replace(":rocket:", "🚀");
-				Description = Description.Replace(@"\n","\r\n");
+				Description = Description.Replace(@"\n","\r\n").Replace(@"\r","");
 				var Version = trimlr(a["tag_name"]);
 				var aa = new Auri(a["assets"]);
 				var Lindex = "0";
