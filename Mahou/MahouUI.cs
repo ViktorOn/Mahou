@@ -4127,6 +4127,7 @@ DEL /Q /F /A ""%TEMP%\UpdateMahou.cmd""";
 		string getResponce(string url) {
 			try {
 				var request = (HttpWebRequest)WebRequest.Create(url);
+				request.UserAgent = "request";
 				// For proxy
 				if (!String.IsNullOrEmpty(txt_ProxyServerPort.Text)) {
 					request.Proxy = MakeProxy();
@@ -4239,44 +4240,47 @@ DEL ""ExtractASD.cmd""";
 //			Debug.WriteLine("REP:X: " + rep);
 			return rep;
 		}
+		static string trimlr(string t, int c=1) {
+			if (t.Length <= c) return "";
+			return t.Substring(c,t.Length-(c+1));
+		}
 		/// <summary>
 		/// Gets update info, and sets it to static [UpdInfo] string.
 		/// </summary>
 		void GetUpdateInfo() {
 			var Info = new string[5] {"","","","",""} ; // Update info
-			var GH = "https://github.com";
-			var url = GH+"/BladeMight/Mahou/releases/latest";
+			var api = "https://api.github.com/repos/BladeMight/Mahou/releases";
+			var url = api+"/latest";
 			var beta = MMain.MyConfs.Read("Updates", "Channel") != "Stable";
-			if (beta) 
-				url = GH+"/BladeMight/Mahou/releases/tag/latest-commit";
+			if (beta) {
+				url = api+"/tags/latest-commit";
+			}
 			var data = getResponce(url);
 			if (!String.IsNullOrEmpty(data)) {
-				// Below are REGEX HTML PARSES!!
-				// I'm not kidding...
-				// They really works :)
-				var Title = Regex.Match(data,
-					            "a href=\"/BladeMight/Mahou/releases/tag/.+?>(.+?)<").Groups[1].Value;
-				var Description = HttpUtility.HtmlDecode(Regex.Replace(Regex.Match(data,
-                                       //These looks unsafe, but hey, they really work!
-					                  "<div class=\"markdown-body\">\n\\s+(.+?)[\\n\\s]+</div>",
-					                  RegexOptions.IgnoreCase | RegexOptions.Singleline).Groups[1].Value, "<[^>]*>", ""));
-				var Version = Regex.Match(data, "a href=\"/BladeMight/Mahou/tree/(v.*?)\"").Groups[1].Value;
-				var Link = GH + Regex.Match(data,
-					           "<a href=\"(/BladeMight/Mahou/releases/download.+?)\"").Groups[1].Value;
-				if (!Link.Contains("Mahou")) {
-		           	if (Version.Contains("v")) {
-				    	Link = GH+"/BladeMight/Mahou/releases/download/"+Version+"/Mahou-"+Version+".zip";
-				    }
-				}
+//				Debug.WriteLine(data);
+				var a = new Auri(data);
+				var Title = trimlr(a["name"]);
+				var Description = trimlr(a["body"]);
+				// cosmetics
+				Description = Description.Replace(":memo:", "📝").Replace(":gem:", "💎").Replace(":bug:", "🐛")
+						   				 .Replace(":speech_balloon:", "💬").Replace(":rocket:", "🚀");
+				Description = Description.Replace(@"\n","\r\n");
+				var Version = trimlr(a["tag_name"]);
+				var aa = new Auri(a["assets"]);
+				var Lindex = "0";
 				var Commit = "";
 				if (beta) {
-					Commit = (Regex.Match(Title, @"\(\[?(.+?)(\]|\s)").Groups[1].Value);
-					Link = GH+"/BladeMight/Mahou/releases/download/latest-commit/Release_x86_x64.zip";
+					Lindex = "7";
+					Commit = Regex.Match(Title, @".*\[([a-fA-F0-9]{7})\]").Groups[1].Value;
 				}
-//				Debug.WriteLine(Title);
-//				Debug.WriteLine(Description);
+				var Link = trimlr(new Auri(aa["^"+Lindex])["browser_download_url"]);
+				Debug.WriteLine(Title);
+				Debug.WriteLine(Description);
+				Debug.WriteLine(Version);
+				Debug.WriteLine(Commit);
+				Debug.WriteLine(Link);
 				Info[0] = Title;
-				Info[1] = UnescapeUnicode(Regex.Replace(Description, "\n", "\r\n")); // Regex needed to properly display new lines.
+				Info[1] = UnescapeUnicode(Description);
 				Info[2] = Version;
 				Info[3] = Link;
 				if (!String.IsNullOrEmpty(Commit))
