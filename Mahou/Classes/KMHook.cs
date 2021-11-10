@@ -248,6 +248,10 @@ namespace Mahou {
 			if (Key == Keys.RWin) {
 				win_r = MSG == WinAPI.WM_KEYDOWN || MSG == WinAPI.WM_SYSKEYDOWN;
 			}
+			if ((preKey == Keys.LWin && Key != Keys.LWin)  || (preKey == Keys.RWin && Key != Keys.RWin)) {
+				preKey = Keys.None;
+				Debug.WriteLine("Fix stuck preKey Win");
+			}
 			if (L_DOWN && (win || win_r)) {
 				preKey = Keys.None;
 				L_DOWN = win = win_r = false;
