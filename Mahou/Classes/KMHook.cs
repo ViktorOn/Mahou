@@ -1490,6 +1490,22 @@ namespace Mahou {
 			return allraw.ToString();
 				
 		}
+		static void ExprAgainTestOrSend(string estr, ref StringBuilder result) {
+			var contains = false;
+			foreach (var e in expressions) {
+				if (estr.Contains(e)) {
+				    	contains = true;
+				    	break;
+				    }
+			}
+			if (contains){
+				Debug.WriteLine("Contains EXPR again " + estr);
+		    	ExpandSnippetWithExpressions(estr);
+			} else {
+				result.Append(estr);
+				KInputs.MakeInput(KInputs.AddString(estr));
+			}
+		}
 		static void ExecExpression(string expr, string args, int curlefts = -1, string plaintext_pre = "") {
 			var result = new StringBuilder();
 			if (!string.IsNullOrEmpty(plaintext_pre)) {
@@ -1551,16 +1567,14 @@ namespace Mahou {
 					var sep = args[0];
 					argv = SplitEsc(args.Substring(1,args.Length-1), sep);
 					if (argv[0].Length >=1 && argv.Length >=2) {
-						result.Append(argv[1]);
-						KInputs.MakeInput(KInputs.AddString(argv[1]));
+						ExprAgainTestOrSend(argv[1], ref result);
 					}
 					break;
 				case "__nif":
 					sep = args[0];
 					argv = SplitEsc(args.Substring(1,args.Length-1), sep);
 					if (argv[0].Length ==0 && argv.Length >=2) {
-						result.Append(argv[1]);
-						KInputs.MakeInput(KInputs.AddString(argv[1]));
+						ExprAgainTestOrSend(argv[1], ref result);
 					}
 					break;
 				case "__execute":
