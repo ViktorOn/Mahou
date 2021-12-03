@@ -3090,6 +3090,7 @@ namespace Mahou {
 				Logging.Log("Convert Last failed: EMPTY WORD.");
 				return;
 			}
+			if (c_snip.Count == 0) { skipsnip = true; }
 			Logging.Log("Start Convert Word len: ["+YuKeys.Length+"], wl:"+wasLocale+", ss:"+skipsnip);
 			DoSelf(() => {
 				Debug.WriteLine(">> ST CLW");
@@ -3103,12 +3104,15 @@ namespace Mahou {
 						backs++;
 				}
 				Debug.WriteLine(">> LC Aft. " + (MMain.locales.Length * 20));
+				var rewr = new StringBuilder();
+				if(!skipsnip) {
+					foreach(var c in c_snip) { rewr.Append(c); }
+					c_snip.Clear();
+				}
 				Logging.Log("Deleting old word, with lenght of [" + YuKeys.Length + "].");
 				KInputs.MakeInput(KInputs.AddPress(Keys.Back, backs));
 				if (MahouUI.UseDelayAfterBackspaces)
 					Thread.Sleep(MMain.mahou.DelayAfterBackspaces);
-				if(!skipsnip)
-					c_snip.Clear();
 				var q = new List<WinAPI.INPUT>();
 				for (int i = 0; i < YuKeys.Length; i++) {
 					if (YuKeys[i].altnum) {
@@ -3141,6 +3145,9 @@ namespace Mahou {
 							}
 						}
 					}
+				}
+				if (!skipsnip) {
+					Logging.Log("[SNI] Snip rewrite: " + rewr + " => " + new string(c_snip.ToArray()));
 				}
 				KInputs.MakeInput(q.ToArray());
 				MahouUI.hk_result = true;
@@ -3279,7 +3286,7 @@ namespace Mahou {
 					wasLocale = MahouUI.currentLayout;
 				var desl = GetNextLayout(wasLocale).uId;
 				YuKey[] YuKeys = line ? c_.ToArray() : LayoutKeyReplace(c_, (int)(wasLocale>>16), (int)(desl>>16)).ToArray();
-				if (MahouUI.UseJKL && MahouUI.SwitchBetweenLayouts && MahouUI.EmulateLS && !JKLERR) {
+				if (MahouUI.UseJKL && MahouUI.EmulateLS && !JKLERR) {
 					Debug.WriteLine("JKL-ed CLW");
 					Logging.Log("[CLAST] > On JKL layout: " +desl);
 		        	if (!JKLERRchecking) {
