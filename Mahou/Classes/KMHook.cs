@@ -3090,7 +3090,6 @@ namespace Mahou {
 				Logging.Log("Convert Last failed: EMPTY WORD.");
 				return;
 			}
-			if (c_snip.Count == 0) { skipsnip = true; }
 			Logging.Log("Start Convert Word len: ["+YuKeys.Length+"], wl:"+wasLocale+", ss:"+skipsnip);
 			DoSelf(() => {
 				Debug.WriteLine(">> ST CLW");
