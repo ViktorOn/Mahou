@@ -1288,6 +1288,14 @@ namespace Mahou {
 					}
 				}
 			}
+			if (start != -1) {
+				var left = input.Substring(0, start);
+				var center = input.Substring(start, input.Length-start);
+				Debug.WriteLine("modalltoend: " + center);
+				center = act == 0 ? center.ToLowerInvariant() : act == 1 ? center.ToUpperInvariant() : center;
+				Debug.WriteLine(center);
+				input = left+center;
+			}
 			input = Regex.Replace(input, @"(?<!__convert\()\\[uUlLeE](?!\))", "");
 			return input;
 		}
