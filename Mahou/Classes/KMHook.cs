@@ -1255,6 +1255,42 @@ namespace Mahou {
 			__RELOADDict(System.IO.Path.Combine(MahouUI.nPath, "LayoutReplaces.txt"),ref LayReplDict,
 			             "LayoutReplace", false, MahouUI.QWERTZ_fix, LayReplDict);
 		}
+		public static string UL_no_e12(string input) {
+			int start = -1;
+			int ul = -1;
+			int act = -1;
+			for (int i = 0; i != input.Length; i++) {
+				if (input[i] == '\\') {
+					if (i > expressions[12].Length) {
+						var e12 = input.Substring(i-expressions[12].Length-1,expressions[12].Length);
+						if (e12 == expressions[12]) {
+							Debug.WriteLine("EXPR_IGNORE " + e12);
+							continue;
+						}
+					}
+					if (i+1 < input.Length) {
+						var i1 = input[i+1].ToString().ToLowerInvariant();
+						ul = (i1 == "l" ? 0 : i1 == "l" ? 1 : -1);
+						if (start != -1) {
+							var left = input.Substring(0, start);
+							var center = input.Substring(start, i-start);
+							var right = input.Substring(i, input.Length-i);
+							Debug.WriteLine("modcenter: " + center);
+							center = act == 0 ? center.ToLowerInvariant() : act == 1 ? center.ToUpperInvariant() : center;
+							Debug.WriteLine(center);
+							input = left+center+right;
+							start = act = -1; i-=2;
+						}
+						if (ul != -1) {
+							start = i;
+							act = ul;
+						}
+					}
+				}
+			}
+			input = Regex.Replace(input, @"(?<!__convert\()\\[uUlLeE](?!\))", "");
+			return input;
+		}
 		public static string RegexREPLACEP(string input, string regex_raw, string replacement, bool ignorecase = false) {
 			bool ism = false;
 			RegexOptions ics = (ignorecase ? RegexOptions.IgnoreCase : RegexOptions.None);
@@ -1268,30 +1304,7 @@ namespace Mahou {
 			if (ism) {
 				input = Regex.Replace(input, regex_raw, replacement, ics);
 				Debug.WriteLine("PRE UL : " +input);
-				var toupper = input.Contains("\\U") || input.Contains("\\u");
-				var tolower = input.Contains("\\L") || input.Contains("\\l");
-				if (toupper) {
-					var e = Regex.Matches(input, @"\\[Uu](.*?)(\\[eE]|$)", ics);
-					Debug.WriteLine("All matches: " + e.Count);
-					foreach (Match e_ in e) {
-						var ma = e_.Value;
-						var gv = e_.Groups[1].Value;
-						input = input.Replace(ma, gv.ToUpperInvariant());
-						Debug.WriteLine("ma gv rep: "+ma +" & " +gv);
-//						input = Regex.Replace(input, @"\\[uUeE]", "");
-					}
-				}
-				if (tolower) {
-					var e = Regex.Matches(input, @"\\[lL](.*?)(\\[eE]|$)", ics);
-					foreach (Match e_ in e) {
-						var gv = e_.Value;
-						input = input.Replace(gv, gv.ToLowerInvariant());
-						input = Regex.Replace(input, @"\\[lLeE]", "", ics);
-					}
-				}
-				if (input.Contains("\\e") || input.Contains("\\E")) {
-					input = Regex.Replace(input, @"\\[eE]", "", ics);
-				}
+				input = UL_no_e12(input);
 			} else { return ""; }
 			return input;
 		}
@@ -1358,7 +1371,8 @@ namespace Mahou {
 				}
               }, "expand_snippet");
 		}
-		#region in Snippets expressions  
+		#region in Snippets expressions 
+		//                                                0         1          2             3         4             5          6                7            8            9            10         11               12           13           14              15             16             17           18        19       20    
 		static readonly string[] expressions = new []{ "__date", "__time", "__version", "__system", "__title", "__keyboard", "__execute", "__cursorhere", "__paste", "__mahouhome", "__delay", "__uppercase", "__convert", "__setlayout", "__selection", "__clearlsnip", "__replace", "__setsnip", "__setlsnip", "__if", "__nif" };
 		static string ExpandSnippetWithExpressions(string expand) {
 			StringBuilder ex, args, raw, err, allraw;
@@ -1628,6 +1642,28 @@ namespace Mahou {
 					break;
 				case "__convert":
 					var ct = ConvertText(args);
+					var argsl = args.ToLowerInvariant();
+					if (argsl.Contains("\\l") || argsl.Contains("\\e")) {
+						var matches = new Dictionary<int,string>();
+						for (int i = 0; i != args.Length; i++) {
+							if (i+1<args.Length) {
+								var ail = args[i+1].ToString().ToLowerInvariant();
+								if (args[i] == '\\' && Regex.IsMatch(ail, @"[eul]")) {
+									matches[i] = ail;
+								}
+							}
+						}
+						foreach (var kv in matches) {
+							var left = ct.Substring(0, kv.Key);
+							var right = ct.Substring(kv.Key+2, ct.Length-kv.Key-2);
+							Debug.WriteLine("Restore: " + kv.Key + " => " + ct);
+							ct = left+"\\"+kv.Value+right;
+							Debug.WriteLine(ct);
+						}
+						Debug.WriteLine("Post \\U / \\L in __convert: " + ct);
+						ct = UL_no_e12(ct);
+						Debug.WriteLine(ct);
+					}
 					result.Append(ct);
 					KInputs.MakeInput(KInputs.AddString(ct));
 					break;
