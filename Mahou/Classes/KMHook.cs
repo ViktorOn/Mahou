@@ -1255,46 +1255,53 @@ namespace Mahou {
 			__RELOADDict(System.IO.Path.Combine(MahouUI.nPath, "LayoutReplaces.txt"),ref LayReplDict,
 			             "LayoutReplace", false, MahouUI.QWERTZ_fix, LayReplDict);
 		}
+		public static string ul_str(string s, int st, int x, int act) {
+			var left = s.Substring(0, st);
+			var center = s.Substring(st, (x == -1 ? s.Length : x) - st);
+			var right = x == -1 ? "" : s.Substring(x, s.Length-x);
+			var ul = " ["+(act==0?"l":act==1?"U":"?")+"] ";
+			Logging.Log("[Ul_str] > pre:" + ul + center);
+			center = act == 0 ? center.ToLowerInvariant() : act == 1 ? center.ToUpperInvariant() : center;
+			Logging.Log("[Ul_str] > aft:" + ul + center);
+			return string.Join("", new []{left,center,right});
+		}
 		public static string UL_no_e12(string input) {
 			int start = -1;
 			int ul = -1;
 			int act = -1;
+			var result = new StringBuilder(input);
 			for (int i = 0; i != input.Length; i++) {
 				if (input[i] == '\\') {
-					if (i > expressions[12].Length) {
+					if (i > expressions[12].Length) { // __convert
 						var e12 = input.Substring(i-expressions[12].Length-1,expressions[12].Length);
-						if (e12 == expressions[12]) {
+						if (e12.ToLowerInvariant() == expressions[12]) {
 							Debug.WriteLine("EXPR_IGNORE " + e12);
+							if (start != -1) {
+								input = ul_str(input, start, i-expressions[12].Length-1, act);
+								act = start = -1;
+							}
 							continue;
 						}
 					}
 					if (i+1 < input.Length) {
 						var i1 = input[i+1].ToString().ToLowerInvariant();
-						ul = (i1 == "l" ? 0 : i1 == "l" ? 1 : -1);
-						if (start != -1) {
-							var left = input.Substring(0, start);
-							var center = input.Substring(start, i-start);
-							var right = input.Substring(i, input.Length-i);
-							Debug.WriteLine("modcenter: " + center);
-							center = act == 0 ? center.ToLowerInvariant() : act == 1 ? center.ToUpperInvariant() : center;
-							Debug.WriteLine(center);
-							input = left+center+right;
-							start = act = -1; i-=2;
+						ul = (i1 == "l" ? 0 : i1 == "u" ? 1 : -1);
+						if (i1 == "e" && start != -1) {
+							input = ul_str(input, start, i, act);
+							act = start = -1;
 						}
 						if (ul != -1) {
-							start = i;
-							act = ul;
+							if (i+2 < input.Length) {
+								start = i+2;
+								act = ul;
+							}
 						}
+						i++;
 					}
 				}
 			}
 			if (start != -1) {
-				var left = input.Substring(0, start);
-				var center = input.Substring(start, input.Length-start);
-				Debug.WriteLine("modalltoend: " + center);
-				center = act == 0 ? center.ToLowerInvariant() : act == 1 ? center.ToUpperInvariant() : center;
-				Debug.WriteLine(center);
-				input = left+center;
+				input = ul_str(input, start, -1, act);
 			}
 			input = Regex.Replace(input, @"(?<!__convert\()\\[uUlLeE](?!\))", "");
 			return input;
@@ -1651,7 +1658,7 @@ namespace Mahou {
 				case "__convert":
 					var ct = ConvertText(args);
 					var argsl = args.ToLowerInvariant();
-					if (argsl.Contains("\\l") || argsl.Contains("\\e")) {
+					if (argsl.Contains("\\l") || argsl.Contains("\\e") || argsl.Contains("\\u")) {
 						var matches = new Dictionary<int,string>();
 						for (int i = 0; i != args.Length; i++) {
 							if (i+1<args.Length) {
