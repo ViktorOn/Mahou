@@ -1769,7 +1769,7 @@ namespace Mahou {
 					.Replace("d8", "8").Replace("d9", "9")
 					.Replace("return", "enter").Replace("numpa", "numpad");
 				if (_n == key+"key") { // controlkey, shiftkey
-					Logging.Log("Added the " + _n);
+//					Logging.Log("Added the " + _n);
 					for (int x = 0; x != times; x++) {
 						keys.Add(k);
 					}

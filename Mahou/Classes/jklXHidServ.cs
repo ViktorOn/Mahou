@@ -138,6 +138,8 @@ namespace Mahou {
 //			}/
 			self_change = false;
 		}
+		static uint last_change_layout = 0;
+		static int repeat = 0;
 		class HServer : Form {
 			public HServer() {
 				this.Visible = false;
@@ -148,42 +150,51 @@ namespace Mahou {
 			protected override void WndProc(ref Message m) {
 				if (m.Msg == jkluMSG) {
 					uint layout = (uint)m.LParam, laysho = layout & 0xffff;
-					MahouUI.GlobalLayout = MahouUI.currentLayout = layout;
-					Logging.Log("[JKL] > Layout changed to [" + layout + "] / [0x"+layout.ToString("X") +"].");
-					Debug.WriteLine(">> JKL LC: " + layout);
-					Logging.Log("[JKL] > On layout act:" +OnLayoutAction);
-					var anull = ActionOnLayout==null;
-					Logging.Log("[JKL] > ACtion: " +(anull?"null":ActionOnLayout.Method.Name));
-					if (layout == OnLayoutAction || (layout & 0xffff) == (OnLayoutAction & 0xffff)) {
-						actionOnLayoutExecuted = true;
-						OnLayoutAction = 0;
-						if (anull) {
-							Logging.Log("[JKL] > Action is null, something terribly went wrong... Please try to disable JKL, if layout changing went wild.",1);
-						} else {
-							Debug.WriteLine("Executing action: " + ActionOnLayout.Method.Name + " on layout: " +layout);
-						    ActionOnLayout();
-						    ActionOnLayout = null;
+					if (layout == last_change_layout) {
+						repeat++;
+					} else {
+						if (repeat != 0) {
+							Logging.Log("[JKL] > Last layout change to ["+last_change_layout+"] was repeated "+repeat+"x times.");
+							repeat = 0;
 						}
-					}
-					if (start_cyclEmuSwitch) {
-						Debug.WriteLine("Cycling out from: "+ layout + " to " + cycleEmuDesiredLayout +"...");
-						if (layout != cycleEmuDesiredLayout && laysho != cycleEmuDesiredLayout) {
-							KMHook.CycleEmulateLayoutSwitch();
-						}
-						else {
-							start_cyclEmuSwitch = false;
-							if (MahouUI.MAIN_LAYOUT1 == layout || MahouUI.MAIN_LAYOUT2 == layout) {
-								KMHook.last_switch_layout = layout;
-								KMHook.evt_layoutchanged(layout, 0, MahouUI.bindable_events[0]);
+						MahouUI.GlobalLayout = MahouUI.currentLayout = layout;
+						last_change_layout = layout;
+						Logging.Log("[JKL] > Layout changed to [" + layout + "] / [0x"+layout.ToString("X") +"].");
+						Debug.WriteLine(">> JKL LC: " + layout);
+						Logging.Log("[JKL] > On layout act:" +OnLayoutAction);
+						var anull = ActionOnLayout==null;
+						Logging.Log("[JKL] > ACtion: " +(anull?"null":ActionOnLayout.Method.Name));
+						if (layout == OnLayoutAction || (layout & 0xffff) == (OnLayoutAction & 0xffff)) {
+							actionOnLayoutExecuted = true;
+							OnLayoutAction = 0;
+							if (anull) {
+								Logging.Log("[JKL] > Action is null, something terribly went wrong... Please try to disable JKL, if layout changing went wild.",1);
+							} else {
+								Debug.WriteLine("Executing action: " + ActionOnLayout.Method.Name + " on layout: " +layout);
+							    ActionOnLayout();
+							    ActionOnLayout = null;
 							}
 						}
-					}
-					if (!self_change && !start_cyclEmuSwitch) {
-						MahouUI.RefreshFLAG();
-						MMain.mahou.RefreshAllIcons();
-						MMain.mahou.UpdateLDs();
-						if (anull && !KMHook.selfie) {
-							KMHook.AS_IGN_fun();
+						if (start_cyclEmuSwitch) {
+							Debug.WriteLine("Cycling out from: "+ layout + " to " + cycleEmuDesiredLayout +"...");
+							if (layout != cycleEmuDesiredLayout && laysho != cycleEmuDesiredLayout) {
+								KMHook.CycleEmulateLayoutSwitch();
+							}
+							else {
+								start_cyclEmuSwitch = false;
+								if (MahouUI.MAIN_LAYOUT1 == layout || MahouUI.MAIN_LAYOUT2 == layout) {
+									KMHook.last_switch_layout = layout;
+									KMHook.evt_layoutchanged(layout, 0, MahouUI.bindable_events[0]);
+								}
+							}
+						}
+						if (!self_change && !start_cyclEmuSwitch) {
+							MahouUI.RefreshFLAG();
+							MMain.mahou.RefreshAllIcons();
+							MMain.mahou.UpdateLDs();
+							if (anull && !KMHook.selfie) {
+								KMHook.AS_IGN_fun();
+							}
 						}
 					}
 				}
