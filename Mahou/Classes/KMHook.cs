@@ -1004,7 +1004,9 @@ namespace Mahou {
 				    (snipps[i].EndsWith("/", StringComparison.InvariantCulture) || igncase)) {
 					var regex_r = snipps[i].Substring(6, snipps[i].Length-7 +(igncase ? -1 : 0));
 					var repl = RegexREPLACEP(snip, regex_r, exps[i], igncase);
-					Debug.WriteLine("replaced: "+repl);
+					if (!String.IsNullOrEmpty(repl)) {
+						Logging.Log("[REEX] > Replaced: "+repl);
+					}
 					if (!String.IsNullOrEmpty(repl)) {
 					  ExpandSnippet(snip, repl, MahouUI.SnippetSpaceAfter, MahouUI.SnippetsSwitchToGuessLayout, false, x2);
 					  aftsingleAS = false;
@@ -1315,8 +1317,8 @@ namespace Mahou {
 				Logging.Log("[RegexRP] > Regex replace FAILED, error in regex: "+regex_raw+" error message: " +e.Message, 1);
 				return input;
 			}
-			Debug.WriteLine("[REEX] > regex: /"+regex_raw+"/"+(ignorecase ? "i" : "")+", snip ["+input+"], matches: "+ism);
 			if (ism) {
+				Logging.Log("[REEX] > regex: /"+regex_raw+"/"+(ignorecase ? "i" : "")+", snip ["+input+"]");
 				input = Regex.Replace(input, regex_raw, replacement, ics);
 				Debug.WriteLine("PRE UL : " +input);
 				input = UL_no_e12(input);
