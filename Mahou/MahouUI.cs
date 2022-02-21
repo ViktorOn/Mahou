@@ -79,7 +79,7 @@ namespace Mahou {
 		/// <summary> Translate Panel Colors</summary>
 		public static Color TrFore, TrBack, TrBorder;
 		public static Font TrText, TrTitle;
-		public static int TrTransparency;
+		public static int TrTransparency, Layout1ModifierKey, Layout2ModifierKey;
 		/// <summary> In memory settings, for timers/hooks.</summary>
 		public static bool DiffAppearenceForLayouts, LDForCaretOnChange, LDForMouseOnChange, ScrollTip, AddOneSpace,
 					TrayFlags, TrayText, SymIgnEnabled, TrayIconVisible, SnippetsEnabled, ChangeLayouByKey, EmulateLS,
@@ -1532,6 +1532,8 @@ namespace Mahou {
 			KMHook.AS_END_symbols = Htxt_ASEndSymbols.Text = MMain.MyConfs.Read("Hidden", "AutoSwitchEndingSymbols");
 			MahouMMTrayHoverLostFocusClose = MMain.MyConfs.ReadBool("Hidden", "MahouMMTrayHoverLostFocusClose");
 			CycleCaseSaveBase = Hchk_SaveBase.Checked = MMain.MyConfs.ReadBool("Hidden", "CycleCaseSaveBase");
+			Layout1ModifierKey = MMain.MyConfs.ReadInt("Hidden", "Layout_1_Modifier_Key");
+			Layout2ModifierKey = MMain.MyConfs.ReadInt("Hidden", "Layout_2_Modifier_Key");
 			parseRedefines();
 			Hnud_TrayHoverMM.Value = TrayHoverMahouMM;
 			if (!String.IsNullOrEmpty(OverlayExcluded)) {

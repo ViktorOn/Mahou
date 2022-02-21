@@ -53,6 +53,35 @@ namespace Mahou {
 				restarter_running = false;
 			}
 		}
+		public static bool[] LMod_act = {false,false};
+		public static uint[] LMod_layout_pre = {0,0};
+		public static bool LMod(Keys k, IntPtr wp) {
+			var br = false;
+			if (MahouUI.Layout1ModifierKey == 0 && MahouUI.Layout2ModifierKey == 0) return br;
+			Keys[] x = null;
+			try {
+			    x = new[]{(Keys)MahouUI.Layout1ModifierKey, (Keys)MahouUI.Layout2ModifierKey};
+			} catch(Exception e) { Logging.Log("LMod error:" + e.Message); return br; }
+			for (int i = 0; i != 2; i++) {
+				if (k == x[i]) {
+					if ((wp == (IntPtr)WinAPI.WM_KEYDOWN ||
+					     wp == (IntPtr)WinAPI.WM_SYSKEYDOWN) && !LMod_act[i]) {
+						LMod_act[i] = true;
+						LMod_layout_pre[i] = MahouUI.UseJKL ? MahouUI.currentLayout : Locales.GetCurrentLocale();
+						Debug.WriteLine("pre layout saved:" + LMod_layout_pre[i] + " key: " + k);
+						KMHook.ChangeToLayout(Locales.ActiveWindow(), i == 0 ? MahouUI.MAIN_LAYOUT1 : MahouUI.MAIN_LAYOUT2);
+					} else if ((wp == (IntPtr)WinAPI.WM_KEYUP ||
+				         	    wp == (IntPtr)WinAPI.WM_SYSKEYUP) && LMod_act[i]){
+						LMod_act[i] = false;
+						KMHook.ChangeToLayout(Locales.ActiveWindow(), LMod_layout_pre[i]);
+						Debug.WriteLine("pre layout restore:" + LMod_layout_pre[i]);
+						LMod_layout_pre[i] = 0;
+					}
+					br = true;
+				}
+			}
+			return br;
+		}
 		public static IntPtr Callback(int nCode, IntPtr wParam, IntPtr lParam) {
 			if (MMain.mahou == null || nCode < 0) return WinAPI.CallNextHookEx(_LLHook_ID, nCode, wParam, lParam);
 			if (KMHook.ExcludedProgram() && !MahouUI.ChangeLayoutInExcluded) 
@@ -100,6 +129,11 @@ namespace Mahou {
 						}
 					}
 				}
+			}
+			#endregion
+			#region Test hold-layout
+			if (LMod(Key, wParam)) {
+				return (IntPtr)1;
 			}
 			#endregion
 			#region Mahou.mm Tray Hotkeys
@@ -169,19 +203,20 @@ namespace Mahou {
 										KMHook.KeybdEvent(Keys.RMenu, 0);
 										KMHook.KeybdEvent(Keys.RMenu, 2);
 									}
+									// todo fix, win keys can't be send up
 									if ((!hk.Item1 && !hk.Item2 &&
 									    !hk.Item3 && !hk.Item4 &&
 									    !hk.Item5 && !hk.Item6 &&
 									    (hk.Item7 || hk.Rest.Item2 == (int)Keys.LWin) && !hk.Rest.Item1)) {
-										KMHook.KeybdEvent(Keys.LWin, 0);
-										KMHook.KeybdEvent(Keys.LWin, 2);
+//										KMHook.KeybdEvent(Keys.LWin, 0);
+//										KMHook.KeybdEvent(Keys.LWin, 2);
 									}
 									if ((!hk.Item1 && !hk.Item2 &&
 									    !hk.Item3 && !hk.Item4 &&
 									    !hk.Item5 && !hk.Item6 &&
 									    !hk.Item7 && (hk.Rest.Item1 || hk.Rest.Item2 == (int)Keys.RWin))) {
-										KMHook.KeybdEvent(Keys.RWin, 0);
-										KMHook.KeybdEvent(Keys.RWin, 2);
+//										KMHook.KeybdEvent(Keys.RWin, 0);
+//										KMHook.KeybdEvent(Keys.RWin, 2);
 									}
 								}
 								KMHook.DoSelf(MahouUI.tray_hotkeys[i].v.Item1, "tray_hotkeys");
