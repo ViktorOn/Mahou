@@ -1,5 +1,5 @@
 [![GitHub release](https://img.shields.io/github/release/BladeMight/Mahou.svg?style=flat-square)](https://github.com/BladeMight/Mahou/releases/latest)
-[![AppVeyor build](https://img.shields.io/appveyor/ci/BladeMight/Mahou.svg?style=flat-square)](https://ci.appveyor.com/project/BladeMight/mahou) [![HitCount](http://hits.dwyl.io/BladeMight/Mahou.svg)](http://hits.dwyl.io/BladeMight/Mahou) 
+[![AppVeyor build](https://img.shields.io/appveyor/ci/BladeMight/Mahou.svg?style=flat-square)](https://ci.appveyor.com/project/BladeMight/mahou) 
 [![GitHub latest release downloads](https://img.shields.io/github/downloads/BladeMight/Mahou/latest/total.svg?style=flat-square)](https://github.com/BladeMight/Mahou/releases/latest)
 [![GitHub downloads](https://img.shields.io/github/downloads/BladeMight/Mahou/total.svg?style=flat-square)](https://github.com/BladeMight/Mahou/releases)
 [![Gitter Chat Room](https://img.shields.io/gitter/room/BM_Mahou/BM_Mahou.svg?style=flat-square)](https://gitter.im/BM_Mahou/Lobby)
