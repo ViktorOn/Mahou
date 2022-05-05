@@ -49,16 +49,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR nCmdLine,
 		exit(-1);
 	fprintf(fp, "%i", uMSG);
 	fclose(fp);
-	char dir[1536];
-	GetModuleFileName(NULL, dir, sizeof(dir)-1);
-	char jklx86[2048];
-	getdir(dir);
-	strcat(jklx86, dir);
-	strcat(jklx86, "\\jklx86.exe");
-  char temppath[2048];
-  GetTempPathA(sizeof(temppath)-1, temppath);
-	if (FileExist(jklx86))
-		ShellExecute(0, "open", jklx86, NULL, temppath, SW_HIDE);
+	// char dir[1536];
+	// GetModuleFileName(NULL, dir, sizeof(dir)-1);
+	// char jklx86[2048];
+	// getdir(dir);
+	// strcat(jklx86, dir);
+	// strcat(jklx86, "\\jklx86.exe");
+  // char temppath[2048];
+  // GetTempPathA(sizeof(temppath)-1, temppath);
+	// if (FileExist(jklx86))
+		// ShellExecute(0, "open", jklx86, NULL, temppath, SW_HIDE);
 	// else
 		// printf("%s support won't be available...\n", ARCH);
 	MSG Msg;

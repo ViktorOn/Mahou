@@ -1,13 +1,8 @@
 #include <windows.h>
+#include "jklarch.h"
 
 typedef BOOL (*FUNC)();
 typedef UINT (*UFUNC)();
-
-#ifndef ARCH
-#define ARCH "X86"
-#else
-#define ARCH "X64"
-#endif
 
 HWND CreateHWND(HINSTANCE hInstance, CHAR* className, WNDPROC WndProc) {
 	WNDCLASSEX wc;

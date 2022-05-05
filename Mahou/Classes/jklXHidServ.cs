@@ -12,7 +12,7 @@ namespace Mahou {
 		public static bool start_cyclEmuSwitch = false;
 		public static Action ActionOnLayout;
 		public static uint OnLayoutAction = 0;
-		public static int jkluMSG = -1;
+		public static int[] jkluMSG = new int[]{-1, -1};
 		const string HWND_SERVER_TITLE = "777_MAHOU_777_HIDDEN_HWND_SERVER";
 		public static bool running = false, self_change, actionOnLayoutExecuted;
 		/// <summary>0=exe, 1=dll, 2=x86.exe, 3=x86.dll</summary>
@@ -81,50 +81,50 @@ namespace Mahou {
 			}
 			if (!running) {
 				if (jklExist()) {
+					int ii = 0;
+					var jkl = new ProcessStartInfo();
+					jkl.UseShellExecute = true;
+					jkl.WorkingDirectory = Path.Combine(Path.GetTempPath());
 					if (Environment.Is64BitOperatingSystem) {
 						Logging.Log("[JKL] > Starting jkl.exe...");
-						var jkl = new ProcessStartInfo();
-						jkl.UseShellExecute = true;
 						jkl.FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "jkl.exe");
-						jkl.WorkingDirectory = Path.Combine(Path.GetTempPath());
 			        	Process.Start(jkl);
-					} else {
-						Logging.Log("[JKL] > Starting \"jklx86.exe -msg\"...");
-						var jkl = new ProcessStartInfo();
-						jkl.UseShellExecute = true;
-						jkl.FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "jklx86.exe");
-						jkl.Arguments = "-msg";
-						jkl.WorkingDirectory = Path.Combine(Path.GetTempPath());
-			        	Process.Start(jkl);
-					}
-					var umsgID = Path.Combine(Path.GetTempPath(), "umsg.id");
-					var tries = 0;
-					while (!File.Exists(umsgID)) {
-						Thread.Sleep(350);
-						tries++;
-						if (tries > 20) {
-							Logging.Log("[JKL] > Error, umsg.id not found after 20 tries by 350 ms timeout.", 1);
-							Destroy();
-							break;
+					} else { ii = 1; }
+					Logging.Log("[JKL] > Starting \"jklx86.exe\"...");
+					jkl.FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "jklx86.exe");
+		        	Process.Start(jkl);
+					var umsgIDs = new []{Path.Combine(Path.GetTempPath(), "umsg.id"), Path.Combine(Path.GetTempPath(), "umsg32.id")};
+					for (; ii != umsgIDs.Length; ii++) {
+						var umsgID = umsgIDs[ii];
+						var tries = 0;
+						while (!File.Exists(umsgID)) {
+							Thread.Sleep(350);
+							tries++;
+							if (tries > 20) {
+								Logging.Log("[JKL] > Error, "+umsgID+" not found after 20 tries by 350 ms timeout.", 1);
+								Destroy();
+								break;
+							}
 						}
-					}
-					if (tries <= 20) {
-						Logging.Log("[JKL] > umsg.id found, after " + tries + " tries * 350ms timeout.");
-						Logging.Log("[JKL] > Retrieving umsg.id...");
-						jkluMSG = Int32.Parse(File.ReadAllText(umsgID));
-						File.Delete(umsgID);
-//						KMHook.DoLater(() => CycleAllLayouts(Locales.ActiveWindow()), 350);
-						KMHook.DoLater(() => { MahouUI.GlobalLayout = MahouUI.currentLayout = Locales.GetCurrentLocale(); }, 200);
-						running = true;
+						if (tries <= 20) {
+							Logging.Log("[JKL] > "+umsgID+" found, after " + tries + " tries * 350ms timeout.");
+							Logging.Log("[JKL] > Retrieving umsg.id...");
+							jkluMSG[ii] = Int32.Parse(File.ReadAllText(umsgID));
+//							File.Delete(umsgID);
+	//						KMHook.DoLater(() => CycleAllLayouts(Locales.ActiveWindow()), 350);
+							KMHook.DoLater(() => { MahouUI.GlobalLayout = MahouUI.currentLayout = Locales.GetCurrentLocale(); }, 200);
+							running = true;
+						}
 					}
 				} else {
 					Logging.Log("[JKL] > " + jklInfoStr, 1);
 				}
-				if (jkluMSG == -1)
+				if ((jkluMSG[0] == -1 && Environment.Is64BitOperatingSystem) || jkluMSG[1] == -1)
 					KMHook.JKLERR = true;
-				else 
+				else {
 					KMHook.JKLERR = false;
-				Logging.Log("[JKL] > Init done, umsg: ["+jkluMSG+"], JKLXServ: ["+s.Handle+"].");
+					Logging.Log("[JKL] > Init done, umsg: ["+jkluMSG[0]+" "+jkluMSG[1]+"], JKLXServ: ["+s.Handle+"].");
+				}
 			}
 	    }
 		public static void CycleAllLayouts(IntPtr hwnd) {
@@ -148,7 +148,7 @@ namespace Mahou {
 				this.Text = HWND_SERVER_TITLE;
 			}
 			protected override void WndProc(ref Message m) {
-				if (m.Msg == jkluMSG) {
+				if (m.Msg == jkluMSG[0] || m.Msg == jkluMSG[1]) {
 					uint layout = (uint)m.LParam, laysho = layout & 0xffff;
 					if (layout == last_change_layout) {
 						repeat++;
@@ -159,7 +159,7 @@ namespace Mahou {
 						}
 						MahouUI.GlobalLayout = MahouUI.currentLayout = layout;
 						last_change_layout = layout;
-						Logging.Log("[JKL] > Layout changed to [" + layout + "] / [0x"+layout.ToString("X") +"].");
+						Logging.Log("[JKL]("+(m.Msg==jkluMSG[0]?"64":"32")+") > Layout changed to [" + layout + "] / [0x"+layout.ToString("X") +"].");
 						Debug.WriteLine(">> JKL LC: " + layout);
 						Logging.Log("[JKL] > On layout act:" +OnLayoutAction);
 						var anull = ActionOnLayout==null;

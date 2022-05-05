@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
+#include "jklarch.h"
  
 HHOOK global;
 UINT uMSG;
@@ -29,7 +30,7 @@ extern "C" __declspec(dllexport) UINT getUMsg() {
 BOOL APIENTRY DllMain (HINSTANCE hInstance, DWORD  Reason, LPVOID Reserved) {
 	switch(Reason) { 
 		case DLL_PROCESS_ATTACH:
-			uMSG = RegisterWindowMessage("MEOW!"); // Message for layout change
+			uMSG = RegisterWindowMessage(JKL_LAYOUTCHANGE); // Message for layout change
 			hInst = hInstance;
 			return TRUE;
 		case DLL_PROCESS_DETACH:

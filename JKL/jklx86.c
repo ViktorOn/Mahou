@@ -44,19 +44,6 @@ void SetTimerThread() {
 	}
 }
 
-void StandAlone(LPSTR nCmdLine) {
-	if (strcmp(nCmdLine, "-msg") == 0) {
-		UFUNC getUMsg = (UFUNC)GetProcAddress(lib32, "getUMsg");
-		uMSG = getUMsg();
-		FILE* fp;
-		fp = fopen("umsg.id", "w");
-		if(fp == NULL)
-			exit(-1);
-		fprintf(fp, "%i", uMSG);
-		fclose(fp);
-	}
-}
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR nCmdLine, int nCmdShow) {
 	if (FindWindow("_HIDDEN_X86_HELPER", NULL))
 		exit(0); 
@@ -68,7 +55,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR nCmdLine,
 	FUNC setHook32 = (FUNC)GetProcAddress(lib32, "setHook");
 	setHook32();
 	MSG Msg;
-	StandAlone(nCmdLine);
+  FILE* fp;
+  fp = fopen("umsg32.id", "w");
+  if(fp == NULL)
+    exit(-1);
+  fprintf(fp, "%i", uMSG);
+  fclose(fp);
 	SetProcessWorkingSetSize(GetCurrentProcess(), -1, -1);
 	if(MAIN) {
 		while (GetMessage(&Msg, MAIN, 0, 0) > 0) {
