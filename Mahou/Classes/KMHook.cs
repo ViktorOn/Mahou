@@ -3318,6 +3318,7 @@ namespace Mahou {
 			}
 			return yks;
 		}
+		public static bool JKL_Restart_1only = false;
 		/// <summary>
 		/// Converts last word/line/words.
 		/// </summary>
@@ -3355,12 +3356,24 @@ namespace Mahou {
 				        	if (!jklXHidServ.actionOnLayoutExecuted) {
 				        		Logging.Log("JKL convert word failed, JKL didn't monitor the layout or didn't send it, fallback to default...",1);
 				        		Logging.Log("JKL seems BAD.");
-								StartConvertWord(YuKeys, wasLocale);
 								JKLERR = true;
 								JKLERRchecking = false;
 								JKLERRT.Stop();
 								JKLERRT.Dispose();
 								JKLERRT = new System.Timers.Timer();
+								if (!JKL_Restart_1only) {
+									Logging.Log("One-time per error JKL restart.", 2);
+									JKL_Restart_1only = true;
+									jklXHidServ.Destroy();
+									Thread.Sleep(10);
+									jklXHidServ.Init();
+									Thread.Sleep(100);
+									ConvertLast(c_, line);
+								} else {
+									Logging.Log("JKL restart didn't help...", 1);
+									StartConvertWord(YuKeys, wasLocale);
+									JKL_Restart_1only = false;
+								}
 							} else {
 								Logging.Log("JKL seems OK.");
 								Debug.WriteLine("JKL seems OK...");
