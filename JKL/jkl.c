@@ -55,8 +55,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR nCmdLine,
 	getdir(dir);
 	strcat(jklx86, dir);
 	strcat(jklx86, "\\jklx86.exe");
+  char temppath[2048];
+  GetTempPathA(sizeof(temppath)-1, temppath);
 	if (FileExist(jklx86))
-		ShellExecute(0, "open", "jklx86.exe", NULL, dir, SW_HIDE);
+		ShellExecute(0, "open", jklx86, NULL, temppath, SW_HIDE);
 	// else
 		// printf("%s support won't be available...\n", ARCH);
 	MSG Msg;
