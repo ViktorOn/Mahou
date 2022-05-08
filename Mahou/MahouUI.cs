@@ -3077,7 +3077,7 @@ DEL "+restartMahouPath;
   </Settings>
   <Actions Context=""Author"">
     <Exec>
-      <Command>" + Assembly.GetExecutingAssembly().Location + @"</Command>
+      <Command>" + "\"" + Assembly.GetExecutingAssembly().Location + "\"" + @"</Command>
     </Exec>
   </Actions>
 </Task>";
