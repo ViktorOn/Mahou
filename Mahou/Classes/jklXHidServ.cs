@@ -109,7 +109,16 @@ namespace Mahou {
 						if (tries <= 20) {
 							Logging.Log("[JKL] > "+umsgID+" found, after " + tries + " tries * 350ms timeout.");
 							Logging.Log("[JKL] > Retrieving umsg.id...");
-							jkluMSG[ii] = Int32.Parse(File.ReadAllText(umsgID));
+							int max_tries = 5;
+							while (max_tries > 0) {
+								try {
+									jkluMSG[ii] = Int32.Parse(File.ReadAllText(umsgID));
+									break;
+								} catch(Exception e) {
+									max_tries--;
+									Thread.Sleep(50);
+								}
+							}
 //							File.Delete(umsgID);
 	//						KMHook.DoLater(() => CycleAllLayouts(Locales.ActiveWindow()), 350);
 							KMHook.DoLater(() => { MahouUI.GlobalLayout = MahouUI.currentLayout = Locales.GetCurrentLocale(); }, 200);
