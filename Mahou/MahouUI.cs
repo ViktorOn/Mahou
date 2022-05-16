@@ -757,7 +757,11 @@ namespace Mahou {
 						Debug.WriteLine("CC [B]: Inputting: " + CycleCaseBase);
 						KMHook.DoSelf(() => {
 							KMHook.ClearModifiers();
-							KInputs.MakeInput(KInputs.AddString(CycleCaseBase));
+							if (MahouUI.UsePaste) {
+								KMHook.PasteText(CycleCaseBase, "Base");
+							} else {
+								KInputs.MakeInput(KInputs.AddString(CycleCaseBase));
+							}
 							MahouUI.hk_result = true;
 							KMHook.ReSelect(CycleCaseBase.Length, "B");
 		                }, "Cycle Case [B]ase restore");
