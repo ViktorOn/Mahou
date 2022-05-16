@@ -84,6 +84,7 @@ namespace Mahou {
 	    public static WinAPI.INPUT[] AddString(string str) {
 	        var result = new List<WinAPI.INPUT>();
 	        var index = 0;
+	        int l1_ok = 0, l2_ok = 0;
 	        foreach (var s in str) {
 	        	bool uselt1_vk, uselt2_vk;
 	        	ushort resultvk = 0;
@@ -96,10 +97,13 @@ namespace Mahou {
 	//        		System.Diagnostics.Debug.WriteLine("ST:"+guess.Item2);
 	        		var lt_guess = guess.Item2;
 	        		resultvk = (ushort)WinAPI.VkKeyScanEx(s, lt_guess);
-	        	} else if (uselt1_vk)
+	        	} else if (uselt1_vk) {
 	        		resultvk = (ushort)lt1_vk;
-	        	else if (uselt2_vk) 
+	        		l1_ok++;
+	        	} else if (uselt2_vk) {
 	        		resultvk = (ushort)lt2_vk;
+	        		l2_ok++;
+	        	}
 	        	bool resultvk_state = ((resultvk >> 8) & 0xff) == 1;
 	        	if (resultvk_state)
 	        		result.Add(KInputs.AddKey(Keys.RShiftKey, true));
@@ -136,6 +140,15 @@ namespace Mahou {
 	        	if (resultvk_state)
 	        		result.Add(KInputs.AddKey(Keys.RShiftKey, false));
 	            index++;
+	        }
+	        if (MahouUI.GuessKeyCodeFix) {
+	        	if (l1_ok!=l2_ok) {
+	        		var lll = (l1_ok>l2_ok?MahouUI.MAIN_LAYOUT1:MahouUI.MAIN_LAYOUT2);
+	        		System.Diagnostics.Debug.WriteLine("Changing to layout "+lll+" before GuessKeyCodeFix.");
+	        		KMHook.ChangeToLayout(Locales.ActiveWindow(),lll);
+	        	} else {
+	        		System.Diagnostics.Debug.WriteLine("Don't know what to do...");
+	        	}
 	        }
 	        return result.ToArray();
 	    }
