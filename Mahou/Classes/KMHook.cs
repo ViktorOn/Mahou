@@ -23,7 +23,8 @@ namespace Mahou {
 			IsHotkey, ff_chr_wheeled, preSnip, LMB_down, RMB_down, MMB_down,
 			dbl_click, click, selfie, aftsingleAS, JKLERR, JKLERRchecking, last_snipANY,
 			_selis, _mselis, snipselshiftpressed, snipselwassel, 
-			AS_IGN_BACK, AS_IGN_DEL, AS_IGN_LS, was_back, was_del, was_ls, __setsnip, L_DOWN;
+			AS_IGN_BACK, AS_IGN_DEL, AS_IGN_LS, was_back, was_del, was_ls, __setsnip, L_DOWN, 
+			CLW_W_SPACE, CLW_W_ENTER;
 	    public static string AS_END_symbols = "";
 		public static System.Timers.Timer click_reset = new System.Timers.Timer();
 		public static Keys skip_up = Keys.None;
@@ -440,7 +441,7 @@ namespace Mahou {
 					ClearWord(true, true, true, "Pressed combination of key and modifiers(not shift) or key that changes caret position.", true, AS_IGN_RULES.Contains("C"));
 				}
 				if (Key == Keys.Space) {
-					if (prevKEY != Keys.Space) {
+					if (prevKEY != Keys.Space && !CLW_W_SPACE) {
 						Logging.Log("[FUN] > Adding one new empty word to words, and adding to it [Space] key.");
 						MMain.c_words.Add(new List<YuKey>());
 						MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Keys.Space });
@@ -453,11 +454,11 @@ namespace Mahou {
 						MahouUI.CCReset("space");
 					} else {
 						ClearWord(true, false, false, "Pressed space");
-						afterEOS = false;
+						afterEOS = CLW_W_SPACE = false;
 					}
 				}
 				if (Key == Keys.Enter) { 
-					if (prevKEY != Keys.Enter) {
+					if (prevKEY != Keys.Enter && !CLW_W_ENTER) {
 						if (MahouUI.Add1NL && MMain.c_word.Count != 0 && 
 						    MMain.c_word[MMain.c_word.Count - 1].key != Keys.Enter) {
 							Logging.Log("[FUN] > Eat one New Line passed, next Enter will clear last word.");
@@ -469,7 +470,7 @@ namespace Mahou {
 						MahouUI.CCReset("enter");
 					}  else {
 						ClearWord(true, true, true, "Pressed enter", true, AS_IGN_RULES.Contains("C"));
-						afterEOL = false;
+						afterEOL = CLW_W_ENTER = false;
 					}
 				}
 				if (printable && printable_mod) {
@@ -3143,7 +3144,7 @@ namespace Mahou {
 				Debug.WriteLine(pt+ "end " + mn);
 			}
 		}
-		public static void StartConvertWord(YuKey[] YuKeys, uint wasLocale, bool skipsnip = false) {
+		public static void StartConvertWord(YuKey[] YuKeys, uint wasLocale, bool skipsnip = false, bool last = false) {
 			if (YuKeys.Length == 0) {
 				Logging.Log("Convert Last failed: EMPTY WORD.");
 				return;
@@ -3208,6 +3209,14 @@ namespace Mahou {
 				}
 				KInputs.MakeInput(q.ToArray());
 				MahouUI.hk_result = true;
+				if (YuKeys.Length > 0 && last) {
+					if (afterEOS && YuKeys[YuKeys.Length-1].key == Keys.Space) {
+						CLW_W_SPACE = true;
+					}
+					if (afterEOL && YuKeys[YuKeys.Length-1].key == Keys.Enter) {
+						CLW_W_ENTER = true;
+					}
+				}
 				Debug.WriteLine("XX CLW_END");
 			}, "st_conv_word");
 		}
@@ -3350,7 +3359,7 @@ namespace Mahou {
 		        	if (!JKLERRchecking) {
 						Debug.WriteLine("JKL-ed CLW JKLERRNCH");
 						jklXHidServ.actionOnLayoutExecuted = false;
-						jklXHidServ.ActionOnLayout = () => StartConvertWord(YuKeys, wasLocale);
+						jklXHidServ.ActionOnLayout = () => StartConvertWord(YuKeys, wasLocale, false, true);
 						jklXHidServ.OnLayoutAction = desl;
 						ChangeLayout(true);
 						JKLERRchecking = true;
@@ -3375,7 +3384,7 @@ namespace Mahou {
 									ConvertLast(c_, line);
 								} else {
 									Logging.Log("JKL restart didn't help...", 1);
-									StartConvertWord(YuKeys, wasLocale);
+									StartConvertWord(YuKeys, wasLocale, false, true);
 									JKL_Restart_1only = false;
 								}
 							} else {
@@ -3395,7 +3404,7 @@ namespace Mahou {
 					}
 				} else {
 					ChangeLayout(true);
-					StartConvertWord(YuKeys, wasLocale);
+					StartConvertWord(YuKeys, wasLocale, false, true);
 				}
 			} catch (Exception e) {
 				Logging.Log("Convert Last encountered error, details:\r\n" +e.Message+"\r\n"+e.StackTrace, 1);
