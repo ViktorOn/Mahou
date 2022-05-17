@@ -439,34 +439,38 @@ namespace Mahou {
 					MahouUI.CCReset("cc/noShift.Hkey");
 					ClearWord(true, true, true, "Pressed combination of key and modifiers(not shift) or key that changes caret position.", true, AS_IGN_RULES.Contains("C"));
 				}
-				if (Key == Keys.Space && prevKEY != Keys.Space) {
-					Logging.Log("[FUN] > Adding one new empty word to words, and adding to it [Space] key.");
-					MMain.c_words.Add(new List<YuKey>());
-					MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Keys.Space });
-					if (MahouUI.AddOneSpace && MMain.c_word.Count != 0 &&
-					   MMain.c_word[MMain.c_word.Count - 1].key != Keys.Space) {
-						Logging.Log("[FUN] > Eat one space passed, next space will clear last word.");
-						MMain.c_word.Add(new YuKey() { key = Keys.Space });
-						afterEOS = true;
+				if (Key == Keys.Space) {
+					if (prevKEY != Keys.Space) {
+						Logging.Log("[FUN] > Adding one new empty word to words, and adding to it [Space] key.");
+						MMain.c_words.Add(new List<YuKey>());
+						MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Keys.Space });
+						if (MahouUI.AddOneSpace && MMain.c_word.Count != 0 &&
+							MMain.c_word[MMain.c_word.Count - 1].key != Keys.Space) {
+							Logging.Log("[FUN] > Eat one space passed, next space will clear last word.");
+							MMain.c_word.Add(new YuKey() { key = Keys.Space });
+							afterEOS = true;
+						}
+						MahouUI.CCReset("space");
 					} else {
 						ClearWord(true, false, false, "Pressed space");
 						afterEOS = false;
 					}
-					MahouUI.CCReset("space");
 				}
-				if (Key == Keys.Enter && prevKEY != Keys.Enter) {
-					if (MahouUI.Add1NL && MMain.c_word.Count != 0 && 
-					    MMain.c_word[MMain.c_word.Count - 1].key != Keys.Enter) {
-						Logging.Log("[FUN] > Eat one New Line passed, next Enter will clear last word.");
-						MMain.c_word.Add(new YuKey() { key = Keys.Enter });
-						MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Keys.Enter });
-						afterEOL = true;
-					} else {
+				if (Key == Keys.Enter) { 
+					if (prevKEY != Keys.Enter) {
+						if (MahouUI.Add1NL && MMain.c_word.Count != 0 && 
+						    MMain.c_word[MMain.c_word.Count - 1].key != Keys.Enter) {
+							Logging.Log("[FUN] > Eat one New Line passed, next Enter will clear last word.");
+							MMain.c_word.Add(new YuKey() { key = Keys.Enter });
+							MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Keys.Enter });
+							afterEOL = true;
+						}
+						as_lword_layout = 0;
+						MahouUI.CCReset("enter");
+					}  else {
 						ClearWord(true, true, true, "Pressed enter", true, AS_IGN_RULES.Contains("C"));
 						afterEOL = false;
 					}
-					as_lword_layout = 0;
-					MahouUI.CCReset("enter");
 				}
 				if (printable && printable_mod) {
 					if (afterEOS) { //Clears word after Eat ONE space
