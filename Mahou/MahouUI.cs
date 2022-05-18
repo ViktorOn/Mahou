@@ -2308,16 +2308,24 @@ DEL "+restartMahouPath;
 				icon.Hide();
 			}
 		}
+		public static void IfDispose(ref Bitmap disposable) {
+			if (disposable != null) disposable.Dispose();
+			disposable = null;
+		}
 		public static void RefreshFLAG(bool force = false) {
 			Debug.WriteLine("aLIVe");
 			// No need for update when no display wrapper
 			if (!TrayIconVisible && !LDCaretUseFlags_temp && !LDMouseUseFlags_temp && !LangPanelDisplay && !force) return;
+			IfDispose(ref FLAG);
 			if (!ENABLED) {
 				Debug.WriteLine("NOT ENABLED");
-				FLAG = Properties.Resources.MahouTrayHD.ToBitmap();
+				FLAG = new Bitmap(Properties.Resources.MahouTrayHD.ToBitmap());
 				return;
 			}
-			if (force) FLAG = ITEXT = null;
+			if (force) {
+				IfDispose(ref FLAG);
+				IfDispose(ref ITEXT);
+			}
 			Debug.WriteLine("STIlL");
 			uint lcraw = 0;
 			if (!UseJKL || KMHook.JKLERR)
@@ -2346,66 +2354,67 @@ DEL "+restartMahouPath;
 				if (flagname != latestSwitch || (TrayText && ITEXT == null) || (TrayFlags && FLAG == null)) {
 					Logging.Log("Changed flag to " + flagname + " lcid " + lcid);
 					Debug.WriteLine("Changed flag to " + flagname + " lcid " + lcid);
-					if (File.Exists(flagpth))
-						FLAG = ((Bitmap)Image.FromFile(flagpth));
+					if (File.Exists(flagpth)) {
+						FLAG = new Bitmap(Image.FromFile(flagpth));
+					}
 					else
 						switch (flagname) {
 							case "ru":
-								FLAG = Properties.Resources.ru;
+								FLAG = new Bitmap(Properties.Resources.ru);
 								break;
 							case "en":
-								FLAG = Properties.Resources.en;
+								FLAG = new Bitmap(Properties.Resources.en);
 								break;
 							case "es":
-								FLAG = Properties.Resources.es;
+								FLAG = new Bitmap(Properties.Resources.es);
 								break;
 							case "jp":
-								FLAG = Properties.Resources.jp;
+								FLAG = new Bitmap(Properties.Resources.jp);
 								break;
 							case "bu":
-								FLAG = Properties.Resources.bu;
+								FLAG = new Bitmap(Properties.Resources.bu);
 								break;
 							case "uk":
-								FLAG = Properties.Resources.uk;
+								FLAG = new Bitmap(Properties.Resources.uk);
 								break;
 							case "po":
-								FLAG = Properties.Resources.po;
+								FLAG = new Bitmap(Properties.Resources.po);
 								break;
 							case "sw":
-								FLAG = Properties.Resources.sw;
+								FLAG = new Bitmap(Properties.Resources.sw);
 								break;
 							case "zh":
-								FLAG = Properties.Resources.zh;
+								FLAG = new Bitmap(Properties.Resources.zh);
 								break;
 							case "be":
-								FLAG = Properties.Resources.be;
+								FLAG = new Bitmap(Properties.Resources.be);
 								break;
 							case "de":
-								FLAG = Properties.Resources.de;
+								FLAG = new Bitmap(Properties.Resources.de);
 								break;
 							case "sp":
-								FLAG = Properties.Resources.sp;
+								FLAG = new Bitmap(Properties.Resources.sp);
 								break;
 							case "it":
-								FLAG = Properties.Resources.it;
+								FLAG = new Bitmap(Properties.Resources.it);
 								break;
 							case "fr":
-								FLAG = Properties.Resources.fr;
+								FLAG = new Bitmap(Properties.Resources.fr);
 								break;
 							case "la":
-								FLAG = Properties.Resources.la;
+								FLAG = new Bitmap(Properties.Resources.la);
 								break;
 							case "hy":
-								FLAG = Properties.Resources.hy;
+								FLAG = new Bitmap(Properties.Resources.hy);
 								break;
 							case "ka":
-								FLAG = Properties.Resources.ka;
+								FLAG = new Bitmap(Properties.Resources.ka);
 								break;
 							case "el":
-								FLAG = Properties.Resources.el;
+								FLAG = new Bitmap(Properties.Resources.el);
 								break;
 							default:
-								FLAG = Properties.Resources.MahouTrayHD.ToBitmap();
+								FLAG = new Bitmap(Properties.Resources.MahouTrayHD.ToBitmap());
 								Logging.Log("Missing flag for language [" + flagname + " / " + lcid + "].", 2);
 								break;
 						}
@@ -2440,9 +2449,11 @@ DEL "+restartMahouPath;
 						g.Dispose();
 						sf.Dispose();
 						sb.Dispose();
-						ITEXT = b;
+						IfDispose(ref ITEXT);
+						ITEXT = new Bitmap(b);
 						if (n2 && LDCaretUseFlags_temp) {
-							ITEXT = FLAG;
+							IfDispose(ref ITEXT);
+							ITEXT = new Bitmap(FLAG);
 						}
 					}
 					latestSwitch = flagname;
@@ -2465,8 +2476,8 @@ DEL "+restartMahouPath;
 	//			Debug.WriteLine("refresh?"+ (lastTrayFlagLayout != lcid || force));
 				if (lastTrayFlagLayout != lcid || force) {
 					RefreshFLAG(force);
-					var b = FLAG;
-					if (TrayText) b = ITEXT;
+					var b = new Bitmap(FLAG);
+					if (TrayText && ITEXT != null) b = new Bitmap(ITEXT);
 					Icon flagicon;
 					if (FLAG != null)
 						flagicon = Icon.FromHandle(b.GetHicon());
