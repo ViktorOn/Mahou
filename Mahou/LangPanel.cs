@@ -29,7 +29,7 @@ namespace Mahou {
 		public bool snap_l, snap_r, snap_t, snap_b;
 		public void ChangeLayout(Bitmap flag, string layoutName) {
 			lbl_LayoutName.Text = layoutName;
-			pct_Flag.BackgroundImage = flag;
+			pct_Flag.BackgroundImage = new Bitmap(flag);
 			Width = lbl_LayoutName.Left + lbl_LayoutName.Width + l;
 			ReSnap();
 		}

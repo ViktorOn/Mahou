@@ -31,7 +31,7 @@ namespace Mahou
 					MMain.mahou.icon.trIcon.Icon = fi;
 					WinAPI.DestroyIcon(fi.Handle);
 				}
-				BackgroundImage = MahouUI.FLAG;
+				BackgroundImage = new Bitmap(MahouUI.FLAG);
 				TransparencyKey = BackColor = Color.Pink;
 				Invalidate();
 				Update();
