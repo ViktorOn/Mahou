@@ -818,8 +818,9 @@ namespace Mahou {
 					}
 				}
 			}
-			if (!MahouUI.UseJKL || KMHook.JKLERR || !conhost) {
-				MahouUI.currentLayout = /*MahouUI.GlobalLayout =*/ hwndLayout;
+			if (!MahouUI.UseJKL || KMHook.JKLERR) {
+				// Only if JKL is not enabled/working, also for console apps use getconbkl.dll in ↓ which works only in x86
+				MahouUI.currentLayout = /*MahouUI.GlobalLayout =*/ conhost ? Locales.GetCurrentLocale() : hwndLayout;
 				Logging.Log("[FOCUS] > Updating currentLayout on window activate to ["+MahouUI.currentLayout+"]...");
 			}
 			Logging.Log("Hwnd " + hwnd + ", layout: " + hwndLayout + ", Mahou layout: " + MahouUI.GlobalLayout);		
