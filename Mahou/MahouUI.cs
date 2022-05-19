@@ -2455,6 +2455,7 @@ DEL "+restartMahouPath;
 							IfDispose(ref ITEXT);
 							ITEXT = new Bitmap(FLAG);
 						}
+						b.Dispose();
 					}
 					latestSwitch = flagname;
 				}
@@ -2484,8 +2485,7 @@ DEL "+restartMahouPath;
 					else 
 						flagicon = Mahou.Properties.Resources.MahouTrayHD;
 					icon.trIcon.Icon = flagicon;
-					if (!force)
-						WinAPI.DestroyIcon(flagicon.Handle);
+					WinAPI.DestroyIcon(flagicon.Handle);
 					lastTrayFlagLayout = lcid;
 				}
 			} catch(Exception e) {
