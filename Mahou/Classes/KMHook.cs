@@ -556,6 +556,10 @@ namespace Mahou {
 							else
 								c_snip.Clear();
 						}
+						if (!matched && seKey == Keys.F14) {
+							Debug.WriteLine("No snippet match, restore Tab original action.");
+							DoSelf(()=>KInputs.MakeInput(KInputs.AddPress(Keys.Tab)), "Tab-restore-snippet-no-match");
+						}
 					}
 					bool IGN = false;
 					if (MahouUI.AutoSwitchEnabled && !ExcludedProgram(false, hwnd, true)) {
