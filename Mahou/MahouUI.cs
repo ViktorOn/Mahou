@@ -1124,6 +1124,7 @@ namespace Mahou {
 			Logging.logdir = Path.Combine(nPath, "Logs");
 			Logging.log = Path.Combine(Logging.logdir, DateTime.Today.ToString("yyyy.MM.dd") + ".txt");
 			Configs.filePath = Path.Combine(nPath, "Mahou.ini");
+			MMain.MyConfs = new Configs();
 		}
 		/// <summary>
 		/// Saves current settings to INI.
