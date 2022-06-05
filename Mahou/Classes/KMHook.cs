@@ -24,10 +24,11 @@ namespace Mahou {
 			dbl_click, click, selfie, aftsingleAS, JKLERR, JKLERRchecking, last_snipANY,
 			_selis, _mselis, snipselshiftpressed, snipselwassel, 
 			AS_IGN_BACK, AS_IGN_DEL, AS_IGN_LS, was_back, was_del, was_ls, __setsnip, L_DOWN, 
-			CLW_W_SPACE, CLW_W_ENTER;
+			CLW_W_SPACE, CLW_W_ENTER, CTRL_ALT_changelayout_temporary;
+		public static uint CTRL_ALT_prev_layout;
 	    public static string AS_END_symbols = "";
 		public static System.Timers.Timer click_reset = new System.Timers.Timer();
-		public static Keys skip_up = Keys.None;
+		public static Keys skip_up = Keys.None, prev_up = Keys.None;
 		public static System.Timers.Timer JKLERRT = new System.Timers.Timer();
 		public static int skip_mouse_events, skip_spec_keys, cursormove = -1, guess_tries, skip_kbd_events, lsnip_noset, AS_IGN_TIMEOUT;
 		static char sym = '\0'; static bool sym_upr = false;
@@ -279,6 +280,47 @@ namespace Mahou {
 				}
 			}
 			#endregion
+			if (MahouUI.CTRL_ALT_TemporaryLayout != 0) {
+				if (down) {
+					if (((Key == Keys.LMenu && ctrl) ||
+					    ((Key == Keys.LControlKey) && alt)) && !CTRL_ALT_changelayout_temporary) {
+						CTRL_ALT_prev_layout = (MahouUI.UseJKL && !JKLERR) ? MahouUI.currentLayout : Locales.GetCurrentLocale();
+						uint sh1 = CTRL_ALT_prev_layout&0xffff, sh2 = MahouUI.CTRL_ALT_TemporaryLayout&0xffff;
+						if (sh1 != sh2 && CTRL_ALT_prev_layout != 0) {
+							CTRL_ALT_changelayout_temporary = true;
+							NormalChangeToLayout(Locales.ActiveWindow(), MahouUI.CTRL_ALT_TemporaryLayout);
+							Debug.WriteLine("SWITCH TO LAYOUT" + MahouUI.CTRL_ALT_TemporaryLayout);
+						}
+					}
+				}
+				if (MSG == WinAPI.WM_KEYUP || MSG == WinAPI.WM_SYSKEYUP) {
+					Debug.WriteLine("RELEASE: " +Key + " " +CTRL_ALT_prev_layout);
+					if (CTRL_ALT_changelayout_temporary) {
+						var swtch_back = false;
+						if (Key == Keys.LControlKey) {
+							if (prev_up == Keys.LMenu) {
+								swtch_back = true;
+							}
+							prev_up = Key;
+						}
+						if (Key == Keys.LMenu) {
+							if (prev_up == Keys.LControlKey) {
+								swtch_back = true;
+							}
+							prev_up = Key;
+						}
+						if (swtch_back) {
+							if (CTRL_ALT_prev_layout != 0) {
+								Debug.WriteLine("SWITCH BACK TO LAYOUT" + CTRL_ALT_prev_layout);
+								NormalChangeToLayout(Locales.ActiveWindow(), CTRL_ALT_prev_layout);
+							}
+							prev_up = Keys.None;
+							CTRL_ALT_changelayout_temporary = false;
+							CTRL_ALT_prev_layout = 0;
+						}
+					}
+				}
+			}
 			#region
 			if (MahouUI.LangPanelDisplay || MahouUI.MouseLangTooltipEnabled || MahouUI.CaretLangTooltipEnabled)
 				if (MahouUI.LangPanelUpperArrow || MahouUI.mouseLTUpperArrow || MahouUI.caretLTUpperArrow) {

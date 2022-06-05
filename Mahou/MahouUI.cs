@@ -169,7 +169,7 @@ namespace Mahou {
 		uint latestL = 0, latestCL = 0;
 		static string decim = ",";
 		public static uint currentLayout, GlobalLayout;
-		public static uint MAIN_LAYOUT1, MAIN_LAYOUT2;
+		public static uint MAIN_LAYOUT1, MAIN_LAYOUT2, CTRL_ALT_TemporaryLayout;
 		bool onepass = true, onepassC = true;
 		/// <summary>
 		/// Has a lot of values/keys taken from dynamic controls:<br/>
@@ -1502,6 +1502,7 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hidden", "ClipBackOnlyText", Hchk_ClipBackOnlyText.Checked.ToString());
 			MMain.MyConfs.Write("Hidden", "AutoSwitchEndingSymbols", Htxt_ASEndSymbols.Text);
 			MMain.MyConfs.Write("Hidden", "CycleCaseSaveBase", Hchk_SaveBase.Checked.ToString());
+			MMain.MyConfs.Write("Hidden", "CTRL_ALT_TemporaryChangeLayout", Htxt_LCTRLLALTTempLayout.Text);
 //			NCS_destroy();
 		}
 		void loadHidden() {
@@ -1539,6 +1540,8 @@ namespace Mahou {
 			CycleCaseSaveBase = Hchk_SaveBase.Checked = MMain.MyConfs.ReadBool("Hidden", "CycleCaseSaveBase");
 			Layout1ModifierKey = MMain.MyConfs.ReadInt("Hidden", "Layout_1_Modifier_Key");
 			Layout2ModifierKey = MMain.MyConfs.ReadInt("Hidden", "Layout_2_Modifier_Key");
+			Htxt_LCTRLLALTTempLayout.Text = MMain.MyConfs.Read("Hidden", "CTRL_ALT_TemporaryChangeLayout");
+			UInt32.TryParse(Htxt_LCTRLLALTTempLayout.Text, out CTRL_ALT_TemporaryLayout);
 			parseRedefines();
 			Hnud_TrayHoverMM.Value = TrayHoverMahouMM;
 			if (!String.IsNullOrEmpty(OverlayExcluded)) {

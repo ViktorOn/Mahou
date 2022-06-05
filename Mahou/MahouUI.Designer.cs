@@ -334,6 +334,8 @@ namespace Mahou
 		private System.Windows.Forms.TextBox Htxt_ASEndSymbols;
 		private System.Windows.Forms.Label Hlbl_ASEndSymbols;
 		private System.Windows.Forms.CheckBox Hchk_SaveBase;
+		private System.Windows.Forms.TextBox Htxt_LCTRLLALTTempLayout;
+		private System.Windows.Forms.Label Hlbl_LCTRLLALTTempLayout;
 		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
@@ -677,6 +679,8 @@ namespace Mahou
 			this.btn_Cancel = new System.Windows.Forms.Button();
 			this.btn_Apply = new System.Windows.Forms.Button();
 			this.HelpMeUnderstand = new System.Windows.Forms.ToolTip(this.components);
+			this.Hlbl_LCTRLLALTTempLayout = new System.Windows.Forms.Label();
+			this.Htxt_LCTRLLALTTempLayout = new System.Windows.Forms.TextBox();
 			this.tabs.SuspendLayout();
 			this.tab_functions.SuspendLayout();
 			this.tab_layouts.SuspendLayout();
@@ -3931,6 +3935,8 @@ namespace Mahou
 			// 
 			this.tab_Hidden.AutoScroll = true;
 			this.tab_Hidden.BackColor = System.Drawing.Color.DarkSlateGray;
+			this.tab_Hidden.Controls.Add(this.Htxt_LCTRLLALTTempLayout);
+			this.tab_Hidden.Controls.Add(this.Hlbl_LCTRLLALTTempLayout);
 			this.tab_Hidden.Controls.Add(this.Hchk_SaveBase);
 			this.tab_Hidden.Controls.Add(this.Htxt_Redefines);
 			this.tab_Hidden.Controls.Add(this.Htxt_ASEndSymbols);
@@ -3986,6 +3992,16 @@ namespace Mahou
 			this.tab_Hidden.Size = new System.Drawing.Size(559, 268);
 			this.tab_Hidden.TabIndex = 15;
 			this.tab_Hidden.Text = "[Hidden]";
+			// 
+			// Hchk_SaveBase
+			// 
+			this.Hchk_SaveBase.AutoSize = true;
+			this.Hchk_SaveBase.Location = new System.Drawing.Point(8, 457);
+			this.Hchk_SaveBase.Name = "Hchk_SaveBase";
+			this.Hchk_SaveBase.Size = new System.Drawing.Size(423, 19);
+			this.Hchk_SaveBase.TabIndex = 49;
+			this.Hchk_SaveBase.Text = "Save text before first Cycle Case conversion. (to return use [B]ase in order ↑)";
+			this.Hchk_SaveBase.UseVisualStyleBackColor = true;
 			// 
 			// Htxt_Redefines
 			// 
@@ -4542,15 +4558,24 @@ namespace Mahou
 			this.HelpMeUnderstand.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			this.HelpMeUnderstand.Popup += new System.Windows.Forms.PopupEventHandler(this.HelpMeUnderstandPopup);
 			// 
-			// Hchk_SaveBase
+			// Hlbl_LCTRLLALTTempLayout
 			// 
-			this.Hchk_SaveBase.AutoSize = true;
-			this.Hchk_SaveBase.Location = new System.Drawing.Point(8, 457);
-			this.Hchk_SaveBase.Name = "Hchk_SaveBase";
-			this.Hchk_SaveBase.Size = new System.Drawing.Size(423, 19);
-			this.Hchk_SaveBase.TabIndex = 49;
-			this.Hchk_SaveBase.Text = "Save text before first Cycle Case conversion. (to return use [B]ase in order ↑)";
-			this.Hchk_SaveBase.UseVisualStyleBackColor = true;
+			this.Hlbl_LCTRLLALTTempLayout.AutoSize = true;
+			this.Hlbl_LCTRLLALTTempLayout.Location = new System.Drawing.Point(8, 750);
+			this.Hlbl_LCTRLLALTTempLayout.Name = "Hlbl_LCTRLLALTTempLayout";
+			this.Hlbl_LCTRLLALTTempLayout.Size = new System.Drawing.Size(341, 15);
+			this.Hlbl_LCTRLLALTTempLayout.TabIndex = 51;
+			this.Hlbl_LCTRLLALTTempLayout.Text = "Temporarily change to layout on LCtrl+LAlt down: (0=disable)";
+			// 
+			// Htxt_LCTRLLALTTempLayout
+			// 
+			this.Htxt_LCTRLLALTTempLayout.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_LCTRLLALTTempLayout.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_LCTRLLALTTempLayout.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_LCTRLLALTTempLayout.Location = new System.Drawing.Point(355, 746);
+			this.Htxt_LCTRLLALTTempLayout.Name = "Htxt_LCTRLLALTTempLayout";
+			this.Htxt_LCTRLLALTTempLayout.Size = new System.Drawing.Size(180, 23);
+			this.Htxt_LCTRLLALTTempLayout.TabIndex = 52;
 			// 
 			// MahouUI
 			// 
