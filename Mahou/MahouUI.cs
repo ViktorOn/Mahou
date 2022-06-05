@@ -1970,7 +1970,8 @@ namespace Mahou {
 				SpecKeySetsValues["txt_key"+i+"_mods"] = values[2];
 				SpecKeySetsValues["cbb_typ"+i] = values[3];
 				if (!String.IsNullOrEmpty(values[3])) {
-					if (values[3] == MMain.Lang[Languages.Element.SwitchBetween]) {
+					if ((values[3] == Languages.English[Languages.Element.SwitchBetween] && MMain.Lang == Languages.Russian) ||
+					    (values[3] == Languages.Russian[Languages.Element.SwitchBetween] && MMain.Lang == Languages.English)) {
 							SaveSpecificKeySets(true, i, MMain.Lang[Languages.Element.SwitchBetween]);
 							SpecKeySetsValues["cbb_typ"+i] = MMain.Lang[Languages.Element.SwitchBetween];
 					} 
