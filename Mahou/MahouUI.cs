@@ -1220,6 +1220,7 @@ namespace Mahou {
 				} catch { Logging.Log("Some settings in layouts tab failed to save, they are skipped."); }
 				MMain.MyConfs.Write("Layouts", "OneLayout", chk_OneLayout.Checked.ToString());
 				MMain.MyConfs.Write("Layouts", "QWERTZfix", chk_qwertz.Checked.ToString());
+				MMain.MyConfs.Write("Layouts", "CTRL_ALT_TemporaryChangeLayout", txt_LCTRLLALTTempLayout.Text);
 				#endregion
 				#region Persistent Layout
 				MMain.MyConfs.Write("PersistentLayout", "OnlyOnWindowChange", chk_OnlyOnWindowChange.Checked.ToString());
@@ -1502,7 +1503,6 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hidden", "ClipBackOnlyText", Hchk_ClipBackOnlyText.Checked.ToString());
 			MMain.MyConfs.Write("Hidden", "AutoSwitchEndingSymbols", Htxt_ASEndSymbols.Text);
 			MMain.MyConfs.Write("Hidden", "CycleCaseSaveBase", Hchk_SaveBase.Checked.ToString());
-			MMain.MyConfs.Write("Hidden", "CTRL_ALT_TemporaryChangeLayout", txt_LCTRLLALTTempLayout.Text);
 			try { MMain.MyConfs.Write("Hidden", "Layout_1_Modifier_Key", ((int)KMHook.strparsekey(Htxt_LayoutModifier_1.Text)[0]).ToString()); }
 			catch { Logging.Log("Layout modifier 1 parse error, can't recognize that key:"+Htxt_LayoutModifier_1.Text, 1); }
 			try { MMain.MyConfs.Write("Hidden", "Layout_2_Modifier_Key", ((int)KMHook.strparsekey(Htxt_LayoutModifier_2.Text)[0]).ToString()); }
