@@ -336,6 +336,10 @@ namespace Mahou
 		private System.Windows.Forms.CheckBox Hchk_SaveBase;
 		private System.Windows.Forms.TextBox Htxt_LCTRLLALTTempLayout;
 		private System.Windows.Forms.Label Hlbl_LCTRLLALTTempLayout;
+		private System.Windows.Forms.TextBox Htxt_LayoutModifier_2;
+		private System.Windows.Forms.Label Hlbl_LayoutModifier_2;
+		private System.Windows.Forms.TextBox Htxt_LayoutModifier_1;
+		private System.Windows.Forms.Label Hlbl_LayoutModifier_1;
 		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
@@ -627,6 +631,8 @@ namespace Mahou
 			this.lnk_Site = new System.Windows.Forms.LinkLabel();
 			this.lnk_Repository = new System.Windows.Forms.LinkLabel();
 			this.tab_Hidden = new System.Windows.Forms.TabPage();
+			this.Htxt_LCTRLLALTTempLayout = new System.Windows.Forms.TextBox();
+			this.Hlbl_LCTRLLALTTempLayout = new System.Windows.Forms.Label();
 			this.Hchk_SaveBase = new System.Windows.Forms.CheckBox();
 			this.Htxt_Redefines = new System.Windows.Forms.TextBox();
 			this.Htxt_ASEndSymbols = new System.Windows.Forms.TextBox();
@@ -679,8 +685,10 @@ namespace Mahou
 			this.btn_Cancel = new System.Windows.Forms.Button();
 			this.btn_Apply = new System.Windows.Forms.Button();
 			this.HelpMeUnderstand = new System.Windows.Forms.ToolTip(this.components);
-			this.Hlbl_LCTRLLALTTempLayout = new System.Windows.Forms.Label();
-			this.Htxt_LCTRLLALTTempLayout = new System.Windows.Forms.TextBox();
+			this.Htxt_LayoutModifier_1 = new System.Windows.Forms.TextBox();
+			this.Hlbl_LayoutModifier_1 = new System.Windows.Forms.Label();
+			this.Htxt_LayoutModifier_2 = new System.Windows.Forms.TextBox();
+			this.Hlbl_LayoutModifier_2 = new System.Windows.Forms.Label();
 			this.tabs.SuspendLayout();
 			this.tab_functions.SuspendLayout();
 			this.tab_layouts.SuspendLayout();
@@ -3935,6 +3943,10 @@ namespace Mahou
 			// 
 			this.tab_Hidden.AutoScroll = true;
 			this.tab_Hidden.BackColor = System.Drawing.Color.DarkSlateGray;
+			this.tab_Hidden.Controls.Add(this.Htxt_LayoutModifier_2);
+			this.tab_Hidden.Controls.Add(this.Hlbl_LayoutModifier_2);
+			this.tab_Hidden.Controls.Add(this.Htxt_LayoutModifier_1);
+			this.tab_Hidden.Controls.Add(this.Hlbl_LayoutModifier_1);
 			this.tab_Hidden.Controls.Add(this.Htxt_LCTRLLALTTempLayout);
 			this.tab_Hidden.Controls.Add(this.Hlbl_LCTRLLALTTempLayout);
 			this.tab_Hidden.Controls.Add(this.Hchk_SaveBase);
@@ -3992,6 +4004,25 @@ namespace Mahou
 			this.tab_Hidden.Size = new System.Drawing.Size(559, 268);
 			this.tab_Hidden.TabIndex = 15;
 			this.tab_Hidden.Text = "[Hidden]";
+			// 
+			// Htxt_LCTRLLALTTempLayout
+			// 
+			this.Htxt_LCTRLLALTTempLayout.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_LCTRLLALTTempLayout.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_LCTRLLALTTempLayout.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_LCTRLLALTTempLayout.Location = new System.Drawing.Point(355, 803);
+			this.Htxt_LCTRLLALTTempLayout.Name = "Htxt_LCTRLLALTTempLayout";
+			this.Htxt_LCTRLLALTTempLayout.Size = new System.Drawing.Size(180, 23);
+			this.Htxt_LCTRLLALTTempLayout.TabIndex = 52;
+			// 
+			// Hlbl_LCTRLLALTTempLayout
+			// 
+			this.Hlbl_LCTRLLALTTempLayout.AutoSize = true;
+			this.Hlbl_LCTRLLALTTempLayout.Location = new System.Drawing.Point(8, 807);
+			this.Hlbl_LCTRLLALTTempLayout.Name = "Hlbl_LCTRLLALTTempLayout";
+			this.Hlbl_LCTRLLALTTempLayout.Size = new System.Drawing.Size(333, 15);
+			this.Hlbl_LCTRLLALTTempLayout.TabIndex = 51;
+			this.Hlbl_LCTRLLALTTempLayout.Text = "Temporarily change to layout on LCtrl+LAlt down: (0=disable)";
 			// 
 			// Hchk_SaveBase
 			// 
@@ -4512,7 +4543,7 @@ namespace Mahou
 			// 
 			// Hlbl_scrollpastcontent
 			// 
-			this.Hlbl_scrollpastcontent.Location = new System.Drawing.Point(234, 734);
+			this.Hlbl_scrollpastcontent.Location = new System.Drawing.Point(234, 810);
 			this.Hlbl_scrollpastcontent.Name = "Hlbl_scrollpastcontent";
 			this.Hlbl_scrollpastcontent.Size = new System.Drawing.Size(100, 23);
 			this.Hlbl_scrollpastcontent.TabIndex = 40;
@@ -4558,24 +4589,43 @@ namespace Mahou
 			this.HelpMeUnderstand.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			this.HelpMeUnderstand.Popup += new System.Windows.Forms.PopupEventHandler(this.HelpMeUnderstandPopup);
 			// 
-			// Hlbl_LCTRLLALTTempLayout
+			// Htxt_LayoutModifier_1
 			// 
-			this.Hlbl_LCTRLLALTTempLayout.AutoSize = true;
-			this.Hlbl_LCTRLLALTTempLayout.Location = new System.Drawing.Point(8, 750);
-			this.Hlbl_LCTRLLALTTempLayout.Name = "Hlbl_LCTRLLALTTempLayout";
-			this.Hlbl_LCTRLLALTTempLayout.Size = new System.Drawing.Size(341, 15);
-			this.Hlbl_LCTRLLALTTempLayout.TabIndex = 51;
-			this.Hlbl_LCTRLLALTTempLayout.Text = "Temporarily change to layout on LCtrl+LAlt down: (0=disable)";
+			this.Htxt_LayoutModifier_1.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_LayoutModifier_1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_LayoutModifier_1.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_LayoutModifier_1.Location = new System.Drawing.Point(438, 747);
+			this.Htxt_LayoutModifier_1.Name = "Htxt_LayoutModifier_1";
+			this.Htxt_LayoutModifier_1.Size = new System.Drawing.Size(97, 23);
+			this.Htxt_LayoutModifier_1.TabIndex = 54;
 			// 
-			// Htxt_LCTRLLALTTempLayout
+			// Hlbl_LayoutModifier_1
 			// 
-			this.Htxt_LCTRLLALTTempLayout.BackColor = System.Drawing.Color.Orange;
-			this.Htxt_LCTRLLALTTempLayout.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.Htxt_LCTRLLALTTempLayout.ForeColor = System.Drawing.Color.LightCyan;
-			this.Htxt_LCTRLLALTTempLayout.Location = new System.Drawing.Point(355, 746);
-			this.Htxt_LCTRLLALTTempLayout.Name = "Htxt_LCTRLLALTTempLayout";
-			this.Htxt_LCTRLLALTTempLayout.Size = new System.Drawing.Size(180, 23);
-			this.Htxt_LCTRLLALTTempLayout.TabIndex = 52;
+			this.Hlbl_LayoutModifier_1.AutoSize = true;
+			this.Hlbl_LayoutModifier_1.Location = new System.Drawing.Point(8, 750);
+			this.Hlbl_LayoutModifier_1.Name = "Hlbl_LayoutModifier_1";
+			this.Hlbl_LayoutModifier_1.Size = new System.Drawing.Size(384, 15);
+			this.Hlbl_LayoutModifier_1.TabIndex = 53;
+			this.Hlbl_LayoutModifier_1.Text = "Layout #1 modifier key: (change to Layout #1 while holding, 1 key only)";
+			// 
+			// Htxt_LayoutModifier_2
+			// 
+			this.Htxt_LayoutModifier_2.BackColor = System.Drawing.Color.Orange;
+			this.Htxt_LayoutModifier_2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.Htxt_LayoutModifier_2.ForeColor = System.Drawing.Color.LightCyan;
+			this.Htxt_LayoutModifier_2.Location = new System.Drawing.Point(438, 775);
+			this.Htxt_LayoutModifier_2.Name = "Htxt_LayoutModifier_2";
+			this.Htxt_LayoutModifier_2.Size = new System.Drawing.Size(97, 23);
+			this.Htxt_LayoutModifier_2.TabIndex = 56;
+			// 
+			// Hlbl_LayoutModifier_2
+			// 
+			this.Hlbl_LayoutModifier_2.AutoSize = true;
+			this.Hlbl_LayoutModifier_2.Location = new System.Drawing.Point(8, 777);
+			this.Hlbl_LayoutModifier_2.Name = "Hlbl_LayoutModifier_2";
+			this.Hlbl_LayoutModifier_2.Size = new System.Drawing.Size(384, 15);
+			this.Hlbl_LayoutModifier_2.TabIndex = 55;
+			this.Hlbl_LayoutModifier_2.Text = "Layout #2 modifier key: (change to Layout #2 while holding, 1 key only)";
 			// 
 			// MahouUI
 			// 
