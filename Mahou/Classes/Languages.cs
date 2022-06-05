@@ -60,6 +60,7 @@ public class Languages
 		KeysType,
 		SelectKeyType,
 		SetHotkeyType,
+		LCTRLLALTTempLayout,
 		#endregion
 		#region Persistent Layout
 		SwitchOnlyOnWindowChange,
@@ -300,6 +301,7 @@ public class Languages
 		TT_Transcription_1,
 		TT_Transcription_2,
 		TT_SnippetsEditHotkeys,
+		TT_LCTRLLALTTempLayout,
 		#endregion
 		#region Messages
 		MSG_SnippetsError
@@ -362,7 +364,8 @@ public class Languages
 		{ Element.QWERTZ, "Fix for QWERTZ keyboard." }, 
 		{ Element.KeysType, "Keys type:" }, 
 		{ Element.SelectKeyType, "Select key." }, 
-		{ Element.SetHotkeyType, "Set hotkey." }, 
+		{ Element.SetHotkeyType, "Set hotkey." },
+		{ Element.LCTRLLALTTempLayout, "Temporary change layout on LCtrl+LAlt combination:" },
 		#endregion
 		#region Persistent Layout
 		{ Element.PersistentLayout, "Persistent layout" }, 
@@ -621,6 +624,11 @@ public class Languages
 		{ Element.TT_Transcription_1, "Works only when [" },
 		{ Element.TT_Transcription_2, "] method is active. Not all languages have it." },
 		{ Element.TT_SnippetsEditHotkeys, "  Hotkeys:\r\n[Ctrl]+[K] or [Ctrl]+[/] = comment/uncomment line.\r\n     - If more than 1 line is selected, all selected lines will be commented/uncommented.." },
+		{ Element.TT_LCTRLLALTTempLayout, @"Temporarily changes layout while you hold combination of keys containing: LCtrl+LAlt, until release of both.
+Fixes problem when instead of firing hotkeys containing Ctrl+Alt in apps Windows prints special character, which usually typed via AltGr(right Alt, in Windows AtlGr = Ctrl+Alt).
+Relevant for extented and typographic layouts: US-International, UK-Extended, european languages layouts etc.
+You need to specify in textbox to the right code of layout in which Mahou will be switching, choose layout that doesn't have AltGr combinations: for example English(US) 67699721.
+Specify layout code 0 to disable this feature." },
 		#endregion
 		#region Messages
 		{ Element.MSG_SnippetsError, "Snippets contains error in syntax, check if there are errors, details on snippets syntax you can find on Wiki." }
@@ -682,6 +690,11 @@ public class Languages
 		{ Element.EmulateLS, "Эмулировать переключение раскладки." }, 
 		{ Element.EmulateType, "Тип эмуляции:" }, 
 		{ Element.ChangeLayoutBy1Key, "Переключать раскладки по клавишам:" }, 
+		{ Element.QWERTZ, "Исправление для QWERTZ клавиатур." }, 
+		{ Element.KeysType, "Тип клавиш:" }, 
+		{ Element.SelectKeyType, "Выбирать клавиши." }, 
+		{ Element.SetHotkeyType, "Назначить гор. клавишу." }, 
+		{ Element.LCTRLLALTTempLayout, "Временно изменить раскладку при комбинации LCtrl+LAlt:" },
 		#endregion
 		#region Persistent Layout
 		{ Element.PersistentLayout, "Постоянная раскладка" }, 
@@ -690,10 +703,6 @@ public class Languages
 		{ Element.ActivatePLFP, "Постоянная раскладка для процессов:" }, 
 		{ Element.CheckInterval, "Интервал проверки:" }, 
 		{ Element.OneLayout, "Единая раскладка для всех программ." }, 
-		{ Element.QWERTZ, "Исправление для QWERTZ клавиатур." }, 
-		{ Element.KeysType, "Тип клавиш:" }, 
-		{ Element.SelectKeyType, "Выбирать клавиши." }, 
-		{ Element.SetHotkeyType, "Назначить гор. клавишу." }, 
 		#endregion
 		#region Appearence
 		{ Element.LDMouseDisplay, "Отображать подсказку текущего языка рядом с мышью." }, 
@@ -943,6 +952,11 @@ public class Languages
 		{ Element.TT_Transcription_1, "Работает только при [" },
 		{ Element.TT_Transcription_2, "] активном методе. Поддерживается не всеми языками." },
 		{ Element.TT_SnippetsEditHotkeys, "  Горячие клавиши:\r\n[Ctrl]+[K](Л) or [Ctrl]+[/](.) = закомментировать/раскомментировать линию.\r\n     - Если выделено больше 1 линии, все выделенные линии будут закомментированы/раскомментированы." },
+		{ Element.TT_LCTRLLALTTempLayout, @"Подменяет раскладку в момент набора комбинации клавиш, начинающейся с LCtrl+LAlt, до момента отпуска обоих.
+Решает проблему, когда заместо комбинаций Ctrl+Alt в приложениях печатается спецсимвол, набираемый с AltGr(правый Alt, в Windows AtlGr = Ctrl+Alt) и аналогичной клавишей.
+Актуально для расширенных и типографских раскладок: US-International, UK-Extended, раскладки европейских языков и пр.
+Нужно указать в текстовой форме справа код раскладки в какую раскладку переключать, в которой нет комбинаций AltGr: например English(US) 67699721.
+Укажите код раскладки 0 чтобы отключить эту функцию." },
 		#endregion
 		#region Messages
 		{ Element.MSG_SnippetsError, "Сниппеты содержат ошибки в синтаксисе, проверьте ваши сниппеты, детали синтаксиса можете найти на Wiki." }

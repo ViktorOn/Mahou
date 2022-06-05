@@ -1502,7 +1502,7 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hidden", "ClipBackOnlyText", Hchk_ClipBackOnlyText.Checked.ToString());
 			MMain.MyConfs.Write("Hidden", "AutoSwitchEndingSymbols", Htxt_ASEndSymbols.Text);
 			MMain.MyConfs.Write("Hidden", "CycleCaseSaveBase", Hchk_SaveBase.Checked.ToString());
-			MMain.MyConfs.Write("Hidden", "CTRL_ALT_TemporaryChangeLayout", Htxt_LCTRLLALTTempLayout.Text);
+			MMain.MyConfs.Write("Hidden", "CTRL_ALT_TemporaryChangeLayout", txt_LCTRLLALTTempLayout.Text);
 			try { MMain.MyConfs.Write("Hidden", "Layout_1_Modifier_Key", ((int)KMHook.strparsekey(Htxt_LayoutModifier_1.Text)[0]).ToString()); }
 			catch { Logging.Log("Layout modifier 1 parse error, can't recognize that key:"+Htxt_LayoutModifier_1.Text, 1); }
 			try { MMain.MyConfs.Write("Hidden", "Layout_2_Modifier_Key", ((int)KMHook.strparsekey(Htxt_LayoutModifier_2.Text)[0]).ToString()); }
@@ -1546,8 +1546,6 @@ namespace Mahou {
 			Layout2ModifierKey = MMain.MyConfs.ReadInt("Hidden", "Layout_2_Modifier_Key");
 			try { Htxt_LayoutModifier_1.Text = ((Keys)Layout1ModifierKey).ToString(); } catch { Logging.Log("Layout modifier 1 key code is not valid key."); }
 			try { Htxt_LayoutModifier_2.Text = ((Keys)Layout2ModifierKey).ToString(); } catch { Logging.Log("Layout modifier 1 key code is not valid key."); }
-			Htxt_LCTRLLALTTempLayout.Text = MMain.MyConfs.Read("Hidden", "CTRL_ALT_TemporaryChangeLayout");
-			UInt32.TryParse(Htxt_LCTRLLALTTempLayout.Text, out CTRL_ALT_TemporaryLayout);
 			parseRedefines();
 			Hnud_TrayHoverMM.Value = TrayHoverMahouMM;
 			if (!String.IsNullOrEmpty(OverlayExcluded)) {
@@ -1659,6 +1657,8 @@ namespace Mahou {
 			Key4 = MMain.MyConfs.ReadInt("Layouts", "SpecificKey4");
 			OneLayout = chk_OneLayout.Checked = MMain.MyConfs.ReadBool("Layouts", "OneLayout");
 			QWERTZ_fix = chk_qwertz.Checked = MMain.MyConfs.ReadBool("Layouts", "QWERTZfix");
+			txt_LCTRLLALTTempLayout.Text = MMain.MyConfs.Read("Layouts", "CTRL_ALT_TemporaryChangeLayout");
+			UInt32.TryParse(txt_LCTRLLALTTempLayout.Text, out CTRL_ALT_TemporaryLayout);
 			LoadSpecKeySetsValues();
 			#endregion
 			#region Persistent Layout
@@ -4491,6 +4491,7 @@ DEL ""ExtractASD.cmd""";
 			lbl_KeysType.Text = MMain.Lang[Languages.Element.KeysType];
 			cbb_SpecKeysType.Items.Clear();
 			cbb_SpecKeysType.Items.AddRange(new [] { MMain.Lang[Languages.Element.SelectKeyType], MMain.Lang[Languages.Element.SetHotkeyType]});
+			lbl_LCTRLLALTTempLayout.Text = MMain.Lang[Languages.Element.LCTRLLALTTempLayout];
 			#endregion
 			#region Persistent Layout
 			chk_ChangeLayoutOnlyOnce.Text = MMain.Lang[Languages.Element.SwitchOnlyOnce];
@@ -4738,6 +4739,7 @@ DEL ""ExtractASD.cmd""";
 			HelpMeUnderstand.SetToolTip(chk_TrTranscription, MMain.Lang[Languages.Element.TT_Transcription_1]+
 			                            MMain.Lang[Languages.Element.DirectV2]+MMain.Lang[Languages.Element.TT_Transcription_2]);
 			HelpMeUnderstand.SetToolTip(txt_Snippets, MMain.Lang[Languages.Element.TT_SnippetsEditHotkeys]);
+			HelpMeUnderstand.SetToolTip(lbl_LCTRLLALTTempLayout, MMain.Lang[Languages.Element.TT_LCTRLLALTTempLayout]);
 		}
 		void HelpMeUnderstandPopup(object sender, PopupEventArgs e) {
 			HelpMeUnderstand.ToolTipTitle = e.AssociatedControl.Text;
@@ -5263,6 +5265,15 @@ DEL ""ExtractASD.cmd""";
 		}
 		#endregion
 		#region Mahou UI controls events
+		void Txt_LCTRLLALTTempLayoutTextChanged(object sender, EventArgs e) {
+			var txt = (sender as TextBox);
+			if (Regex.IsMatch(txt.Text, @"[^0-9]")) {
+				txt.Text = Regex.Replace(txt.Text, @"[^0-9]", "");
+				if (txt.Text.Length >0) {
+					txt.SelectionStart = txt.Text.Length;
+				}
+			}
+		}
 		void Chk_CheckedChanged(object sender, EventArgs e) {
 			ToggleDependentControlsEnabledState();
 		}

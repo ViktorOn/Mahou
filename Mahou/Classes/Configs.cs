@@ -210,7 +210,6 @@ namespace Mahou {
         	CreateConfigsFile();
         	ReadFromDisk();
         	#region Hidden
-			CheckString("Hidden", "CTRL_ALT_TemporaryChangeLayout", "0");
 			CheckInt("Hidden", "Layout_2_Modifier_Key", "0");
 			CheckInt("Hidden", "Layout_1_Modifier_Key", "0");
         	CheckBool("Hidden", "CycleCaseSaveBase", "false");
@@ -513,6 +512,7 @@ namespace Mahou {
 			CheckBool("PersistentLayout", "OnlyOnWindowChange", "false");
 			#endregion
 			#region Layouts section
+			CheckString("Layouts", "CTRL_ALT_TemporaryChangeLayout", "0");
 			CheckBool("Layouts", "QWERTZfix", "false");
 			CheckString("Layouts", "SpecificKeySets", "set_0");
 			CheckInt("Layouts", "SpecificKeysType", "0");
