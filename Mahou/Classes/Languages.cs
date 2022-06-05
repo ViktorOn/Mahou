@@ -628,6 +628,7 @@ public class Languages
 Fixes problem when instead of firing hotkeys containing Ctrl+Alt in apps Windows prints special character, which usually typed via AltGr(right Alt, in Windows AtlGr = Ctrl+Alt).
 Relevant for extented and typographic layouts: US-International, UK-Extended, european languages layouts etc.
 You need to specify in textbox to the right code of layout in which Mahou will be switching, choose layout that doesn't have AltGr combinations: for example English(US) 67699721.
+You can even specify layout which is not loaded in system, for example: English(US) 67699721, Mahou will load/unload it when pressing/releasing LCtrl+LAlt.
 Specify layout code 0 to disable this feature." },
 		#endregion
 		#region Messages
@@ -956,6 +957,7 @@ Specify layout code 0 to disable this feature." },
 Решает проблему, когда заместо комбинаций Ctrl+Alt в приложениях печатается спецсимвол, набираемый с AltGr(правый Alt, в Windows AtlGr = Ctrl+Alt) и аналогичной клавишей.
 Актуально для расширенных и типографских раскладок: US-International, UK-Extended, раскладки европейских языков и пр.
 Нужно указать в текстовой форме справа код раскладки в какую раскладку переключать, в которой нет комбинаций AltGr: например English(US) 67699721.
+Можно указать даже раскладку которая не загружена в системе, например: English(US) 67699721, Mahou загрузит/выгрузить её при нажатии/отпускании LCtrl+LAlt.
 Укажите код раскладки 0 чтобы отключить эту функцию." },
 		#endregion
 		#region Messages

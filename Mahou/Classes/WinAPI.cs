@@ -322,6 +322,10 @@ public static class WinAPI {
 	public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 	[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 	public static extern IntPtr GetKeyboardLayout(uint WindowsThreadProcessID);
+	[DllImport("user32.dll")]
+	public static extern IntPtr LoadKeyboardLayout(string pwszKLID, uint Flags);
+	[DllImport("user32.dll")]
+	public static extern bool UnloadKeyboardLayout(IntPtr hkl);
 	
 	[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 	public static extern IntPtr GetForegroundWindow();

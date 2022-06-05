@@ -24,7 +24,7 @@ namespace Mahou {
 			dbl_click, click, selfie, aftsingleAS, JKLERR, JKLERRchecking, last_snipANY,
 			_selis, _mselis, snipselshiftpressed, snipselwassel, 
 			AS_IGN_BACK, AS_IGN_DEL, AS_IGN_LS, was_back, was_del, was_ls, __setsnip, L_DOWN, 
-			CLW_W_SPACE, CLW_W_ENTER, CTRL_ALT_changelayout_temporary;
+			CLW_W_SPACE, CLW_W_ENTER, CTRL_ALT_changelayout_temporary, CTRL_ALT_Layout_loaded;
 		public static uint CTRL_ALT_prev_layout;
 	    public static string AS_END_symbols = "";
 		public static System.Timers.Timer click_reset = new System.Timers.Timer();
@@ -288,8 +288,29 @@ namespace Mahou {
 						uint sh1 = CTRL_ALT_prev_layout&0xffff, sh2 = MahouUI.CTRL_ALT_TemporaryLayout&0xffff;
 						if (sh1 != sh2 && CTRL_ALT_prev_layout != 0) {
 							CTRL_ALT_changelayout_temporary = true;
+							var is_loaded = false;
+							foreach (var l in MMain.locales) {
+								if ((l.uId & 0xffff) == sh2) {
+									is_loaded = true;
+									break;
+								}
+							}
+							if (!is_loaded) {
+								var x = MahouUI.CTRL_ALT_TemporaryLayout.ToString("X");
+								if (x.Length<7) {
+									var zeroes = "";
+									for(int i = 0; i!= 7-x.Length; i++) {
+										zeroes += "0";
+									}
+									x = zeroes + x;
+								}
+								Logging.Log("[LCTRLLALT] > Loading layout: " +x);
+								WinAPI.LoadKeyboardLayout(x, 1);
+								Thread.Sleep(15);
+								CTRL_ALT_Layout_loaded = true;
+							}
 							NormalChangeToLayout(Locales.ActiveWindow(), MahouUI.CTRL_ALT_TemporaryLayout);
-							Debug.WriteLine("SWITCH TO LAYOUT" + MahouUI.CTRL_ALT_TemporaryLayout);
+							Logging.Log("[LCTRLLALT] > SWITCH TO LAYOUT" + MahouUI.CTRL_ALT_TemporaryLayout);
 						}
 					}
 				}
@@ -311,7 +332,11 @@ namespace Mahou {
 						}
 						if (swtch_back) {
 							if (CTRL_ALT_prev_layout != 0) {
-								Debug.WriteLine("SWITCH BACK TO LAYOUT" + CTRL_ALT_prev_layout);
+								if (CTRL_ALT_Layout_loaded) {
+									var success = WinAPI.UnloadKeyboardLayout((IntPtr)MahouUI.CTRL_ALT_TemporaryLayout);
+									Logging.Log("[LCTRLLALT] > Unload layout: "+MahouUI.CTRL_ALT_TemporaryLayout + " success: "+success);
+								}
+								Logging.Log("[LCTRLLALT] > SWITCH BACK TO LAYOUT" + CTRL_ALT_prev_layout);
 								NormalChangeToLayout(Locales.ActiveWindow(), CTRL_ALT_prev_layout);
 							}
 							prev_up = Keys.None;
