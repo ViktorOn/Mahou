@@ -1503,9 +1503,15 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hidden", "ClipBackOnlyText", Hchk_ClipBackOnlyText.Checked.ToString());
 			MMain.MyConfs.Write("Hidden", "AutoSwitchEndingSymbols", Htxt_ASEndSymbols.Text);
 			MMain.MyConfs.Write("Hidden", "CycleCaseSaveBase", Hchk_SaveBase.Checked.ToString());
-			try { MMain.MyConfs.Write("Hidden", "Layout_1_Modifier_Key", ((int)KMHook.strparsekey(Htxt_LayoutModifier_1.Text)[0]).ToString()); }
+			try { MMain.MyConfs.Write("Hidden", "Layout_1_Modifier_Key", (
+					String.IsNullOrEmpty(Htxt_LayoutModifier_1.Text)?0:
+					((int)KMHook.strparsekey(Htxt_LayoutModifier_1.Text)[0])
+				).ToString()); }
 			catch { Logging.Log("Layout modifier 1 parse error, can't recognize that key:"+Htxt_LayoutModifier_1.Text, 1); }
-			try { MMain.MyConfs.Write("Hidden", "Layout_2_Modifier_Key", ((int)KMHook.strparsekey(Htxt_LayoutModifier_2.Text)[0]).ToString()); }
+			try { MMain.MyConfs.Write("Hidden", "Layout_2_Modifier_Key", (
+					String.IsNullOrEmpty(Htxt_LayoutModifier_2.Text)?0:
+					((int)KMHook.strparsekey(Htxt_LayoutModifier_2.Text)[0])
+				).ToString()); }
 			catch { Logging.Log("Layout modifier 2 parse error, can't recognize that key:"+Htxt_LayoutModifier_2.Text, 1); }
 //			NCS_destroy();
 		}
@@ -1544,8 +1550,8 @@ namespace Mahou {
 			CycleCaseSaveBase = Hchk_SaveBase.Checked = MMain.MyConfs.ReadBool("Hidden", "CycleCaseSaveBase");
 			Layout1ModifierKey = MMain.MyConfs.ReadInt("Hidden", "Layout_1_Modifier_Key");
 			Layout2ModifierKey = MMain.MyConfs.ReadInt("Hidden", "Layout_2_Modifier_Key");
-			try { Htxt_LayoutModifier_1.Text = ((Keys)Layout1ModifierKey).ToString(); } catch { Logging.Log("Layout modifier 1 key code is not valid key."); }
-			try { Htxt_LayoutModifier_2.Text = ((Keys)Layout2ModifierKey).ToString(); } catch { Logging.Log("Layout modifier 1 key code is not valid key."); }
+			try {  var k = (Keys)Layout1ModifierKey; Htxt_LayoutModifier_1.Text = k==Keys.None?"":k.ToString(); } catch { Logging.Log("Layout modifier 1 key code is not valid key."); }
+			try { var k = (Keys)Layout2ModifierKey; Htxt_LayoutModifier_2.Text = k==Keys.None?"":k.ToString(); } catch { Logging.Log("Layout modifier 1 key code is not valid key."); }
 			parseRedefines();
 			Hnud_TrayHoverMM.Value = TrayHoverMahouMM;
 			if (!String.IsNullOrEmpty(OverlayExcluded)) {
