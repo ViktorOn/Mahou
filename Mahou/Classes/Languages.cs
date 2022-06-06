@@ -626,7 +626,7 @@ public class Languages
 		{ Element.TT_SnippetsEditHotkeys, "  Hotkeys:\r\n[Ctrl]+[K] or [Ctrl]+[/] = comment/uncomment line.\r\n     - If more than 1 line is selected, all selected lines will be commented/uncommented.." },
 		{ Element.TT_LCTRLLALTTempLayout, @"Temporarily changes layout while you hold combination of keys containing: LCtrl+LAlt, until release of both.
 Fixes problem when instead of firing hotkeys containing Ctrl+Alt in apps Windows prints special character, which usually typed via AltGr(right Alt, in Windows AtlGr = Ctrl+Alt).
-Relevant for extented and typographic layouts: US-International, UK-Extended, european languages layouts etc.
+Relevant for extended and typographic layouts: US-International, UK-Extended, european languages layouts etc.
 You need to specify in textbox to the right code of layout in which Mahou will be switching, choose layout that doesn't have AltGr combinations: for example English(US) 67699721.
 You can even specify layout which is not loaded in system, for example: English(US) 67699721, Mahou will load/unload it when pressing/releasing LCtrl+LAlt.
 Specify layout code 0 to disable this feature." },
