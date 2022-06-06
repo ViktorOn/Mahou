@@ -509,7 +509,7 @@ namespace Mahou {
 					ClearWord(true, true, true, "Pressed combination of key and modifiers(not shift) or key that changes caret position.", true, AS_IGN_RULES.Contains("C"));
 				}
 				if (Key == Keys.Space) {
-					if (prevKEY != Keys.Space && !CLW_W_SPACE) {
+					if (prevKEY != Keys.Space) {
 						Logging.Log("[FUN] > Adding one new empty word to words, and adding to it [Space] key.");
 						MMain.c_words.Add(new List<YuKey>());
 						MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Keys.Space });
@@ -518,27 +518,37 @@ namespace Mahou {
 							Logging.Log("[FUN] > Eat one space passed, next space will clear last word.");
 							MMain.c_word.Add(new YuKey() { key = Keys.Space });
 							afterEOS = true;
+						} else {
+							ClearWord(true, false, false, "Pressed space");
+							afterEOS = false;
 						}
 						MahouUI.CCReset("space");
 					} else {
-						ClearWord(true, false, false, "Pressed space");
-						afterEOS = CLW_W_SPACE = false;
+						if (CLW_W_SPACE) {
+							ClearWord(true, false, false, "Pressed space");
+							CLW_W_SPACE = false;
+						}
 					}
 				}
 				if (Key == Keys.Enter) { 
-					if (prevKEY != Keys.Enter && !CLW_W_ENTER) {
+					if (prevKEY != Keys.Enter) {
 						if (MahouUI.Add1NL && MMain.c_word.Count != 0 && 
 						    MMain.c_word[MMain.c_word.Count - 1].key != Keys.Enter) {
 							Logging.Log("[FUN] > Eat one New Line passed, next Enter will clear last word.");
 							MMain.c_word.Add(new YuKey() { key = Keys.Enter });
 							MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Keys.Enter });
 							afterEOL = true;
+						} else {
+							ClearWord(true, true, true, "Pressed enter", true, AS_IGN_RULES.Contains("C"));
+							afterEOL = false;
 						}
 						as_lword_layout = 0;
 						MahouUI.CCReset("enter");
 					}  else {
-						ClearWord(true, true, true, "Pressed enter", true, AS_IGN_RULES.Contains("C"));
-						afterEOL = CLW_W_ENTER = false;
+						if (CLW_W_ENTER) {
+							ClearWord(true, true, true, "Pressed enter", true, AS_IGN_RULES.Contains("C"));
+							CLW_W_ENTER = false;
+						}
 					}
 				}
 				if (printable && printable_mod) {
@@ -996,7 +1006,7 @@ namespace Mahou {
 												word.RemoveAt(word.Count-1);
 											}
 											word = QWERTZ_wordFIX(word);
-				        					StartConvertWord(word.ToArray(), was, true);
+				        					StartConvertWord(word.ToArray(), was, true, true);
 											ExpandSnippet(snip, as_corrects[i], !MahouUI.AddOneSpace && MahouUI.AutoSwitchSpaceAfter,
 				        						MahouUI.AutoSwitchSwitchToGuessLayout, true, false, asl);
 										};
@@ -1012,7 +1022,7 @@ namespace Mahou {
 										word.RemoveAt(word.Count-1);
 									}
 									word = QWERTZ_wordFIX(word);
-									StartConvertWord(word.ToArray(), Locales.GetCurrentLocale(), true);
+									 StartConvertWord(word.ToArray(), Locales.GetCurrentLocale(), true, true);
 									ExpandSnippet(snip, as_corrects[i], !MahouUI.AddOneSpace && MahouUI.AutoSwitchSpaceAfter,
 		        					              MahouUI.AutoSwitchSwitchToGuessLayout, true, false, asl);
 	        					}
@@ -4022,9 +4032,7 @@ namespace Mahou {
 			uint target = 0;
 			if (_target == 0) {
 				if (MahouUI.SwitchBetweenLayouts) {
-					var cur = Locales.GetCurrentLocale();
-					if (MahouUI.UseJKL && !KMHook.JKLERR)
-						cur = MahouUI.currentLayout;
+					var cur = (MahouUI.UseJKL && !KMHook.JKLERR) ? MahouUI.currentLayout : Locales.GetCurrentLocale();
 					target = cur == MahouUI.MAIN_LAYOUT1 ? MahouUI.MAIN_LAYOUT2 : MahouUI.MAIN_LAYOUT1;
 				} else 
 					target = GetNextLayout().uId;

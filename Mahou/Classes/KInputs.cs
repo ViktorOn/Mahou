@@ -92,7 +92,7 @@ namespace Mahou {
 	        	uselt1_vk = lt1_vk != -1;
 	        	short lt2_vk = WinAPI.VkKeyScanEx(s, Mahou.MahouUI.MAIN_LAYOUT2);
 	        	uselt2_vk = lt2_vk != -1;
-	        	if (uselt1_vk && uselt2_vk) {
+	        	if (uselt1_vk && uselt2_vk && lt1_vk != lt2_vk) {
 	        		var guess = Mahou.KMHook.WordGuessLayout(GetWordByIndex(str, index));
 	//        		System.Diagnostics.Debug.WriteLine("ST:"+guess.Item2);
 	        		var lt_guess = guess.Item2;
