@@ -286,11 +286,12 @@ namespace Mahou {
 					    ((Key == Keys.LControlKey) && alt)) && !CTRL_ALT_changelayout_temporary) {
 						CTRL_ALT_prev_layout = (MahouUI.UseJKL && !JKLERR) ? MahouUI.currentLayout : Locales.GetCurrentLocale();
 						uint sh1 = CTRL_ALT_prev_layout&0xffff, sh2 = MahouUI.CTRL_ALT_TemporaryLayout&0xffff;
-						if (sh1 != sh2 && CTRL_ALT_prev_layout != 0) {
+						uint lo1 = CTRL_ALT_prev_layout>>16, lo2 = MahouUI.CTRL_ALT_TemporaryLayout >> 16;
+						if (!(sh1 == sh2 && lo1 == lo2) && CTRL_ALT_prev_layout != 0) {
 							CTRL_ALT_changelayout_temporary = true;
 							var is_loaded = false;
 							foreach (var l in MMain.locales) {
-								if ((l.uId & 0xffff) == sh2) {
+								if ((l.uId & 0xffff) == sh2 && (l.uId >> 16) == lo2) {
 									is_loaded = true;
 									break;
 								}
