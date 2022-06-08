@@ -540,6 +540,9 @@ namespace Mahou {
 						var si = m.WParam.ToInt32() - 200;
 						var type = SpecKeySetsValues["cbb_typ"+si];
 						try {
+							if (mods != 0 && EmulateLS) {
+								KMHook.SendModsUp(mods);
+							}
 							if (type == MMain.Lang[Languages.Element.SwitchBetween]) {
 								KMHook.ChangeLayout();
 							} else KMHook.ChangeToLayout(Locales.ActiveWindow(), Locales.GetLocaleFromString(type).uId);
