@@ -13,6 +13,7 @@ namespace Mahou {
 		public static Action ActionOnLayout;
 		public static uint OnLayoutAction = 0;
 		public static int[] jkluMSG = new int[]{-1, -1};
+		public static int jklMaxChangeTries = 20, jklChangeTries = 0;
 		const string HWND_SERVER_TITLE = "777_MAHOU_777_HIDDEN_HWND_SERVER";
 		public static bool running = false, self_change, actionOnLayoutExecuted;
 		/// <summary>0=exe, 1=dll, 2=x86.exe, 3=x86.dll</summary>
@@ -185,6 +186,20 @@ namespace Mahou {
 							}
 						}
 						if (start_cyclEmuSwitch) {
+							jklChangeTries++;
+							if (jklChangeTries>=jklMaxChangeTries) {
+								Logging.Log("Emulate layout switch to "+cycleEmuDesiredLayout+" failed, could not reach that layout after " + jklMaxChangeTries +" tries.",1);
+								jklChangeTries = 0;
+								start_cyclEmuSwitch = false;
+								Logging.Log("Fallback to NormalChangeToLayout");
+								MahouUI.EmulateLS = false;
+								KMHook.ChangeToLayout(Locales.ActiveWindow(), cycleEmuDesiredLayout);
+								if (!anull && OnLayoutAction == cycleEmuDesiredLayout) {
+									ActionOnLayout();
+									ActionOnLayout = null;
+								}
+								MahouUI.EmulateLS = true;
+							}
 							Debug.WriteLine("Cycling out from: "+ layout + " to " + cycleEmuDesiredLayout +"...");
 							if (layout != cycleEmuDesiredLayout && laysho != cycleEmuDesiredLayout) {
 								KMHook.CycleEmulateLayoutSwitch();
