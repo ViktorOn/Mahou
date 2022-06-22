@@ -2371,7 +2371,7 @@ DEL "+restartMahouPath;
 				flagname = clangname.ThreeLetterISOLanguageName.Substring(0, 2).ToLower();
 				var flagpth = Path.Combine(MahouUI.nPath, "Flags\\" + flagname + ".png");
 				Debug.WriteLine("UpDATe?"+flagname+", "+(flagname != latestSwitch || (TrayText && ITEXT == null) || (TrayFlags && FLAG == null)));
-				if (flagname != latestSwitch || (TrayText && ITEXT == null) || (TrayFlags && FLAG == null)) {
+				if (flagname != latestSwitch || (TrayText && ITEXT == null) || (TrayFlags && FLAG == null) || force) {
 					Logging.Log("Changed flag to " + flagname + " lcid " + lcid);
 					Debug.WriteLine("Changed flag to " + flagname + " lcid " + lcid);
 					if (File.Exists(flagpth)) {
@@ -2526,18 +2526,20 @@ DEL "+restartMahouPath;
 		/// Initializes language tooltips.
 		/// </summary>
 		public void InitLangDisplays(bool destroyonly = false) {
-			if (mouseLangDisplay != null)
-				mouseLangDisplay.Dispose();
-			if (caretLangDisplay != null)
-				caretLangDisplay.Dispose();
-			if (destroyonly || !ENABLED) return;
-			if (LDForMouse) {
+			if (mouseLangDisplay == null)
 				mouseLangDisplay = new LangDisplay();
+			if (caretLangDisplay == null)
+				caretLangDisplay = new LangDisplay();
+			if (destroyonly || !ENABLED) {
+				mouseLangDisplay.Dispose();
+				caretLangDisplay.Dispose();
+				return; 
+			}
+			if (LDForMouse) {
 				mouseLangDisplay.mouseDisplay = true;
 				mouseLangDisplay.DisplayFlag = LDMouseUseFlags_temp;
 			}
 			if (LDForCaret) {
-				caretLangDisplay = new LangDisplay();
 				caretLangDisplay.caretDisplay = true;
 				caretLangDisplay.DisplayFlag = LDCaretUseFlags_temp;
 				caretLangDisplay.AddOwnedForm(mouseLangDisplay); //Prevents flickering when tooltips are one on another 
