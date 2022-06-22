@@ -2525,7 +2525,7 @@ DEL "+restartMahouPath;
 		/// <summary>
 		/// Initializes language tooltips.
 		/// </summary>
-		public void InitLangDisplays(bool destroyonly = false) {
+		public void InitLangDisplays(bool destroyonly = false, bool lc = false) {
 			if (mouseLangDisplay == null)
 				mouseLangDisplay = new LangDisplay();
 			if (caretLangDisplay == null)
@@ -2538,11 +2538,19 @@ DEL "+restartMahouPath;
 			if (LDForMouse) {
 				mouseLangDisplay.mouseDisplay = true;
 				mouseLangDisplay.DisplayFlag = LDMouseUseFlags_temp;
+				mouseLangDisplay.Visible = true;
+			} else if (lc) {
+				mouseLangDisplay.Visible = false;
 			}
 			if (LDForCaret) {
 				caretLangDisplay.caretDisplay = true;
 				caretLangDisplay.DisplayFlag = LDCaretUseFlags_temp;
-				caretLangDisplay.AddOwnedForm(mouseLangDisplay); //Prevents flickering when tooltips are one on another 
+				if (mouseLangDisplay != null) {
+					caretLangDisplay.AddOwnedForm(mouseLangDisplay); //Prevents flickering when tooltips are one on another
+				}
+				caretLangDisplay.Visible = true;
+			} else if (lc) {
+				caretLangDisplay.Visible = false;
 			}
 		}
 		void lastAltTabChangeLayout() {
@@ -2900,7 +2908,7 @@ DEL "+restartMahouPath;
 					}
 				} catch (Exception e) { Logging.Log("Error in LangPanel Refresh, loc: "+loc+ ",  details:\r\n" + e.Message + "\r\n" + e.StackTrace); }
 			};
-			InitLangDisplays();
+			InitLangDisplays(false, true);
 			ToggleTimers();
 		}
 		public void UpdateMouseLD() {
