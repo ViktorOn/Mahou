@@ -25,7 +25,7 @@ namespace Mahou
 			lbLang.Text = lastText = to;
 			if (DisplayFlag) {
 				lbLang.Visible = false;
-				MahouUI.RefreshFLAG();
+				MahouUI.RefreshFLAG(true);
 				if (MahouUI.MouseTTAlways && mouseDisplay) {// fix for tray stuck due to variable "LayoutChanged" which being changed by this mouse tooltip always
 					var fi = Icon.FromHandle(MahouUI.FLAG.GetHicon());
 					MMain.mahou.icon.trIcon.Icon = fi;
