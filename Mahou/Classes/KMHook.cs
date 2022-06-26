@@ -257,6 +257,7 @@ namespace Mahou {
 			if (L_DOWN && (win || win_r)) {
 				preKey = Keys.None;
 				L_DOWN = win = win_r = false;
+				LLHook.ClearModifiers();
 				return;
 			}
 			// Clear currentLayout in MMain.mahou rule
