@@ -574,7 +574,7 @@ public class Languages
 				"although if you release modifiers before conversion action finishes - modifiers may stuck...))." },
 		{ Element.TT_Add1Space, "If enabled, space will be adding to last word." },
 		{ Element.TT_Add1NL, "If enabled, ONE Enter(line break) will be adding to last word,\r\n\r\nso the convert last word will work if you accidentally press Enter after the word." }, 
-		{ Element.TT_ReSelect, "If enabled, any [Convert selected] will select text again after conversion." }, 
+		{ Element.TT_ReSelect, "If enabled, any [Convert selected] will select text again after conversion.\nYou can also specify which hotkeys are being affected in [Hidden] tab, default value is: tTRSULCNB for all hotkeys that use selection" }, 
 		{ Element.TT_ScrollTip, "Highlight Scroll Lock when active language 1, selected in Layouts tab.\nUnnesesary to keep enabled [Switch between layouts] function enabled for this function to work, just select layout #1 below it and then disable it if you need to." }, 
 		{ Element.TT_LDOnlyOnChange, "Display language tooltip only on layout change.\nDisplay time - 2×[Refresh rate for mouse + for caret]." }, 
 		{ Element.TT_ConvertSelectionSwitchPlus, "Can cause bugs!!\r\nCombines some abilities of Convert selection with enabled [Convert selection layout switching] and when it's disabled." +
@@ -903,7 +903,7 @@ Specify layout code 0 to disable this feature." },
 							  "хотя если вы отпустите модификаторы до того, как завершится действие конвертации, они могут залипнуть...)." },
 		{ Element.TT_Add1Space, "Если включено, то ОДИН пробел будет добавляться в последнее слово." },
 		{ Element.TT_Add1NL, "Если включено, то к последнему введенному слову будет добавляться ОДИН перевод строки,\r\nблагодаря чему конвертация последнего слова будет работать, если вы случайно нажали Enter после слова." }, 
-		{ Element.TT_ReSelect, "Если включено, любые «Конвертации выделения» будут выделять текст заново." }, 
+		{ Element.TT_ReSelect, "Если включено, любые «Конвертации выделения» будут выделять текст заново.\nМожно также указать для каких горячих клавиш распространяется эффект во вкладке [Hidden], по-умолчанию для всех гор. клавиш использующих выделение: tTRSULCNB." }, 
 		{ Element.TT_ScrollTip, "Подсвечивать лампочку Scroll Lock, когда активна раскладка #1, выбранная во вкладке «Раскладки».\nНеобязательно оставлять включенным функцию «Переключаться между раскладками», достаточно просто выбрать раскладку #1 ниже неё." }, 
 		{ Element.TT_LDOnlyOnChange, "Отображать подсказку языка только при смене раскладки.\nВремя отображения - 2×[Скорость обновления возле каретки + возле мыши]." }, 
 		{ Element.TT_ConvertSelectionSwitchPlus, "Может вызвать проблемы!!\r\nСовмещает способности Конвертация выделения с включенным «Смена раскладки в Конвертации выделения» и когда она выключена." +
