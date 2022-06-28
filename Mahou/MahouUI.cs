@@ -29,7 +29,7 @@ namespace Mahou {
 					hksOK, hklineOK, hkSIOK, hkExitOK, hkToglLPOK, hkShowTSOK, hkToggleMahouOK, hkUcOK, hklcOK, hkccOK,
 					hkSCCok, hkSCMUM;
 		public static string nPath = AppDomain.CurrentDomain.BaseDirectory, CustomSound, CustomSound2, Redefines;
-		public static int ACT_Match = 0, TrayHoverMahouMM = 0;
+		public static int ACT_Match = 0, TrayHoverMahouMM = 0, explorer_pid;
 		public static bool LoggingEnabled, dummy, CapsLockDisablerTimer, LangPanelUpperArrow, mouseLTUpperArrow, caretLTUpperArrow,
 						   ShiftInHotkey, AltInHotkey, CtrlInHotkey, WinInHotkey, AutoStartAsAdmin, UseJKL, AutoSwitchEnabled, ReadOnlyNA,
 						   SoundEnabled, UseCustomSound, SoundOnAutoSwitch, SoundOnConvLast, SoundOnSnippets, SoundOnLayoutSwitch,
@@ -2306,6 +2306,23 @@ DEL "+restartMahouPath;
 		/// Refreshes all icon's images and tray icon visibility.
 		/// </summary>
 		public void RefreshAllIcons(bool force = false) {
+			var fong = false;
+			try {
+				var p = Process.GetProcessesByName("explorer");
+				if (explorer_pid != p[0].Id) {
+					fong = true;
+				}
+				Debug.WriteLine(p[0].Id + " " + force);
+				explorer_pid = p[0].Id;
+			} catch(Exception e) {
+				fong = true;
+			}
+			if (fong) {
+				force = true;
+				icon.trIcon.Visible = false;
+				System.Threading.Thread.Sleep(1000);
+				icon.trIcon.Visible = true;
+			}
 			if (TrayFlags || TrayText) {
 				ChangeTrayIconToFlag(force);
 			} else {
