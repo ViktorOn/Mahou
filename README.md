@@ -62,11 +62,12 @@ Mahou находится под GPL v2+.
 
 Если Вы считаете что хотите помочь материально, буду очень благодарен :)
 
-Кошельки:
+Способы:
 
 - Яндекс.Деньги: 410015057363201 или http://sobe.ru/na/mahou
 - MasterCard: 5168 7573 3941 2985
 - PayPal: [![](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4UHE4VSYVNUJW&source=url)
+- Patreon [![Luanciel](https://www.patreon.com/Luanciel)
 
 
 ###### Возможности по версиям:
@@ -807,11 +808,12 @@ or contact me though [email](mailto:BladeMight@gmail.com) (You can ask anything)
 
 If you think that you want to help financially, I will be very grateful :)
 
-Wallets:
+Ways:
 
 - Yandex.Money: 410015057363201 or http://sobe.ru/na/mahou
 - MasterCard: 5168 7573 3941 2985
 - PayPal: [![](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4UHE4VSYVNUJW&source=url)
+- Patreon [![Luanciel](https://www.patreon.com/Luanciel)
 
 ###### By version features:
 
