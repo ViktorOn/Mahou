@@ -1499,7 +1499,7 @@ namespace Mahou {
 			MMain.MyConfs.Write("Hidden", "AutoRestartMins", Hnud_AutoRestartMins.Value.ToString());
 			MMain.MyConfs.Write("Hidden", "__setlayout_FORCED", Hchk___setlayoutForce.Checked.ToString());
 			MMain.MyConfs.Write("Hidden", "__setlayout_ONLYWM", Hchk___setlayoutOnlyWM.Checked.ToString());
-			MMain.MyConfs.Write("Hidden", "ReselectCustoms", Htxt_ReselectCustoms.Text);
+			MMain.MyConfs.Write("Hidden", "ReSelectCustoms", Htxt_ReselectCustoms.Text);
 			MMain.MyConfs.Write("Hidden", "ChangeLayoutOnTrayLMB+DoubleClick", Hchk_LMBTrayLayoutChangeDC.Checked.ToString());
 			MMain.MyConfs.Write("Hidden", "TrayHoverMahouMM", Hnud_TrayHoverMM.Value.ToString());
 			MMain.MyConfs.Write("Hidden", "Redefines", Htxt_Redefines.Text);
@@ -1543,7 +1543,7 @@ namespace Mahou {
 			Hnud_AutoRestartMins.Value = arm = MMain.MyConfs.ReadInt("Hidden", "AutoRestartMins");
 			Hchk___setlayoutForce.Checked = __setlayoutForce = MMain.MyConfs.ReadBool("Hidden", "__setlayout_FORCED");
 			Hchk___setlayoutOnlyWM.Checked = __setlayoutOnlyWM = MMain.MyConfs.ReadBool("Hidden", "__setlayout_ONLYWM");
-			Htxt_ReselectCustoms.Text = ReselectCustoms = MMain.MyConfs.Read("Hidden", "ReselectCustoms");
+			Htxt_ReselectCustoms.Text = ReselectCustoms = MMain.MyConfs.Read("Hidden", "ReSelectCustoms");
 			Hchk_LMBTrayLayoutChangeDC.Checked = MMain.MyConfs.ReadBool("Hidden", "ChangeLayoutOnTrayLMB+DoubleClick");
 			TrayHoverMahouMM = MMain.MyConfs.ReadInt("Hidden", "TrayHoverMahouMM");
 			Htxt_Redefines.Text = Redefines = MMain.MyConfs.Read("Hidden", "Redefines");
