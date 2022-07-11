@@ -80,7 +80,7 @@ namespace Mahou {
         }
         /// <summary>Hides tray icon.</summary>
         public void Hide() {
-        	if (MahouUI.TrayFlags || MahouUI.TrayText)
+        	if ((MahouUI.TrayFlags || MahouUI.TrayText) && MMain.mahou != null && MMain.mahou.flagsCheck != null)
         		MMain.mahou.flagsCheck.Stop();
             trIcon.Visible = false;
         }
