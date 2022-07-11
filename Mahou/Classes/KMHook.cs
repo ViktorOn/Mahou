@@ -3238,13 +3238,17 @@ namespace Mahou {
 				Debug.WriteLine(">> ST CLW");
 				var backs = YuKeys.Length;
 				// Fix for cmd exe pause hotkey leaving one char.
-				if (!skipsnip) { // E.g. not from AutoSwitch
-					var clsNM = Locales.ActiveWindowClassName(40);
+				//if (!skipsnip) { // E.g. not from AutoSwitch
+				var clsNM = Locales.ActiveWindowClassName(40, WinAPI.GetForegroundWindow());
 					if (IfNW7() &&
 					    clsNM == "ConsoleWindowClass" && (
 						MMain.mahou.HKCLast.VirtualKeyCode == (int)Keys.Pause))
 						backs++;
-				}
+//					Debug.WriteLine("ACT_CLASSN: " + clsNM);
+					if (clsNM.StartsWith("Qt5")) { // Qt5 keyboard message handling seems slow, so wait for it before starting 
+						Thread.Sleep(25);
+					}
+				//}
 				Debug.WriteLine(">> LC Aft. " + (MMain.locales.Length * 20));
 				var rewr = new StringBuilder();
 				if(!skipsnip) {

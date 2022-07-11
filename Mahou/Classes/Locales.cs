@@ -77,8 +77,8 @@ namespace Mahou
 			return prc;
 			
 		}
-		public static string ActiveWindowClassName(int len) {
-			var _fw = ActiveWindow();
+		public static string ActiveWindowClassName(int len, IntPtr hwnd = default(IntPtr)) {
+			var _fw = hwnd == default(IntPtr) ? ActiveWindow() : hwnd;
 			var _clsNMb = new StringBuilder(len);
 			WinAPI.GetClassName(_fw, _clsNMb, _clsNMb.Capacity);
 			return _clsNMb.ToString();
