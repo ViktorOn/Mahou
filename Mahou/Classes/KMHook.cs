@@ -3246,7 +3246,7 @@ namespace Mahou {
 						backs++;
 //					Debug.WriteLine("ACT_CLASSN: " + clsNM);
 					if (clsNM.StartsWith("Qt5")) { // Qt5 keyboard message handling seems slow, so wait for it before starting 
-						Thread.Sleep(25);
+						Thread.Sleep(250);
 					}
 				//}
 				Debug.WriteLine(">> LC Aft. " + (MMain.locales.Length * 20));
