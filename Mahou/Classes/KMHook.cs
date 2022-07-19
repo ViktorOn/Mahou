@@ -2579,13 +2579,13 @@ namespace Mahou {
 							var wawasLocale = wasLocale;
 							uint nowLocale = 0;
 							if(MahouUI.SwitchBetweenLayouts) {
-								nowLocale = wasLocale == (MahouUI.MAIN_LAYOUT1)
+								nowLocale = CompareLayouts(wasLocale, MahouUI.MAIN_LAYOUT1)
 									? MahouUI.MAIN_LAYOUT2
 									: MahouUI.MAIN_LAYOUT1;
 								if (nowLocale == wasLocale && 
-								    (MahouUI.currentLayout == MahouUI.MAIN_LAYOUT1 || 
-								     MahouUI.currentLayout == MahouUI.MAIN_LAYOUT2)) {
-									if (wasLocale != MahouUI.currentLayout)
+								    (CompareLayouts(MahouUI.currentLayout, MahouUI.MAIN_LAYOUT1) ||
+								     CompareLayouts(MahouUI.currentLayout, MahouUI.MAIN_LAYOUT2))) {
+									if (!CompareLayouts(wasLocale, MahouUI.currentLayout))
 										nowLocale = MahouUI.currentLayout;
 								}
 							} else {
@@ -3609,14 +3609,15 @@ namespace Mahou {
 									desired = 0;
 								}
 							}
-							if (nowLocale == desired)
+							if (CompareLayouts(nowLocale, desired))
 								break;
-							uint notnowLocale = nowLocale == MahouUI.MAIN_LAYOUT1
+							uint notnowLocale = CompareLayouts(nowLocale, MahouUI.MAIN_LAYOUT1)
 				                ? MahouUI.MAIN_LAYOUT2
 				                : MahouUI.MAIN_LAYOUT1;
 							last = nowLocale;
-							if (nowLocale != MahouUI.MAIN_LAYOUT1 &&
-							    nowLocale != MahouUI.MAIN_LAYOUT2 && notnowLocale != last_switch_layout) {
+							if (!CompareLayouts(nowLocale, MahouUI.MAIN_LAYOUT1) &&
+							    !CompareLayouts(nowLocale, MahouUI.MAIN_LAYOUT2) && 
+							    !CompareLayouts(notnowLocale, last_switch_layout)) {
 								Debug.WriteLine("Not 2 layouts! " + nowLocale +" last:"+ last_switch_layout + " not:"+notnowLocale);
 								Logging.Log("> [ChangeLaouyt] Change layout, wanted: " +notnowLocale +" changed mind to " +last_switch_layout);
 								if (last_switch_layout != 0)
@@ -3662,6 +3663,21 @@ namespace Mahou {
 			}
 		}
 		/// <summary>
+		/// Compares layouts, if any of them is short, e.g. 1041, comparison will be done only on short part.
+		/// </summary>
+		/// <param name="L1">The first layout which will be compared to the second</param>
+		/// <param name="L2">The second layout</param>
+		/// <returns></returns>
+		public static bool CompareLayouts(uint L1, uint L2) {
+			return (L1 == L2) || (
+				(L1 & 0xffff) == (L2 & 0xffff) &&
+				(
+					(L1 >> 16) == 0 ? true : (L2 >> 16) == (L1 >> 16) ||
+					(L2 >> 16) == 0 ? true : (L1 >> 16) == (L2 >> 16)
+				)
+			);
+		}
+		/// <summary>
 		/// Calls functions to change layout based on EmulateLS variable.
 		/// </summary>
 		/// <param name="hwnd">Target window to change its layout.</param>
@@ -3691,7 +3707,7 @@ namespace Mahou {
 			evt_layoutchanged(0, loc, MahouUI.bindable_events[1]);
 			do {
 				if (MahouUI.UseJKL && !KMHook.JKLERR) {
-					if ((loc == last && loc != 0) || conhost)
+					if (loc != 0 && (CompareLayouts(loc, last)) || conhost)
 						loc = MahouUI.currentLayout;
 				} else {
 					loc = Locales.GetCurrentLocale();
@@ -3707,7 +3723,7 @@ namespace Mahou {
 					break;
 				}
 				last = loc;
-			} while (loc != LayoutId);
+			} while (!CompareLayouts(loc, LayoutId));
 			evt_layoutchanged(LayoutId, 0, MahouUI.bindable_events[0]);
 			if (MahouUI.MAIN_LAYOUT1 == loc || MahouUI.MAIN_LAYOUT2 == loc) {
 				last_switch_layout = loc;
@@ -3724,7 +3740,7 @@ namespace Mahou {
 			Debug.WriteLine(">> E-CTL");
 			var last = MahouUI.currentLayout;
 //			var lash = last;
-			if (last == LayoutId) {
+			if (CompareLayouts(last, LayoutId)) {
 				if (!conhost && last == Locales.GetCurrentLocale()) {
 					Debug.WriteLine("Layout already " + LayoutId);
 					return;
@@ -3736,7 +3752,7 @@ namespace Mahou {
 				uint loc = Locales.GetCurrentLocale();
 //				uint locsh = loc;
 //				Debug.WriteLine(loc + " " + last);
-				if (MahouUI.UseJKL && !KMHook.JKLERR && ((loc == 0 || loc == last /*|| locsh == lash*/) || conhost)) {
+				if (MahouUI.UseJKL && !KMHook.JKLERR && ((loc == 0 || CompareLayouts(loc, last) /*|| locsh == lash*/) || conhost)) {
 					jklXHidServ.start_cyclEmuSwitch = true;
 					jklXHidServ.cycleEmuDesiredLayout = LayoutId;
 					Debug.WriteLine("LI: " + LayoutId);
@@ -3745,7 +3761,7 @@ namespace Mahou {
 					break;
 				} else {
 //					Debug.WriteLine(i+".LayoutID: " + LayoutId + ", loc: " +loc);
-					if (loc == LayoutId /*|| locsh == LayoutId*/) {
+					if (CompareLayouts(loc, LayoutId) /*|| locsh == LayoutId*/) {
 						failed = false;
 						break;
 					}
@@ -3759,7 +3775,7 @@ namespace Mahou {
 			}
 			if (!MahouUI.UseJKL || KMHook.JKLERR) {
 				if (!failed) {
-					if (MahouUI.MAIN_LAYOUT1 == LayoutId || MahouUI.MAIN_LAYOUT2 == LayoutId) {
+					if (CompareLayouts(MahouUI.MAIN_LAYOUT1, LayoutId) || CompareLayouts(MahouUI.MAIN_LAYOUT2, LayoutId)) {
 						last_switch_layout = LayoutId;
 					}
 					MahouUI.currentLayout = MahouUI.GlobalLayout = LayoutId;
@@ -3805,12 +3821,12 @@ namespace Mahou {
 				cur = Locales.GetCurrentLocale();
 			Debug.WriteLine("Current: " +cur);
 			for (int i=0; i!=MMain.locales.Length; i++) {
-				if (last != 0 && cur != last)
+				if (last != 0 && !CompareLayouts(cur, last))
 					break;
 				if (MahouUI.SwitchBetweenLayouts) {
-					if (cur == MahouUI.MAIN_LAYOUT1) 
+					if (CompareLayouts(cur, MahouUI.MAIN_LAYOUT1))
 						loc.uId = MahouUI.MAIN_LAYOUT2;
-					else if (cur == MahouUI.MAIN_LAYOUT2) {
+					else if (CompareLayouts(cur, MahouUI.MAIN_LAYOUT2)) {
 						loc.uId = MahouUI.MAIN_LAYOUT1;
 					} else 
 						loc.uId = MahouUI.MAIN_LAYOUT1;

@@ -2312,7 +2312,7 @@ DEL "+restartMahouPath;
 				if (explorer_pid != p[0].Id) {
 					fong = true;
 				}
-				Debug.WriteLine(p[0].Id + " " + force);
+//				Debug.WriteLine(p[0].Id + " " + force);
 				explorer_pid = p[0].Id;
 			} catch(Exception e) {
 				fong = true;

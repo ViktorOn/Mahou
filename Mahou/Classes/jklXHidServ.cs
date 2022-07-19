@@ -159,7 +159,7 @@ namespace Mahou {
 			}
 			protected override void WndProc(ref Message m) {
 				if (m.Msg == jkluMSG[0] || m.Msg == jkluMSG[1]) {
-					uint layout = (uint)m.LParam, laysho = layout & 0xffff;
+					uint layout = (uint)m.LParam;
 					if (layout == last_change_layout) {
 						repeat++;
 					} else {
@@ -174,7 +174,7 @@ namespace Mahou {
 						Logging.Log("[JKL] > On layout act:" +OnLayoutAction);
 						var anull = ActionOnLayout==null;
 						Logging.Log("[JKL] > ACtion: " +(anull?"null":ActionOnLayout.Method.Name));
-						if (layout == OnLayoutAction || (layout & 0xffff) == (OnLayoutAction & 0xffff)) {
+						if (KMHook.CompareLayouts(layout, OnLayoutAction)) {
 							actionOnLayoutExecuted = true;
 							OnLayoutAction = 0;
 							if (anull) {
@@ -194,19 +194,21 @@ namespace Mahou {
 								Logging.Log("Fallback to NormalChangeToLayout");
 								MahouUI.EmulateLS = false;
 								KMHook.ChangeToLayout(Locales.ActiveWindow(), cycleEmuDesiredLayout);
-								if (!anull && OnLayoutAction == cycleEmuDesiredLayout) {
+								if (!anull && KMHook.CompareLayouts(OnLayoutAction, cycleEmuDesiredLayout)) {
 									ActionOnLayout();
 									ActionOnLayout = null;
 								}
 								MahouUI.EmulateLS = true;
 							}
-							Debug.WriteLine("Cycling out from: "+ layout + " to " + cycleEmuDesiredLayout +"...");
-							if (layout != cycleEmuDesiredLayout && laysho != cycleEmuDesiredLayout) {
+							Debug.WriteLine("Cycling out from: "+ layout + " to " + cycleEmuDesiredLayout +"..." + jklChangeTries);
+							if (!KMHook.CompareLayouts(layout, cycleEmuDesiredLayout)) {
 								KMHook.CycleEmulateLayoutSwitch();
 							}
 							else {
+								jklChangeTries = 0;
 								start_cyclEmuSwitch = false;
-								if (MahouUI.MAIN_LAYOUT1 == layout || MahouUI.MAIN_LAYOUT2 == layout) {
+								if (KMHook.CompareLayouts(MahouUI.MAIN_LAYOUT1, layout) || 
+								    KMHook.CompareLayouts(MahouUI.MAIN_LAYOUT2, layout)) {
 									KMHook.last_switch_layout = layout;
 									KMHook.evt_layoutchanged(layout, 0, MahouUI.bindable_events[0]);
 								}

@@ -72,9 +72,9 @@ namespace Mahou
 		public void RefreshLang() {
 			uint cLid = Locales.GetCurrentLocale();
 			if (DisplayFlag && MahouUI.DiffAppearenceForLayouts) {
-				if (cLid == MahouUI.MAIN_LAYOUT1 && MahouUI.Layout1TText.Length < 2)
+				if (KMHook.CompareLayouts(cLid, MahouUI.MAIN_LAYOUT1) && MahouUI.Layout1TText.Length < 2)
 					lbLang.Text = MahouUI.Layout1TText;
-				else if (cLid == MahouUI.MAIN_LAYOUT2 && MahouUI.Layout2TText.Length < 2)
+				else if (KMHook.CompareLayouts(cLid, MahouUI.MAIN_LAYOUT2) && MahouUI.Layout2TText.Length < 2)
 					lbLang.Text = MahouUI.Layout2TText;
 				Empty = (MahouUI.DiffAppearenceForLayouts && lbLang.Text == " ");
 			}
@@ -100,12 +100,12 @@ namespace Mahou
 				}
 				if (clangname == null) return;
 				if (MahouUI.DiffAppearenceForLayouts && !DisplayFlag) {
-					if (cLid == MahouUI.MAIN_LAYOUT1) {
+					if (KMHook.CompareLayouts(cLid, MahouUI.MAIN_LAYOUT1)) {
 						ChangeColors(MahouUI.Layout1Font_temp, MahouUI.Layout1Fore_temp, 
 						             MahouUI.Layout1Back_temp, MahouUI.Layout1TransparentBack_temp);
 						ChangeSize(MahouUI.Layout1Height_temp, MahouUI.Layout1Width_temp);
 						ChangeLD(MahouUI.Layout1TText);
-					} else if (cLid == MahouUI.MAIN_LAYOUT2) {
+					} else if (KMHook.CompareLayouts(cLid, MahouUI.MAIN_LAYOUT2)) {
 						ChangeColors(MahouUI.Layout2Font_temp, MahouUI.Layout2Fore_temp, 
 						             MahouUI.Layout2Back_temp, MahouUI.Layout2TransparentBack_temp);
 						ChangeSize(MahouUI.Layout2Height_temp, MahouUI.Layout2Width_temp);
