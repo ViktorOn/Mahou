@@ -765,6 +765,34 @@ namespace Mahou {
 					MahouUI.currentLayout = 0;
 				ClearWord(true, true, true, "Mouse click", true, AS_IGN_RULES.Contains("M"));
 			}
+			if (MMain.mahou != null) {
+				if (WinAPI.GetForegroundWindow() == MMain.mahou.Handle) {
+					if (MSG == (ushort)WinAPI.RawMouseButtons.MiddleUp) {
+						try {
+							var c = WinAPI.WindowFromPoint(Cursor.Position);
+							var x = Control.FromHandle(c);
+							RestoreClipBoard(x.Text);
+							var was = x.ForeColor;
+							x.ForeColor = System.Drawing.Color.YellowGreen;
+							var z = new System.Windows.Forms.Timer();
+							int v = 0;
+							System.Drawing.Color[] colors = { x.ForeColor, was };
+							z.Tick += (_, __) => {
+								x.ForeColor = colors[v%2==0?1:0];
+								v++;
+								if (v==5) {
+									z.Dispose();
+									x.ForeColor = was;
+								}
+							};
+							z.Interval = 200;
+							z.Start();
+						} catch(Exception e) {
+							Logging.Log("Could not get control: " + e.Message + " " + e.StackTrace);
+						}
+					}
+				}
+			}
 			#region Double click show translate
 			if (MahouUI.TrEnabled)
 				if (MahouUI.TrOnDoubleClick) {
