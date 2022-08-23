@@ -1395,9 +1395,13 @@ namespace Mahou {
 				_set.Controls["rule"+i].Text = values[1];
 				bool b1 = false, b2 = false;
 				bool.TryParse(values[2], out b1);
-				(_set.Controls["isnip"+i] as CheckBox).Checked = b1;
+				var c1 = (_set.Controls["isnip"+i] as CheckBox);
+				c1.Checked = b1;
+				c1.Text = MMain.Lang[Languages.Element.tab_Snippets];
 				bool.TryParse(values[3], out b2);
-				(_set.Controls["iauto"+i] as CheckBox).Checked = b2;
+				var c2 = (_set.Controls["iauto"+i] as CheckBox);
+				c2.Text = MMain.Lang[Languages.Element.tab_AutoSwitch];
+				c2.Checked = b2;
 				KMHook.NCRules[i-1] = new KMHook.NCR(){ rule = values[1], isnip = b1, iauto = b2};
 			}
 		}
