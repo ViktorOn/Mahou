@@ -118,6 +118,7 @@ public class Languages
 		SnippetsCount,
 		SnippetsExpandKey,
 		SnippetsExpKeyOther,
+		SnippetsNCRules,
 		#endregion
 		#region AutoSwitch
 		AutoSwitchEnabled,
@@ -423,6 +424,7 @@ public class Languages
 		{ Element.SnippetsCount, "Snippets: " }, 
 		{ Element.SnippetsExpandKey, "Snippet expand key: " }, 
 		{ Element.SnippetsExpKeyOther, "Other" }, 
+		{ Element.SnippetsNCRules, "Disable snippets/autoswitch rules (Regex)" }, 
 		#endregion
 		#region AutoSwitch
 		{ Element.AutoSwitchEnabled, "Enable auto-switch." }, 
@@ -754,6 +756,7 @@ Specify layout code 0 to disable this feature." },
 		{ Element.SnippetsCount, "Сниппетов: " }, 
 		{ Element.SnippetsExpandKey, "Клавиша развертывания:" }, 
 		{ Element.SnippetsExpKeyOther, "Другая" }, 
+		{ Element.SnippetsNCRules, "Правила отмены сниппетов/автозамены (Regex)" }, 
 		#region AutoSwitch
 		{ Element.AutoSwitchEnabled, "Включить автозамену." }, 
 		{ Element.AutoSwitchSpaceAfter, "Добавлять 1 пробел после автозамены." }, 

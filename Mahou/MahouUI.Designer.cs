@@ -107,7 +107,6 @@ namespace Mahou
 		private System.Windows.Forms.CheckBox chk_SelectedTextGetMoreTries;
 		private System.Windows.Forms.ComboBox cbb_Language;
 		private System.Windows.Forms.Label lbl_Language;
-		private System.Windows.Forms.ToolTip HelpMeUnderstand;
 		private System.Windows.Forms.Label lbl_HotkeyHelp;
 		private System.Windows.Forms.Label lbl_ExcludedPrograms;
 		private Mahou.MahouUI.TextBoxCA txt_ExcludedPrograms;
@@ -341,6 +340,12 @@ namespace Mahou
 		private System.Windows.Forms.TextBox Htxt_LayoutModifier_1;
 		private System.Windows.Forms.Label Hlbl_LayoutModifier_1;
 		private System.Windows.Forms.TextBox txt_LCtrlLAltBorder;
+		private System.Windows.Forms.Panel pan_NoConvertRules;
+		private System.Windows.Forms.Label lbl_ScrollPastContentSnippets;
+		private System.Windows.Forms.Button btn_NCRAdd;
+		private System.Windows.Forms.Button btn_NCR_Sub;
+		private System.Windows.Forms.Label lbl_NCRCount;
+		private System.Windows.Forms.Label lbl_NCR;
 		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
@@ -356,7 +361,6 @@ namespace Mahou
 		}
 		public void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tab_functions = new System.Windows.Forms.TabPage();
 			this.lbl_TrayDislpayType = new System.Windows.Forms.Label();
@@ -497,6 +501,12 @@ namespace Mahou
 			this.chk_Change1KeyL = new System.Windows.Forms.CheckBox();
 			this.chk_ConvSWL = new System.Windows.Forms.CheckBox();
 			this.tab_snippets = new System.Windows.Forms.TabPage();
+			this.lbl_NCRCount = new System.Windows.Forms.Label();
+			this.lbl_NCR = new System.Windows.Forms.Label();
+			this.btn_NCR_Sub = new System.Windows.Forms.Button();
+			this.btn_NCRAdd = new System.Windows.Forms.Button();
+			this.pan_NoConvertRules = new System.Windows.Forms.Panel();
+			this.lbl_ScrollPastContentSnippets = new System.Windows.Forms.Label();
 			this.lnk_SnipOpen = new System.Windows.Forms.LinkLabel();
 			this.cbb_SnippetExpandKeys = new System.Windows.Forms.ComboBox();
 			this.lbl_SnippetExpandKey = new System.Windows.Forms.Label();
@@ -690,7 +700,6 @@ namespace Mahou
 			this.btn_OK = new System.Windows.Forms.Button();
 			this.btn_Cancel = new System.Windows.Forms.Button();
 			this.btn_Apply = new System.Windows.Forms.Button();
-			this.HelpMeUnderstand = new System.Windows.Forms.ToolTip(this.components);
 			this.tabs.SuspendLayout();
 			this.tab_functions.SuspendLayout();
 			this.tab_layouts.SuspendLayout();
@@ -2414,6 +2423,13 @@ namespace Mahou
 			// 
 			// tab_snippets
 			// 
+			this.tab_snippets.AutoScroll = true;
+			this.tab_snippets.Controls.Add(this.lbl_NCRCount);
+			this.tab_snippets.Controls.Add(this.lbl_NCR);
+			this.tab_snippets.Controls.Add(this.btn_NCR_Sub);
+			this.tab_snippets.Controls.Add(this.btn_NCRAdd);
+			this.tab_snippets.Controls.Add(this.pan_NoConvertRules);
+			this.tab_snippets.Controls.Add(this.lbl_ScrollPastContentSnippets);
 			this.tab_snippets.Controls.Add(this.lnk_SnipOpen);
 			this.tab_snippets.Controls.Add(this.cbb_SnippetExpandKeys);
 			this.tab_snippets.Controls.Add(this.lbl_SnippetExpandKey);
@@ -2430,10 +2446,63 @@ namespace Mahou
 			this.tab_snippets.Text = "Snippets";
 			this.tab_snippets.UseVisualStyleBackColor = true;
 			// 
+			// lbl_NCRCount
+			// 
+			this.lbl_NCRCount.Location = new System.Drawing.Point(493, 269);
+			this.lbl_NCRCount.Name = "lbl_NCRCount";
+			this.lbl_NCRCount.Size = new System.Drawing.Size(42, 15);
+			this.lbl_NCRCount.TabIndex = 46;
+			this.lbl_NCRCount.Text = "#0";
+			// 
+			// lbl_NCR
+			// 
+			this.lbl_NCR.AutoSize = true;
+			this.lbl_NCR.Location = new System.Drawing.Point(8, 269);
+			this.lbl_NCR.Name = "lbl_NCR";
+			this.lbl_NCR.Size = new System.Drawing.Size(99, 15);
+			this.lbl_NCR.TabIndex = 45;
+			this.lbl_NCR.Text = "No Convert Rules";
+			// 
+			// btn_NCR_Sub
+			// 
+			this.btn_NCR_Sub.Location = new System.Drawing.Point(465, 265);
+			this.btn_NCR_Sub.Name = "btn_NCR_Sub";
+			this.btn_NCR_Sub.Size = new System.Drawing.Size(22, 22);
+			this.btn_NCR_Sub.TabIndex = 44;
+			this.btn_NCR_Sub.Text = "-";
+			this.btn_NCR_Sub.UseVisualStyleBackColor = true;
+			this.btn_NCR_Sub.Click += new System.EventHandler(this.Btn_NCR_SubClick);
+			// 
+			// btn_NCRAdd
+			// 
+			this.btn_NCRAdd.Location = new System.Drawing.Point(439, 265);
+			this.btn_NCRAdd.Name = "btn_NCRAdd";
+			this.btn_NCRAdd.Size = new System.Drawing.Size(22, 22);
+			this.btn_NCRAdd.TabIndex = 43;
+			this.btn_NCRAdd.Text = "+";
+			this.btn_NCRAdd.UseVisualStyleBackColor = true;
+			this.btn_NCRAdd.Click += new System.EventHandler(this.Btn_NCR_AddClick);
+			// 
+			// pan_NoConvertRules
+			// 
+			this.pan_NoConvertRules.AutoScroll = true;
+			this.pan_NoConvertRules.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.pan_NoConvertRules.Location = new System.Drawing.Point(8, 290);
+			this.pan_NoConvertRules.Name = "pan_NoConvertRules";
+			this.pan_NoConvertRules.Size = new System.Drawing.Size(528, 178);
+			this.pan_NoConvertRules.TabIndex = 42;
+			// 
+			// lbl_ScrollPastContentSnippets
+			// 
+			this.lbl_ScrollPastContentSnippets.Location = new System.Drawing.Point(221, 456);
+			this.lbl_ScrollPastContentSnippets.Name = "lbl_ScrollPastContentSnippets";
+			this.lbl_ScrollPastContentSnippets.Size = new System.Drawing.Size(100, 23);
+			this.lbl_ScrollPastContentSnippets.TabIndex = 41;
+			// 
 			// lnk_SnipOpen
 			// 
 			this.lnk_SnipOpen.AutoSize = true;
-			this.lnk_SnipOpen.Location = new System.Drawing.Point(354, 35);
+			this.lnk_SnipOpen.Location = new System.Drawing.Point(344, 35);
 			this.lnk_SnipOpen.Name = "lnk_SnipOpen";
 			this.lnk_SnipOpen.Size = new System.Drawing.Size(36, 15);
 			this.lnk_SnipOpen.TabIndex = 32;
@@ -2448,7 +2517,7 @@ namespace Mahou
 			this.cbb_SnippetExpandKeys.Items.AddRange(new object[] {
 			"Space",
 			"Tab"});
-			this.cbb_SnippetExpandKeys.Location = new System.Drawing.Point(427, 9);
+			this.cbb_SnippetExpandKeys.Location = new System.Drawing.Point(417, 9);
 			this.cbb_SnippetExpandKeys.Name = "cbb_SnippetExpandKeys";
 			this.cbb_SnippetExpandKeys.Size = new System.Drawing.Size(121, 23);
 			this.cbb_SnippetExpandKeys.TabIndex = 7;
@@ -2456,7 +2525,7 @@ namespace Mahou
 			// 
 			// lbl_SnippetExpandKey
 			// 
-			this.lbl_SnippetExpandKey.Location = new System.Drawing.Point(261, 9);
+			this.lbl_SnippetExpandKey.Location = new System.Drawing.Point(251, 9);
 			this.lbl_SnippetExpandKey.Name = "lbl_SnippetExpandKey";
 			this.lbl_SnippetExpandKey.Size = new System.Drawing.Size(160, 23);
 			this.lbl_SnippetExpandKey.TabIndex = 6;
@@ -2470,7 +2539,7 @@ namespace Mahou
 			this.txt_Snippets.Multiline = true;
 			this.txt_Snippets.Name = "txt_Snippets";
 			this.txt_Snippets.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.txt_Snippets.Size = new System.Drawing.Size(541, 203);
+			this.txt_Snippets.Size = new System.Drawing.Size(531, 203);
 			this.txt_Snippets.TabIndex = 1;
 			this.txt_Snippets.WordWrap = false;
 			this.txt_Snippets.TextChanged += new System.EventHandler(this.Txt_SnippetsTextChanged);
@@ -2511,7 +2580,7 @@ namespace Mahou
 			// 
 			this.lbl_SnippetsCount.AutoSize = true;
 			this.lbl_SnippetsCount.ForeColor = System.Drawing.Color.Orange;
-			this.lbl_SnippetsCount.Location = new System.Drawing.Point(427, 35);
+			this.lbl_SnippetsCount.Location = new System.Drawing.Point(417, 35);
 			this.lbl_SnippetsCount.Name = "lbl_SnippetsCount";
 			this.lbl_SnippetsCount.Size = new System.Drawing.Size(64, 15);
 			this.lbl_SnippetsCount.TabIndex = 5;
@@ -4596,7 +4665,7 @@ namespace Mahou
 			// 
 			// Hlbl_scrollpastcontent
 			// 
-			this.Hlbl_scrollpastcontent.Location = new System.Drawing.Point(234, 810);
+			this.Hlbl_scrollpastcontent.Location = new System.Drawing.Point(234, 784);
 			this.Hlbl_scrollpastcontent.Name = "Hlbl_scrollpastcontent";
 			this.Hlbl_scrollpastcontent.Size = new System.Drawing.Size(100, 23);
 			this.Hlbl_scrollpastcontent.TabIndex = 40;
@@ -4632,15 +4701,6 @@ namespace Mahou
 			this.btn_Apply.Text = "Apply";
 			this.btn_Apply.UseVisualStyleBackColor = true;
 			this.btn_Apply.Click += new System.EventHandler(this.Btn_ApplyClick);
-			// 
-			// HelpMeUnderstand
-			// 
-			this.HelpMeUnderstand.AutoPopDelay = 20000;
-			this.HelpMeUnderstand.InitialDelay = 500;
-			this.HelpMeUnderstand.ReshowDelay = 100;
-			this.HelpMeUnderstand.ShowAlways = true;
-			this.HelpMeUnderstand.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-			this.HelpMeUnderstand.Popup += new System.Windows.Forms.PopupEventHandler(this.HelpMeUnderstandPopup);
 			// 
 			// MahouUI
 			// 
@@ -4752,5 +4812,6 @@ namespace Mahou
 			this.ResumeLayout(false);
 
 		}
-	}
+
+		}
 }

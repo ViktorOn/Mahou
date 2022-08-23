@@ -417,6 +417,7 @@ namespace Mahou {
 			CheckBool("Snippets", "SwitchToGuessLayout", "false");
 			CheckBool("Snippets", "SpaceAfter", "false");
 			CheckBool("Snippets", "SnippetsEnabled", "false");
+			CheckString("Snippets", "NCRSets", "set_0");
 			#endregion
 			#region Timings section
 			CheckInt("Timings", "LangTooltipForMouseSkipMessages", "5");

@@ -62,6 +62,7 @@ namespace Mahou {
 			"Mahou (魔法) - Magical layout switcher.",
 			"BladeMight@gmail.com"
 		};
+		public static NCR[] NCRules = new NCR[] { };
 		public static string[] as_wrongs;
 		public static string[] as_corrects;
 		static DICT<string,string> DefaultTransliterationDict = new DICT<string, string>( new Dictionary<string,string>() {
@@ -620,20 +621,25 @@ namespace Mahou {
 					var snip = ssb.ToString();
 					var matched = false;
 					Debug.WriteLine("Snip " + snip + ", last: " + last_snip);
+					var NCRule = CheckNCS(snip);
 					if (Key == seKey) {
-//						if (seKeyDown == Keys.None) {
-			            	matched = CheckSnippet(snip);
-			            	if (!matched && !last_snipANY)
-			            		matched = CheckSnippet(last_snip+" "+snip, true);
-							if (MahouUI.__selection)
-								snip_selection = "";
-//							seKeyDown = seKey;
-//						}
-						if (matched || preSnip) {
-							if (__setsnip) 
-								__setsnip = false;
-							else
-								c_snip.Clear();
+						if (NCRule.rule == "\0" || (NCRule.rule != "\0" && !NCRule.isnip)) {
+	//						if (seKeyDown == Keys.None) {
+				            	matched = CheckSnippet(snip);
+				            	if (!matched && !last_snipANY)
+				            		matched = CheckSnippet(last_snip+" "+snip, true);
+								if (MahouUI.__selection)
+									snip_selection = "";
+	//							seKeyDown = seKey;
+	//						}
+							if (matched || preSnip) {
+								if (__setsnip) 
+									__setsnip = false;
+								else
+									c_snip.Clear();
+							}
+						} else {
+							Logging.Log("[NCR] > Rule: " + NCRule.rule + " for snippets ignored expansion of the snippet: " + snip);
 						}
 						if (!matched && seKey == Keys.F14) {
 							Debug.WriteLine("No snippet match, restore Tab original action.");
@@ -647,35 +653,39 @@ namespace Mahou {
 						Debug.WriteLine("Ignore AutoSwitch by: B/D/LS: " + was_back + "/"+was_del+"/"+was_ls);
 						Debug.WriteLine("IGN:"+IGN+"EVT"+MSG);
 						if (!matched && as_wrongs != null && Key == Keys.Space && !IGN /*&& aseKeyDown == Keys.None*/) { 
-							var CW = c_word_backup;
-							var CLW = c_word_backup_last;
-							if (MahouUI.AddOneSpace) {
-								CW = MMain.c_word;
-								CLW = c_word_backup;
-							}
-							if (MahouUI.QWERTZ_fix) {
-								var ASsymDR = ASsymDiffReplace(snip);
-								Debug.WriteLine("[ASsymDiff] > ["+snip+"] => ["+ASsymDR+"].");
-								snip = ASsymDR;
-							}
-			            	asls = matched = CheckAutoSwitch(snip, CW);
-			            	if (!matched) {
-			            		var snip2x = last_snip+" "+snip;
-			            		//Debug.WriteLine("SNIp2x! " + snip2x);
-			            		var SPace = new List<YuKey>(){ new YuKey() { key = Keys.Space, altnum = false, upper = false } };
-			            		var dash = new List<YuKey>(){ new YuKey() { key = Keys.OemMinus, altnum = false, upper = false } };
-			            		var last2words = CLW.Concat(dash).Concat(CW).ToList();
-			            		asls = matched = CheckAutoSwitch(snip2x, last2words);
-			            		if (!matched) {
-				            		last2words = CLW.Concat(MahouUI.AddOneSpace ? new List<YuKey>() : SPace).Concat(CW).ToList();
+							if (NCRule.rule == "\0" || (NCRule.rule != "\0" && !NCRule.iauto)) {
+								var CW = c_word_backup;
+								var CLW = c_word_backup_last;
+								if (MahouUI.AddOneSpace) {
+									CW = MMain.c_word;
+									CLW = c_word_backup;
+								}
+								if (MahouUI.QWERTZ_fix) {
+									var ASsymDR = ASsymDiffReplace(snip);
+									Debug.WriteLine("[ASsymDiff] > ["+snip+"] => ["+ASsymDR+"].");
+									snip = ASsymDR;
+								}
+				            	asls = matched = CheckAutoSwitch(snip, CW);
+				            	if (!matched) {
+				            		var snip2x = last_snip+" "+snip;
+				            		//Debug.WriteLine("SNIp2x! " + snip2x);
+				            		var SPace = new List<YuKey>(){ new YuKey() { key = Keys.Space, altnum = false, upper = false } };
+				            		var dash = new List<YuKey>(){ new YuKey() { key = Keys.OemMinus, altnum = false, upper = false } };
+				            		var last2words = CLW.Concat(dash).Concat(CW).ToList();
 				            		asls = matched = CheckAutoSwitch(snip2x, last2words);
-			            		}
-			            	}
-			            	if (!matched) {
-		    					var snl = WordGuessLayout(snip).Item2;
-	    						as_lword_layout = snl;
-		    					Logging.Log("[AS] > Last AS word layout: " +snl );
-			            	}
+				            		if (!matched) {
+					            		last2words = CLW.Concat(MahouUI.AddOneSpace ? new List<YuKey>() : SPace).Concat(CW).ToList();
+					            		asls = matched = CheckAutoSwitch(snip2x, last2words);
+				            		}
+				            	}
+				            	if (!matched) {
+			    					var snl = WordGuessLayout(snip).Item2;
+		    						as_lword_layout = snl;
+			    					Logging.Log("[AS] > Last AS word layout: " +snl );
+				            	}
+							} else {
+								Logging.Log("[NCR] > Rule: " + NCRule.rule + " for autoswitch ignored conversion of the word: " + snip);
+							}
 //							aseKeyDown = Key;
 						}
 					}
@@ -1070,6 +1080,14 @@ namespace Mahou {
 				last_snip = corr;
 			}
 			return matched;
+		}
+		static NCR CheckNCS(string snip) {
+			for (int i = 0; i != NCRules.Length; i++) {
+				if (Regex.IsMatch(snip, NCRules[i].rule)) {
+					return NCRules[i];
+				}
+			}
+			return new NCR(){rule="\0"};
 		}
 		static bool CheckSnippet(string snip, bool xx2 = false) {
 			var matched = false;
@@ -4404,6 +4422,11 @@ namespace Mahou {
 			public bool upper;
 			public bool altnum;
 			public List<Keys> numpads;
+		}
+		public struct NCR {
+			public string rule;
+			public bool isnip;
+			public bool iauto;
 		}
 		#endregion
 	}
