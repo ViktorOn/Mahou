@@ -540,6 +540,7 @@ namespace Mahou {
 							MMain.c_word.Add(new YuKey() { key = Keys.Enter });
 							MMain.c_words[MMain.c_words.Count - 1].Add(new YuKey() { key = Keys.Enter });
 							afterEOL = true;
+							ClearWord(false, false, true, "Pressed 1st enter", true, AS_IGN_RULES.Contains("C"));
 						} else {
 							ClearWord(true, true, true, "Pressed enter", true, AS_IGN_RULES.Contains("C"));
 							afterEOL = false;
