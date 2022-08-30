@@ -39,7 +39,7 @@ Mahou работает так как **Вы** хотите, настраивай
 - <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>Win</kbd>+<kbd>F12</kbd> - Завершить Mahou.
 - Остальные горячие клавиши выключены по умолчанию или имеют описание в Mahou.
 
-### [Скачать или посмотреть заметки о выпусках.](https://github.com/BladeMight/Mahou/releases) (:exclamation: рекомендуется использовать: latest-commit ↓)
+### [Скачать или посмотреть заметки о выпусках](https://github.com/BladeMight/Mahou/releases) (:exclamation: рекомендуется использовать: latest-commit ↓).
 
 ### Beta или "версия с последними изменениями" (aka latest-commit) [здесь](https://github.com/BladeMight/Mahou/releases/tag/latest-commit).
 
@@ -793,11 +793,11 @@ Even selected text switches just between **selected** layouts, though if you lik
 - <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>Win</kbd>+<kbd>F12</kbd> - To exit Mahou.
 - Other hotkeys disabled by default or have description in Mahou.
 
-### [Download or view release notes.](https://github.com/BladeMight/Mahou/releases) (:exclamation: recommended to use: latest-commit ↓)
+### [Download or view release notes](https://github.com/BladeMight/Mahou/releases) (:exclamation: recommended to use: latest-commit ↓).
 
 ### Beta or "version with latest changes" (aka latest-commit) [here](https://github.com/BladeMight/Mahou/releases/tag/latest-commit).
 
-! Even though release date is "12 Aug 2017", this release is auto-compiled and updated every commit. If unsure download the Release_x86_x64.zip.
+! Even though release date is "23 Jul 2019", this release is auto-compiled and updated every commit. If unsure download the Release_x86_x64.zip.
 
 ### Using Chocolatey? type `cinst Mahou` to install.
 
